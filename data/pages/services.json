@@ -1,0 +1,28 @@
+{
+    "header": {
+        "title": "Our Core Services",
+        "description": "From digital concept to physical reality, we provide a full suite of manufacturing solutions."
+    },
+    "services": [
+        {
+            "icon": "Printer",
+            "title": "FDM 3D Printing",
+            "description": "High-strength functional parts using PLA, PETG, ABS, and Carbon Fiber composites."
+        },
+        {
+            "icon": "Layers",
+            "title": "SLA / Resin Printing",
+            "description": "Ultra-high resolution prints for detailed prototypes, miniatures, and dental applications."
+        },
+        {
+            "icon": "Settings",
+            "title": "Product Design",
+            "description": "End-to-end mechanical design and CAD engineered for manufacturability."
+        },
+        {
+            "icon": "Cpu",
+            "title": "Rapid Prototyping",
+            "description": "Iterate faster with quick-turnaround functional prototypes to validate your designs."
+        }
+    ]
+}

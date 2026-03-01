@@ -1,0 +1,9 @@
+[
+    {
+        "id": "sa_1",
+        "name": "Super Admin",
+        "email": "admin@vaelinsa.com",
+        "password": "$2b$10$9.8js61FRxqUItAIx4MVh.qcR43C3B0g3N/GNmxW2rI1iVXxnVYsS",
+        "role": "SUPER_ADMIN"
+    }
+]

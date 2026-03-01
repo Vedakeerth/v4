@@ -1,0 +1,10 @@
+{
+    "showTestimonials": true,
+    "showBlog": true,
+    "showCatalogs": true,
+    "showProjects": true,
+    "heroTitle": "Future of 3D Printing",
+    "heroSubtitle": "Innovating the world one layer at a time.",
+    "showProjectsOnFeatures": true,
+    "showProductsOnFeatures": true
+}

@@ -1,0 +1,60 @@
+{
+    "hero": {
+        "subtitle": "Precision Engineering & Manufacturing",
+        "titleMain": "Concept to Creation",
+        "phrases": [
+            "In Record Time",
+            "With Precision",
+            "For Engineers",
+            "On Demand"
+        ],
+        "description": "Industrial-grade 3D printing (FDM, SLA, SLS), mechanical design, and rapid prototyping services tailored for engineers and startups.",
+        "primaryCta": {
+            "text": "Get a Quote",
+            "link": "/quote"
+        },
+        "secondaryCta": {
+            "text": "Contact Us",
+            "link": "/contact"
+        }
+    },
+    "ctaSection": {
+        "title": "Ready to Materialize Your Ideas?",
+        "titleHighlight": "Ideas?",
+        "description": "Stop waiting for slow traditional machining. Get industrial-quality parts in days, not weeks.",
+        "buttonText": "Contact Us",
+        "buttonLink": "/contact"
+    },
+    "popularParts": {
+        "title": "Most Popular",
+        "titleHighlight": "Gallery Parts",
+        "description": "The most frequently requested precision-engineered parts from our community.",
+        "ctaText": "Explore Full Gallery",
+        "ctaLink": "/gallery"
+    },
+    "productShowcase": {
+        "title": "Premium",
+        "titleHighlight": "Hardware",
+        "suffix": "Solutions",
+        "description": "Explore our professional-grade 3D printers, scanners, and design tools tailored for serious engineers.",
+        "categories": [
+            {
+                "id": "3D Printers",
+                "label": "Machinery",
+                "icon": "Printer"
+            },
+            {
+                "id": "3D Scanners",
+                "label": "Scanners",
+                "icon": "Cpu"
+            },
+            {
+                "id": "3D Pens",
+                "label": "3D Pens",
+                "icon": "PenLine"
+            }
+        ],
+        "ctaText": "Browse Entire Collection",
+        "ctaLink": "/catalog"
+    }
+}

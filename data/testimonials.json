@@ -1,0 +1,50 @@
+[
+    {
+        "id": 1,
+        "name": "Rajesh Kumar",
+        "role": "Product Development Manager",
+        "company": "TechInnovate Solutions",
+        "rating": 5,
+        "text": "VAELINSA transformed our prototyping process. The precision and speed of their 3D printing services helped us iterate 3x faster. Their engineering-grade quality is unmatched."
+    },
+    {
+        "id": 2,
+        "name": "Dr. Priya Sharma",
+        "role": "Research Director",
+        "company": "MedTech Labs",
+        "rating": 5,
+        "text": "We needed biocompatible parts for our medical device prototypes. VAELINSA delivered exactly what we needed with perfect tolerances. Their expertise in medical-grade materials is exceptional."
+    },
+    {
+        "id": 3,
+        "name": "Amit Patel",
+        "role": "Founder & CEO",
+        "company": "StartupX",
+        "rating": 5,
+        "text": "As a startup, we needed fast turnaround without compromising quality. VAELINSA delivered our MVP parts in 48 hours. Their support throughout the process was outstanding."
+    },
+    {
+        "id": 4,
+        "name": "Sneha Reddy",
+        "role": "Mechanical Engineer",
+        "company": "Industrial Dynamics",
+        "rating": 5,
+        "text": "The custom jigs and fixtures VAELINSA created for our production line have improved our efficiency by 40%. Their understanding of industrial requirements is impressive."
+    },
+    {
+        "id": 5,
+        "name": "Vikram Singh",
+        "role": "Design Lead",
+        "company": "Creative Labs",
+        "rating": 5,
+        "text": "From concept to final product, VAELINSA handled everything. Their product design services combined with rapid prototyping gave us a complete solution. Highly recommended!"
+    },
+    {
+        "id": 6,
+        "name": "Anjali Mehta",
+        "role": "R&D Manager",
+        "company": "Advanced Materials Inc.",
+        "rating": 5,
+        "text": "We work with complex geometries and experimental designs. VAELINSA's SLA printing capabilities and attention to detail have been crucial for our research projects."
+    }
+]

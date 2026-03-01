@@ -1,0 +1,14 @@
+{
+    "hosting": {
+        "site": "<YOUR_SITE_NAME_ON_FIREBASE>",
+        "source": ".",
+        "ignore": [
+            "firebase.json",
+            "**/.*",
+            "**/node_modules/**"
+        ],
+        "frameworksBackend": {
+            "region": "us-central1"
+        }
+    }
+}

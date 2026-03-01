@@ -1,0 +1,48 @@
+{
+    "header": {
+        "badge": "Why Partner With Us",
+        "title": "Built for Engineers,",
+        "titleSuffix": "By Engineers.",
+        "description": "We don't just print files; we understand the physics and mechanical properties required for your application. Our fleet is calibrated for industrial performance."
+    },
+    "features": [
+        {
+            "icon": "Gauge",
+            "title": "Engineering Precision",
+            "description": "Maintaining tight tolerances (±0.1mm) for functional end-use parts."
+        },
+        {
+            "icon": "Zap",
+            "title": "Fast Turnaround",
+            "description": "24-48 hour dispatch for most standard FDM and SLA orders."
+        },
+        {
+            "icon": "CheckCircle2",
+            "title": "Quality Assurance",
+            "description": "Every part is hand-inspected and post-processed to rapid perfection."
+        },
+        {
+            "icon": "Scaling",
+            "title": "Scalable Production",
+            "description": "From single prototypes to small-batch manufacturing runs of 500+ units."
+        }
+    ],
+    "images": [
+        {
+            "src": "/images/bento-1-precision.png",
+            "label": "01_PRECISION"
+        },
+        {
+            "src": "/images/bento-4-mechanical.png",
+            "label": "02_MECHANICAL"
+        },
+        {
+            "src": "/images/bento-3-lattice.png",
+            "label": "03_COMPLEXITY"
+        },
+        {
+            "src": "/images/bento-2-production.png",
+            "label": "04_SCALE"
+        }
+    ]
+}

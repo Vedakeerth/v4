@@ -1,0 +1,28 @@
+{
+    "navLinks": [
+        {
+            "name": "Services",
+            "href": "/services"
+        },
+        {
+            "name": "Features",
+            "href": "/features"
+        },
+        {
+            "name": "Blog",
+            "href": "/blog"
+        },
+        {
+            "name": "Gallery",
+            "href": "/gallery"
+        },
+        {
+            "name": "Contact",
+            "href": "/contact"
+        }
+    ],
+    "cta": {
+        "text": "Get Quote",
+        "href": "/quote"
+    }
+}

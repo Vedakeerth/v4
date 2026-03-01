@@ -1,0 +1,22 @@
+{
+    "home": {
+        "title": "VAELINSA | 3D Printing, Robotics & Precision Engineering",
+        "description": "Leading provider of industrial 3D printers, precision 3D pens, and advanced robotic manufacturing solutions. Quality medical-safe prototypes and custom hardware.",
+        "keywords": "3D printing, robotics, medical prototyping, 3D printers india, FDM, industrial 3D scanning"
+    },
+    "catalog": {
+        "title": "Product Catalog - VAELINSA",
+        "description": "Browse our complete range of 3D printers, pens, scanners and custom engineering components.",
+        "keywords": "3D printer catalog, 3D pens, 3D scanners, robotics kits"
+    },
+    "gallery": {
+        "title": "Gallery & Portfolio - VAELINSA",
+        "description": "Explore our portfolio of precision engineered parts and customer projects.",
+        "keywords": "3D printing gallery, custom parts portfolio, engineering showcase"
+    },
+    "blog": {
+        "title": "Vaelinsa Insights - The Future of Manufacturing",
+        "description": "Deep dives into 3D printing technology, robotics tutorials, and engineering news.",
+        "keywords": "3D printing blog, manufacturing insights, robotics tutorial, Vaelinsa blog"
+    }
+}

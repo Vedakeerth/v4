@@ -1,0 +1,152 @@
+[
+  {
+    "id": 2,
+    "name": "Custom Bracket Set",
+    "description": "Durable mounting brackets with customizable dimensions",
+    "price": "₹159.65",
+    "image": "/images/bento-4-mechanical.png",
+    "images": [
+      "/images/bento-4-mechanical.png",
+      "/images/bento-1-precision.png",
+      "/images/bento-4-mechanical.png"
+    ],
+    "category": "Hardware",
+    "inStock": true,
+    "stockCount": 150,
+    "availabilityStatus": "In Stock",
+    "isPopular": true,
+    "likes": 10,
+    "colors": []
+  },
+  {
+    "id": 3,
+    "name": "Prototype Housing",
+    "description": "Lightweight housing for electronic components",
+    "price": "₹199.99",
+    "image": "/images/bento-1-precision.png",
+    "images": [
+      "/images/bento-1-precision.png",
+      "/images/bento-4-mechanical.png"
+    ],
+    "category": "Enclosures",
+    "inStock": true,
+    "stockCount": 45,
+    "availabilityStatus": "In Stock",
+    "isPopular": true,
+    "likes": 0,
+    "colors": []
+  },
+  {
+    "id": 4,
+    "name": "Connector Adapter",
+    "description": "Precision-machined adapter for various connector types",
+    "price": "₹59.99",
+    "image": "/images/bento-4-mechanical.png",
+    "images": [
+      "/images/bento-4-mechanical.png",
+      "/images/bento-1-precision.png"
+    ],
+    "category": "Electronics",
+    "inStock": false,
+    "stockCount": 0,
+    "availabilityStatus": "Out of Stock",
+    "likes": 0,
+    "colors": []
+  },
+  {
+    "id": 5,
+    "name": "Structural Frame",
+    "description": "Robust frame structure for mechanical assemblies",
+    "price": "₹299.99",
+    "image": "/images/bento-1-precision.png",
+    "images": [
+      "/images/bento-1-precision.png",
+      "/images/bento-4-mechanical.png",
+      "/images/bento-1-precision.png"
+    ],
+    "category": "Mechanical",
+    "inStock": true,
+    "isPopular": true,
+    "likes": 0,
+    "colors": []
+  },
+  {
+    "id": 6,
+    "name": "Custom Fixture",
+    "description": "Specialized fixture for manufacturing processes",
+    "price": "₹179.99",
+    "image": "/images/bento-4-mechanical.png",
+    "images": [
+      "/images/bento-4-mechanical.png",
+      "/images/bento-1-precision.png"
+    ],
+    "category": "Tooling",
+    "inStock": true,
+    "likes": 0,
+    "colors": []
+  },
+  {
+    "id": 7,
+    "name": "Wall & Table Plant Holder from Vedakeerthi on WhatsApp.",
+    "description": "Product imported from WhatsApp catalog",
+    "price": "₹0.00",
+    "image": "/images/bento-1-precision.png",
+    "images": [
+      "/images/bento-1-precision.png"
+    ],
+    "category": "Uncategorized",
+    "inStock": true,
+    "quantity": 0,
+    "likes": 0,
+    "colors": []
+  },
+  {
+    "id": 8,
+    "name": "Industrial FDM Printer",
+    "description": "High-precision FDM printer for industrial applications",
+    "price": "₹45,999.00",
+    "image": "/images/bento-1-precision.png",
+    "images": [
+      "/images/bento-1-precision.png"
+    ],
+    "category": "3D Printers",
+    "inStock": true,
+    "availabilityStatus": "In Stock",
+    "likes": 0,
+    "colors": []
+  },
+  {
+    "id": 9,
+    "name": "Handheld 3D Scanner",
+    "description": "Professional handheld 3D scanner for reverse engineering",
+    "price": "₹32,499.00",
+    "image": "/images/bento-4-mechanical.png",
+    "images": [
+      "/images/bento-4-mechanical.png"
+    ],
+    "category": "3D Scanners",
+    "inStock": true,
+    "availabilityStatus": "In Stock",
+    "likes": 0,
+    "colors": []
+  },
+  {
+    "id": 10,
+    "name": "Professional 3D Pen",
+    "description": "Ergonomic 3D pen for creative design and prototyping",
+    "price": "₹2,999.00",
+    "image": "/images/bento-1-precision.png",
+    "images": [
+      "/images/bento-1-precision.png"
+    ],
+    "category": "3D Pens",
+    "inStock": true,
+    "availabilityStatus": "In Stock",
+    "colors": [
+      "#000000",
+      "#FF0000",
+      "#0000FF"
+    ],
+    "likes": 42
+  }
+]

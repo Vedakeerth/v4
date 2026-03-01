@@ -1,0 +1,12 @@
+{
+    "header": {
+        "title": "Parts Gallery",
+        "description": "Browse our collection of precision-engineered parts and components. All items are manufactured using advanced 3D printing technology."
+    },
+    "cta": {
+        "title": "Need to Print Your Parts?",
+        "description": "Don't see what you're looking for? Upload your custom STL files and get an instant quotation for 3D printing.",
+        "buttonText": "Get a Quotation",
+        "buttonLink": "/quote"
+    }
+}

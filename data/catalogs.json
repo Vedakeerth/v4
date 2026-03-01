@@ -1,0 +1,11 @@
+[
+  {
+    "id": "default",
+    "name": "Default Catalog",
+    "description": "Main product catalog",
+    "productIds": [],
+    "createdAt": "2026-01-26T04:52:30.414Z",
+    "updatedAt": "2026-01-26T04:52:30.414Z",
+    "isActive": true
+  }
+]

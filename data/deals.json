@@ -1,0 +1,18 @@
+[
+    {
+        "id": 1,
+        "title": "Summer Engineering Sale",
+        "description": "Up to 30% off on all Custom Bracket Sets and Prototype Housings.",
+        "code": "VEDA30",
+        "image": "/images/bento-4-mechanical.png",
+        "active": true
+    },
+    {
+        "id": 2,
+        "title": "New Arrival: Handheld Scanners",
+        "description": "Introductory offer: Free premium storage case with every professional scanner.",
+        "code": "SCANNERPRO",
+        "image": "/images/bento-1-precision.png",
+        "active": true
+    }
+]

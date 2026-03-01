@@ -1,0 +1,32 @@
+[
+    {
+        "id": "instagram",
+        "name": "Instagram",
+        "url": "https://instagram.com/vaelinsa",
+        "icon": "Instagram"
+    },
+    {
+        "id": "facebook",
+        "name": "Facebook",
+        "url": "https://facebook.com/vaelinsa",
+        "icon": "Facebook"
+    },
+    {
+        "id": "linkedin",
+        "name": "LinkedIn",
+        "url": "https://linkedin.com/company/vaelinsa",
+        "icon": "Linkedin"
+    },
+    {
+        "id": "twitter",
+        "name": "Twitter / X",
+        "url": "https://twitter.com/vaelinsa",
+        "icon": "Twitter"
+    },
+    {
+        "id": "youtube",
+        "name": "YouTube",
+        "url": "https://youtube.com/@vaelinsa",
+        "icon": "Youtube"
+    }
+]

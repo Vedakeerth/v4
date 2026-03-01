@@ -1,0 +1,28 @@
+{
+    "header": {
+        "title": "Industries Served",
+        "subtitle": "Trusted across various sectors"
+    },
+    "industries": [
+        {
+            "icon": "Activity",
+            "name": "Medical & Dental",
+            "description": "Biocompatible guides, anatomical models, and device prototypes."
+        },
+        {
+            "icon": "Factory",
+            "name": "Industrial Jigs",
+            "description": "Custom manufacturing aids, fixtures, and end-of-arm tooling."
+        },
+        {
+            "icon": "Rocket",
+            "name": "Startups & MVP",
+            "description": "Rapid iteration for pitch-ready physical products and crowdfunding."
+        },
+        {
+            "icon": "Library",
+            "name": "R&D Labs",
+            "description": "Experimental geometries and material testing components."
+        }
+    ]
+}

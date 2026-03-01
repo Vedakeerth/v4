@@ -1,0 +1,31 @@
+[
+    {
+        "name": "Custom Mechanical Part",
+        "description": "Short product description here",
+        "price": "₹299.00",
+        "image": "/images/bento-1-precision.png",
+        "images": [
+            "/images/bento-1-precision.png",
+            "/images/bento-4-mechanical.png"
+        ],
+        "category": "Mechanical",
+        "inStock": true,
+        "stockCount": 100,
+        "availabilityStatus": "In Stock",
+        "isPopular": false
+    },
+    {
+        "name": "Precision Housing",
+        "description": "Another product description",
+        "price": "₹1,499.00",
+        "image": "/images/bento-4-mechanical.png",
+        "images": [
+            "/images/bento-4-mechanical.png"
+        ],
+        "category": "Enclosures",
+        "inStock": true,
+        "stockCount": 50,
+        "availabilityStatus": "In Stock",
+        "isPopular": true
+    }
+]

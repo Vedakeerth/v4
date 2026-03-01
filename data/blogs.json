@@ -1,0 +1,23 @@
+[
+  {
+    "id": "intro-to-industrial-3d-printing",
+    "slug": "intro-to-industrial-3d-printing",
+    "title": "Introduction to Industrial 3D Printing",
+    "excerpt": "Discover how FDM and SLA technologies are revolutionizing professional manufacturing workflows.",
+    "content": "### **The Future of Manufacturing**\n\nIndustrial 3D printing is no longer just for prototyping. Today, companies are using it for end-use parts, tooling, and rapid iterations that were previously impossible...\n\n### Key Technologies\n\n1. **FDM (Fused Deposition Modeling)**: Best for structural parts.\n2. **SLA (Stereolithography)**: Perfect for ultra-high detail and smooth surfaces.\n3. **SLS (Selective Laser Sintering)**: Ideal for complex geometries without supports.\n\n### Why Choose Vaelinsa?\n\nOur team specializes in advanced materials and precision engineering...",
+    "image": "/images/bento-4-mechanical.png",
+    "category": "Technology",
+    "author": "Veda Keerthi",
+    "date": "2026-01-31",
+    "readTime": "1 min read",
+    "likes": 0,
+    "comments": [],
+    "hashtags": [
+      "3DPrinting",
+      "Manufacturing",
+      "Innovation"
+    ],
+    "metaTitle": "Introduction to Industrial 3D Printing | VAELINSA",
+    "metaDescription": "Discover how FDM and SLA technologies are revolutionizing professional manufacturing workflows with Vaelinsa."
+  }
+]
