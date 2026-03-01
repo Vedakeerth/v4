@@ -68,7 +68,7 @@ export default function SecureDashboard() {
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
                     <div>
                         <h1 className="text-4xl font-bold text-white mb-2 tracking-tight">Management Portal</h1>
-                        <p className="text-slate-400">Welcome, {session.user?.name || session.user?.email} ({session.user?.role || 'User'})</p>
+                        <p className="text-slate-400">Welcome, {session.user?.name || session.user?.email} ({(session.user as any)?.role || 'User'})</p>
                     </div>
                     <button onClick={handleLogout} className="px-5 py-2.5 bg-red-500/10 hover:bg-red-500/20 text-red-500 rounded-xl border border-red-500/20 transition-all flex items-center gap-2 font-semibold">
                         <LogOut size={18} /> Logout
