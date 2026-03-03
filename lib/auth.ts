@@ -1,47 +1,27 @@
 import { getServerSession } from "next-auth/next";
 import { NextAuthOptions } from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
-import bcrypt from "bcryptjs";
-import { getUserByEmail } from "./users";
+import GoogleProvider from "next-auth/providers/google";
+
+const adminEmails = (process.env.ADMIN_EMAILS || "").split(",").map((e) => e.trim().toLowerCase());
 
 export const authOptions: NextAuthOptions = {
     providers: [
-        CredentialsProvider({
-            name: "Credentials",
-            credentials: {
-                email: { label: "Email", type: "email" },
-                password: { label: "Password", type: "password" }
-            },
-            async authorize(credentials) {
-                if (!credentials?.email || !credentials?.password) {
-                    return null;
-                }
-
-                const user = getUserByEmail(credentials.email);
-
-                if (!user || !user.password) {
-                    return null;
-                }
-
-                const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
-
-                if (!isPasswordValid) {
-                    return null;
-                }
-
-                return {
-                    id: user.id,
-                    email: user.email,
-                    name: user.name,
-                    role: user.role,
-                };
-            }
+        GoogleProvider({
+            clientId: process.env.GOOGLE_CLIENT_ID!,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
         }),
     ],
     callbacks: {
+        async signIn({ user }) {
+            const email = user.email?.toLowerCase() ?? "";
+            // Only allow emails listed in ADMIN_EMAILS
+            return adminEmails.includes(email);
+        },
         async jwt({ token, user }) {
-            if (user) {
-                token.role = (user as any).role;
+            if (user?.email) {
+                const email = user.email.toLowerCase();
+                // First email in the list is SUPER_ADMIN, rest are USER
+                token.role = email === adminEmails[0] ? "SUPER_ADMIN" : "USER";
                 token.id = user.id;
             }
             return token;
@@ -56,6 +36,7 @@ export const authOptions: NextAuthOptions = {
     },
     pages: {
         signIn: "/secure-management-portal/login",
+        error: "/secure-management-portal/login",
     },
     session: {
         strategy: "jwt",

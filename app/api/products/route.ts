@@ -1,18 +1,32 @@
 import { NextResponse } from 'next/server';
-import { getProducts, saveProducts, getNextId, Product } from '@/lib/products';
+import { adminDb } from '@/lib/firebaseAdmin';
 import { isAuthenticated } from '@/lib/auth';
+
+export interface Product {
+    id: string;
+    name: string;
+    description: string;
+    price: number;
+    image: string;
+    images: string[];
+    category: string;
+    inStock: boolean;
+    stockCount: number;
+    availabilityStatus: string;
+}
 
 // GET all products
 export async function GET() {
     try {
-        const products = getProducts();
+        const snapshot = await adminDb.collection('products').orderBy('createdAt', 'desc').get();
+        const products: Product[] = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+        } as Product));
         return NextResponse.json({ success: true, products });
     } catch (error) {
         console.error('Error fetching products:', error);
-        return NextResponse.json({
-            success: false,
-            message: 'Failed to fetch products'
-        }, { status: 500 });
+        return NextResponse.json({ success: false, message: 'Failed to fetch products' }, { status: 500 });
     }
 }
 
@@ -21,17 +35,12 @@ export async function POST(req: Request) {
     try {
         const authenticated = await isAuthenticated();
         if (!authenticated) {
-            return NextResponse.json({
-                success: false,
-                message: 'Unauthorized'
-            }, { status: 401 });
+            return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
         }
 
         const body = await req.json();
-        const products = getProducts();
 
-        const newProduct: Product = {
-            id: getNextId(products),
+        const newProduct = {
             name: body.name,
             description: body.description,
             price: body.price,
@@ -40,23 +49,19 @@ export async function POST(req: Request) {
             category: body.category,
             inStock: body.inStock !== undefined ? body.inStock : true,
             stockCount: body.stockCount || 0,
-            availabilityStatus: body.availabilityStatus || (body.inStock !== false ? "In Stock" : "Out of Stock"),
+            availabilityStatus: body.availabilityStatus || (body.inStock !== false ? 'In Stock' : 'Out of Stock'),
+            createdAt: new Date().toISOString(),
         };
 
-
-        products.push(newProduct);
-        await saveProducts(products);
+        const docRef = await adminDb.collection('products').add(newProduct);
 
         return NextResponse.json({
             success: true,
-            product: newProduct,
-            message: 'Product added successfully'
+            product: { id: docRef.id, ...newProduct },
+            message: 'Product added successfully',
         });
     } catch (error) {
         console.error('Error adding product:', error);
-        return NextResponse.json({
-            success: false,
-            message: 'Failed to add product'
-        }, { status: 500 });
+        return NextResponse.json({ success: false, message: 'Failed to add product' }, { status: 500 });
     }
 }
