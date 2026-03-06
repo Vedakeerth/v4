@@ -15,6 +15,7 @@ import { getPageContent } from "@/lib/content";
 import { Providers } from "@/components/Providers";
 import CookieConsent from "@/components/CookieConsent";
 import MainFrontendUI from "@/components/MainFrontendUI";
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 
 import { getSEOData, getPageMetadata } from "@/lib/seo";
@@ -63,6 +64,7 @@ export default async function RootLayout({
               {children}
             </MainFrontendUI>
             <CookieConsent />
+            <SpeedInsights />
           </CartProvider>
         </Providers>
       </body>
