@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import { AlertCircle, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { signIn, useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 
-export default function SecureLoginPage() {
+function LoginContent() {
     const router = useRouter();
     const { status } = useSession();
     const [isLoading, setIsLoading] = useState(false);
@@ -167,5 +167,17 @@ export default function SecureLoginPage() {
                 </div>
             </div>
         </main>
+    );
+}
+
+export default function SecureLoginPage() {
+    return (
+        <Suspense fallback={
+            <main className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
+                <div className="h-12 w-12 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin" />
+            </main>
+        }>
+            <LoginContent />
+        </Suspense>
     );
 }

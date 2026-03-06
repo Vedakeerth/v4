@@ -33,4 +33,27 @@ if (!getApps().length) {
     adminApp = getApps()[0];
 }
 
-export const adminDb = isConfigured ? getFirestore(adminApp) : null as any;
+const dummyDb = {
+    collection: () => ({
+        get: async () => ({ docs: [], empty: true, size: 0 }),
+        where: () => dummyDb.collection(),
+        doc: () => ({
+            get: async () => ({ exists: false, data: () => null }),
+            set: async () => { },
+            update: async () => { },
+            delete: async () => { },
+            collection: () => dummyDb.collection(),
+        }),
+        orderBy: () => dummyDb.collection(),
+        limit: () => dummyDb.collection(),
+        add: async () => ({ id: 'dummy' }),
+    }),
+    batch: () => ({
+        set: () => { },
+        update: () => { },
+        delete: () => { },
+        commit: async () => { },
+    })
+};
+
+export const adminDb = isConfigured ? getFirestore(adminApp) : (dummyDb as any);
