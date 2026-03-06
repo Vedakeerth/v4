@@ -1,0 +1,39 @@
+query ListAllMovies @auth(level: PUBLIC, insecureReason: "This operation is safe to expose to the public") {
+  movies {
+    id
+    title
+    year
+    genres
+    summary
+    runtime
+    createdAt
+  }
+}
+
+query GetUserLists($userId: UUID!) @auth(level: USER) {
+  lists(where: {userId: {eq: $userId}}) {
+    id
+    name
+    isPublic
+    description
+    createdAt
+    updatedAt
+  }
+}
+
+mutation CreateMovieListItem($listId: UUID!, $movieId: UUID!, $position: Int!, $note: String) @auth(level: USER) {
+  listItem_insert(data: {
+    listId: $listId,
+    movieId: $movieId,
+    position: $position,
+    note: $note
+  })
+}
+
+mutation UpdateUserProfile($userId: UUID!, $displayName: String, $email: String, $photoUrl: String) @auth(level: USER, insecureReason: "This operation is safe to expose to all logged in users.") {
+  user_update(key: {id: $userId}, data: {
+    displayName: $displayName,
+    email: $email,
+    photoUrl: $photoUrl
+  })
+}

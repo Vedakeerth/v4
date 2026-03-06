@@ -22,12 +22,15 @@ export const authOptions: NextAuthOptions = {
             async authorize(credentials) {
                 if (!credentials?.email || !credentials?.password) return null;
 
-                const user = await getUserByEmail(credentials.email);
+                const email = credentials.email.trim().toLowerCase();
+                const user = await getUserByEmail(email);
+
                 if (user && user.password) {
                     const isValid = await bcrypt.compare(
                         credentials.password,
                         user.password
                     );
+
                     if (isValid) {
                         return {
                             id: user.id,
@@ -35,7 +38,11 @@ export const authOptions: NextAuthOptions = {
                             email: user.email,
                             role: user.role,
                         };
+                    } else {
+                        console.log(`[Auth] Invalid password for: ${email}`);
                     }
+                } else {
+                    console.log(`[Auth] User not found or has no password set: ${email}`);
                 }
                 return null;
             },

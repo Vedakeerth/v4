@@ -33,10 +33,8 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     ...metadata,
     icons: {
-      icon: [
-        { url: "/images/favicon-wing.png", media: "(prefers-color-scheme: dark)" },
-        { url: "/images/favicon-wing-1.png", media: "(prefers-color-scheme: light)" },
-      ],
+      icon: "/images/favicon-wing.png",
+      shortcut: "/images/favicon-wing.png",
       apple: "/images/favicon-wing.png",
     },
   };

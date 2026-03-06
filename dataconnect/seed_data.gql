@@ -1,0 +1,85 @@
+mutation SeedData @transaction @auth(level: USER, insecureReason: "This mutation is for seeding initial data and is safe to run for authenticated users. It is not exposed directly to clients.") {
+  # Insert Users
+  user_insertMany(data: [
+    {
+      id: "c87c0617-640b-4861-a02b-a01c40212001",
+      displayName: "Alice Smith",
+      email: "alice.smith@example.com",
+      createdAt: "2023-01-01T10:00:00Z",
+      photoUrl: "https://example.com/alice.jpg"
+    },
+    {
+      id: "c87c0617-640b-4861-a02b-a01c40212002",
+      displayName: "Bob Johnson",
+      email: "bob.johnson@example.com",
+      createdAt: "2023-01-02T11:00:00Z",
+      photoUrl: "https://example.com/bob.jpg"
+    }
+  ])
+  # Insert Movies
+  movie_insertMany(data: [
+    {
+      id: "e44d5c1a-2e4b-4b2c-9a1d-8b0e7a6d5c4b",
+      title: "The Great Adventure",
+      year: 2022,
+      summary: "A thrilling journey across uncharted lands.",
+      genres: ["Adventure", "Action"],
+      runtime: 120,
+      createdAt: "2023-03-15T14:30:00Z"
+    },
+    {
+      id: "e44d5c1a-2e4b-4b2c-9a1d-8b0e7a6d5c4c",
+      title: "Mystery in the Moonlight",
+      year: 2021,
+      summary: "A detective unravels a complex mystery under the moon's glow.",
+      genres: ["Mystery", "Thriller"],
+      runtime: 95,
+      createdAt: "2023-03-20T10:00:00Z"
+    }
+  ])
+  # Insert a List for Alice
+  list_insert(data: {
+    id: "f1a2b3c4-d5e6-7f8a-9b0c-1d2e3f4a5b6c",
+    name: "Alice's Favorite Movies",
+    isPublic: true,
+    description: "Movies Alice loves to watch.",
+    userId: "c87c0617-640b-4861-a02b-a01c40212001",
+    createdAt: "2023-04-01T09:00:00Z",
+    updatedAt: "2023-04-01T09:00:00Z"
+  })
+  # Insert a Watch event for Bob
+  watch_insert(data: {
+    id: "a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d",
+    userId: "c87c0617-640b-4861-a02b-a01c40212002",
+    movieId: "e44d5c1a-2e4b-4b2c-9a1d-8b0e7a6d5c4b",
+    watchDate: "2023-05-01",
+    location: "Home",
+    createdAt: "2023-05-01T18:00:00Z"
+  })
+  # Insert a Review for Bob's watch
+  review_insert(data: {
+    id: "f7e6d5c4-b3a2-1e0f-9d8c-7b6a5f4e3d2c",
+    userId: "c87c0617-640b-4861-a02b-a01c40212002",
+    movieId: "e44d5c1a-2e4b-4b2c-9a1d-8b0e7a6d5c4b",
+    watchId: "a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d",
+    rating: 5,
+    reviewText: "Absolutely loved this movie! Great action and story.",
+    createdAt: "2023-05-01T20:00:00Z",
+    updatedAt: "2023-05-01T20:00:00Z"
+  })
+  # Insert ListItems for Alice's list
+  listItem_insertMany(data: [
+    {
+      listId: "f1a2b3c4-d5e6-7f8a-9b0c-1d2e3f4a5b6c",
+      movieId: "e44d5c1a-2e4b-4b2c-9a1d-8b0e7a6d5c4b",
+      position: 1,
+      note: "Must-watch for adventure fans."
+    },
+    {
+      listId: "f1a2b3c4-d5e6-7f8a-9b0c-1d2e3f4a5b6c",
+      movieId: "e44d5c1a-2e4b-4b2c-9a1d-8b0e7a6d5c4c",
+      position: 2,
+      note: "Intriguing plot twists."
+    }
+  ])
+}

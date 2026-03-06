@@ -14,12 +14,16 @@ const COLLECTION = "announcements";
 
 export async function getAnnouncements(onlyActive: boolean = false): Promise<Announcement[]> {
     try {
-        let query = adminDb.collection(COLLECTION).orderBy("order", "asc");
+        let query: any = adminDb.collection(COLLECTION);
         if (onlyActive) {
             query = query.where("active", "==", true);
         }
+
         const snapshot = await query.get();
-        return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Announcement));
+        const docs = snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() } as Announcement));
+
+        // Sort in-memory to avoid Firestore composite index requirement
+        return docs.sort((a: Announcement, b: Announcement) => (a.order || 0) - (b.order || 0));
     } catch (error) {
         console.error("Error fetching announcements:", error);
         return [];

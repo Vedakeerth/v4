@@ -152,7 +152,11 @@ export default function ProductShowcase({ header, categories, products: initialP
                                                     <span className="px-3 py-1 rounded-full bg-slate-800 text-cyan-400 text-[10px] font-bold uppercase tracking-widest border border-slate-700">
                                                         {product.inStock ? "Ready to Ship" : "Backorder"}
                                                     </span>
-                                                    <span className="text-xl font-bold text-white">{product.price}</span>
+                                                    <span className="text-xl font-bold text-white">
+                                                        {typeof product.price === 'number'
+                                                            ? `₹${product.price.toLocaleString('en-IN')}`
+                                                            : product.price.startsWith('₹') ? product.price : `₹${product.price}`}
+                                                    </span>
                                                 </div>
                                                 <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-cyan-400 transition-colors">
                                                     {product.name}

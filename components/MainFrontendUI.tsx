@@ -8,6 +8,7 @@ import CustomCursor from "@/components/CustomCursor";
 import ScrollToTop from "@/components/ScrollToTop";
 import Preloader from "@/components/Preloader";
 import AnnouncementBar from "@/components/AnnouncementBar";
+import { cn } from "@/lib/utils";
 
 interface MainFrontendUIProps {
     children: React.ReactNode;
@@ -33,7 +34,12 @@ export default function MainFrontendUI({ children, navLinks, ctaData }: MainFron
             <CartDrawer />
             <BackgroundGrid />
             <CustomCursor />
-            {children}
+            <div className={cn(
+                "transition-all duration-300",
+                isAdminPage ? "pt-0" : (pathname === "/" || pathname === "/gallery" || pathname === "/services" || pathname === "/features" || pathname === "/blog" || pathname === "/contact" || pathname === "/index.html" || pathname === "" ? "pt-11" : "pt-0")
+            )}>
+                {children}
+            </div>
             <ScrollToTop />
         </>
     );

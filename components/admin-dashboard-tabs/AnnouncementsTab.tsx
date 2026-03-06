@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { Megaphone, Plus, Trash2, Check, Loader2, AlertCircle, ImageIcon as LucideImageIcon, X, UploadCloud } from "lucide-react";
+import { Megaphone, Plus, Trash2, Check, Loader2, AlertCircle, ImageIcon as LucideImageIcon, X, UploadCloud, Edit } from "lucide-react";
 import { Announcement } from "@/lib/announcements";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from "@/lib/firebase";
@@ -12,6 +12,7 @@ export default function AnnouncementsTab() {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState("");
     const [isAdding, setIsAdding] = useState(false);
+    const [editingId, setEditingId] = useState<string | null>(null);
     const [formData, setFormData] = useState({ text: "", imageUrl: "", active: true, order: 0 });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [uploadProgress, setUploadProgress] = useState(false);
@@ -56,19 +57,38 @@ export default function AnnouncementsTab() {
         }
     };
 
-    const handleAdd = async (e: React.FormEvent) => {
+    const handleEdit = (item: Announcement) => {
+        setFormData({
+            text: item.text,
+            imageUrl: item.imageUrl || "",
+            active: item.active,
+            order: item.order
+        });
+        setEditingId(item.id);
+        setIsAdding(true);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
         try {
+            const method = editingId ? "PATCH" : "POST";
+            const body = editingId ? { ...formData, id: editingId } : formData;
+
             const res = await fetch("/api/admin/announcements", {
-                method: "POST",
+                method,
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(formData)
+                body: JSON.stringify(body)
             });
             if (res.ok) {
                 setIsAdding(false);
+                setEditingId(null);
                 setFormData({ text: "", imageUrl: "", active: true, order: announcements.length });
                 fetchAnnouncements();
+            } else {
+                const data = await res.json();
+                setError(data.error || "Submit failed");
             }
         } catch (err) {
             setError("Something went wrong");
@@ -100,6 +120,12 @@ export default function AnnouncementsTab() {
         }
     };
 
+    const handleCancel = () => {
+        setIsAdding(false);
+        setEditingId(null);
+        setFormData({ text: "", imageUrl: "", active: true, order: announcements.length });
+    };
+
     if (isLoading && announcements.length === 0) {
         return (
             <div className="flex items-center justify-center p-20">
@@ -127,7 +153,7 @@ export default function AnnouncementsTab() {
 
             {isAdding && (
                 <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 mb-8 animate-in fade-in slide-in-from-top-4">
-                    <form onSubmit={handleAdd} className="space-y-6">
+                    <form onSubmit={handleSubmit} className="space-y-6">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-1">
                                 <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Announcement Text</label>
@@ -186,7 +212,7 @@ export default function AnnouncementsTab() {
                         <div className="flex justify-end gap-3 pt-4 border-t border-slate-800">
                             <button
                                 type="button"
-                                onClick={() => setIsAdding(false)}
+                                onClick={handleCancel}
                                 className="px-6 py-3 border border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl font-bold transition-all uppercase tracking-widest text-xs"
                             >
                                 Cancel
@@ -196,7 +222,7 @@ export default function AnnouncementsTab() {
                                 disabled={isSubmitting || uploadProgress}
                                 className="px-10 py-3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black rounded-xl transition-all shadow-lg shadow-cyan-500/20 uppercase tracking-widest text-xs flex items-center gap-2"
                             >
-                                {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Save Announcement"}
+                                {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : editingId ? "Update News" : "Save Announcement"}
                             </button>
                         </div>
                     </form>
@@ -226,12 +252,19 @@ export default function AnnouncementsTab() {
                                         </button>
                                     </div>
                                 </div>
-                                <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <div className="flex justify-end gap-2 transition-opacity">
+                                    <button
+                                        onClick={() => handleEdit(item)}
+                                        className="p-2 text-slate-400 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider"
+                                    >
+                                        <Edit size={14} />
+                                        Edit
+                                    </button>
                                     <button
                                         onClick={() => handleDelete(item.id)}
-                                        className="p-2 text-slate-500 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all"
+                                        className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all"
                                     >
-                                        <Trash2 size={16} />
+                                        <Trash2 size={14} />
                                     </button>
                                 </div>
                             </div>

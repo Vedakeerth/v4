@@ -342,7 +342,7 @@ export default function CheckoutPage() {
                                     <div className="flex items-center justify-between mb-8 border-b border-slate-800 pb-4">
                                         <h2 className="text-xl font-black text-white uppercase tracking-tight flex items-center gap-3 italic">
                                             <div className="w-2 h-6 bg-cyan-500" />
-                                            Payment Method
+                                            Confirm Order
                                         </h2>
                                         <button
                                             onClick={() => setCheckoutStep('shipping')}
@@ -352,80 +352,22 @@ export default function CheckoutPage() {
                                         </button>
                                     </div>
 
-                                    <div className="grid gap-4 mb-8">
-                                        {[
-                                            { id: 'card', label: 'Credit / Debit Card', icon: '💳' },
-                                            { id: 'upi', label: 'UPI (PhonePe / Google Pay)', icon: '📱' },
-                                            { id: 'netbanking', label: 'Net Banking', icon: '🏛️' }
-                                        ].map((method) => (
-                                            <button
-                                                key={method.id}
-                                                onClick={() => setPaymentMethod(method.id as any)}
-                                                className={cn(
-                                                    "flex items-center justify-between p-5 rounded-2xl border-2 transition-all group",
-                                                    paymentMethod === method.id
-                                                        ? "bg-cyan-500/10 border-cyan-500 shadow-lg shadow-cyan-500/5"
-                                                        : "bg-slate-950/50 border-slate-800 hover:border-slate-700"
-                                                )}
-                                            >
-                                                <div className="flex items-center gap-4">
-                                                    <span className="text-2xl">{method.icon}</span>
-                                                    <span className={cn(
-                                                        "font-bold text-sm",
-                                                        paymentMethod === method.id ? "text-cyan-400" : "text-slate-400"
-                                                    )}>{method.label}</span>
-                                                </div>
-                                                <div className={cn(
-                                                    "w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all",
-                                                    paymentMethod === method.id
-                                                        ? "border-cyan-500 bg-cyan-500"
-                                                        : "border-slate-700 group-hover:border-slate-600"
-                                                )}>
-                                                    <div className="w-1.5 h-1.5 bg-slate-950 rounded-full" />
-                                                </div>
-                                            </button>
-                                        ))}
+                                    <div className="p-6 bg-slate-950/50 rounded-2xl border border-slate-800 mb-8">
+                                        <div className="flex justify-between items-center mb-4">
+                                            <span className="text-xs font-bold text-slate-500 uppercase">Payment Provider</span>
+                                            <span className="text-sm font-black text-white tracking-widest italic">CASHFREE PAYMENTS</span>
+                                        </div>
+                                        <p className="text-xs text-slate-400 leading-relaxed">
+                                            Click the button below to proceed to our secure payment gateway. You can pay via <span className="text-white font-bold">UPI, Cards, Net Banking, or Wallets</span>.
+                                        </p>
                                     </div>
-
-                                    {paymentMethod === 'card' && (
-                                        <motion.div
-                                            initial={{ opacity: 0, y: 10 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            className="space-y-4 mb-8 p-6 bg-slate-950/50 rounded-2xl border border-slate-800"
-                                        >
-                                            <div className="space-y-2">
-                                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Card Holder Name</label>
-                                                <input type="text" placeholder="John Doe" className="w-full px-5 py-3.5 bg-slate-900 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500 font-bold text-sm" />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Card Number</label>
-                                                <input type="text" placeholder="XXXX XXXX XXXX XXXX" className="w-full px-5 py-3.5 bg-slate-900 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500 font-bold text-sm" />
-                                            </div>
-                                            <div className="grid grid-cols-2 gap-4">
-                                                <div className="space-y-2">
-                                                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Expiry Date</label>
-                                                    <input type="text" placeholder="MM/YY" className="w-full px-5 py-3.5 bg-slate-900 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500 font-bold text-sm" />
-                                                </div>
-                                                <div className="space-y-2">
-                                                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">CVV</label>
-                                                    <input type="password" placeholder="***" className="w-full px-5 py-3.5 bg-slate-900 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500 font-bold text-sm" />
-                                                </div>
-                                            </div>
-                                        </motion.div>
-                                    )}
 
                                     <button
                                         onClick={handlePaymentSubmit}
-                                        disabled={!paymentMethod}
-                                        className={cn(
-                                            "w-full py-5 font-black rounded-2xl transition-all shadow-xl uppercase tracking-widest text-sm flex items-center justify-center gap-3",
-                                            paymentMethod
-                                                ? "bg-cyan-500 hover:bg-cyan-400 text-slate-950 shadow-cyan-500/20"
-                                                : "bg-slate-800 text-slate-600 border border-slate-700 cursor-not-allowed"
-                                        )}
+                                        className="w-full py-5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black rounded-2xl transition-all shadow-xl shadow-cyan-500/20 uppercase tracking-widest text-sm flex items-center justify-center gap-3"
                                     >
-                                        Complete Purchase
-                                        <CheckCircle size={18} />
+                                        Place Order & Pay Now
+                                        <ArrowRight size={18} />
                                     </button>
                                     <p className="text-center text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-6 italic">Secure 256-Bit SSL Encrypted Transaction</p>
                                 </div>

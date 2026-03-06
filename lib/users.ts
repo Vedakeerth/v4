@@ -27,7 +27,7 @@ export async function getUserByEmail(email: string): Promise<User | undefined> {
     try {
         const snapshot = await adminDb
             .collection(USERS_COLLECTION)
-            .where("email", "==", email.toLowerCase())
+            .where("email", "==", email.trim().toLowerCase())
             .limit(1)
             .get();
 
@@ -61,7 +61,7 @@ export async function addUser(
 
         await adminDb.collection(USERS_COLLECTION).add({
             ...user,
-            email: user.email.toLowerCase(),
+            email: user.email.trim().toLowerCase(),
             createdAt: new Date().toISOString(),
         });
 

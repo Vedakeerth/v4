@@ -12,6 +12,7 @@ export default function ProductsTab() {
     const [isLoading, setIsLoading] = useState(true);
     const [showAddModal, setShowAddModal] = useState(false);
     const [showImportModal, setShowImportModal] = useState(false);
+    const [categoriesList, setCategoriesList] = useState<{ value: string; label: string }[]>([]);
 
     // Edit/Delete state
     const [editingProduct, setEditingProduct] = useState<Product | null>(null);
@@ -35,7 +36,7 @@ export default function ProductsTab() {
     const [catalogUrl, setCatalogUrl] = useState("");
     const [jsonData, setJsonData] = useState("");
     const [isImporting, setIsImporting] = useState(false);
-    const [importMode, setImportMode] = useState<"url" | "json">("url");
+    const [importMode, setImportMode] = useState<"url" | "json" | "csv">("csv");
 
     // Image Upload State
     const [uploadedImages, setUploadedImages] = useState<string[]>([]);
@@ -43,7 +44,20 @@ export default function ProductsTab() {
 
     useEffect(() => {
         fetchProducts();
+        fetchCategories();
     }, []);
+
+    const fetchCategories = async () => {
+        try {
+            const res = await fetch("/api/categories");
+            const data = await res.json();
+            if (data.success) {
+                setCategoriesList(data.categories.map((c: any) => ({ value: c.name, label: c.name })));
+            }
+        } catch (error) {
+            console.error("Error fetching categories:", error);
+        }
+    };
 
     const fetchProducts = async () => {
         try {
@@ -189,6 +203,69 @@ export default function ProductsTab() {
         }
     };
 
+    const handleCsvImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setIsImporting(true);
+        const reader = new FileReader();
+        reader.onload = async (event) => {
+            const text = event.target?.result as string;
+            const rows = text.split("\n").map(r => r.split(",").map(c => c.trim()));
+            const headers = rows[0];
+            const dataRows = rows.slice(1).filter(r => r.length > 1);
+
+            const productsToImport = dataRows.map(row => {
+                const p: any = {};
+                headers.forEach((h, i) => {
+                    const key = h.toLowerCase();
+                    if (key === "images") {
+                        p[key] = row[i] ? row[i].split(";").map(img => img.trim()) : [];
+                    } else if (key === "stockcount" || key === "likes") {
+                        p[key === "stockcount" ? "stockCount" : "likes"] = parseInt(row[i]) || 0;
+                    } else if (key === "instock") {
+                        p.inStock = row[i].toLowerCase() === "true";
+                    } else {
+                        p[key] = row[i];
+                    }
+                });
+                return p;
+            });
+
+            try {
+                const res = await fetch("/api/products/import", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ products: productsToImport }),
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert(`Imported ${data.imported} products from CSV`);
+                    setShowImportModal(false);
+                    fetchProducts();
+                }
+            } catch (error) {
+                alert("CSV Import failed");
+            } finally {
+                setIsImporting(false);
+            }
+        };
+        reader.readAsText(file);
+    };
+
+    const downloadCsvTemplate = () => {
+        const headers = "name,description,price,category,image,images,stockCount,availabilityStatus,inStock";
+        const example = "Example Product,Great product description,₹2499.00,Electronics,https://img.com/main.png,https://img.com/1.png;https://img.com/2.png,50,In Stock,true";
+        const csvContent = "data:text/csv;charset=utf-8," + headers + "\n" + example;
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "product_template.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
     const handleImportCatalog = async () => {
         setIsImporting(true);
         try {
@@ -196,8 +273,10 @@ export default function ProductsTab() {
             if (importMode === "json") {
                 const p = JSON.parse(jsonData);
                 body = { products: Array.isArray(p) ? p : (p.products || []) };
-            } else {
+            } else if (importMode === "url") {
                 body = { catalogUrl };
+            } else {
+                return; // CSV handled by separate input
             }
             const res = await fetch("/api/products/import", {
                 method: "POST",
@@ -291,7 +370,14 @@ export default function ProductsTab() {
                                     label="Category"
                                     value={formData.category}
                                     onChange={val => setFormData({ ...formData, category: val })}
-                                    options={["Hardware", "Enclosures", "Electronics", "Mechanical", "Tooling", "Uncategorized", "3D Printers", "3D Scanners", "3D Pens"].map(c => ({ value: c, label: c }))}
+                                    options={categoriesList.length > 0 ? categoriesList : [
+                                        { value: "Hardware", label: "Hardware" },
+                                        { value: "Enclosures", label: "Enclosures" },
+                                        { value: "Electronics", label: "Electronics" },
+                                        { value: "Mechanical", label: "Mechanical" },
+                                        { value: "Tooling", label: "Tooling" },
+                                        { value: "Uncategorized", label: "Uncategorized" }
+                                    ]}
                                 />
                             </div>
                             <div className="space-y-4">
@@ -384,18 +470,36 @@ export default function ProductsTab() {
                             <h2 className="text-xl font-bold text-white">Bulk Import Products</h2>
                             <button onClick={() => setShowImportModal(false)} className="text-slate-500 hover:text-white"><X size={24} /></button>
                         </div>
-                        <div className="flex gap-4 mb-6 bg-slate-800 p-1 rounded-xl">
-                            <button onClick={() => setImportMode("url")} className={`flex-1 py-2 rounded-lg text-sm font-bold transition-all ${importMode === "url" ? "bg-slate-700 text-cyan-400" : "text-slate-400"}`}>From URL</button>
-                            <button onClick={() => setImportMode("json")} className={`flex-1 py-2 rounded-lg text-sm font-bold transition-all ${importMode === "json" ? "bg-slate-700 text-cyan-400" : "text-slate-400"}`}>Raw JSON</button>
+                        <div className="flex gap-2 mb-6 bg-slate-800 p-1 rounded-xl">
+                            <button onClick={() => setImportMode("csv")} className={`flex-1 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${importMode === "csv" ? "bg-slate-700 text-cyan-400" : "text-slate-400"}`}>CSV File</button>
+                            <button onClick={() => setImportMode("url")} className={`flex-1 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${importMode === "url" ? "bg-slate-700 text-cyan-400" : "text-slate-400"}`}>Link</button>
+                            <button onClick={() => setImportMode("json")} className={`flex-1 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${importMode === "json" ? "bg-slate-700 text-cyan-400" : "text-slate-400"}`}>Raw</button>
                         </div>
-                        {importMode === "url" ? (
+                        {importMode === "csv" ? (
+                            <div className="space-y-4">
+                                <label className="flex flex-col items-center justify-center border-2 border-dashed border-slate-700 rounded-2xl p-10 hover:border-cyan-500/50 hover:bg-slate-800/50 cursor-pointer transition-all">
+                                    <Upload size={32} className="text-slate-500 mb-4" />
+                                    <span className="text-sm font-bold text-white mb-2">Upload CSV File</span>
+                                    <span className="text-[10px] text-slate-500 uppercase font-black">Click to select product file</span>
+                                    <input type="file" accept=".csv" className="hidden" onChange={handleCsvImport} />
+                                </label>
+                                <button
+                                    onClick={downloadCsvTemplate}
+                                    className="w-full py-3 border border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl font-bold transition-all text-xs uppercase tracking-widest"
+                                >
+                                    Download CSV Template
+                                </button>
+                            </div>
+                        ) : importMode === "url" ? (
                             <input value={catalogUrl} onChange={e => setCatalogUrl(e.target.value)} className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none mb-4" placeholder="https://example.com/catalog.json" />
                         ) : (
                             <textarea value={jsonData} onChange={e => setJsonData(e.target.value)} className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none mb-4 h-32" placeholder='[{"name": "Product 1", ...}]' />
                         )}
-                        <button onClick={handleImportCatalog} disabled={isImporting} className="w-full py-3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-xl shadow-lg shadow-cyan-500/20 transition-all">
-                            {isImporting ? "Importing..." : "Start Import"}
-                        </button>
+                        {importMode !== "csv" && (
+                            <button onClick={handleImportCatalog} disabled={isImporting} className="w-full py-3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-xl shadow-lg shadow-cyan-500/20 transition-all">
+                                {isImporting ? "Importing..." : "Start Import"}
+                            </button>
+                        )}
                     </div>
                 </div>
             )}

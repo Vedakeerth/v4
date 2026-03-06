@@ -4,16 +4,8 @@ import { Metadata } from 'next';
 
 // Components
 import Hero from "@/components/Hero";
-import Services from "@/components/Services";
-import WhyChooseUs from "@/components/WhyChooseUs";
-import Industries from "@/components/Industries";
-import Testimonials from "@/components/Testimonials";
-import CTA from "@/components/CTA";
 import Footer from "@/components/Footer";
-import PopularParts from "@/components/PopularParts";
 import RightClickPreventer from "@/components/RightClickPreventer";
-import ProjectsSection from "@/components/ProjectsSection";
-import BlogSection from "@/components/BlogSection";
 
 // Data
 import { getPageContent } from "@/lib/content";
@@ -40,21 +32,34 @@ const ProductShowcase = dynamic(() => import("@/components/ProductShowcase"), {
   loading: () => <div className="h-96 w-full animate-pulse bg-slate-900/50" />,
 });
 
+const Services = dynamic(() => import("@/components/Services"), {
+  loading: () => <div className="h-96 w-full animate-pulse bg-slate-900/10" />,
+});
+const WhyChooseUs = dynamic(() => import("@/components/WhyChooseUs"));
+const Industries = dynamic(() => import("@/components/Industries"));
+const Testimonials = dynamic(() => import("@/components/Testimonials"));
+const CTA = dynamic(() => import("@/components/CTA"));
+const PopularParts = dynamic(() => import("@/components/PopularParts"));
+const ProjectsSection = dynamic(() => import("@/components/ProjectsSection"));
+const BlogSection = dynamic(() => import("@/components/BlogSection"));
+
 export default async function Home() {
   const settings = await getSettings();
 
   // Data Fetching
-  const homeData = await getPageContent('home');
-  const servicesContent = await getPageContent('services');
-  const industriesContent = await getPageContent('industries');
-  const whyChooseUsContent = await getPageContent('why-choose-us');
-  const testimonialsContent = await getPageContent('testimonials');
+  const [homeData, servicesContent, industriesContent, whyChooseUsContent, testimonialsContent, allProducts, allTestimonials, allProjects, allBlogs] = await Promise.all([
+    getPageContent('home'),
+    getPageContent('services'),
+    getPageContent('industries'),
+    getPageContent('why-choose-us'),
+    getPageContent('testimonials'),
+    getProducts(),
+    getTestimonials(),
+    getProjects(),
+    getBlogs()
+  ]);
 
-  const allProducts = await getProducts();
   const popularParts = allProducts.filter(p => p.isPopular).slice(0, 3);
-  const allTestimonials = await getTestimonials();
-  const allProjects = await getProjects();
-  const allBlogs = await getBlogs();
 
   return (
     <main className="min-h-screen bg-slate-950 selection:bg-blue-500/30 selection:text-blue-100 flex flex-col">

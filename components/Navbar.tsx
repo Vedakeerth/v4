@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { ShoppingCart, Menu, X } from "lucide-react";
 import { useCart } from "@/context/CartContext";
+import { cn } from "@/lib/utils";
 
 interface NavbarProps {
     navLinks?: { name: string; href: string }[];
@@ -69,7 +70,10 @@ export default function Navbar({
                     animate={{ y: 0, opacity: 1 }}
                     exit={{ y: -100, opacity: 0 }}
                     transition={{ duration: 0.3, ease: "easeInOut" }}
-                    className="fixed top-0 left-0 right-0 z-50 border-b border-slate-800 bg-slate-950/90 backdrop-blur-md shadow-lg"
+                    className={cn(
+                        "fixed left-0 right-0 z-50 border-b border-slate-800 bg-slate-950/90 backdrop-blur-md shadow-lg transition-all duration-300",
+                        (pathname === "/" || pathname === "/gallery" || pathname === "/services" || pathname === "/features" || pathname === "/blog" || pathname === "/contact" || pathname === "/index.html" || pathname === "") ? "top-11" : "top-0"
+                    )}
                 >
                     <div className="container mx-auto px-4 h-20 flex items-center justify-between">
                         {/* Logo */}

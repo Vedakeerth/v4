@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Users, UserPlus, Trash2, Shield, User as UserIcon, AlertCircle, Loader2, Check, Eye, EyeOff } from "lucide-react";
+import { Users, UserPlus, Trash2, Shield, User as UserIcon, AlertCircle, Loader2, Check, Eye, EyeOff, Plus, Edit } from "lucide-react";
 import { User, UserRole } from "@/lib/users";
 
 export default function UsersTab() {
@@ -13,6 +13,7 @@ export default function UsersTab() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showCreatePassword, setShowCreatePassword] = useState(false);
     const [showChangePassword, setShowChangePassword] = useState(false);
+    const [editingUser, setEditingUser] = useState<Omit<User, 'password'> | null>(null);
 
     useEffect(() => {
         fetchUsers();
@@ -45,20 +46,24 @@ export default function UsersTab() {
         setError("");
 
         try {
-            const res = await fetch("/api/admin/users", {
-                method: "POST",
+            const method = editingUser ? "PATCH" : "POST";
+            const url = "/api/admin/users";
+
+            const res = await fetch(url, {
+                method,
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(formData)
+                body: JSON.stringify(editingUser ? { ...formData, id: editingUser.id } : formData)
             });
             const data = await res.json();
 
             if (res.ok) {
                 setIsAdding(false);
+                setEditingUser(null);
                 setFormData({ name: "", email: "", password: "", role: "USER" });
                 setShowCreatePassword(false);
                 fetchUsers();
             } else {
-                setError(data.error || "Failed to add user");
+                setError(data.error || "Failed to save user");
             }
         } catch (err) {
             setError("Something went wrong");
@@ -114,6 +119,24 @@ export default function UsersTab() {
         }
     };
 
+    const handleEditUser = (user: Omit<User, 'password'>) => {
+        setEditingUser(user);
+        setFormData({
+            name: user.name,
+            email: user.email,
+            password: "", // Password not editable here
+            role: user.role
+        });
+        setIsAdding(true);
+    };
+
+    const handleCancel = () => {
+        setIsAdding(false);
+        setEditingUser(null);
+        setFormData({ name: "", email: "", password: "", role: "USER" });
+        setError("");
+    };
+
     if (isLoading && users.length === 0) {
         return (
             <div className="flex items-center justify-center p-20">
@@ -150,7 +173,7 @@ export default function UsersTab() {
                 <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 mb-8 animate-in fade-in slide-in-from-top-4">
                     <div className="flex items-center gap-3 mb-6 border-b border-slate-800 pb-4">
                         <UserPlus className="text-cyan-400" size={20} />
-                        <h3 className="text-lg font-bold text-white uppercase italic">Create New User</h3>
+                        <h3 className="text-lg font-bold text-white uppercase italic">{editingUser ? "Edit User Account" : "Create New User"}</h3>
                     </div>
                     <form onSubmit={handleAddUser} className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-1">
@@ -177,16 +200,18 @@ export default function UsersTab() {
                             />
                         </div>
                         <div className="space-y-1">
-                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Password</label>
+                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">
+                                {editingUser ? "New Password (Optional)" : "Password"}
+                            </label>
                             <div className="relative">
                                 <input
-                                    required
+                                    required={!editingUser}
                                     name="password"
                                     type={showCreatePassword ? "text" : "password"}
                                     value={formData.password}
                                     onChange={handleInput}
                                     className="w-full px-5 py-4 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500 transition-all font-bold text-sm"
-                                    placeholder="••••••••"
+                                    placeholder={editingUser ? "Leave blank to keep current" : "••••••••"}
                                 />
                                 <button
                                     type="button"
@@ -212,7 +237,7 @@ export default function UsersTab() {
                         <div className="md:col-span-2 flex justify-end gap-3 mt-4">
                             <button
                                 type="button"
-                                onClick={() => setIsAdding(false)}
+                                onClick={handleCancel}
                                 className="px-6 py-3 border border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl font-bold transition-all uppercase tracking-widest text-xs"
                             >
                                 Cancel
@@ -222,7 +247,7 @@ export default function UsersTab() {
                                 disabled={isSubmitting}
                                 className="px-10 py-3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black rounded-xl transition-all shadow-lg shadow-cyan-500/20 uppercase tracking-widest text-xs flex items-center gap-2"
                             >
-                                {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Check size={18} /> Create Account</>}
+                                {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <>{editingUser ? <Check size={18} /> : <Plus size={18} />} {editingUser ? "Update Account" : "Create Account"}</>}
                             </button>
                         </div>
                     </form>
@@ -310,6 +335,13 @@ export default function UsersTab() {
                                     </td>
                                     <td className="px-6 py-5 text-right">
                                         <div className="flex justify-end gap-1">
+                                            <button
+                                                onClick={() => handleEditUser(user)}
+                                                className="p-2.5 text-slate-400 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-xl transition-all"
+                                                title="Edit User"
+                                            >
+                                                <Edit size={18} />
+                                            </button>
                                             <button
                                                 onClick={() => setIsChangingPassword({ id: user.id, name: user.name })}
                                                 className="p-2.5 text-slate-500 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-xl transition-all"

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { LogOut, LayoutGrid, Package, MessageSquare, BookOpen, Globe, Share2, Settings, Briefcase, FileText, Ticket, ShoppingBag, Megaphone } from "lucide-react";
+import { LogOut, LayoutGrid, Package, MessageSquare, BookOpen, Globe, Share2, Settings, Briefcase, FileText, Ticket, ShoppingBag, Megaphone, ChevronLeft, ChevronRight } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 
 // Import Tabs
@@ -20,15 +20,27 @@ import CouponsTab from "@/components/admin-dashboard-tabs/CouponsTab";
 import OrdersTab from "@/components/admin-dashboard-tabs/OrdersTab";
 import UsersTab from "@/components/admin-dashboard-tabs/UsersTab";
 import AnnouncementsTab from "@/components/admin-dashboard-tabs/AnnouncementsTab";
+import CategoriesTab from "@/components/admin-dashboard-tabs/CategoriesTab";
 
 export default function SecureDashboard() {
     const router = useRouter();
     const { data: session, status } = useSession();
 
     // Valid tabs type
-    type TabType = "products" | "projects" | "testimonials" | "catalogs" | "blogs" | "seo" | "socials" | "settings" | "features" | "industries" | "coupons" | "orders" | "users" | "announcements";
+    type TabType = "products" | "projects" | "testimonials" | "catalogs" | "blogs" | "seo" | "socials" | "settings" | "features" | "industries" | "coupons" | "orders" | "users" | "announcements" | "categories";
 
     const [activeTab, setActiveTab] = useState<TabType>("products");
+    const tabsContainerRef = React.useRef<HTMLDivElement>(null);
+
+    const scrollTabs = (direction: "left" | "right") => {
+        if (tabsContainerRef.current) {
+            const scrollAmount = 200;
+            tabsContainerRef.current.scrollBy({
+                left: direction === "left" ? -scrollAmount : scrollAmount,
+                behavior: "smooth"
+            });
+        }
+    };
 
     // Auth Check
     useEffect(() => {
@@ -53,6 +65,7 @@ export default function SecureDashboard() {
 
     const tabs = [
         { id: "orders", label: "Orders", icon: ShoppingBag },
+        { id: "categories", label: "Categories", icon: LayoutGrid },
         { id: "products", label: "Products", icon: Package },
         { id: "projects", label: "Projects", icon: Briefcase },
         { id: "features", label: "Features", icon: LayoutGrid },
@@ -82,20 +95,40 @@ export default function SecureDashboard() {
                 </div>
 
                 {/* Desktop Tabs */}
-                <div className="hidden lg:flex gap-2 mb-8 border-b border-slate-800/50 pb-1 overflow-x-auto scrollbar-hide">
-                    {tabs.map((tab) => (
-                        <button
-                            key={tab.id}
-                            onClick={() => setActiveTab(tab.id as TabType)}
-                            className={`px-6 py-4 font-bold capitalize transition-all relative whitespace-nowrap flex items-center gap-2 rounded-t-xl hover:bg-slate-900/50 ${activeTab === tab.id
-                                ? "text-cyan-400 bg-slate-900 border-b-2 border-cyan-400"
-                                : "text-slate-500 hover:text-slate-300"
-                                }`}
-                        >
-                            <tab.icon size={18} />
-                            {tab.label}
-                        </button>
-                    ))}
+                <div className="hidden lg:flex items-center gap-2 mb-8 border-b border-slate-800/50 pb-1 relative group">
+                    <button
+                        onClick={() => scrollTabs("left")}
+                        className="absolute -left-6 z-10 p-2 bg-slate-900 border border-slate-800 rounded-full text-orange-500 hover:text-orange-400 hover:scale-110 transition-all shadow-xl flex items-center justify-center"
+                    >
+                        <ChevronLeft size={20} className="stroke-[3px]" />
+                    </button>
+
+                    <div
+                        ref={tabsContainerRef}
+                        className="flex gap-2 overflow-x-auto scrollbar-hide scroll-smooth no-scrollbar px-2"
+                        style={{ msOverflowStyle: 'none', scrollbarWidth: 'none' }}
+                    >
+                        {tabs.map((tab) => (
+                            <button
+                                key={tab.id}
+                                onClick={() => setActiveTab(tab.id as TabType)}
+                                className={`px-6 py-4 font-bold capitalize transition-all relative whitespace-nowrap flex items-center gap-2 rounded-t-xl hover:bg-slate-900/50 ${activeTab === tab.id
+                                    ? "text-cyan-400 bg-slate-900 border-b-2 border-cyan-400"
+                                    : "text-slate-500 hover:text-slate-300"
+                                    }`}
+                            >
+                                <tab.icon size={18} />
+                                {tab.label}
+                            </button>
+                        ))}
+                    </div>
+
+                    <button
+                        onClick={() => scrollTabs("right")}
+                        className="absolute -right-6 z-10 p-2 bg-slate-900 border border-slate-800 rounded-full text-orange-500 hover:text-orange-400 hover:scale-110 transition-all shadow-xl flex items-center justify-center"
+                    >
+                        <ChevronRight size={20} className="stroke-[3px]" />
+                    </button>
                 </div>
 
                 {/* Mobile Tab Select */}
@@ -126,6 +159,7 @@ export default function SecureDashboard() {
                     {activeTab === "coupons" && <CouponsTab />}
                     {activeTab === "orders" && <OrdersTab />}
                     {activeTab === "announcements" && <AnnouncementsTab />}
+                    {activeTab === "categories" && <CategoriesTab />}
                     {activeTab === "users" && isAdmin && <UsersTab />}
                 </div>
             </div>

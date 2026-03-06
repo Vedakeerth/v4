@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
         const hashedPassword = await bcrypt.hash(password, 10);
         const result = await addUser({
             name,
-            email,
+            email: email.trim().toLowerCase(),
             password: hashedPassword,
             role,
         });
@@ -95,6 +95,10 @@ export async function PATCH(req: NextRequest) {
                 { error: "ID is required" },
                 { status: 400 }
             );
+        }
+
+        if (updates.email) {
+            updates.email = updates.email.trim().toLowerCase();
         }
 
         if (updates.password) {

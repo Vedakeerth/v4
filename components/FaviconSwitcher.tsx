@@ -17,7 +17,7 @@ export default function FaviconSwitcher() {
 
       // Find ALL icon link elements (Next.js can create multiple)
       const faviconLinks = document.querySelectorAll(
-        "link[rel='icon'], link[rel='shortcut icon'], link[rel='apple-touch-icon']"
+        "link[rel*='icon'], link[rel='apple-touch-icon']"
       );
 
       if (faviconLinks.length > 0) {
@@ -34,6 +34,7 @@ export default function FaviconSwitcher() {
     };
 
     // Set initial favicon
+    setTimeout(updateFavicon, 500);
     updateFavicon();
 
     // Listen for theme changes
