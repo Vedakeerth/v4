@@ -1,3 +1,4 @@
+import { QueryDocumentSnapshot, DocumentData } from 'firebase-admin/firestore';
 import { adminDb } from './firebaseAdmin';
 
 export interface Catalog {
@@ -12,7 +13,7 @@ export interface Catalog {
 
 export async function getCatalogs(): Promise<Catalog[]> {
     const snapshot = await adminDb.collection('catalogs').get();
-    return snapshot.docs.map(doc => ({
+    return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
         id: doc.id,
         ...doc.data()
     })) as Catalog[];

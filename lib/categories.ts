@@ -1,3 +1,4 @@
+import { QueryDocumentSnapshot, DocumentData } from "firebase-admin/firestore";
 import { adminDb } from "./firebaseAdmin";
 
 export interface Category {
@@ -13,12 +14,12 @@ const COLLECTION = "categories";
 export async function getCategories(): Promise<Category[]> {
     try {
         const snapshot = await adminDb.collection(COLLECTION).get();
-        const categories = snapshot.docs.map((doc: any) => ({
+        const categories = snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
             id: doc.id,
             ...doc.data(),
         } as Category));
 
-        return categories.sort((a, b) => (a.order || 0) - (b.order || 0));
+        return categories.sort((a: Category, b: Category) => (a.order || 0) - (b.order || 0));
     } catch (error) {
         console.error("Error fetching categories:", error);
         return [];

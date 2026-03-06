@@ -1,3 +1,4 @@
+import { QueryDocumentSnapshot, DocumentData } from 'firebase-admin/firestore';
 import { adminDb } from './firebaseAdmin';
 
 export interface Comment {
@@ -30,7 +31,7 @@ export async function getBlogs(): Promise<BlogPost[]> {
     if (typeof window === 'undefined') {
         try {
             const snapshot = await adminDb.collection('blogs').orderBy('createdAt', 'desc').get();
-            return snapshot.docs.map(doc => ({
+            return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
                 id: doc.id,
                 ...doc.data()
             } as BlogPost));

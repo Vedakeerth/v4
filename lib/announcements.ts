@@ -1,3 +1,4 @@
+import { QueryDocumentSnapshot, DocumentData, Query } from "firebase-admin/firestore";
 import { adminDb } from "./firebaseAdmin";
 
 export interface Announcement {
@@ -14,13 +15,13 @@ const COLLECTION = "announcements";
 
 export async function getAnnouncements(onlyActive: boolean = false): Promise<Announcement[]> {
     try {
-        let query: any = adminDb.collection(COLLECTION);
+        let query: Query = adminDb.collection(COLLECTION);
         if (onlyActive) {
             query = query.where("active", "==", true);
         }
 
         const snapshot = await query.get();
-        const docs = snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() } as Announcement));
+        const docs = snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({ id: doc.id, ...doc.data() } as Announcement));
 
         // Sort in-memory to avoid Firestore composite index requirement
         return docs.sort((a: Announcement, b: Announcement) => (a.order || 0) - (b.order || 0));

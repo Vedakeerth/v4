@@ -1,3 +1,4 @@
+import { QueryDocumentSnapshot, DocumentData } from 'firebase-admin/firestore';
 import { adminDb } from './firebaseAdmin';
 
 export interface Order {
@@ -17,7 +18,7 @@ export interface Order {
 export async function getOrders(): Promise<Order[]> {
     try {
         const snapshot = await adminDb.collection("orders").orderBy("createdAt", "desc").get();
-        return snapshot.docs.map(doc => ({
+        return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
             ...doc.data(),
             id: doc.id
         })) as Order[];

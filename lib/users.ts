@@ -1,3 +1,4 @@
+import { QueryDocumentSnapshot, DocumentData } from "firebase-admin/firestore";
 import { adminDb } from "./firebaseAdmin";
 
 export type UserRole = "SUPER_ADMIN" | "USER";
@@ -16,7 +17,7 @@ const USERS_COLLECTION = "users";
 export async function getUsers(): Promise<User[]> {
     try {
         const snapshot = await adminDb.collection(USERS_COLLECTION).get();
-        return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as User));
+        return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({ id: doc.id, ...doc.data() } as User));
     } catch (error) {
         console.error("Error reading users from Firestore:", error);
         return [];

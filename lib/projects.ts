@@ -1,3 +1,4 @@
+import { QueryDocumentSnapshot, DocumentData } from 'firebase-admin/firestore';
 import { adminDb } from './firebaseAdmin';
 
 export interface Project {
@@ -17,7 +18,7 @@ export async function getProjects(): Promise<Project[]> {
     if (typeof window === 'undefined') {
         try {
             const snapshot = await adminDb.collection('projects').orderBy('createdAt', 'desc').get();
-            return snapshot.docs.map(doc => ({
+            return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
                 id: doc.id,
                 ...doc.data()
             } as Project));

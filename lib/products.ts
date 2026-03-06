@@ -1,3 +1,4 @@
+import { QueryDocumentSnapshot, DocumentData } from 'firebase-admin/firestore';
 import { adminDb } from './firebaseAdmin';
 
 export interface Product {
@@ -21,7 +22,7 @@ export async function getProducts(): Promise<Product[]> {
     if (typeof window === 'undefined') {
         try {
             const snapshot = await adminDb.collection('products').orderBy('createdAt', 'desc').get();
-            return snapshot.docs.map(doc => ({
+            return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
                 id: doc.id,
                 ...doc.data()
             } as Product));
