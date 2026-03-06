@@ -201,7 +201,11 @@ export default function CatalogGrid({ products }: CatalogGridProps) {
                                     <h3 className="text-white font-semibold text-lg mb-2 group-hover:text-blue-400 transition-colors">{product.name}</h3>
                                     <p className="text-slate-400 text-sm mb-4 line-clamp-2">{product.description}</p>
                                     <div className="flex items-center justify-between mb-4">
-                                        <span className="text-blue-400 font-bold text-xl">{product.price}</span>
+                                        <span className="text-blue-400 font-bold text-xl">
+                                            {typeof product.price === 'number'
+                                                ? `₹${product.price.toLocaleString('en-IN')}`
+                                                : product.price.startsWith('₹') ? product.price : `₹${product.price}`}
+                                        </span>
                                         <div className="flex items-center gap-1.5 text-red-500 bg-red-500/5 px-2 py-1 rounded-lg border border-red-500/10">
                                             <Heart className="h-3.5 w-3.5" fill="currentColor" />
                                             <span className="text-xs font-bold">{product.likes || 0}</span>

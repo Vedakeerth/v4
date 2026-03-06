@@ -152,7 +152,9 @@ export default function ProductDetailClient({ product, similarProducts, pageData
                         </div>
                         <div className="flex items-center gap-4 mb-6">
                             <span className="text-3xl font-bold text-cyan-400">
-                                {product.price}
+                                {typeof product.price === 'number'
+                                    ? `₹${product.price.toLocaleString('en-IN', { minimumFractionDigits: 0 })}`
+                                    : product.price.startsWith('₹') ? product.price : `₹${product.price}`}
                             </span>
                             <div className="flex items-center gap-2">
                                 <span className={cn(

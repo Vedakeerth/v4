@@ -155,7 +155,9 @@ export default function ProductQuickView({ product, onClose }: ProductQuickViewP
                             </h2>
                             <div className="flex items-center justify-between mb-6">
                                 <div className="text-3xl font-black text-cyan-500 flex items-baseline gap-2">
-                                    {product.price}
+                                    {typeof product.price === 'number'
+                                        ? `₹${product.price.toLocaleString('en-IN')}`
+                                        : product.price.startsWith('₹') ? product.price : `₹${product.price}`}
                                     <span className="text-xs text-slate-500 font-bold uppercase tracking-widest">per unit</span>
                                 </div>
                                 <div className="flex items-center gap-2 text-red-400 bg-red-400/10 px-3 py-1.5 rounded-xl border border-red-400/20 shadow-lg shadow-red-500/5">

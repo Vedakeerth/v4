@@ -136,7 +136,9 @@ export default function CartDrawer() {
                                                     </button>
                                                 </div>
                                                 <span className="text-sm font-black text-white">
-                                                    {item.price}
+                                                    {typeof item.price === 'number'
+                                                        ? `₹${item.price.toLocaleString('en-IN')}`
+                                                        : item.price.startsWith('₹') ? item.price : `₹${item.price}`}
                                                 </span>
                                             </div>
                                         </div>

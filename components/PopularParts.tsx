@@ -12,7 +12,7 @@ interface Product {
     id: string | number;
     name: string;
     description: string;
-    price: string;
+    price: string | number;
     image: string;
     category: string;
     isPopular?: boolean;
@@ -153,7 +153,11 @@ export default function PopularParts({ header, parts }: PopularPartsProps) {
                                                     {likes[part.id.toString()] || 0}
                                                 </div>
                                             </div>
-                                            <span className="text-2xl font-bold text-white">{part.price}</span>
+                                            <span className="text-2xl font-bold text-white">
+                                                {typeof part.price === 'number'
+                                                    ? `₹${part.price.toLocaleString('en-IN')}`
+                                                    : part.price.startsWith('₹') ? part.price : `₹${part.price}`}
+                                            </span>
                                         </div>
                                         <Link href={`/products/${part.id}`}>
                                             <button className="px-5 py-2 rounded-xl bg-slate-800 hover:bg-cyan-500 text-white hover:text-slate-950 font-bold text-sm transition-all duration-300 border border-slate-700 hover:border-cyan-400">
