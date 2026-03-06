@@ -51,7 +51,7 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
     }, [parts]);
 
     const filteredAndSortedParts = useMemo(() => {
-        const getPrice = (p: string) => parseFloat(p.replace(/[^0-9.]/g, '')) || 0;
+        const getPrice = (p: string | number) => typeof p === 'string' ? (parseFloat(p.replace(/[^0-9.]/g, '')) || 0) : p;
         const min = minPrice === "" ? 0 : parseFloat(minPrice) || 0;
         const max = maxPrice === "" ? Infinity : parseFloat(maxPrice) || Infinity;
 

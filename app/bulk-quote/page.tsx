@@ -91,7 +91,9 @@ export default function BulkQuotePage() {
                                 </thead>
                                 <tbody className="divide-y divide-slate-50">
                                     {items.map((item: CartItem) => {
-                                        const price = parseFloat(item.price.replace(/[^0-9.]/g, '')) || 0;
+                                        const price = typeof item.price === 'string' 
+                                            ? parseFloat(item.price.replace(/[^0-9.]/g, '')) || 0
+                                            : item.price || 0;
                                         const quantity = item.quantity || 1;
                                         return (
                                             <tr key={item.cartId} className="group">

@@ -60,7 +60,9 @@ export function useCart() {
     const clearCart = () => setCart([]);
 
     const cartTotal = cart.reduce((total, item) => {
-        const price = parseFloat(item.price.replace(/[^0-9.]/g, '')) || 0;
+        const price = typeof item.price === 'string' 
+            ? parseFloat(item.price.replace(/[^0-9.]/g, '')) || 0
+            : item.price || 0;
         return total + (price * (item.quantity || 1));
     }, 0);
 

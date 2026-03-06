@@ -42,7 +42,9 @@ export default function CatalogGrid({ products }: CatalogGridProps) {
 
         // 3. Price Range Filter
         result = result.filter(p => {
-            const price = parseFloat(p.price.replace(/[^0-9.-]+/g, ""));
+            const price = typeof p.price === 'string'
+                ? parseFloat(p.price.replace(/[^0-9.-]+/g, ""))
+                : p.price;
             return price >= priceRange.min && price <= priceRange.max;
         });
 
@@ -50,15 +52,15 @@ export default function CatalogGrid({ products }: CatalogGridProps) {
         switch (sortBy) {
             case "price-low":
                 result.sort((a, b) => {
-                    const priceA = parseFloat(a.price.replace(/[^0-9.-]+/g, ""));
-                    const priceB = parseFloat(b.price.replace(/[^0-9.-]+/g, ""));
+                    const priceA = typeof a.price === 'string' ? parseFloat(a.price.replace(/[^0-9.-]+/g, "")) : a.price;
+                    const priceB = typeof b.price === 'string' ? parseFloat(b.price.replace(/[^0-9.-]+/g, "")) : b.price;
                     return priceA - priceB;
                 });
                 break;
             case "price-high":
                 result.sort((a, b) => {
-                    const priceA = parseFloat(a.price.replace(/[^0-9.-]+/g, ""));
-                    const priceB = parseFloat(b.price.replace(/[^0-9.-]+/g, ""));
+                    const priceA = typeof a.price === 'string' ? parseFloat(a.price.replace(/[^0-9.-]+/g, "")) : a.price;
+                    const priceB = typeof b.price === 'string' ? parseFloat(b.price.replace(/[^0-9.-]+/g, "")) : b.price;
                     return priceB - priceA;
                 });
                 break;
@@ -237,4 +239,3 @@ export default function CatalogGrid({ products }: CatalogGridProps) {
         </>
     );
 }
-

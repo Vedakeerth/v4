@@ -235,7 +235,7 @@ export default function ProductDetailClient({ product, similarProducts, pageData
                                 </div>
                                 <div className="text-slate-400">
                                     {pageData?.totalLabel || "Total"}: <span className="text-cyan-400 font-bold text-xl ml-2">
-                                        ₹{(parseFloat(product.price.replace(/[^0-9.]/g, '')) * quantity).toFixed(2)}
+                                        ₹{((typeof product.price === 'string' ? parseFloat(product.price.replace(/[^0-9.]/g, '')) : product.price) * quantity).toFixed(2)}
                                     </span>
                                 </div>
                             </div>

@@ -116,7 +116,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         setAppliedCoupon(null);
     };
 
-    const getPrice = (p: string) => parseFloat(p.replace(/[^0-9.]/g, "")) || 0;
+    const getPrice = (p: string | number) => typeof p === 'string' ? (parseFloat(p.replace(/[^0-9.]/g, "")) || 0) : p;
 
     const cartTotal = items.reduce((total, item) => {
         return total + getPrice(item.price) * (item.quantity || 1);
