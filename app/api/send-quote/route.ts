@@ -110,12 +110,13 @@ export async function POST(req: Request) {
                     name: m.name,
                     quantity: m.quantity,
                     price: `₹${(m.price || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-                    selectedColor: m.color
+                    selectedColor: m.color,
+                    driveFileId: m.driveFileId // Save the file link ID
                 })),
                 address: user.address,
                 notes: user.message
             };
-            addOrder(formattedOrder);
+            await addOrder(formattedOrder);
         } catch (error) {
             console.error('Failed to save order to local storage:', error);
             // Don't fail the whole request if saving to file fails

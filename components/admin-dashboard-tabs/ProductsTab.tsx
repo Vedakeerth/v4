@@ -15,7 +15,7 @@ export default function ProductsTab() {
 
     // Edit/Delete state
     const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-    const [deleteConfirm, setDeleteConfirm] = useState<number | null>(null);
+    const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
     // Form Data
     const [formData, setFormData] = useState({
@@ -175,7 +175,7 @@ export default function ProductsTab() {
         }
     };
 
-    const handleDeleteProduct = async (id: number) => {
+    const handleDeleteProduct = async (id: string | number) => {
         if (!confirm("Are you sure you want to delete this product?")) return;
         try {
             const res = await fetch(`/api/products/${id}`, { method: "DELETE" });

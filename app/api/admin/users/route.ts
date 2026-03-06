@@ -5,21 +5,22 @@ import bcrypt from "bcryptjs";
 
 export async function GET() {
     const session = await getAuthSession();
-    if (!session || (session.user as any)?.role !== 'SUPER_ADMIN') {
+    if (!session || (session.user as any)?.role !== "SUPER_ADMIN") {
         return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
 
-    const users = getUsers().map(u => {
+    const users = await getUsers();
+    const sanitized = users.map((u) => {
         const { password, ...userWithoutPassword } = u;
         return userWithoutPassword;
     });
 
-    return NextResponse.json(users);
+    return NextResponse.json(sanitized);
 }
 
 export async function POST(req: NextRequest) {
     const session = await getAuthSession();
-    if (!session || (session.user as any)?.role !== 'SUPER_ADMIN') {
+    if (!session || (session.user as any)?.role !== "SUPER_ADMIN") {
         return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
 
@@ -28,11 +29,19 @@ export async function POST(req: NextRequest) {
         const { name, email, password, role } = body;
 
         if (!name || !email || !password || !role) {
-            return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+            return NextResponse.json(
+                { error: "Missing required fields" },
+                { status: 400 }
+            );
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        const result = addUser({ name, email, password: hashedPassword, role });
+        const result = await addUser({
+            name,
+            email,
+            password: hashedPassword,
+            role,
+        });
 
         if (result.success) {
             return NextResponse.json({ success: true });
@@ -40,13 +49,16 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: result.error }, { status: 400 });
         }
     } catch (error) {
-        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+        return NextResponse.json(
+            { error: "Internal Server Error" },
+            { status: 500 }
+        );
     }
 }
 
 export async function DELETE(req: NextRequest) {
     const session = await getAuthSession();
-    if (!session || (session.user as any)?.role !== 'SUPER_ADMIN') {
+    if (!session || (session.user as any)?.role !== "SUPER_ADMIN") {
         return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
 
@@ -57,17 +69,20 @@ export async function DELETE(req: NextRequest) {
         return NextResponse.json({ error: "ID is required" }, { status: 400 });
     }
 
-    const success = deleteUser(id);
+    const success = await deleteUser(id);
     if (success) {
         return NextResponse.json({ success: true });
     } else {
-        return NextResponse.json({ error: "Could not delete user" }, { status: 400 });
+        return NextResponse.json(
+            { error: "Could not delete user" },
+            { status: 400 }
+        );
     }
 }
 
 export async function PATCH(req: NextRequest) {
     const session = await getAuthSession();
-    if (!session || (session.user as any)?.role !== 'SUPER_ADMIN') {
+    if (!session || (session.user as any)?.role !== "SUPER_ADMIN") {
         return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
 
@@ -76,20 +91,29 @@ export async function PATCH(req: NextRequest) {
         const { id, ...updates } = body;
 
         if (!id) {
-            return NextResponse.json({ error: "ID is required" }, { status: 400 });
+            return NextResponse.json(
+                { error: "ID is required" },
+                { status: 400 }
+            );
         }
 
         if (updates.password) {
             updates.password = await bcrypt.hash(updates.password, 10);
         }
 
-        const success = updateUser(id, updates);
+        const success = await updateUser(id, updates);
         if (success) {
             return NextResponse.json({ success: true });
         } else {
-            return NextResponse.json({ error: "User not found" }, { status: 404 });
+            return NextResponse.json(
+                { error: "User not found" },
+                { status: 404 }
+            );
         }
     } catch (error) {
-        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+        return NextResponse.json(
+            { error: "Internal Server Error" },
+            { status: 500 }
+        );
     }
 }

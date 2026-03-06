@@ -1,49 +1,43 @@
 import { NextRequest, NextResponse } from 'next/server';
-import fs from 'fs/promises';
-import path from 'path';
-
-const couponsPath = path.join(process.cwd(), 'data', 'coupons.json');
-
-async function getCoupons() {
-    try {
-        const data = await fs.readFile(couponsPath, 'utf8');
-        return JSON.parse(data);
-    } catch {
-        return [];
-    }
-}
-
-async function saveCoupons(coupons: any[]) {
-    await fs.writeFile(couponsPath, JSON.stringify(coupons, null, 2));
-}
+import { adminDb } from '@/lib/firebaseAdmin';
+import { isAuthenticated } from '@/lib/auth';
 
 export async function PATCH(
     req: NextRequest,
     { params }: { params: Promise<{ id: string }> }
 ) {
     try {
+        const authenticated = await isAuthenticated();
+        if (!authenticated) {
+            return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+        }
+
         const { id } = await params;
         const body = await req.json();
-        const coupons = await getCoupons();
-        const index = coupons.findIndex((c: any) => c.id === id);
+        const docRef = adminDb.collection('coupons').doc(id);
+        const doc = await docRef.get();
 
-        if (index === -1) {
+        if (!doc.exists) {
             return NextResponse.json({ success: false, message: "Coupon not found" }, { status: 404 });
         }
 
-        coupons[index] = {
-            ...coupons[index],
+        const updateData = {
             ...body,
-            id // Ensure ID doesn't change
+            updatedAt: new Date().toISOString()
         };
+        delete updateData.id;
 
-        if (body.code) coupons[index].code = body.code.toUpperCase();
-        if (body.value) coupons[index].value = Number(body.value);
+        if (updateData.code) updateData.code = updateData.code.toUpperCase();
+        if (updateData.value) updateData.value = Number(updateData.value);
 
-        await saveCoupons(coupons);
+        await docRef.set(updateData, { merge: true });
 
-        return NextResponse.json({ success: true, coupon: coupons[index] });
+        return NextResponse.json({
+            success: true,
+            coupon: { id, ...doc.data(), ...updateData }
+        });
     } catch (error) {
+        console.error('Error updating coupon:', error);
         return NextResponse.json({ success: false, message: "Internal server error" }, { status: 500 });
     }
 }
@@ -53,20 +47,24 @@ export async function DELETE(
     { params }: { params: Promise<{ id: string }> }
 ) {
     try {
+        const authenticated = await isAuthenticated();
+        if (!authenticated) {
+            return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+        }
+
         const { id } = await params;
-        let coupons = await getCoupons();
+        const docRef = adminDb.collection('coupons').doc(id);
+        const doc = await docRef.get();
 
-        const initialLength = coupons.length;
-        coupons = coupons.filter((c: any) => c.id !== id);
-
-        if (coupons.length === initialLength) {
+        if (!doc.exists) {
             return NextResponse.json({ success: false, message: "Coupon not found" }, { status: 404 });
         }
 
-        await saveCoupons(coupons);
+        await docRef.delete();
 
         return NextResponse.json({ success: true, message: "Coupon deleted successfully" });
     } catch (error) {
+        console.error('Error deleting coupon:', error);
         return NextResponse.json({ success: false, message: "Internal server error" }, { status: 500 });
     }
 }

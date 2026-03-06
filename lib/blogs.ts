@@ -1,4 +1,4 @@
-import blogsData from '../data/blogs.json';
+import { adminDb } from './firebaseAdmin';
 
 export interface Comment {
     id: string;
@@ -23,22 +23,29 @@ export interface BlogPost {
     hashtags?: string[];
     metaTitle?: string;
     metaDescription?: string;
+    createdAt?: string;
 }
 
-export function getBlogs(): BlogPost[] {
-    return blogsData as BlogPost[];
-}
-
-export async function saveBlogs(blogs: BlogPost[]) {
+export async function getBlogs(): Promise<BlogPost[]> {
     if (typeof window === 'undefined') {
-        const fs = await import('fs');
-        const path = await import('path');
-        const filePath = path.join(process.cwd(), 'data', 'blogs.json');
-        fs.writeFileSync(filePath, JSON.stringify(blogs, null, 2));
+        try {
+            const snapshot = await adminDb.collection('blogs').orderBy('createdAt', 'desc').get();
+            return snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            } as BlogPost));
+        } catch (error) {
+            console.error('Error fetching blogs from Firestore:', error);
+            return [];
+        }
+    } else {
+        const res = await fetch('/api/blogs');
+        const data = await res.json();
+        return data.blogs || [];
     }
 }
 
-export function getBlogBySlug(slug: string): BlogPost | undefined {
-    const blogs = getBlogs();
+export async function getBlogBySlug(slug: string): Promise<BlogPost | undefined> {
+    const blogs = await getBlogs();
     return blogs.find(b => b.slug === slug);
 }

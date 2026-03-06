@@ -9,7 +9,7 @@ import GalleryGrid from "@/components/GalleryGrid";
 
 export default async function GalleryPage() {
     const pageData = await getPageContent('gallery');
-    const allProducts = getProducts();
+    const allProducts = await getProducts();
     const products = allProducts;
 
     return (

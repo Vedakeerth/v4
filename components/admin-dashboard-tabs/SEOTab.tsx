@@ -63,6 +63,17 @@ export default function SEOTab() {
                                 />
                             </div>
                             <div>
+                                <label className="block text-slate-500 text-[10px] font-bold uppercase mb-1.5 ml-1">Meta Keywords</label>
+                                <input
+                                    value={data.keywords || ""}
+                                    onChange={(e) => {
+                                        const next = { ...seoData, [page]: { ...data, keywords: e.target.value } };
+                                        setSeoData(next);
+                                    }}
+                                    className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-white text-sm focus:border-cyan-500/50 transition-all outline-none"
+                                />
+                            </div>
+                            <div>
                                 <label className="block text-slate-500 text-[10px] font-bold uppercase mb-1.5 ml-1">Meta Description</label>
                                 <textarea
                                     value={data.description}

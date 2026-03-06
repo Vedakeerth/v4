@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getTestimonials, saveTestimonials, Testimonial } from '@/lib/testimonials';
+import { adminDb } from '@/lib/firebaseAdmin';
 import { isAuthenticated } from '@/lib/auth';
 
 // GET single testimonial
@@ -9,17 +9,16 @@ export async function GET(
 ) {
     try {
         const { id } = await params;
-        const testimonials = getTestimonials();
-        const testimonial = testimonials.find(t => t.id === parseInt(id));
+        const doc = await adminDb.collection('testimonials').doc(id).get();
 
-        if (!testimonial) {
+        if (!doc.exists) {
             return NextResponse.json({
                 success: false,
                 message: 'Testimonial not found'
             }, { status: 404 });
         }
 
-        return NextResponse.json({ success: true, testimonial });
+        return NextResponse.json({ success: true, testimonial: { id: doc.id, ...doc.data() } });
     } catch (error) {
         console.error('Error fetching testimonial:', error);
         return NextResponse.json({
@@ -29,6 +28,7 @@ export async function GET(
     }
 }
 
+// PUT - Update testimonial (requires auth)
 export async function PUT(
     req: Request,
     { params }: { params: Promise<{ id: string }> }
@@ -43,39 +43,33 @@ export async function PUT(
         }
 
         const { id } = await params;
-        const testimonialId = parseInt(id);
-
-        if (isNaN(testimonialId)) {
-            return NextResponse.json({
-                success: false,
-                message: 'Invalid testimonial ID'
-            }, { status: 400 });
-        }
-
         const body = await req.json();
-        const testimonials = getTestimonials();
-        const testimonialIndex = testimonials.findIndex(t => t.id === testimonialId);
 
-        if (testimonialIndex === -1) {
+        const docRef = adminDb.collection('testimonials').doc(id);
+        const doc = await docRef.get();
+
+        if (!doc.exists) {
             return NextResponse.json({
                 success: false,
                 message: 'Testimonial not found'
             }, { status: 404 });
         }
 
-        // Update testimonial
-        testimonials[testimonialIndex] = {
-            ...testimonials[testimonialIndex],
+        const updateData = {
             ...body,
-            id: testimonialId, // Ensure ID doesn't change
-            rating: Math.min(5, Math.max(1, parseInt(body.rating?.toString() || testimonials[testimonialIndex].rating.toString()) || 5)),
+            updatedAt: new Date().toISOString(),
         };
+        delete updateData.id;
 
-        await saveTestimonials(testimonials);
+        if (updateData.rating !== undefined) {
+            updateData.rating = Math.min(5, Math.max(1, parseInt(updateData.rating.toString()) || 5));
+        }
+
+        await docRef.set(updateData, { merge: true });
 
         return NextResponse.json({
             success: true,
-            testimonial: testimonials[testimonialIndex],
+            testimonial: { id, ...doc.data(), ...updateData },
             message: 'Testimonial updated successfully'
         });
     } catch (error) {
@@ -87,6 +81,7 @@ export async function PUT(
     }
 }
 
+// DELETE - Delete testimonial (requires auth)
 export async function DELETE(
     req: Request,
     { params }: { params: Promise<{ id: string }> }
@@ -101,32 +96,23 @@ export async function DELETE(
         }
 
         const { id } = await params;
-        const testimonialId = parseInt(id);
+        const docRef = adminDb.collection('testimonials').doc(id);
+        const doc = await docRef.get();
 
-        if (isNaN(testimonialId)) {
-            return NextResponse.json({
-                success: false,
-                message: 'Invalid testimonial ID'
-            }, { status: 400 });
-        }
-
-        const testimonials = getTestimonials();
-        const testimonialIndex = testimonials.findIndex(t => t.id === testimonialId);
-
-        if (testimonialIndex === -1) {
+        if (!doc.exists) {
             return NextResponse.json({
                 success: false,
                 message: 'Testimonial not found'
             }, { status: 404 });
         }
 
-        const deletedTestimonial = testimonials.splice(testimonialIndex, 1)[0];
-        await saveTestimonials(testimonials);
+        const testimonialData = doc.data();
+        await docRef.delete();
 
         return NextResponse.json({
             success: true,
             message: 'Testimonial deleted successfully',
-            testimonial: deletedTestimonial
+            testimonial: { id, ...testimonialData }
         });
     } catch (error) {
         console.error('Error deleting testimonial:', error);

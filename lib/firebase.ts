@@ -1,5 +1,6 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAnalytics, isSupported } from "firebase/analytics";
+import { getStorage } from "firebase/storage";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -26,4 +27,5 @@ export const initAnalytics = async () => {
     return null;
 };
 
+export const storage = getStorage(app);
 export { app };

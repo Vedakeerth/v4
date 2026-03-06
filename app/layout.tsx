@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
@@ -13,13 +13,34 @@ import { CartProvider } from "@/context/CartContext";
 import CartDrawer from "@/components/CartDrawer";
 import { getPageContent } from "@/lib/content";
 import { Providers } from "@/components/Providers";
+import CookieConsent from "@/components/CookieConsent";
+import MainFrontendUI from "@/components/MainFrontendUI";
 
+
+import { getSEOData, getPageMetadata } from "@/lib/seo";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
-export const metadata: Metadata = {
-  // ... metadata content
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  themeColor: "#0f172a",
 };
+
+export async function generateMetadata(): Promise<Metadata> {
+  const metadata = await getPageMetadata('Home');
+  return {
+    ...metadata,
+    icons: {
+      icon: [
+        { url: "/images/favicon-wing.png", media: "(prefers-color-scheme: dark)" },
+        { url: "/images/favicon-wing-1.png", media: "(prefers-color-scheme: light)" },
+      ],
+      apple: "/images/favicon-wing.png",
+    },
+  };
+}
 
 export default async function RootLayout({
   children,
@@ -35,18 +56,15 @@ export default async function RootLayout({
       <body className={cn(inter.variable, "font-sans bg-background text-foreground min-h-screen")}>
         <Providers>
           <CartProvider>
-            <Preloader />
             <FaviconSwitcher />
             <OrganizationSchema />
             <LocalBusinessSchema />
             <ServiceSchema />
             <WebSiteSchema />
-            <Navbar navLinks={navLinks} ctaData={ctaData} />
-            <CartDrawer />
-            <BackgroundGrid />
-            <CustomCursor />
-            {children}
-            <ScrollToTop />
+            <MainFrontendUI navLinks={navLinks} ctaData={ctaData}>
+              {children}
+            </MainFrontendUI>
+            <CookieConsent />
           </CartProvider>
         </Providers>
       </body>

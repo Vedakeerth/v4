@@ -1,17 +1,23 @@
 import { NextResponse } from "next/server";
-import { getOrders } from "@/lib/orders";
-import { getServerSession } from "next-auth";
+import { adminDb } from "@/lib/firebaseAdmin";
+import { isAuthenticated } from "@/lib/auth";
 
 export async function GET() {
     try {
-        const session = await getServerSession();
-        if (!session) {
+        const authenticated = await isAuthenticated();
+        if (!authenticated) {
             return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
         }
 
-        const orders = getOrders();
+        const snapshot = await adminDb.collection('orders').orderBy('createdAt', 'desc').get();
+        const orders = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+
         return NextResponse.json({ success: true, orders });
     } catch (error) {
+        console.error('Error fetching orders:', error);
         return NextResponse.json({ success: false, message: "Failed to fetch orders" }, { status: 500 });
     }
 }

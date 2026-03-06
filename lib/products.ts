@@ -1,7 +1,7 @@
-import productsData from '../data/products.json';
+import { adminDb } from './firebaseAdmin';
 
 export interface Product {
-    id: number;
+    id: string;
     name: string;
     description: string;
     price: string;
@@ -17,26 +17,33 @@ export interface Product {
     likes?: number;
 }
 
-export function getProducts(): Product[] {
-    return productsData as Product[];
-}
-
-export async function saveProducts(products: Product[]): Promise<void> {
+export async function getProducts(): Promise<Product[]> {
     if (typeof window === 'undefined') {
-        const fs = await import('fs');
-        const path = await import('path');
-        const productsFilePath = path.join(process.cwd(), 'data', 'products.json');
-
-        const dir = path.dirname(productsFilePath);
-        if (!fs.existsSync(dir)) {
-            fs.mkdirSync(dir, { recursive: true });
+        try {
+            const snapshot = await adminDb.collection('products').orderBy('createdAt', 'desc').get();
+            return snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            } as Product));
+        } catch (error) {
+            console.error('Error fetching products from Firestore:', error);
+            return [];
         }
-
-        fs.writeFileSync(productsFilePath, JSON.stringify(products, null, 2), 'utf8');
+    } else {
+        const res = await fetch('/api/products');
+        const data = await res.json();
+        return data.products || [];
     }
 }
 
-export function getNextId(products: Product[]): number {
-    if (products.length === 0) return 1;
-    return Math.max(...products.map(p => p.id)) + 1;
+export async function getProductById(id: string): Promise<Product | undefined> {
+    if (typeof window === 'undefined') {
+        const doc = await adminDb.collection('products').doc(id).get();
+        if (!doc.exists) return undefined;
+        return { id: doc.id, ...doc.data() } as Product;
+    } else {
+        const res = await fetch(`/api/products/${id}`);
+        const data = await res.json();
+        return data.product;
+    }
 }

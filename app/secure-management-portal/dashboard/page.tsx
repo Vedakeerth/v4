@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { LogOut, LayoutGrid, Package, MessageSquare, BookOpen, Globe, Share2, Settings, Briefcase, FileText, Ticket, ShoppingBag } from "lucide-react";
+import { LogOut, LayoutGrid, Package, MessageSquare, BookOpen, Globe, Share2, Settings, Briefcase, FileText, Ticket, ShoppingBag, Megaphone } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 
 // Import Tabs
@@ -19,13 +19,14 @@ import FeaturesTab from "@/components/admin-dashboard-tabs/FeaturesTab";
 import CouponsTab from "@/components/admin-dashboard-tabs/CouponsTab";
 import OrdersTab from "@/components/admin-dashboard-tabs/OrdersTab";
 import UsersTab from "@/components/admin-dashboard-tabs/UsersTab";
+import AnnouncementsTab from "@/components/admin-dashboard-tabs/AnnouncementsTab";
 
 export default function SecureDashboard() {
     const router = useRouter();
     const { data: session, status } = useSession();
 
     // Valid tabs type
-    type TabType = "products" | "projects" | "testimonials" | "catalogs" | "blogs" | "seo" | "socials" | "settings" | "features" | "industries" | "coupons" | "orders" | "users";
+    type TabType = "products" | "projects" | "testimonials" | "catalogs" | "blogs" | "seo" | "socials" | "settings" | "features" | "industries" | "coupons" | "orders" | "users" | "announcements";
 
     const [activeTab, setActiveTab] = useState<TabType>("products");
 
@@ -34,7 +35,11 @@ export default function SecureDashboard() {
         if (status === "unauthenticated") {
             router.push("/secure-management-portal/login");
         }
-    }, [status, router]);
+        if (status === "authenticated" && session?.user?.email !== "vaelinsa@gmail.com") {
+            alert("Only Admin Allowed");
+            signOut({ callbackUrl: "/secure-management-portal/login" });
+        }
+    }, [status, session, router]);
 
     const handleLogout = async () => {
         await signOut({ callbackUrl: "/secure-management-portal/login" });
@@ -58,12 +63,13 @@ export default function SecureDashboard() {
         { id: "seo", label: "SEO", icon: Globe },
         { id: "socials", label: "Socials", icon: Share2 },
         { id: "coupons", label: "Coupons", icon: Ticket },
+        { id: "announcements", label: "News", icon: Megaphone },
         ...(isAdmin ? [{ id: "users", label: "User Management", icon: LayoutGrid }] : []),
         { id: "settings", label: "Settings", icon: Settings },
     ];
 
     return (
-        <main className="min-h-screen bg-slate-950 pt-24 pb-12">
+        <main className="min-h-screen bg-slate-950 pt-8 pb-12">
             <div className="container mx-auto px-4">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
                     <div>
@@ -119,6 +125,7 @@ export default function SecureDashboard() {
                     {activeTab === "settings" && <SettingsTab />}
                     {activeTab === "coupons" && <CouponsTab />}
                     {activeTab === "orders" && <OrdersTab />}
+                    {activeTab === "announcements" && <AnnouncementsTab />}
                     {activeTab === "users" && isAdmin && <UsersTab />}
                 </div>
             </div>

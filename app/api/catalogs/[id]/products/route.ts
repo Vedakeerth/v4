@@ -7,7 +7,7 @@ import { isAuthenticated } from '@/lib/auth';
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
         const { id } = await params;
-        const catalog = getCatalogById(id);
+        const catalog = await getCatalogById(id);
         if (!catalog) {
             return NextResponse.json({
                 success: false,
@@ -15,7 +15,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
             }, { status: 404 });
         }
 
-        const allProducts = getProducts();
+        const allProducts = await getProducts();
         const catalogProducts = allProducts.filter(p => catalog.productIds.includes(p.id));
 
         return NextResponse.json({
@@ -54,7 +54,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
         }
 
         const { id } = await params;
-        const catalog = getCatalogById(id);
+        const catalog = await getCatalogById(id);
         if (!catalog) {
             return NextResponse.json({
                 success: false,

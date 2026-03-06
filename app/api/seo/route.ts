@@ -1,11 +1,23 @@
 import { NextResponse } from 'next/server';
-import { getSEOData, saveSEOData, SEOData } from '@/lib/seo';
+import { adminDb } from '@/lib/firebaseAdmin';
 import { isAuthenticated } from '@/lib/auth';
+
+export interface SEOData {
+    title: string;
+    description: string;
+    keywords: string[];
+    ogImage?: string;
+    twitterHandle?: string;
+    [key: string]: any;
+}
 
 export async function GET() {
     try {
-        const seoData = getSEOData();
-        return NextResponse.json({ success: true, seoData });
+        const doc = await adminDb.collection('config').doc('seo').get();
+        if (!doc.exists) {
+            return NextResponse.json({ success: true, seoData: {} });
+        }
+        return NextResponse.json({ success: true, seoData: doc.data() });
     } catch (error) {
         console.error('Error fetching SEO data:', error);
         return NextResponse.json({ success: false, message: 'Failed to fetch SEO data' }, { status: 500 });
@@ -20,10 +32,10 @@ export async function POST(req: Request) {
         }
 
         const body: SEOData = await req.json();
-        const currentData = getSEOData();
-        const updatedData = { ...currentData, ...body };
-
-        saveSEOData(updatedData);
+        await adminDb.collection('config').doc('seo').set({
+            ...body,
+            updatedAt: new Date().toISOString()
+        }, { merge: true });
 
         return NextResponse.json({ success: true, message: 'SEO data updated successfully' });
     } catch (error) {

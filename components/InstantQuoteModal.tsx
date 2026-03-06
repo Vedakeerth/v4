@@ -61,7 +61,7 @@ export default function InstantQuoteModal({ product, onClose }: InstantQuoteModa
             <div className="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl p-6 shadow-2xl">
                 <div className="flex justify-between items-center mb-6">
                     <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                        <FileText className="text-cyan-400" /> Instant Quotation
+                        <FileText className="text-cyan-400" /> AI Quotation
                     </h2>
                     <button onClick={onClose} className="p-2 hover:bg-slate-800 rounded-full text-slate-400 transition-colors">
                         <X size={20} />

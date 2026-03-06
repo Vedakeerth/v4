@@ -26,9 +26,14 @@ export default function Navbar({
 }: NavbarProps) {
     const pathname = usePathname();
     const isHomePage = pathname === '/';
-    const [isVisible, setIsVisible] = useState(!isHomePage);
+    const [isVisible, setIsVisible] = useState(true);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [mounted, setMounted] = useState(false);
     const { setIsCartOpen, cartCount } = useCart();
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
 
 
@@ -53,6 +58,8 @@ export default function Navbar({
         window.addEventListener("scroll", handleScroll, { passive: true });
         return () => window.removeEventListener("scroll", handleScroll);
     }, [isHomePage]);
+
+    if (!mounted) return null;
 
     return (
         <AnimatePresence>

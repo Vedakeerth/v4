@@ -1,5 +1,4 @@
-import fs from 'fs';
-import path from 'path';
+import { adminDb } from './firebaseAdmin';
 
 export interface Order {
     id: string;
@@ -12,53 +11,42 @@ export interface Order {
     items: any[];
     address: string;
     notes?: string;
+    createdAt?: any;
 }
 
-const ordersFilePath = path.join(process.cwd(), 'data', 'orders.json');
-
-export function getOrders(): Order[] {
+export async function getOrders(): Promise<Order[]> {
     try {
-        if (!fs.existsSync(ordersFilePath)) {
-            const dir = path.dirname(ordersFilePath);
-            if (!fs.existsSync(dir)) {
-                fs.mkdirSync(dir, { recursive: true });
-            }
-            fs.writeFileSync(ordersFilePath, JSON.stringify([], null, 2), 'utf8');
-            return [];
-        }
-        const fileContent = fs.readFileSync(ordersFilePath, 'utf8');
-        return JSON.parse(fileContent) as Order[];
+        const snapshot = await adminDb.collection("orders").orderBy("createdAt", "desc").get();
+        return snapshot.docs.map(doc => ({
+            ...doc.data(),
+            id: doc.id
+        })) as Order[];
     } catch (error) {
-        console.error("Error reading orders:", error);
+        console.error("Error reading orders from Firestore:", error);
         return [];
     }
 }
 
-export function saveOrders(orders: Order[]): void {
+export async function addOrder(order: Order): Promise<void> {
     try {
-        const dir = path.dirname(ordersFilePath);
-        if (!fs.existsSync(dir)) {
-            fs.mkdirSync(dir, { recursive: true });
-        }
-        fs.writeFileSync(ordersFilePath, JSON.stringify(orders, null, 2), 'utf8');
+        const { id, ...orderData } = order;
+        const docRef = id ? adminDb.collection("orders").doc(id) : adminDb.collection("orders").doc();
+        await docRef.set({
+            ...orderData,
+            createdAt: new Date().toISOString()
+        });
     } catch (error) {
-        console.error("Error saving orders:", error);
+        console.error("Error saving order to Firestore:", error);
+        throw error;
     }
 }
 
-export function addOrder(order: Order): void {
-    const orders = getOrders();
-    orders.unshift(order); // Add new orders at the top
-    saveOrders(orders);
-}
-
-export function updateOrder(id: string, updates: Partial<Order>): boolean {
-    const orders = getOrders();
-    const index = orders.findIndex(o => o.id === id);
-    if (index !== -1) {
-        orders[index] = { ...orders[index], ...updates };
-        saveOrders(orders);
+export async function updateOrder(id: string, updates: Partial<Order>): Promise<boolean> {
+    try {
+        await adminDb.collection("orders").doc(id).update(updates);
         return true;
+    } catch (error) {
+        console.error("Error updating order in Firestore:", error);
+        return false;
     }
-    return false;
 }

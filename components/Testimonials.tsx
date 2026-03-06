@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 
 // Testimonial type
 type Testimonial = {
-    id: number;
+    id: string | number;
     name: string;
     role: string;
     company: string;

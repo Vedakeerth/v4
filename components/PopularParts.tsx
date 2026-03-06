@@ -9,7 +9,7 @@ import { Skeleton } from './Skeleton';
 import { cn } from '@/lib/utils';
 
 interface Product {
-    id: number;
+    id: string | number;
     name: string;
     description: string;
     price: string;
@@ -31,25 +31,26 @@ interface PopularPartsProps {
 
 export default function PopularParts({ header, parts }: PopularPartsProps) {
     const [isLoading, setIsLoading] = useState(false);
-    const [liked, setLiked] = useState<Record<number, boolean>>({});
-    const [likes, setLikes] = useState<Record<number, number>>({});
+    const [liked, setLiked] = useState<Record<string, boolean>>({});
+    const [likes, setLikes] = useState<Record<string, number>>({});
 
     useEffect(() => {
         // Initialize likes if not present
-        const initialLikes: Record<number, number> = {};
+        const initialLikes: Record<string, number> = {};
         parts.forEach(p => {
-            initialLikes[p.id] = Math.floor(Math.random() * 20) + 5;
+            initialLikes[p.id.toString()] = Math.floor(Math.random() * 20) + 5;
         });
         setLikes(initialLikes);
     }, [parts]);
 
-    const toggleLike = (e: React.MouseEvent, id: number) => {
+    const toggleLike = (e: React.MouseEvent, id: string | number) => {
         e.preventDefault();
         e.stopPropagation();
         setLiked(prev => {
-            const isLiked = !prev[id];
-            setLikes(l => ({ ...l, [id]: isLiked ? l[id] + 1 : Math.max(0, l[id] - 1) }));
-            return { ...prev, [id]: isLiked };
+            const idStr = id.toString();
+            const isLiked = !prev[idStr];
+            setLikes(l => ({ ...l, [idStr]: isLiked ? l[idStr] + 1 : Math.max(0, l[idStr] - 1) }));
+            return { ...prev, [idStr]: isLiked };
         });
     };
 
@@ -148,8 +149,8 @@ export default function PopularParts({ header, parts }: PopularPartsProps) {
                                         <div className="flex flex-col">
                                             <div className="flex items-center gap-2 mb-1">
                                                 <div className="flex items-center gap-1 text-red-400 bg-red-400/10 px-1.5 py-0.5 rounded text-[10px] font-bold border border-red-400/20">
-                                                    <Heart size={10} fill={liked[part.id] ? "currentColor" : "none"} />
-                                                    {likes[part.id] || 0}
+                                                    <Heart size={10} fill={liked[part.id.toString()] ? "currentColor" : "none"} />
+                                                    {likes[part.id.toString()] || 0}
                                                 </div>
                                             </div>
                                             <span className="text-2xl font-bold text-white">{part.price}</span>

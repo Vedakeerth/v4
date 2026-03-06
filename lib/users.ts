@@ -1,7 +1,6 @@
-import fs from 'fs';
-import path from 'path';
+import { adminDb } from "./firebaseAdmin";
 
-export type UserRole = 'SUPER_ADMIN' | 'USER';
+export type UserRole = "SUPER_ADMIN" | "USER";
 
 export interface User {
     id: string;
@@ -9,93 +8,98 @@ export interface User {
     email: string;
     password?: string;
     role: UserRole;
+    createdAt?: string;
 }
 
-const usersFilePath = path.join(process.cwd(), 'data', 'users.json');
+const USERS_COLLECTION = "users";
 
-export function getUsers(): User[] {
+export async function getUsers(): Promise<User[]> {
     try {
-        if (!fs.existsSync(usersFilePath)) {
-            const dir = path.dirname(usersFilePath);
-            if (!fs.existsSync(dir)) {
-                fs.mkdirSync(dir, { recursive: true });
-            }
-            // Super Admin should be created via env or manual seeding if file doesn't exist
-            // For now, we assume the file is initialized as it was done in our setup.
-            return [];
-        }
-        const fileContent = fs.readFileSync(usersFilePath, 'utf8');
-        return JSON.parse(fileContent) as User[];
+        const snapshot = await adminDb.collection(USERS_COLLECTION).get();
+        return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as User));
     } catch (error) {
-        console.error("Error reading users:", error);
+        console.error("Error reading users from Firestore:", error);
         return [];
     }
 }
 
-export function saveUsers(users: User[]): void {
+export async function getUserByEmail(email: string): Promise<User | undefined> {
     try {
-        const dir = path.dirname(usersFilePath);
-        if (!fs.existsSync(dir)) {
-            fs.mkdirSync(dir, { recursive: true });
-        }
-        fs.writeFileSync(usersFilePath, JSON.stringify(users, null, 2), 'utf8');
+        const snapshot = await adminDb
+            .collection(USERS_COLLECTION)
+            .where("email", "==", email.toLowerCase())
+            .limit(1)
+            .get();
+
+        if (snapshot.empty) return undefined;
+        const doc = snapshot.docs[0];
+        return { id: doc.id, ...doc.data() } as User;
     } catch (error) {
-        console.error("Error saving users:", error);
+        console.error("Error fetching user by email:", error);
+        return undefined;
     }
 }
 
-export function getUserByEmail(email: string): User | undefined {
-    const users = getUsers();
-    return users.find(u => u.email.toLowerCase() === email.toLowerCase());
+export async function addUser(
+    user: Omit<User, "id">
+): Promise<{ success: boolean; error?: string }> {
+    try {
+        // Check if user already exists
+        const existing = await getUserByEmail(user.email);
+        if (existing) {
+            return { success: false, error: "User already exists" };
+        }
+
+        // Enforce 5 user limit (excluding Super Admin)
+        if (user.role === "USER") {
+            const allUsers = await getUsers();
+            const regularUsers = allUsers.filter((u) => u.role === "USER");
+            if (regularUsers.length >= 5) {
+                return { success: false, error: "Maximum limit of 5 users reached" };
+            }
+        }
+
+        await adminDb.collection(USERS_COLLECTION).add({
+            ...user,
+            email: user.email.toLowerCase(),
+            createdAt: new Date().toISOString(),
+        });
+
+        return { success: true };
+    } catch (error) {
+        console.error("Error adding user:", error);
+        return { success: false, error: "Failed to add user" };
+    }
 }
 
-export function addUser(user: Omit<User, 'id'>): { success: boolean; error?: string } {
-    const users = getUsers();
+export async function deleteUser(id: string): Promise<boolean> {
+    try {
+        const doc = await adminDb.collection(USERS_COLLECTION).doc(id).get();
+        if (!doc.exists) return false;
 
-    // Check if user already exists
-    if (users.some(u => u.email.toLowerCase() === user.email.toLowerCase())) {
-        return { success: false, error: "User already exists" };
-    }
+        const userData = doc.data() as User;
+        if (userData.role === "SUPER_ADMIN") return false;
 
-    // Enforce 5 user limit (excluding Super Admin)
-    const regularUsers = users.filter(u => u.role === 'USER');
-    if (user.role === 'USER' && regularUsers.length >= 5) {
-        return { success: false, error: "Maximum limit of 5 users reached" };
-    }
-
-    const newUser = {
-        ...user,
-        id: `u_${Date.now()}`
-    };
-
-    users.push(newUser);
-    saveUsers(users);
-    return { success: true };
-}
-
-export function deleteUser(id: string): boolean {
-    const users = getUsers();
-    const index = users.findIndex(u => u.id === id);
-
-    // Don't allow deleting the last Super Admin if we want to be safe, 
-    // but here we just follow the command.
-    if (index !== -1 && users[index].role !== 'SUPER_ADMIN') {
-        users.splice(index, 1);
-        saveUsers(users);
+        await adminDb.collection(USERS_COLLECTION).doc(id).delete();
         return true;
+    } catch (error) {
+        console.error("Error deleting user:", error);
+        return false;
     }
-    return false;
 }
 
-export function updateUser(id: string, updates: Partial<User>): boolean {
-    const users = getUsers();
-    const index = users.findIndex(u => u.id === id);
-    if (index !== -1) {
-        // Prevent role change via simple update if not careful? 
-        // For now, allow any updates passed.
-        users[index] = { ...users[index], ...updates };
-        saveUsers(users);
+export async function updateUser(
+    id: string,
+    updates: Partial<User>
+): Promise<boolean> {
+    try {
+        const doc = await adminDb.collection(USERS_COLLECTION).doc(id).get();
+        if (!doc.exists) return false;
+
+        await adminDb.collection(USERS_COLLECTION).doc(id).update(updates);
         return true;
+    } catch (error) {
+        console.error("Error updating user:", error);
+        return false;
     }
-    return false;
 }

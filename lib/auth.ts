@@ -1,8 +1,11 @@
 import { getServerSession } from "next-auth/next";
 import { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+import CredentialsProvider from "next-auth/providers/credentials";
+import bcrypt from "bcryptjs";
+import { getUserByEmail } from "./users";
 
-const adminEmails = (process.env.ADMIN_EMAILS || "").split(",").map((e) => e.trim().toLowerCase());
+const ADMIN_EMAIL = "vaelinsa@gmail.com";
 
 export const authOptions: NextAuthOptions = {
     providers: [
@@ -10,18 +13,63 @@ export const authOptions: NextAuthOptions = {
             clientId: process.env.GOOGLE_CLIENT_ID!,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
         }),
+        CredentialsProvider({
+            name: "Credentials",
+            credentials: {
+                email: { label: "Email", type: "email" },
+                password: { label: "Password", type: "password" },
+            },
+            async authorize(credentials) {
+                if (!credentials?.email || !credentials?.password) return null;
+
+                const user = await getUserByEmail(credentials.email);
+                if (user && user.password) {
+                    const isValid = await bcrypt.compare(
+                        credentials.password,
+                        user.password
+                    );
+                    if (isValid) {
+                        return {
+                            id: user.id,
+                            name: user.name,
+                            email: user.email,
+                            role: user.role,
+                        };
+                    }
+                }
+                return null;
+            },
+        }),
     ],
     callbacks: {
-        async signIn({ user }) {
+        async signIn({ user, account }) {
             const email = user.email?.toLowerCase() ?? "";
-            // Only allow emails listed in ADMIN_EMAILS
-            return adminEmails.includes(email);
+
+            if (account?.provider === "google") {
+                // Only the admin email can sign in via Google
+                if (email === ADMIN_EMAIL) return true;
+
+                // Check if user is an approved user in Firestore
+                const firestoreUser = await getUserByEmail(email);
+                return !!firestoreUser;
+            }
+
+            if (account?.provider === "credentials") {
+                // Credentials login — authorize() already validated
+                return true;
+            }
+
+            return false;
         },
-        async jwt({ token, user }) {
-            if (user?.email) {
-                const email = user.email.toLowerCase();
-                // First email in the list is SUPER_ADMIN, rest are USER
-                token.role = email === adminEmails[0] ? "SUPER_ADMIN" : "USER";
+        async jwt({ token, user, account }) {
+            if (user) {
+                const email = user.email?.toLowerCase() ?? "";
+
+                if (account?.provider === "google") {
+                    token.role = email === ADMIN_EMAIL ? "SUPER_ADMIN" : "USER";
+                } else {
+                    token.role = (user as any).role || "USER";
+                }
                 token.id = user.id;
             }
             return token;

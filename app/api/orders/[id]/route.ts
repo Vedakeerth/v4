@@ -1,29 +1,36 @@
 import { NextResponse } from "next/server";
-import { updateOrder } from "@/lib/orders";
-import { getServerSession } from "next-auth";
+import { adminDb } from "@/lib/firebaseAdmin";
+import { isAuthenticated } from "@/lib/auth";
 
 export async function PATCH(
     req: Request,
     { params }: { params: Promise<{ id: string }> }
 ) {
+    const { id } = await params;
     try {
-        const { id } = await params;
-        const session = await getServerSession();
-        if (!session) {
+        const authenticated = await isAuthenticated();
+        if (!authenticated) {
             return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
         }
 
         const body = await req.json();
         const { status } = body;
 
-        const success = updateOrder(id, { status });
+        const docRef = adminDb.collection('orders').doc(id);
+        const doc = await docRef.get();
 
-        if (success) {
-            return NextResponse.json({ success: true });
-        } else {
+        if (!doc.exists) {
             return NextResponse.json({ success: false, message: "Order not found" }, { status: 404 });
         }
+
+        await docRef.set({
+            status,
+            updatedAt: new Date().toISOString()
+        }, { merge: true });
+
+        return NextResponse.json({ success: true });
     } catch (error) {
+        console.error(`Error updating order ${id}:`, error);
         return NextResponse.json({ success: false, message: "Failed to update order" }, { status: 500 });
     }
 }

@@ -1,42 +1,34 @@
-import catalogsData from '../data/catalogs.json';
+import { adminDb } from './firebaseAdmin';
 
 export interface Catalog {
     id: string;
     name: string;
     description: string;
-    productIds: number[];
+    productIds: string[];
     createdAt: string;
     updatedAt: string;
     isActive: boolean;
 }
 
-export function getCatalogs(): Catalog[] {
-    return (Array.isArray(catalogsData) ? catalogsData : []) as Catalog[];
+export async function getCatalogs(): Promise<Catalog[]> {
+    const snapshot = await adminDb.collection('catalogs').get();
+    return snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+    })) as Catalog[];
 }
 
-export async function saveCatalogs(catalogs: Catalog[]): Promise<void> {
-    if (typeof window === 'undefined') {
-        const fs = await import('fs');
-        const path = await import('path');
-        const filePath = path.join(process.cwd(), 'data', 'catalogs.json');
-
-        const dir = path.dirname(filePath);
-        if (!fs.existsSync(dir)) {
-            fs.mkdirSync(dir, { recursive: true });
-        }
-        fs.writeFileSync(filePath, JSON.stringify(catalogs, null, 2));
-    }
+export async function getCatalogById(id: string): Promise<Catalog | null> {
+    const doc = await adminDb.collection('catalogs').doc(id).get();
+    if (!doc.exists) return null;
+    return {
+        id: doc.id,
+        ...doc.data()
+    } as Catalog;
 }
 
-export function getCatalogById(id: string): Catalog | null {
-    const catalogs = getCatalogs();
-    return catalogs.find(c => c.id === id) || null;
-}
-
-export async function createCatalog(name: string, description: string, productIds: number[] = []): Promise<Catalog> {
-    const catalogs = getCatalogs();
-    const newCatalog: Catalog = {
-        id: `catalog-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
+export async function createCatalog(name: string, description: string, productIds: string[] = []): Promise<Catalog> {
+    const newCatalog: Omit<Catalog, 'id'> = {
         name,
         description,
         productIds,
@@ -44,29 +36,39 @@ export async function createCatalog(name: string, description: string, productId
         updatedAt: new Date().toISOString(),
         isActive: true,
     };
-    catalogs.push(newCatalog);
-    await saveCatalogs(catalogs);
-    return newCatalog;
+    const docRef = await adminDb.collection('catalogs').add(newCatalog);
+    return {
+        id: docRef.id,
+        ...newCatalog
+    };
 }
 
 export async function updateCatalog(id: string, updates: Partial<Catalog>): Promise<Catalog | null> {
-    const catalogs = getCatalogs();
-    const index = catalogs.findIndex(c => c.id === id);
-    if (index === -1) return null;
+    const catalogRef = adminDb.collection('catalogs').doc(id);
+    const doc = await catalogRef.get();
+    if (!doc.exists) return null;
 
-    catalogs[index] = {
-        ...catalogs[index],
+    const finalUpdates = {
         ...updates,
         updatedAt: new Date().toISOString(),
     };
-    await saveCatalogs(catalogs);
-    return catalogs[index];
+
+    // We don't want to overwrite the ID if it's in the updates
+    delete finalUpdates.id;
+
+    await catalogRef.update(finalUpdates);
+
+    const updatedDoc = await catalogRef.get();
+    return {
+        id: updatedDoc.id,
+        ...updatedDoc.data()
+    } as Catalog;
 }
 
 export async function deleteCatalog(id: string): Promise<boolean> {
-    const catalogs = getCatalogs();
-    const filtered = catalogs.filter(c => c.id !== id);
-    if (filtered.length === catalogs.length) return false;
-    await saveCatalogs(filtered);
+    const catalogRef = adminDb.collection('catalogs').doc(id);
+    const doc = await catalogRef.get();
+    if (!doc.exists) return false;
+    await catalogRef.delete();
     return true;
 }

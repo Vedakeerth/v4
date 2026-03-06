@@ -5,26 +5,31 @@ import { useEffect } from "react";
 export default function FaviconSwitcher() {
   useEffect(() => {
     const updateFavicon = () => {
-      // Check if we're in dark mode (system preference or class on html)
+      // Check for dark mode
       const isDarkMode =
         (window.matchMedia &&
           window.matchMedia("(prefers-color-scheme: dark)").matches) ||
         document.documentElement.classList.contains("dark");
 
-      // Find existing favicon link or create one
-      let faviconLink = document.querySelector("link[rel='icon']") as HTMLLinkElement;
-      
-      if (!faviconLink) {
-        faviconLink = document.createElement("link");
-        faviconLink.rel = "icon";
-        document.head.appendChild(faviconLink);
-      }
+      const iconPath = isDarkMode
+        ? "/images/favicon-wing.png"
+        : "/images/favicon-wing-1.png";
 
-      // Set the appropriate favicon based on theme
-      if (isDarkMode) {
-        faviconLink.href = "/images/tag-w.png";
+      // Find ALL icon link elements (Next.js can create multiple)
+      const faviconLinks = document.querySelectorAll(
+        "link[rel='icon'], link[rel='shortcut icon'], link[rel='apple-touch-icon']"
+      );
+
+      if (faviconLinks.length > 0) {
+        faviconLinks.forEach((link) => {
+          (link as HTMLLinkElement).href = iconPath;
+        });
       } else {
-        faviconLink.href = "/images/tag-b.png";
+        // Fallback: create one if none found
+        const link = document.createElement("link");
+        link.rel = "icon";
+        link.href = iconPath;
+        document.head.appendChild(link);
       }
     };
 

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { signIn, useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
@@ -11,8 +11,15 @@ export default function SecureLoginPage() {
     const router = useRouter();
     const { status } = useSession();
     const [isLoading, setIsLoading] = useState(false);
+    const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const searchParams = useSearchParams();
     const error = searchParams.get("error");
+
+    // Form state
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [formError, setFormError] = useState("");
 
     useEffect(() => {
         if (status === "authenticated") {
@@ -21,8 +28,37 @@ export default function SecureLoginPage() {
     }, [status, router]);
 
     const handleGoogleSignIn = async () => {
+        setIsGoogleLoading(true);
+        try {
+            await signIn("google", { callbackUrl: "/secure-management-portal/dashboard" });
+        } catch (err) {
+            setIsGoogleLoading(false);
+        }
+    };
+
+    const handleCredentialsSignIn = async (e: React.FormEvent) => {
+        e.preventDefault();
         setIsLoading(true);
-        await signIn("google", { callbackUrl: "/secure-management-portal/dashboard" });
+        setFormError("");
+
+        try {
+            const result = await signIn("credentials", {
+                email,
+                password,
+                redirect: false,
+                callbackUrl: "/secure-management-portal/dashboard"
+            });
+
+            if (result?.error) {
+                setFormError("Invalid email or password");
+                setIsLoading(false);
+            } else {
+                router.push("/secure-management-portal/dashboard");
+            }
+        } catch (err) {
+            setFormError("An unexpected error occurred");
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -37,23 +73,74 @@ export default function SecureLoginPage() {
                         <p className="text-slate-400 text-sm">Secure Management Portal</p>
                     </div>
 
-                    {error && (
+                    {(error || formError) && (
                         <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg flex items-center gap-2 text-red-400">
                             <AlertCircle className="h-5 w-5 shrink-0" />
                             <span className="text-sm">
-                                {error === "AccessDenied"
-                                    ? "Access denied. Your Google account is not authorized."
-                                    : "Sign-in failed. Please try again."}
+                                {formError || (error === "AccessDenied"
+                                    ? "Access denied. Your account is not authorized."
+                                    : "Sign-in failed. Please try again.")}
                             </span>
                         </div>
                     )}
 
+                    <form onSubmit={handleCredentialsSignIn} className="space-y-4 mb-8">
+                        <div className="space-y-1">
+                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Email Address</label>
+                            <input
+                                required
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                className="w-full px-5 py-3.5 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500 transition-all font-bold text-sm"
+                                placeholder="admin@vaelinsa.com"
+                            />
+                        </div>
+                        <div className="space-y-1">
+                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Password</label>
+                            <div className="relative">
+                                <input
+                                    required
+                                    type={showPassword ? "text" : "password"}
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    className="w-full px-5 py-3.5 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500 transition-all font-bold text-sm"
+                                    placeholder="••••••••"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-cyan-400 transition-colors"
+                                >
+                                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                </button>
+                            </div>
+                        </div>
+                        <button
+                            type="submit"
+                            disabled={isLoading}
+                            className="w-full py-4 bg-cyan-500 hover:bg-cyan-400 disabled:opacity-50 disabled:cursor-not-allowed text-slate-950 font-black rounded-xl transition-all duration-200 flex items-center justify-center gap-3 shadow-lg uppercase tracking-widest text-xs mt-2"
+                        >
+                            {isLoading ? (
+                                <div className="h-5 w-5 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
+                            ) : (
+                                "Login with Password"
+                            )}
+                        </button>
+                    </form>
+
+                    <div className="relative flex items-center gap-4 mb-8">
+                        <div className="flex-1 border-t border-slate-800"></div>
+                        <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest bg-slate-900 px-2 relative -top-[1px]">OR</span>
+                        <div className="flex-1 border-t border-slate-800"></div>
+                    </div>
+
                     <button
                         onClick={handleGoogleSignIn}
-                        disabled={isLoading}
+                        disabled={isGoogleLoading}
                         className="w-full py-4 bg-white hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed text-slate-900 font-black rounded-xl transition-all duration-200 flex items-center justify-center gap-3 shadow-lg uppercase tracking-widest text-xs"
                     >
-                        {isLoading ? (
+                        {isGoogleLoading ? (
                             <div className="h-5 w-5 border-2 border-slate-900 border-t-transparent rounded-full animate-spin" />
                         ) : (
                             <>

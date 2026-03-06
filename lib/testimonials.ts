@@ -1,34 +1,31 @@
-import testimonialsData from '../data/testimonials.json';
+import { adminDb } from './firebaseAdmin';
 
 export interface Testimonial {
-    id: number;
+    id: string;
     name: string;
     role: string;
     company: string;
     rating: number;
     text: string;
+    image?: string;
+    createdAt?: string;
 }
 
-export function getTestimonials(): Testimonial[] {
-    return (testimonialsData || []) as Testimonial[];
-}
-
-export async function saveTestimonials(testimonials: Testimonial[]): Promise<void> {
+export async function getTestimonials(): Promise<Testimonial[]> {
     if (typeof window === 'undefined') {
-        const fs = await import('fs');
-        const path = await import('path');
-        const filePath = path.join(process.cwd(), 'data', 'testimonials.json');
-
-        const dir = path.dirname(filePath);
-        if (!fs.existsSync(dir)) {
-            fs.mkdirSync(dir, { recursive: true });
+        try {
+            const snapshot = await adminDb.collection('testimonials').orderBy('createdAt', 'desc').get();
+            return snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            } as Testimonial));
+        } catch (error) {
+            console.error('Error fetching testimonials from Firestore:', error);
+            return [];
         }
-
-        fs.writeFileSync(filePath, JSON.stringify(testimonials, null, 2), 'utf8');
+    } else {
+        const res = await fetch('/api/testimonials');
+        const data = await res.json();
+        return data.testimonials || [];
     }
-}
-
-export function getNextTestimonialId(testimonials: Testimonial[]): number {
-    if (testimonials.length === 0) return 1;
-    return Math.max(...testimonials.map(t => t.id)) + 1;
 }

@@ -8,7 +8,8 @@ import { getSEOData } from "@/lib/seo";
 import { Metadata } from 'next';
 
 export async function generateMetadata(): Promise<Metadata> {
-    const seo = getSEOData().catalog;
+    const seoData = await getSEOData();
+    const seo = seoData.catalog;
     return {
         title: seo?.title || "Catalog - VAELINSA",
         description: seo?.description,
@@ -18,7 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function CatalogPage() {
     const pageData = await getPageContent('catalog');
-    const products = getProducts();
+    const products = await getProducts();
 
     return (
         <main className="min-h-screen bg-slate-950 pt-24">

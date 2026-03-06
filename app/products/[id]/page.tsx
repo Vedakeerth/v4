@@ -13,8 +13,8 @@ interface PageProps {
 export default async function ProductDetailPage({ params }: PageProps) {
     const { id } = await params;
     const pageData = await getPageContent('product-detail');
-    const allProducts = getProducts();
-    const product = allProducts.find(p => p.id === Number(id));
+    const allProducts = await getProducts();
+    const product = allProducts.find(p => p.id === id);
 
     if (!product) {
         return (

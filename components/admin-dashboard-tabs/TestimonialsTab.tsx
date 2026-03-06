@@ -59,7 +59,7 @@ export default function TestimonialsTab() {
         }
     };
 
-    const handleDelete = async (id: number) => {
+    const handleDelete = async (id: string | number) => {
         if (!confirm("Delete this testimonial?")) return;
         try {
             const res = await fetch(`/api/testimonials/${id}`, { method: "DELETE" });

@@ -31,9 +31,9 @@ export default function QuotePage() {
                     </div>
                 ) : (
                     <>
-                        <h1 className="text-4xl md:text-5xl font-bold text-white mb-8 text-center">Instant 3D Printing Quote</h1>
+                        <h1 className="text-4xl md:text-5xl font-bold text-white mb-8 text-center">AI 3D Printing Quote</h1>
                         <p className="text-slate-400 text-center max-w-2xl mx-auto mb-12">
-                            Upload your STL file to get an instant cost calculation based on your material and quality needs.
+                            Upload your STL file to get an AI cost calculation based on your material and quality needs.
                         </p>
                         <QuoteCalculator />
                     </>

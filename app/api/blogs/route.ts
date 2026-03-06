@@ -1,10 +1,28 @@
 import { NextResponse } from 'next/server';
-import { getBlogs, saveBlogs, BlogPost } from '@/lib/blogs';
+import { adminDb } from '@/lib/firebaseAdmin';
 import { isAuthenticated } from '@/lib/auth';
 
+export interface BlogPost {
+    id: string;
+    title: string;
+    content: string;
+    slug: string;
+    author: string;
+    date: string;
+    category: string;
+    image: string;
+    tags?: string[];
+    createdAt?: string;
+}
+
+// GET all blogs
 export async function GET() {
     try {
-        const blogs = getBlogs();
+        const snapshot = await adminDb.collection('blogs').orderBy('createdAt', 'desc').get();
+        const blogs = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }));
         return NextResponse.json({ success: true, blogs });
     } catch (error) {
         console.error('Error fetching blogs:', error);
@@ -12,6 +30,7 @@ export async function GET() {
     }
 }
 
+// POST - Create new blog (requires auth)
 export async function POST(req: Request) {
     try {
         const authenticated = await isAuthenticated();
@@ -19,22 +38,23 @@ export async function POST(req: Request) {
             return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
         }
 
-        const blog: BlogPost = await req.json();
-        const blogs = getBlogs();
+        const body = await req.json();
+        const slug = body.slug || body.title.toLowerCase().replace(/ /g, '-').replace(/[^\w-]/g, '');
 
-        // Generate slug if not provided
-        if (!blog.slug) {
-            blog.slug = blog.title.toLowerCase().replace(/ /g, '-').replace(/[^\w-]/g, '');
-        }
+        const newBlog = {
+            ...body,
+            slug,
+            createdAt: new Date().toISOString(),
+            date: new Date().toLocaleDateString('en-GB')
+        };
 
-        if (!blog.id) {
-            blog.id = `blog-${Date.now()}`;
-        }
+        const docRef = await adminDb.collection('blogs').add(newBlog);
 
-        blogs.push(blog);
-        saveBlogs(blogs);
-
-        return NextResponse.json({ success: true, blog, message: 'Blog created successfully' });
+        return NextResponse.json({
+            success: true,
+            blog: { id: docRef.id, ...newBlog },
+            message: 'Blog created successfully'
+        });
     } catch (error) {
         console.error('Error creating blog:', error);
         return NextResponse.json({ success: false, message: 'Failed to create blog' }, { status: 500 });

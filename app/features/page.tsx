@@ -25,7 +25,7 @@ import { getSettings } from "@/lib/settings";
 
 export default async function FeaturesPage() {
   const whyChooseUsContent = await getPageContent('why-choose-us');
-  const products = getProducts();
+  const products = await getProducts();
   const projects = await getProjects();
   const settings = await getSettings();
 

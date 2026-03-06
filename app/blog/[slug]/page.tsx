@@ -19,7 +19,7 @@ export const revalidate = 0;
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
     const { slug } = await params;
-    const blog = getBlogBySlug(slug);
+    const blog = await getBlogBySlug(slug);
     if (!blog) return {};
 
     return {
@@ -45,7 +45,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function BlogDetailPage({ params }: PageProps) {
     const { slug } = await params;
-    const blog = getBlogBySlug(slug);
+    const blog = await getBlogBySlug(slug);
 
     if (!blog) notFound();
 

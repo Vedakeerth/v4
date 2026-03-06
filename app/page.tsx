@@ -27,7 +27,8 @@ import { getBlogs } from "@/lib/blogs";
 export const revalidate = 0; // Ensure dynamic rendering for real-time updates
 
 export async function generateMetadata(): Promise<Metadata> {
-  const seo = getSEOData().home;
+  const seoData = await getSEOData();
+  const seo = seoData.home;
   return {
     title: seo?.title || "VAELINSA",
     description: seo?.description,
@@ -49,11 +50,11 @@ export default async function Home() {
   const whyChooseUsContent = await getPageContent('why-choose-us');
   const testimonialsContent = await getPageContent('testimonials');
 
-  const allProducts = getProducts();
+  const allProducts = await getProducts();
   const popularParts = allProducts.filter(p => p.isPopular).slice(0, 3);
-  const allTestimonials = getTestimonials();
+  const allTestimonials = await getTestimonials();
   const allProjects = await getProjects();
-  const allBlogs = getBlogs();
+  const allBlogs = await getBlogs();
 
   return (
     <main className="min-h-screen bg-slate-950 selection:bg-blue-500/30 selection:text-blue-100 flex flex-col">

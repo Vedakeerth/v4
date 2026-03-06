@@ -101,7 +101,7 @@ export default function ProjectsTab() {
         }
     };
 
-    const handleDelete = async (id: number) => {
+    const handleDelete = async (id: string | number) => {
         if (!confirm("Are you sure you want to delete this project?")) return;
         try {
             const res = await fetch(`/api/projects/${id}`, { method: "DELETE" });

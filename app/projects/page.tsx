@@ -3,10 +3,11 @@ import Image from "next/image";
 import { getProjects } from "@/lib/projects";
 import { Metadata } from 'next';
 
-export const metadata: Metadata = {
-    title: "Projects | VAELINSA",
-    description: "Explore our latest 3D printing and engineering projects.",
-};
+import { getPageMetadata } from "@/lib/seo";
+
+export async function generateMetadata(): Promise<Metadata> {
+    return await getPageMetadata('Projects');
+}
 
 export const revalidate = 0;
 

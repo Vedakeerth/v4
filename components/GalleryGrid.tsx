@@ -14,7 +14,6 @@ import { useCart } from "@/context/CartContext";
 import HotDealsBanner from "./HotDealsBanner";
 import CustomDropdown from "./CustomDropdown";
 
-
 interface GalleryGridProps {
     parts: Product[];
 }
@@ -27,8 +26,8 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
     const [searchQuery, setSearchQuery] = useState("");
     const [sortBy, setSortBy] = useState<SortOption>("default");
     const [onlyInStock, setOnlyInStock] = useState(false);
-    const [hoveredId, setHoveredId] = useState<number | null>(null);
-    const [likedProducts, setLikedProducts] = useState<Set<number>>(new Set());
+    const [hoveredId, setHoveredId] = useState<string | null>(null);
+    const [likedProducts, setLikedProducts] = useState<Set<string>>(new Set());
     const [quotingProduct, setQuotingProduct] = useState<Product | null>(null);
     const [minPrice, setMinPrice] = useState<string>("");
     const [maxPrice, setMaxPrice] = useState<string>("");
@@ -39,10 +38,10 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
     const { addToCart, setIsCartOpen, cartCount } = useCart();
 
     // We'll simulate likes and comments as client-side state for now
-    const [likes, setLikes] = useState<Record<number, number>>(
+    const [likes, setLikes] = useState<Record<string, number>>(
         Object.fromEntries(parts.map((p: Product) => [p.id, p.likes || 0]))
     );
-    const [commentsCount] = useState<Record<number, number>>(
+    const [commentsCount] = useState<Record<string, number>>(
         Object.fromEntries(parts.map((p: Product) => [p.id, 0]))
     );
 
@@ -68,7 +67,6 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
         });
 
         // Sorting logic
-
         switch (sortBy) {
             case "price-low":
                 result.sort((a, b) => getPrice(a.price) - getPrice(b.price));
@@ -96,24 +94,37 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
 
     const totalPages = Math.ceil(filteredAndSortedParts.length / itemsPerPage);
 
-    const handlePartClick = (partId: number) => {
+    const handlePartClick = (partId: string) => {
         router.push(`/products/${partId}`);
     };
 
-    const handleLike = (e: React.MouseEvent, partId: number) => {
+    const handleLike = async (e: React.MouseEvent, partId: string) => {
         e.preventDefault();
         e.stopPropagation();
-        setLikedProducts((prev: Set<number>) => {
+        const isLiked = likedProducts.has(partId);
+
+        // Optimistic update
+        setLikedProducts((prev: Set<string>) => {
             const newSet = new Set(prev);
-            if (newSet.has(partId)) {
+            if (isLiked) {
                 newSet.delete(partId);
-                setLikes((l: Record<number, number>) => ({ ...l, [partId]: Math.max(0, l[partId] - 1) }));
+                setLikes((l: Record<string, number>) => ({ ...l, [partId]: Math.max(0, l[partId] - 1) }));
             } else {
                 newSet.add(partId);
-                setLikes((l: Record<number, number>) => ({ ...l, [partId]: l[partId] + 1 }));
+                setLikes((l: Record<string, number>) => ({ ...l, [partId]: l[partId] + 1 }));
             }
             return newSet;
         });
+
+        try {
+            await fetch(`/api/products/${partId}/like`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ type: isLiked ? 'unlike' : 'like' })
+            });
+        } catch (error) {
+            console.error("Failed to sync like", error);
+        }
     };
 
     const handleShare = (part: Product) => {
@@ -137,7 +148,7 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                     <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500 group-focus-within:text-cyan-400 transition-colors" />
                     <input
                         type="text"
-                        placeholder="Search for precision 3D parts, engineering components, or custom designs..."
+                        placeholder="Search precision parts, components..."
                         value={searchQuery}
                         onChange={(e) => {
                             setSearchQuery(e.target.value);
@@ -160,7 +171,6 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
             </div>
 
             <div className="flex flex-col lg:flex-row gap-8 items-start">
-                {/* Sidebar - Left Side on Desktop */}
                 <aside className="w-full lg:w-80 shrink-0 sticky top-48 space-y-6 z-30">
                     <div className="bg-slate-900/40 border border-slate-800 rounded-2xl p-6 backdrop-blur-md">
                         <div className="flex items-center gap-2 text-white font-bold mb-6 text-lg uppercase tracking-wider">
@@ -168,7 +178,6 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                             Filters
                         </div>
 
-                        {/* Sort By */}
                         <CustomDropdown
                             label="Sort By"
                             value={sortBy}
@@ -183,7 +192,6 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                             className="mb-8"
                         />
 
-                        {/* Category Filter - List View */}
                         <div className="mb-8">
                             <label className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3 block">Categories</label>
                             <div className="space-y-1 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
@@ -208,7 +216,6 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                             </div>
                         </div>
 
-                        {/* Price Filter */}
                         <div className="mb-8">
                             <label className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3 block">Price Range (₹)</label>
                             <div className="flex items-center gap-3">
@@ -240,7 +247,6 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                             </div>
                         </div>
 
-                        {/* Pagination Settings */}
                         <div className="mb-8">
                             <label className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3 block">Items Per Page</label>
                             <div className="flex items-center gap-2">
@@ -264,7 +270,6 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                             </div>
                         </div>
 
-                        {/* Stock Filter */}
                         <div>
                             <label className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4 block">Availability</label>
                             <label className="flex items-center gap-3 cursor-pointer group">
@@ -291,7 +296,6 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                             </label>
                         </div>
 
-                        {/* Reset Button */}
                         {(selectedCategory !== "All" || searchQuery || sortBy !== "default" || onlyInStock || itemsPerPage !== 25 || minPrice || maxPrice) && (
                             <button
                                 onClick={() => {
@@ -312,7 +316,6 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                         )}
                     </div>
 
-                    {/* Info Card */}
                     <div className="bg-gradient-to-br from-indigo-900/40 to-cyan-900/40 border border-cyan-500/20 rounded-2xl p-6 hidden lg:block shadow-lg">
                         <h4 className="text-white font-bold mb-2">Custom Fabrication</h4>
                         <p className="text-cyan-100/60 text-xs leading-relaxed mb-4">
@@ -322,21 +325,18 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                             onClick={() => router.push('/quote')}
                             className="w-full py-2.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 rounded-lg text-xs font-black transition-all shadow-[0_4px_12px_rgba(6,182,212,0.3)]"
                         >
-                            GET INSTANT QUOTE
+                            GET AI QUOTE
                         </button>
                     </div>
                 </aside>
 
-                {/* Main Grid Content */}
                 <div className="flex-1 w-full">
-                    {/* Header Stats */}
                     <div className="flex items-center justify-between mb-8 pb-4 border-b border-slate-900">
                         <div className="text-slate-400 text-sm">
                             Showing <span className="text-white font-bold">{filteredAndSortedParts.length}</span> results
                             {selectedCategory !== "All" && <span> for <span className="text-cyan-400 font-semibold">{selectedCategory}</span></span>}
                         </div>
                         <div className="flex items-center gap-4">
-                            {/* View Mode Toggle */}
                             <div className="flex items-center bg-slate-900/60 p-1 rounded-xl border border-slate-800">
                                 <button
                                     onClick={() => setViewMode("grid")}
@@ -358,9 +358,6 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                                 >
                                     <List className="h-4 w-4" />
                                 </button>
-                            </div>
-                            <div className="hidden lg:flex items-center gap-2 text-slate-500 text-xs font-bold uppercase tracking-widest bg-slate-900/40 px-3 py-1.5 rounded-lg border border-slate-800">
-                                Premium Catalog
                             </div>
                         </div>
                     </div>
@@ -409,7 +406,6 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                                             onMouseLeave={() => setHoveredId(null)}
                                             onClick={() => setSelectedQuickView(part)}
                                         >
-                                            {/* Image Container */}
                                             <div className={cn(
                                                 "relative overflow-hidden bg-slate-950 shrink-0",
                                                 viewMode === "grid" ? "h-60 w-full" : "h-full w-64"
@@ -422,14 +418,12 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                                                 />
                                                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent opacity-60 group-hover:opacity-100 transition-opacity" />
 
-                                                {/* Top Badges */}
                                                 <div className="absolute top-4 left-4 z-20 pointer-events-none">
                                                     <span className="px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest bg-slate-950/80 text-cyan-400 border border-cyan-500/20 backdrop-blur-md">
                                                         {part.category}
                                                     </span>
                                                 </div>
 
-                                                {/* Availability Badge */}
                                                 <div className="absolute bottom-4 left-4 z-20 pointer-events-none">
                                                     <span className={cn(
                                                         "px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest border backdrop-blur-md shadow-lg",
@@ -441,7 +435,6 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                                                     </span>
                                                 </div>
 
-                                                {/* Action Icons - Top Right */}
                                                 <div className="absolute top-4 right-4 flex flex-col gap-2 z-30 opacity-80 group-hover:opacity-100 transition-opacity">
                                                     <button
                                                         onClick={(e) => handleLike(e, part.id)}
@@ -465,7 +458,6 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                                                 </div>
                                             </div>
 
-                                            {/* Info Content */}
                                             <div className="p-5 flex flex-col flex-1 bg-slate-900/20 backdrop-blur-sm">
                                                 <div className="flex-1">
                                                     <h3 className="text-white font-bold text-lg mb-1 leading-tight group-hover:text-cyan-400 transition-colors line-clamp-1">
@@ -474,18 +466,6 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                                                     <p className="text-slate-500 text-xs mb-4 line-clamp-2 leading-relaxed">
                                                         {part.description}
                                                     </p>
-
-                                                    {viewMode === "list" && (
-                                                        <div className="flex gap-2 items-center mb-4">
-                                                            {part.colors?.map(color => (
-                                                                <div
-                                                                    key={color}
-                                                                    className="w-4 h-4 rounded-full border border-slate-700 shadow-sm"
-                                                                    style={{ backgroundColor: color }}
-                                                                />
-                                                            ))}
-                                                        </div>
-                                                    )}
                                                 </div>
 
                                                 <div className="mt-auto pt-4 border-t border-slate-800/50 flex items-center justify-between">
@@ -508,7 +488,7 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                                                             setIsCartOpen(true);
                                                         }}
                                                         className="bg-cyan-500 hover:bg-cyan-400 text-slate-950 p-3.5 rounded-2xl transition-all shadow-[0_4px_12px_rgba(6,182,212,0.3)] hover:shadow-[0_4px_25px_rgba(6,182,212,0.5)] hover:-translate-y-1 active:translate-y-0"
-                                                        title="Add to Quote Cart"
+                                                        title="Add to AI Quote Cart"
                                                     >
                                                         <ShoppingCart className="h-5 w-5" />
                                                     </button>
@@ -519,7 +499,6 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                                 </AnimatePresence>
                             </div>
 
-                            {/* Pagination Controls */}
                             {totalPages > 1 && (
                                 <div className="flex items-center justify-center gap-2 pt-8 border-t border-slate-900">
                                     <button
@@ -560,7 +539,6 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                     )}
                 </div>
 
-                {/* Modals */}
                 {quotingProduct && (
                     <InstantQuoteModal
                         product={quotingProduct}
@@ -575,12 +553,6 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                     />
                 )}
             </div>
-
-
-            {/* Cart Drawer Removed - Now Global in Layout */}
         </div>
     );
 }
-
-
-

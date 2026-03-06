@@ -5,8 +5,8 @@
     },
     "cta": {
         "title": "Need to Print Your Parts?",
-        "description": "Don't see what you're looking for? Upload your custom STL files and get an instant quotation for 3D printing.",
-        "buttonText": "Get a Quotation",
+        "description": "Don't see what you're looking for? Upload your custom STL files and get an AI quotation for 3D printing.",
+        "buttonText": "Get an AI Quote",
         "buttonLink": "/quote"
     }
 }

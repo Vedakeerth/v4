@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { getBlogs, saveBlogs, Comment } from '@/lib/blogs';
+import { adminDb } from '@/lib/firebaseAdmin';
+import { FieldValue } from 'firebase-admin/firestore';
 
 export async function POST(
     req: Request,
@@ -13,26 +14,23 @@ export async function POST(
             return NextResponse.json({ success: false, message: 'Author and text are required' }, { status: 400 });
         }
 
-        const blogs = getBlogs();
-        const blogIndex = blogs.findIndex(b => b.id === id);
+        const blogRef = adminDb.collection('blogs').doc(id);
+        const doc = await blogRef.get();
 
-        if (blogIndex === -1) {
+        if (!doc.exists) {
             return NextResponse.json({ success: false, message: 'Blog not found' }, { status: 404 });
         }
 
-        const blog = blogs[blogIndex];
-        if (!blog.comments) blog.comments = [];
-
-        const newComment: Comment = {
+        const newComment = {
             id: `comment-${Date.now()}`,
             author,
             text,
             date: new Date().toISOString()
         };
 
-        blog.comments.push(newComment);
-        blogs[blogIndex] = blog;
-        saveBlogs(blogs);
+        await blogRef.update({
+            comments: FieldValue.arrayUnion(newComment)
+        });
 
         return NextResponse.json({ success: true, comment: newComment });
     } catch (error) {

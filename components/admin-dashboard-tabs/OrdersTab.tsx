@@ -284,10 +284,23 @@ export default function OrdersTab() {
                                         </h4>
                                         <div className="space-y-4 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
                                             {selectedOrder.items.map((item, idx) => (
-                                                <div key={idx} className="flex justify-between items-center py-2 border-b border-slate-800/50 last:border-0">
+                                                <div key={idx} className="flex justify-between items-center py-3 border-b border-slate-800/50 last:border-0 group/item">
                                                     <div>
-                                                        <p className="text-white text-sm font-bold">{item.name}</p>
-                                                        <p className="text-[10px] text-slate-500 font-bold uppercase">Qty: {item.quantity} {item.selectedColor && `• ${item.selectedColor}`}</p>
+                                                        <div className="flex items-center gap-2">
+                                                            <p className="text-white text-sm font-bold">{item.name}</p>
+                                                            {item.driveFileId && (
+                                                                <a
+                                                                    href={`https://drive.google.com/uc?id=${item.driveFileId}&export=download`}
+                                                                    target="_blank"
+                                                                    rel="noreferrer"
+                                                                    className="p-1.5 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 rounded-lg transition-all border border-cyan-500/20 group-hover/item:border-cyan-500/40"
+                                                                    title="Download/View STL File"
+                                                                >
+                                                                    <Eye size={12} />
+                                                                </a>
+                                                            )}
+                                                        </div>
+                                                        <p className="text-[10px] text-slate-500 font-bold uppercase mt-1">Qty: {item.quantity} {item.selectedColor && `• ${item.selectedColor}`}</p>
                                                     </div>
                                                     <p className="text-white font-black text-sm">{item.price}</p>
                                                 </div>

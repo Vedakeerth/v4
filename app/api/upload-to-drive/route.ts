@@ -69,7 +69,7 @@ async function getOrCreateFolder(
     try {
         // Escape single quotes in folder name for query
         const escapedFolderName = folderName.replace(/'/g, "\\'");
-        
+
         // Search for existing folder - MUST search in Shared Drives
         let query = `name='${escapedFolderName}' and trashed=false and mimeType='application/vnd.google-apps.folder'`;
         if (parentId) {
@@ -122,7 +122,7 @@ async function getOrCreateFolder(
             name: folderName,
             mimeType: 'application/vnd.google-apps.folder',
         };
-        
+
         if (parentId) {
             folderMetadata.parents = [parentId];
             // Check if parent is in Shared Drive
@@ -181,7 +181,7 @@ export async function uploadFileToDrive(
         });
 
         const isFolderInSharedDrive = !!folderInfo.data.driveId;
-        
+
         if (!isFolderInSharedDrive) {
             throw new Error('Cannot upload to personal Drive folder. The folder must be in a Shared Drive. Please ensure the folder ID is from a Shared Drive.');
         }
@@ -221,17 +221,17 @@ export async function uploadFileToDrive(
         return uploadedFile.data.id;
     } catch (error: any) {
         console.error('Error uploading file directly to Drive:', error);
-        
+
         // Check for storage quota error
         const errorMessage = error.message || error.toString() || '';
         if (errorMessage.includes('storage quota') || errorMessage.includes('Service Accounts do not have storage quota')) {
             throw new Error('Service Accounts do not have storage quota. The folder must be inside a Shared Drive. Please create a Shared Drive and add the service account to it.');
         }
-        
+
         if (errorMessage.includes('Cannot upload to personal Drive')) {
             throw error; // Re-throw our custom error
         }
-        
+
         throw error;
     }
 }
@@ -243,7 +243,7 @@ export async function POST(request: NextRequest) {
             console.error('Missing GOOGLE_SERVICE_ACCOUNT_EMAIL');
             return NextResponse.json(
                 { success: false, error: 'Server configuration error: GOOGLE_SERVICE_ACCOUNT_EMAIL is missing. Please check your .env.local file.' },
-                { 
+                {
                     status: 500,
                     headers: {
                         'Content-Type': 'application/json',
@@ -251,12 +251,12 @@ export async function POST(request: NextRequest) {
                 }
             );
         }
-        
+
         if (!process.env.GOOGLE_PRIVATE_KEY) {
             console.error('Missing GOOGLE_PRIVATE_KEY');
             return NextResponse.json(
                 { success: false, error: 'Server configuration error: GOOGLE_PRIVATE_KEY is missing. Please check your .env.local file.' },
-                { 
+                {
                     status: 500,
                     headers: {
                         'Content-Type': 'application/json',
@@ -273,7 +273,7 @@ export async function POST(request: NextRequest) {
             console.error('Error parsing form data:', error);
             return NextResponse.json(
                 { success: false, error: 'Invalid request format' },
-                { 
+                {
                     status: 400,
                     headers: {
                         'Content-Type': 'application/json',
@@ -299,7 +299,7 @@ export async function POST(request: NextRequest) {
 
         // Extract files - handle both indexed and direct file inputs
         const files: File[] = [];
-        
+
         // Try indexed files first (file0, file1, etc.)
         for (let i = 0; i < MAX_FILES; i++) {
             const file = formData.get(`file${i}`) as File | null;
@@ -307,7 +307,7 @@ export async function POST(request: NextRequest) {
                 files.push(file);
             }
         }
-        
+
         // If no indexed files found, try 'files' array or direct 'file' field
         if (files.length === 0) {
             const filesField = formData.getAll('files');
@@ -329,7 +329,7 @@ export async function POST(request: NextRequest) {
         if (files.length > MAX_FILES) {
             return NextResponse.json(
                 { success: false, error: `Maximum ${MAX_FILES} files allowed` },
-                { 
+                {
                     status: 400,
                     headers: {
                         'Content-Type': 'application/json',
@@ -361,7 +361,7 @@ export async function POST(request: NextRequest) {
             if (file.size > MAX_FILE_SIZE) {
                 return NextResponse.json(
                     { success: false, error: `File "${file.name}" exceeds maximum size of 25MB` },
-                    { 
+                    {
                         status: 400,
                         headers: {
                             'Content-Type': 'application/json',
@@ -374,7 +374,7 @@ export async function POST(request: NextRequest) {
             if (!isValidExtension(file.name)) {
                 return NextResponse.json(
                     { success: false, error: `File "${file.name}" has invalid extension. Allowed: ${ALLOWED_EXTENSIONS.join(', ')}` },
-                    { 
+                    {
                         status: 400,
                         headers: {
                             'Content-Type': 'application/json',
@@ -391,7 +391,7 @@ export async function POST(request: NextRequest) {
                 if (ext !== '.stl') {
                     return NextResponse.json(
                         { success: false, error: `File "${file.name}" has invalid MIME type. Only STL files are allowed.` },
-                        { 
+                        {
                             status: 400,
                             headers: {
                                 'Content-Type': 'application/json',
@@ -404,19 +404,19 @@ export async function POST(request: NextRequest) {
 
         // Initialize Google Drive API with proper authentication
         let privateKey = process.env.GOOGLE_PRIVATE_KEY || '';
-        
+
         if (!privateKey) {
             throw new Error('GOOGLE_PRIVATE_KEY environment variable is missing');
         }
-        
+
         // Handle different private key formats
         if (privateKey.includes('\\n')) {
             privateKey = privateKey.replace(/\\n/g, '\n');
         }
-        
+
         // Remove surrounding quotes if present (but preserve newlines)
         privateKey = privateKey.replace(/^["']|["']$/g, '');
-        
+
         // Validate private key format
         if (!privateKey.includes('BEGIN PRIVATE KEY') || !privateKey.includes('END PRIVATE KEY')) {
             throw new Error('Invalid GOOGLE_PRIVATE_KEY format. Private key must include BEGIN/END markers.');
@@ -438,7 +438,7 @@ export async function POST(request: NextRequest) {
                     'https://www.googleapis.com/auth/drive',
                 ],
             });
-            
+
             // Test authentication by getting access token (lazy load, don't await)
             // The token will be fetched automatically on first API call
         } catch (authError: any) {
@@ -451,7 +451,7 @@ export async function POST(request: NextRequest) {
 
         // Check if using Shared Drive (supportsAllDrives = true)
         const supportsAllDrives = true;
-        
+
         // Get root folder ID from environment variable (can be Shared Drive ID or folder ID)
         // If provided, the "Uploads" folder will be created inside this folder
         const rootFolderId = process.env.GOOGLE_ROOT_FOLDER_ID || process.env.GOOGLE_SHARED_DRIVE_ID || null;
@@ -474,18 +474,18 @@ export async function POST(request: NextRequest) {
                         pageSize: 10,
                         fields: 'drives(id, name)',
                     });
-                    
+
                     console.log('Shared Drives response:', JSON.stringify(drivesResponse.data, null, 2));
-                    
+
                     if (drivesResponse.data.drives && drivesResponse.data.drives.length > 0) {
                         const firstDrive = drivesResponse.data.drives[0];
                         console.log('Found Shared Drive:', firstDrive.name, firstDrive.id);
                         const sharedDriveId: string | null = firstDrive.id ? String(firstDrive.id) : null;
-                        
+
                         if (!sharedDriveId) {
                             throw new Error('Shared Drive ID is required but was not found');
                         }
-                        
+
                         // First, try to find existing "Uploads" folder in Shared Drive
                         const searchQuery = `name='Uploads' and trashed=false and mimeType='application/vnd.google-apps.folder'`;
                         const searchResponse = await drive.files.list({
@@ -497,7 +497,7 @@ export async function POST(request: NextRequest) {
                             driveId: sharedDriveId,
                             spaces: 'drive',
                         });
-                        
+
                         if (searchResponse.data.files && searchResponse.data.files.length > 0) {
                             const foundFolder = searchResponse.data.files[0];
                             const foundFolderId = foundFolder?.id;
@@ -518,18 +518,18 @@ export async function POST(request: NextRequest) {
                                 supportsAllDrives: true,
                                 driveId: sharedDriveId,
                             };
-                            
+
                             const uploadsFolder = await drive.files.create(createParams);
-                            
+
                             if (!uploadsFolder.data || !uploadsFolder.data.id) {
                                 throw new Error('Failed to create Uploads folder in Shared Drive');
                             }
-                            
+
                             const createdFolderId = uploadsFolder.data.id;
                             if (!createdFolderId || typeof createdFolderId !== 'string') {
                                 throw new Error('Invalid folder ID returned from Google Drive');
                             }
-                            
+
                             uploadsFolderId = createdFolderId;
                             console.log('Created Uploads folder in Shared Drive:', uploadsFolderId);
                         }
@@ -539,11 +539,11 @@ export async function POST(request: NextRequest) {
                 } catch (drivesError: any) {
                     console.error('Error accessing Shared Drives:', drivesError);
                     const errorMessage = drivesError.message || drivesError.toString() || '';
-                    
+
                     if (errorMessage.includes('No Shared Drives found')) {
                         throw new Error('No Shared Drives found. Please:\n1. Go to Google Drive → "Shared drives"\n2. Click "New" to create a Shared Drive\n3. Add service account: drive-upload-service@instant-quotation-website.iam.gserviceaccount.com\n4. Set permission to "Content Manager"\n5. Restart server and try again');
                     }
-                    
+
                     throw new Error(`Failed to access Google Drive: ${errorMessage}\n\nPlease ensure:\n1. A Shared Drive exists\n2. The service account has access to it\n3. Google Drive API is enabled in your Google Cloud project\n4. The service account email is: drive-upload-service@instant-quotation-website.iam.gserviceaccount.com`);
                 }
             } else {
@@ -561,7 +561,7 @@ export async function POST(request: NextRequest) {
                 console.log('Root folder is in Shared Drive:', rootFolderInfo.data.driveId);
                 uploadsFolderId = await getOrCreateFolder(drive, rootFolderId, 'Uploads', supportsAllDrives);
             }
-            
+
             // Verify Uploads folder is in Shared Drive
             const uploadsFolderInfo = await drive.files.get({
                 fileId: uploadsFolderId,
@@ -578,20 +578,20 @@ export async function POST(request: NextRequest) {
             // If Uploads folder creation fails, check if it's the storage quota error
             console.error('Failed to create/find Uploads folder:', error);
             console.error('Error details:', JSON.stringify(error, null, 2));
-            
+
             const errorMessage = error.message || error.toString() || '';
-            
+
             if (errorMessage.includes('storage quota') || errorMessage.includes('Service Accounts do not have storage quota')) {
                 throw new Error('Service Accounts do not have storage quota. Please ensure:\n1. The folder ID you provided is inside a Shared Drive (not personal Drive)\n2. Create a Shared Drive and add the service account to it\n3. Use the Shared Drive ID or a folder inside the Shared Drive\n\nSee SHARED_DRIVE_SETUP.md for detailed instructions.');
             }
-            
+
             if (errorMessage.includes('NOT in a Shared Drive')) {
                 throw error; // Re-throw our custom error
             }
-            
+
             throw new Error(`Failed to access Google Drive: ${errorMessage}\n\nPlease ensure:\n1. The folder is in a Shared Drive (not personal Drive)\n2. The service account has "Content Manager" or "Manager" access\n3. The folder ID is correct\n4. Google Drive API is enabled in your Google Cloud project`);
         }
-        
+
         const orderFolderName = `Order_${orderId}`;
         const orderFolderId = await getOrCreateFolder(drive, uploadsFolderId, orderFolderName, supportsAllDrives);
         const userFolderName = `${sanitizeFilename(fullName)}_${phone}`;
@@ -600,12 +600,12 @@ export async function POST(request: NextRequest) {
         // Upload files STRAIGHT to Google Drive
         // File → Buffer → Stream → Google Drive (direct upload, no temp files)
         const uploadedFiles: Array<{ name: string; id: string; size: number }> = [];
-        
+
         for (const file of files) {
             const sanitizedFullName = sanitizeFilename(fullName);
             const sanitizedOriginalName = sanitizeFilename(file.name);
             const newFileName = `${orderId}_${sanitizedFullName}_${sanitizedOriginalName}`;
-            
+
             // Direct upload: File → Google Drive (straight, no intermediate steps)
             const fileId = await uploadFileToDrive(drive, file, userFolderId, newFileName, supportsAllDrives);
             uploadedFiles.push({
@@ -641,6 +641,7 @@ export async function POST(request: NextRequest) {
                 orderId,
                 filesUploaded: uploadedFiles.length,
                 folderPath: metadata.folderPath,
+                files: uploadedFiles // Added this to return names and IDs
             },
         }, {
             headers: {
@@ -652,10 +653,10 @@ export async function POST(request: NextRequest) {
         console.error('Upload error:', error);
         console.error('Error stack:', error.stack);
         console.error('Error details:', JSON.stringify(error, null, 2));
-        
+
         // Provide more helpful error messages
         let errorMessage = 'Failed to upload files';
-        
+
         if (error.message) {
             errorMessage = error.message;
         } else if (error.response?.data?.error?.message) {
@@ -663,7 +664,7 @@ export async function POST(request: NextRequest) {
         } else if (typeof error === 'string') {
             errorMessage = error;
         }
-        
+
         // Check for OAuth/token errors
         if (errorMessage.includes('oauth2') || errorMessage.includes('token') || errorMessage.includes('Failed to access Google Drive: request to')) {
             errorMessage = 'OAuth authentication failed. Please check:\n1. GOOGLE_SERVICE_ACCOUNT_EMAIL is correct\n2. GOOGLE_PRIVATE_KEY is correct and properly formatted\n3. Service account JSON key matches the email\n4. Google Drive API is enabled in Google Cloud Console\n5. Private key includes \\n characters for newlines';
@@ -678,14 +679,14 @@ export async function POST(request: NextRequest) {
         } else if (errorMessage.includes('invalid_grant') || errorMessage.includes('unauthorized_client')) {
             errorMessage = 'Service account authentication failed. The private key may be incorrect or the service account email doesn\'t match. Please verify your credentials in .env.local';
         }
-        
+
         return NextResponse.json(
             {
                 success: false,
                 error: errorMessage,
                 details: process.env.NODE_ENV === 'development' ? error.stack : undefined,
             },
-            { 
+            {
                 status: 500,
                 headers: {
                     'Content-Type': 'application/json',

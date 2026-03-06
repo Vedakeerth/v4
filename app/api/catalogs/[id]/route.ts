@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getCatalogById, updateCatalog, deleteCatalog } from '@/lib/catalogs';
+import { adminDb } from '@/lib/firebaseAdmin';
 import { isAuthenticated } from '@/lib/auth';
 
 // GET - Get catalog by ID
@@ -9,8 +9,8 @@ export async function GET(
 ) {
     try {
         const { id } = await params;
-        const catalog = getCatalogById(id);
-        if (!catalog) {
+        const doc = await adminDb.collection('catalogs').doc(id).get();
+        if (!doc.exists) {
             return NextResponse.json({
                 success: false,
                 message: 'Catalog not found'
@@ -18,7 +18,7 @@ export async function GET(
         }
         return NextResponse.json({
             success: true,
-            catalog
+            catalog: { id: doc.id, ...doc.data() }
         });
     } catch (error) {
         console.error('Error fetching catalog:', error);
@@ -45,18 +45,28 @@ export async function PUT(
 
         const { id } = await params;
         const body = await req.json();
-        const updated = await updateCatalog(id, body);
 
-        if (!updated) {
+        const docRef = adminDb.collection('catalogs').doc(id);
+        const doc = await docRef.get();
+
+        if (!doc.exists) {
             return NextResponse.json({
                 success: false,
                 message: 'Catalog not found'
             }, { status: 404 });
         }
 
+        const updateData = {
+            ...body,
+            updatedAt: new Date().toISOString(),
+        };
+        delete updateData.id;
+
+        await docRef.set(updateData, { merge: true });
+
         return NextResponse.json({
             success: true,
-            catalog: updated,
+            catalog: { id, ...doc.data(), ...updateData },
             message: 'Catalog updated successfully'
         });
     } catch (error) {
@@ -83,14 +93,17 @@ export async function DELETE(
         }
 
         const { id } = await params;
-        const deleted = await deleteCatalog(id);
+        const docRef = adminDb.collection('catalogs').doc(id);
+        const doc = await docRef.get();
 
-        if (!deleted) {
+        if (!doc.exists) {
             return NextResponse.json({
                 success: false,
                 message: 'Catalog not found'
             }, { status: 404 });
         }
+
+        await docRef.delete();
 
         return NextResponse.json({
             success: true,

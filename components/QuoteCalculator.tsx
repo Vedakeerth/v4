@@ -964,7 +964,9 @@ export default function QuoteCalculator() {
                                             uploadFormData.append('orderId', quoteDetails.id);
                                             uploadedFiles.forEach((fileData, index) => uploadFormData.append(`file${index}`, fileData.file));
 
-                                            await fetch('/api/upload-to-drive', { method: 'POST', body: uploadFormData });
+                                            const uploadRes = await fetch('/api/upload-to-drive', { method: 'POST', body: uploadFormData });
+                                            const uploadData = await uploadRes.json();
+                                            const driveFiles = uploadData.data?.files || [];
 
                                             // 2. Create Cashfree Session
                                             const cashfreeRes = await fetch('/api/cashfree/create-order', {
@@ -993,7 +995,22 @@ export default function QuoteCalculator() {
                                                 headers: { 'Content-Type': 'application/json' },
                                                 body: JSON.stringify({
                                                     user: { ...userDetails, address: fullAddress },
-                                                    order: { id: quoteDetails.id, models: uploadedFiles, total: totalResults, material, infillPercent, infillPattern }
+                                                    order: {
+                                                        id: quoteDetails.id,
+                                                        models: uploadedFiles.map((f, i) => ({
+                                                            name: f.file.name,
+                                                            dimensions: f.dimensions,
+                                                            scale: f.scale,
+                                                            volume: f.volume,
+                                                            color: f.color,
+                                                            quantity: f.quantity,
+                                                            driveFileId: driveFiles[i]?.id // Pass the file ID
+                                                        })),
+                                                        total: totalResults,
+                                                        material,
+                                                        infillPercent,
+                                                        infillPattern
+                                                    }
                                                 })
                                             });
 
@@ -1025,7 +1042,9 @@ export default function QuoteCalculator() {
                                             uploadFormData.append('orderId', quoteDetails.id);
                                             uploadedFiles.forEach((fileData, index) => uploadFormData.append(`file${index}`, fileData.file));
 
-                                            await fetch('/api/upload-to-drive', { method: 'POST', body: uploadFormData });
+                                            const uploadRes = await fetch('/api/upload-to-drive', { method: 'POST', body: uploadFormData });
+                                            const uploadData = await uploadRes.json();
+                                            const driveFiles = uploadData.data?.files || [];
 
                                             const fullAddress = `${userDetails.doorNo}, ${userDetails.street}, ${userDetails.city}, ${userDetails.district} - ${userDetails.pincode}, ${userDetails.state}`;
                                             const response = await fetch('/api/send-quote', {
@@ -1035,7 +1054,15 @@ export default function QuoteCalculator() {
                                                     user: { ...userDetails, address: fullAddress },
                                                     order: {
                                                         id: quoteDetails.id,
-                                                        models: uploadedFiles.map(f => ({ name: f.file.name, dimensions: f.dimensions, scale: f.scale, volume: f.volume, color: f.color, quantity: f.quantity })),
+                                                        models: uploadedFiles.map((f, i) => ({
+                                                            name: f.file.name,
+                                                            dimensions: f.dimensions,
+                                                            scale: f.scale,
+                                                            volume: f.volume,
+                                                            color: f.color,
+                                                            quantity: f.quantity,
+                                                            driveFileId: driveFiles[i]?.id // Pass the file ID
+                                                        })),
                                                         total: totalResults,
                                                         totalQty: uploadedFiles.reduce((acc, f) => acc + f.quantity, 0),
                                                         material,

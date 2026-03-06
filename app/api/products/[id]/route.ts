@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getProducts, saveProducts, Product } from '@/lib/products';
+import { adminDb } from '@/lib/firebaseAdmin';
 import { isAuthenticated } from '@/lib/auth';
 
 // GET single product
@@ -9,17 +9,19 @@ export async function GET(
 ) {
     try {
         const { id } = await params;
-        const products = getProducts();
-        const product = products.find(p => p.id === parseInt(id));
+        const doc = await adminDb.collection('products').doc(id).get();
 
-        if (!product) {
+        if (!doc.exists) {
             return NextResponse.json({
                 success: false,
                 message: 'Product not found'
             }, { status: 404 });
         }
 
-        return NextResponse.json({ success: true, product });
+        return NextResponse.json({
+            success: true,
+            product: { id: doc.id, ...doc.data() }
+        });
     } catch (error) {
         console.error('Error fetching product:', error);
         return NextResponse.json({
@@ -44,38 +46,31 @@ export async function PUT(
         }
 
         const { id } = await params;
-        const productId = parseInt(id);
-
-        if (isNaN(productId)) {
-            return NextResponse.json({
-                success: false,
-                message: 'Invalid product ID'
-            }, { status: 400 });
-        }
-
         const body = await req.json();
-        const products = getProducts();
-        const productIndex = products.findIndex(p => p.id === productId);
 
-        if (productIndex === -1) {
+        const docRef = adminDb.collection('products').doc(id);
+        const doc = await docRef.get();
+
+        if (!doc.exists) {
             return NextResponse.json({
                 success: false,
                 message: 'Product not found'
             }, { status: 404 });
         }
 
-        // Update product
-        products[productIndex] = {
-            ...products[productIndex],
+        const updateData = {
             ...body,
-            id: productId, // Ensure ID doesn't change
+            updatedAt: new Date().toISOString(),
         };
 
-        await saveProducts(products);
+        // Remove ID from body if it exists to avoid re-writing it into the document fields
+        delete updateData.id;
+
+        await docRef.set(updateData, { merge: true });
 
         return NextResponse.json({
             success: true,
-            product: products[productIndex],
+            product: { id, ...doc.data(), ...updateData },
             message: 'Product updated successfully'
         });
     } catch (error) {
@@ -102,38 +97,29 @@ export async function DELETE(
         }
 
         const { id } = await params;
-        const productId = parseInt(id);
+        const docRef = adminDb.collection('products').doc(id);
+        const doc = await docRef.get();
 
-        if (isNaN(productId)) {
-            return NextResponse.json({
-                success: false,
-                message: 'Invalid product ID'
-            }, { status: 400 });
-        }
-
-        const products = getProducts();
-        const productIndex = products.findIndex(p => p.id === productId);
-
-        if (productIndex === -1) {
+        if (!doc.exists) {
             return NextResponse.json({
                 success: false,
                 message: 'Product not found'
             }, { status: 404 });
         }
 
-        const deletedProduct = products.splice(productIndex, 1)[0];
-        await saveProducts(products);
+        const productData = doc.data();
+        await docRef.delete();
 
         return NextResponse.json({
             success: true,
             message: 'Product deleted successfully',
-            product: deletedProduct
+            product: { id, ...productData }
         });
     } catch (error) {
         console.error('Error deleting product:', error);
         return NextResponse.json({
             success: false,
-            message: 'Failed to delete product: ' + (error instanceof Error ? error.message : 'Unknown error')
+            message: 'Failed to delete product'
         }, { status: 500 });
     }
 }

@@ -1,8 +1,8 @@
 import { withAuth } from "next-auth/middleware";
 import { NextResponse } from "next/server";
 
-export default withAuth(
-    function proxy(req) {
+export const proxy = withAuth(
+    function (req) {
         const token = req.nextauth.token;
         const isAuth = !!token;
         const isAuthPage = req.nextUrl.pathname.startsWith("/secure-management-portal/login");

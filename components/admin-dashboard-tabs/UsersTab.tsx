@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Users, UserPlus, Trash2, Shield, User as UserIcon, AlertCircle, Loader2, Check } from "lucide-react";
+import { Users, UserPlus, Trash2, Shield, User as UserIcon, AlertCircle, Loader2, Check, Eye, EyeOff } from "lucide-react";
 import { User, UserRole } from "@/lib/users";
 
 export default function UsersTab() {
@@ -11,6 +11,8 @@ export default function UsersTab() {
     const [isAdding, setIsAdding] = useState(false);
     const [formData, setFormData] = useState({ name: "", email: "", password: "", role: "USER" as UserRole });
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [showCreatePassword, setShowCreatePassword] = useState(false);
+    const [showChangePassword, setShowChangePassword] = useState(false);
 
     useEffect(() => {
         fetchUsers();
@@ -53,6 +55,7 @@ export default function UsersTab() {
             if (res.ok) {
                 setIsAdding(false);
                 setFormData({ name: "", email: "", password: "", role: "USER" });
+                setShowCreatePassword(false);
                 fetchUsers();
             } else {
                 setError(data.error || "Failed to add user");
@@ -98,6 +101,7 @@ export default function UsersTab() {
             if (res.ok) {
                 setIsChangingPassword(null);
                 setNewPassword("");
+                setShowChangePassword(false);
                 alert("Password updated successfully");
             } else {
                 const data = await res.json();
@@ -174,15 +178,24 @@ export default function UsersTab() {
                         </div>
                         <div className="space-y-1">
                             <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Password</label>
-                            <input
-                                required
-                                name="password"
-                                type="password"
-                                value={formData.password}
-                                onChange={handleInput}
-                                className="w-full px-5 py-4 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500 transition-all font-bold text-sm"
-                                placeholder="••••••••"
-                            />
+                            <div className="relative">
+                                <input
+                                    required
+                                    name="password"
+                                    type={showCreatePassword ? "text" : "password"}
+                                    value={formData.password}
+                                    onChange={handleInput}
+                                    className="w-full px-5 py-4 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500 transition-all font-bold text-sm"
+                                    placeholder="••••••••"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowCreatePassword(!showCreatePassword)}
+                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-cyan-400 transition-colors"
+                                >
+                                    {showCreatePassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                                </button>
+                            </div>
                         </div>
                         <div className="space-y-1">
                             <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Role</label>
@@ -225,14 +238,23 @@ export default function UsersTab() {
                     <form onSubmit={handleChangePassword} className="flex flex-col md:flex-row gap-4 items-end">
                         <div className="flex-1 space-y-1">
                             <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">New Password</label>
-                            <input
-                                required
-                                type="password"
-                                value={newPassword}
-                                onChange={(e) => setNewPassword(e.target.value)}
-                                className="w-full px-5 py-4 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500 transition-all font-bold text-sm"
-                                placeholder="••••••••"
-                            />
+                            <div className="relative">
+                                <input
+                                    required
+                                    type={showChangePassword ? "text" : "password"}
+                                    value={newPassword}
+                                    onChange={(e) => setNewPassword(e.target.value)}
+                                    className="w-full px-5 py-4 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500 transition-all font-bold text-sm"
+                                    placeholder="••••••••"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowChangePassword(!showChangePassword)}
+                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-cyan-400 transition-colors"
+                                >
+                                    {showChangePassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                                </button>
+                            </div>
                         </div>
                         <div className="flex gap-3">
                             <button

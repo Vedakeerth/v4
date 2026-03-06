@@ -1,3 +1,5 @@
+import { adminDb } from './firebaseAdmin';
+
 export interface SiteSettings {
     showTestimonials: boolean;
     showBlog: boolean;
@@ -28,12 +30,11 @@ const defaultSettings: SiteSettings = {
 export async function getSettings(): Promise<SiteSettings> {
     if (typeof window === 'undefined') {
         try {
-            const fs = await import('fs/promises');
-            const path = await import('path');
-            const settingsFile = path.join(process.cwd(), 'data', 'settings.json');
-            const fileContents = await fs.readFile(settingsFile, 'utf8');
-            return JSON.parse(fileContents);
+            const doc = await adminDb.collection('config').doc('settings').get();
+            if (!doc.exists) return defaultSettings;
+            return { ...defaultSettings, ...doc.data() } as SiteSettings;
         } catch (error) {
+            console.error('Error fetching settings from Firestore:', error);
             return defaultSettings;
         }
     } else {
@@ -45,10 +46,16 @@ export async function getSettings(): Promise<SiteSettings> {
 }
 
 export async function saveSettings(settings: SiteSettings) {
+    // Note: Admin Panel uses POST /api/settings which handles this now
     if (typeof window === 'undefined') {
-        const fs = await import('fs/promises');
-        const path = await import('path');
-        const settingsFile = path.join(process.cwd(), 'data', 'settings.json');
-        await fs.writeFile(settingsFile, JSON.stringify(settings, null, 2));
+        await adminDb.collection('config').doc('settings').set({
+            ...settings,
+            updatedAt: new Date().toISOString()
+        }, { merge: true });
+    } else {
+        await fetch('/api/settings', {
+            method: 'POST',
+            body: JSON.stringify(settings)
+        });
     }
 }
