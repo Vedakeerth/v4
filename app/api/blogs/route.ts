@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebaseAdmin';
 import { isAuthenticated } from '@/lib/auth';
 
+import { QueryDocumentSnapshot, DocumentData } from 'firebase-admin/firestore';
+
 export interface BlogPost {
     id: string;
     title: string;
@@ -19,7 +21,7 @@ export interface BlogPost {
 export async function GET() {
     try {
         const snapshot = await adminDb.collection('blogs').orderBy('createdAt', 'desc').get();
-        const blogs = snapshot.docs.map(doc => ({
+        const blogs = snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
             id: doc.id,
             ...doc.data()
         }));

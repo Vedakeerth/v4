@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebaseAdmin';
 import { isAuthenticated } from '@/lib/auth';
 
+import { QueryDocumentSnapshot, DocumentData } from 'firebase-admin/firestore';
+
 export interface Product {
     id: string;
     name: string;
@@ -19,7 +21,7 @@ export interface Product {
 export async function GET() {
     try {
         const snapshot = await adminDb.collection('products').orderBy('createdAt', 'desc').get();
-        const products: Product[] = snapshot.docs.map((doc) => ({
+        const products: Product[] = snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
             id: doc.id,
             ...doc.data(),
         } as Product));

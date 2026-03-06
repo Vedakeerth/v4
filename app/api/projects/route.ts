@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { adminDb } from "@/lib/firebaseAdmin";
 import { isAuthenticated } from "@/lib/auth";
 
+import { QueryDocumentSnapshot, DocumentData } from "firebase-admin/firestore";
+
 export interface Project {
     id: string;
     title: string;
@@ -16,7 +18,7 @@ export interface Project {
 export async function GET() {
     try {
         const snapshot = await adminDb.collection('projects').orderBy('createdAt', 'desc').get();
-        const projects = snapshot.docs.map(doc => ({
+        const projects = snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
             id: doc.id,
             ...doc.data()
         }));

@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebaseAdmin';
 import { isAuthenticated } from '@/lib/auth';
 
+import { QueryDocumentSnapshot, DocumentData } from 'firebase-admin/firestore';
+
 export interface SocialLink {
     id: string;
     platform: string;
@@ -13,7 +15,7 @@ export interface SocialLink {
 export async function GET() {
     try {
         const snapshot = await adminDb.collection('socials').orderBy('createdAt', 'asc').get();
-        const socials = snapshot.docs.map(doc => ({
+        const socials = snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
             id: doc.id,
             ...doc.data()
         }));
