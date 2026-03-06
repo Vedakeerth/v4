@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { Product } from "@/lib/products";
+import { parsePrice } from "@/lib/utils";
 
 export interface CartItem extends Product {
     cartId: string;
@@ -116,10 +117,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         setAppliedCoupon(null);
     };
 
-    const getPrice = (p: string) => parseFloat(p.replace(/[^0-9.]/g, "")) || 0;
-
     const cartTotal = items.reduce((total, item) => {
-        return total + getPrice(item.price) * (item.quantity || 1);
+        return total + parsePrice(item.price) * (item.quantity || 1);
     }, 0);
 
     const discountAmount = appliedCoupon

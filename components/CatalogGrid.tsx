@@ -6,6 +6,7 @@ import { Package, Filter, ArrowRight, Search, ListFilter, SortAsc, Heart } from 
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { Product } from "@/lib/products";
+import { parsePrice } from "@/lib/utils";
 import ProductQuickView from "./ProductQuickView";
 import CustomDropdown from "./CustomDropdown";
 
@@ -42,7 +43,7 @@ export default function CatalogGrid({ products }: CatalogGridProps) {
 
         // 3. Price Range Filter
         result = result.filter(p => {
-            const price = parseFloat(p.price.replace(/[^0-9.-]+/g, ""));
+            const price = parsePrice(p.price);
             return price >= priceRange.min && price <= priceRange.max;
         });
 
@@ -50,15 +51,15 @@ export default function CatalogGrid({ products }: CatalogGridProps) {
         switch (sortBy) {
             case "price-low":
                 result.sort((a, b) => {
-                    const priceA = parseFloat(a.price.replace(/[^0-9.-]+/g, ""));
-                    const priceB = parseFloat(b.price.replace(/[^0-9.-]+/g, ""));
+                    const priceA = parsePrice(a.price);
+                    const priceB = parsePrice(b.price);
                     return priceA - priceB;
                 });
                 break;
             case "price-high":
                 result.sort((a, b) => {
-                    const priceA = parseFloat(a.price.replace(/[^0-9.-]+/g, ""));
-                    const priceB = parseFloat(b.price.replace(/[^0-9.-]+/g, ""));
+                    const priceA = parsePrice(a.price);
+                    const priceB = parsePrice(b.price);
                     return priceB - priceA;
                 });
                 break;

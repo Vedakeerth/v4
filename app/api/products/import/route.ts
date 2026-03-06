@@ -153,7 +153,7 @@ export async function POST(req: Request) {
                 updatedAt: new Date().toISOString()
             };
 
-            if (!productData.price.startsWith('₹')) {
+            if (typeof productData.price === 'string' && !productData.price.startsWith('₹')) {
                 productData.price = `₹${productData.price.replace('₹', '')}`;
             }
 

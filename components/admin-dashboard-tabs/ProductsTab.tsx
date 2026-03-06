@@ -139,7 +139,7 @@ export default function ProductsTab() {
         setFormData({
             name: product.name,
             description: product.description,
-            price: product.price.replace("₹", ""),
+            price: product.price.toString().replace("₹", ""),
             image: product.image,
             images: product.images.join(", "),
             category: product.category,

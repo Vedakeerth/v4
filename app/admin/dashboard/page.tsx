@@ -10,7 +10,7 @@ interface Product {
     id: number;
     name: string;
     description: string;
-    price: string;
+    price: string | number;
     image: string;
     images: string[];
     category: string;
@@ -98,7 +98,7 @@ export default function AdminDashboard() {
         setFormData({
             name: product.name,
             description: product.description,
-            price: product.price.replace("₹", ""),
+            price: product.price.toString().replace("₹", ""),
             image: product.image,
             images: product.images.join(", "),
             category: product.category,
@@ -114,7 +114,7 @@ export default function AdminDashboard() {
                 .split(",")
                 .map((img) => img.trim())
                 .filter((img) => img.length > 0);
-            
+
             const productData = {
                 name: formData.name,
                 description: formData.description,
@@ -244,11 +244,10 @@ export default function AdminDashboard() {
                                     />
                                     <div className="absolute top-2 right-2">
                                         <span
-                                            className={`px-2 py-1 rounded text-xs font-semibold ${
-                                                product.inStock
+                                            className={`px-2 py-1 rounded text-xs font-semibold ${product.inStock
                                                     ? "bg-green-500/20 text-green-400"
                                                     : "bg-red-500/20 text-red-400"
-                                            }`}
+                                                }`}
                                         >
                                             {product.inStock ? "In Stock" : "Out of Stock"}
                                         </span>

@@ -7,6 +7,7 @@ import { ArrowLeft, ChevronLeft, ChevronRight, Heart, ShoppingCart, Share2 } fro
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useCart } from "@/context/CartContext";
+import { parsePrice } from "@/lib/utils";
 import { Product } from "@/lib/products";
 
 interface ProductDetailClientProps {
@@ -235,7 +236,7 @@ export default function ProductDetailClient({ product, similarProducts, pageData
                                 </div>
                                 <div className="text-slate-400">
                                     {pageData?.totalLabel || "Total"}: <span className="text-cyan-400 font-bold text-xl ml-2">
-                                        ₹{(parseFloat(product.price.replace(/[^0-9.]/g, '')) * quantity).toFixed(2)}
+                                        ₹{(parsePrice(product.price) * quantity).toFixed(2)}
                                     </span>
                                 </div>
                             </div>

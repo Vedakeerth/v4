@@ -6,6 +6,7 @@ import { FileText, Download, ArrowLeft, Printer, ShoppingBag, Mail } from "lucid
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { parsePrice } from "@/lib/utils";
 
 export default function BulkQuotePage() {
     const { items, cartTotal } = useCart();
@@ -91,7 +92,7 @@ export default function BulkQuotePage() {
                                 </thead>
                                 <tbody className="divide-y divide-slate-50">
                                     {items.map((item: CartItem) => {
-                                        const price = parseFloat(item.price.replace(/[^0-9.]/g, '')) || 0;
+                                        const price = parsePrice(item.price);
                                         const quantity = item.quantity || 1;
                                         return (
                                             <tr key={item.cartId} className="group">
