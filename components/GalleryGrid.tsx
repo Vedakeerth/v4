@@ -5,7 +5,7 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Heart, MessageSquare, Search, X, ChevronDown, Filter, SlidersHorizontal, ArrowUpDown, Share2, ShoppingCart, LayoutGrid, List } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { cn } from "@/lib/utils";
+import { cn, parsePrice } from "@/lib/utils";
 import { Product } from "@/lib/products";
 import InstantQuoteModal from "./InstantQuoteModal";
 import ProductQuickView from "./ProductQuickView";
@@ -51,12 +51,11 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
     }, [parts]);
 
     const filteredAndSortedParts = useMemo(() => {
-        const getPrice = (p: string) => parseFloat(p.replace(/[^0-9.]/g, '')) || 0;
         const min = minPrice === "" ? 0 : parseFloat(minPrice) || 0;
         const max = maxPrice === "" ? Infinity : parseFloat(maxPrice) || Infinity;
 
         let result = parts.filter((part: Product) => {
-            const price = getPrice(part.price);
+            const price = parsePrice(part.price);
             const matchesCategory = selectedCategory === "All" || part.category === selectedCategory;
             const matchesSearch = part.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                 part.description.toLowerCase().includes(searchQuery.toLowerCase());
@@ -69,10 +68,10 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
         // Sorting logic
         switch (sortBy) {
             case "price-low":
-                result.sort((a, b) => getPrice(a.price) - getPrice(b.price));
+                result.sort((a, b) => parsePrice(a.price) - parsePrice(b.price));
                 break;
             case "price-high":
-                result.sort((a, b) => getPrice(b.price) - getPrice(a.price));
+                result.sort((a, b) => parsePrice(b.price) - parsePrice(a.price));
                 break;
             case "name-asc":
                 result.sort((a, b) => a.name.localeCompare(b.name));
