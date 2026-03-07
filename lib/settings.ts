@@ -1,4 +1,3 @@
-import { adminDb } from './firebaseAdmin';
 
 export interface SiteSettings {
     showTestimonials: boolean;
