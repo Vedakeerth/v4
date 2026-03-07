@@ -1,7 +1,6 @@
-import { adminDb } from './firebaseAdmin';
-
 export async function getPageContent(page: string) {
     if (typeof window === 'undefined') {
+        const { adminDb } = await import('./firebaseAdmin');
         try {
             const doc = await adminDb.collection('pages').doc(page).get();
             if (!doc.exists) {

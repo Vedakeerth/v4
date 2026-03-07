@@ -1,21 +1,10 @@
-import { QueryDocumentSnapshot, DocumentData } from 'firebase-admin/firestore';
-import { adminDb } from './firebaseAdmin';
-
-export interface Project {
-    id: string;
-    title: string;
-    description: string;
-    image: string;
-    images: string[];
-    category: string;
-    status: 'Ongoing' | 'Completed' | 'Conceptual';
-    date: string;
-    client?: string;
-    createdAt?: string;
-}
+import type { QueryDocumentSnapshot, DocumentData } from 'firebase-admin/firestore';
+import { Project } from '@/types';
+export type { Project } from '@/types';
 
 export async function getProjects(): Promise<Project[]> {
     if (typeof window === 'undefined') {
+        const { adminDb } = await import('./firebaseAdmin');
         try {
             const snapshot = await adminDb.collection('projects').orderBy('createdAt', 'desc').get();
             return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
@@ -35,6 +24,7 @@ export async function getProjects(): Promise<Project[]> {
 
 export async function getProjectById(id: string): Promise<Project | undefined> {
     if (typeof window === 'undefined') {
+        const { adminDb } = await import('./firebaseAdmin');
         const doc = await adminDb.collection('projects').doc(id).get();
         if (!doc.exists) return undefined;
         return { id: doc.id, ...doc.data() } as Project;

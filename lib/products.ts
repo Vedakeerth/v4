@@ -1,25 +1,10 @@
-import { QueryDocumentSnapshot, DocumentData } from 'firebase-admin/firestore';
-import { adminDb } from './firebaseAdmin';
-
-export interface Product {
-    id: string;
-    name: string;
-    description: string;
-    price: string | number;
-    image: string;
-    images: string[];
-    category: string;
-    inStock: boolean;
-    stockCount?: number;
-    availabilityStatus?: "In Stock" | "Out of Stock" | "Pre-order";
-    isPopular?: boolean;
-    quantity?: number; // Used for cart
-    colors?: string[]; // Hex codes or names
-    likes?: number;
-}
+import type { QueryDocumentSnapshot, DocumentData } from 'firebase-admin/firestore';
+import { Product } from '@/types';
+export type { Product } from '@/types';
 
 export async function getProducts(): Promise<Product[]> {
     if (typeof window === 'undefined') {
+        const { adminDb } = await import('./firebaseAdmin');
         try {
             const snapshot = await adminDb.collection('products').orderBy('createdAt', 'desc').get();
             return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
@@ -39,6 +24,7 @@ export async function getProducts(): Promise<Product[]> {
 
 export async function getProductById(id: string): Promise<Product | undefined> {
     if (typeof window === 'undefined') {
+        const { adminDb } = await import('./firebaseAdmin');
         const doc = await adminDb.collection('products').doc(id).get();
         if (!doc.exists) return undefined;
         return { id: doc.id, ...doc.data() } as Product;

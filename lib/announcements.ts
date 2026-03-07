@@ -1,37 +1,36 @@
-import { QueryDocumentSnapshot, DocumentData, Query } from "firebase-admin/firestore";
-import { adminDb } from "./firebaseAdmin";
-
-export interface Announcement {
-    id: string;
-    text: string;
-    imageUrl?: string;
-    link?: string;
-    active: boolean;
-    order: number;
-    createdAt?: string;
-}
+import type { QueryDocumentSnapshot, DocumentData, Query } from "firebase-admin/firestore";
+import { Announcement } from "@/types";
+export type { Announcement } from "@/types";
 
 const COLLECTION = "announcements";
 
 export async function getAnnouncements(onlyActive: boolean = false): Promise<Announcement[]> {
-    try {
-        let query: Query = adminDb.collection(COLLECTION);
-        if (onlyActive) {
-            query = query.where("active", "==", true);
+    if (typeof window === 'undefined') {
+        const { adminDb } = await import("./firebaseAdmin");
+        try {
+            let query: Query = adminDb.collection(COLLECTION);
+            if (onlyActive) {
+                query = query.where("active", "==", true);
+            }
+
+            const snapshot = await query.get();
+            const docs = snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({ id: doc.id, ...doc.data() } as Announcement));
+
+            // Sort in-memory to avoid Firestore composite index requirement
+            return docs.sort((a: Announcement, b: Announcement) => (a.order || 0) - (b.order || 0));
+        } catch (error) {
+            console.error("Error fetching announcements from Firestore:", error);
+            return [];
         }
-
-        const snapshot = await query.get();
-        const docs = snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({ id: doc.id, ...doc.data() } as Announcement));
-
-        // Sort in-memory to avoid Firestore composite index requirement
-        return docs.sort((a: Announcement, b: Announcement) => (a.order || 0) - (b.order || 0));
-    } catch (error) {
-        console.error("Error fetching announcements:", error);
-        return [];
+    } else {
+        const res = await fetch(`/api/announcements?onlyActive=${onlyActive}`);
+        const data = await res.json();
+        return data.announcements || [];
     }
 }
 
 export async function addAnnouncement(data: Omit<Announcement, "id">): Promise<string> {
+    const { adminDb } = await import("./firebaseAdmin");
     const docRef = await adminDb.collection(COLLECTION).add({
         ...data,
         createdAt: new Date().toISOString(),
@@ -40,9 +39,11 @@ export async function addAnnouncement(data: Omit<Announcement, "id">): Promise<s
 }
 
 export async function updateAnnouncement(id: string, updates: Partial<Announcement>): Promise<void> {
+    const { adminDb } = await import("./firebaseAdmin");
     await adminDb.collection(COLLECTION).doc(id).update(updates);
 }
 
 export async function deleteAnnouncement(id: string): Promise<void> {
+    const { adminDb } = await import("./firebaseAdmin");
     await adminDb.collection(COLLECTION).doc(id).delete();
 }

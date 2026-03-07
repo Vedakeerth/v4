@@ -1,18 +1,10 @@
-import { adminDb } from './firebaseAdmin';
 import type { Metadata } from 'next';
-
-export interface PageSEO {
-    title: string;
-    description: string;
-    keywords: string;
-}
-
-export interface SEOData {
-    [page: string]: PageSEO;
-}
+import { PageSEO, SEOData } from '@/types';
+export type { PageSEO, SEOData } from '@/types';
 
 export async function getSEOData(): Promise<SEOData> {
     if (typeof window === 'undefined') {
+        const { adminDb } = await import('./firebaseAdmin');
         try {
             const doc = await adminDb.collection('config').doc('seo').get();
             return (doc.data() as SEOData) || {};
@@ -29,6 +21,7 @@ export async function getSEOData(): Promise<SEOData> {
 
 export async function saveSEOData(data: SEOData) {
     if (typeof window === 'undefined') {
+        const { adminDb } = await import('./firebaseAdmin');
         await adminDb.collection('config').doc('seo').set({
             ...data,
             updatedAt: new Date().toISOString()

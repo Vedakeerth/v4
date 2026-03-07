@@ -1,34 +1,10 @@
-import { QueryDocumentSnapshot, DocumentData } from 'firebase-admin/firestore';
-import { adminDb } from './firebaseAdmin';
-
-export interface Comment {
-    id: string;
-    author: string;
-    text: string;
-    date: string;
-}
-
-export interface BlogPost {
-    id: string;
-    slug: string;
-    title: string;
-    excerpt: string;
-    content: string;
-    image: string;
-    category: string;
-    author: string;
-    date: string;
-    readTime: string;
-    likes?: number;
-    comments?: Comment[];
-    hashtags?: string[];
-    metaTitle?: string;
-    metaDescription?: string;
-    createdAt?: string;
-}
+import type { QueryDocumentSnapshot, DocumentData } from 'firebase-admin/firestore';
+import { BlogPost } from '@/types';
+export type { BlogPost, Comment } from '@/types';
 
 export async function getBlogs(): Promise<BlogPost[]> {
     if (typeof window === 'undefined') {
+        const { adminDb } = await import('./firebaseAdmin');
         try {
             const snapshot = await adminDb.collection('blogs').orderBy('createdAt', 'desc').get();
             return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({

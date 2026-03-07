@@ -1,19 +1,10 @@
-import { QueryDocumentSnapshot, DocumentData } from 'firebase-admin/firestore';
-import { adminDb } from './firebaseAdmin';
-
-export interface Testimonial {
-    id: string;
-    name: string;
-    role: string;
-    company: string;
-    rating: number;
-    text: string;
-    image?: string;
-    createdAt?: string;
-}
+import type { QueryDocumentSnapshot, DocumentData } from 'firebase-admin/firestore';
+import { Testimonial } from '@/types';
+export type { Testimonial } from '@/types';
 
 export async function getTestimonials(): Promise<Testimonial[]> {
     if (typeof window === 'undefined') {
+        const { adminDb } = await import('./firebaseAdmin');
         try {
             const snapshot = await adminDb.collection('testimonials').orderBy('createdAt', 'desc').get();
             return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
