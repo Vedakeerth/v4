@@ -54,7 +54,7 @@ export default function Navbar({
                     exit={{ y: -100, opacity: 0 }}
                     transition={{ duration: 0.3, ease: "easeInOut" }}
                     className={cn(
-                        "fixed left-0 right-0 z-50 border-b border-slate-800 bg-slate-950/90 backdrop-blur-md shadow-lg transition-all duration-300 top-0"
+                        "fixed left-0 right-0 z-50 border-b border-slate-800 bg-slate-950/90 backdrop-blur-md shadow-lg transition-all duration-300 top-8"
                     )}
                 >
                     <div className="container mx-auto px-4 h-20 flex items-center justify-between">

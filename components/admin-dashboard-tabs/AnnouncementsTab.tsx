@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import NewsTicker from "@/components/NewsTicker";
 import { Megaphone, Plus, Trash2, Check, Loader2, AlertCircle, ImageIcon as LucideImageIcon, X, UploadCloud, Edit } from "lucide-react";
 import { Announcement } from "@/lib/announcements";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
@@ -137,6 +138,8 @@ export default function AnnouncementsTab() {
     return (
         <div className="space-y-6">
             <div className="flex justify-between items-center">
+                {/* News Ticker */}
+                <NewsTicker items={announcements.map(a => ({ text: a.text, link: "#" }))} />
                 <div>
                     <h2 className="text-2xl font-bold text-white mb-1">Announcement Bar</h2>
                     <p className="text-slate-400 text-sm">Manage the top scrolling news and festival offers.</p>
