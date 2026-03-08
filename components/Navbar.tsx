@@ -39,25 +39,8 @@ export default function Navbar({
 
 
     useEffect(() => {
-        // Only apply scroll behavior on home page
-        if (!isHomePage) return;
-
-        const handleScroll = () => {
-            const currentScrollY = window.scrollY;
-
-            // Show navbar when scrolled down more than 100px, hide when at top
-            if (currentScrollY > 100) {
-                setIsVisible(true);
-            } else {
-                setIsVisible(false);
-            }
-        };
-
-        // Set initial state
-        handleScroll();
-
-        window.addEventListener("scroll", handleScroll, { passive: true });
-        return () => window.removeEventListener("scroll", handleScroll);
+        // Ensure navbar is visible
+        setIsVisible(true);
     }, [isHomePage]);
 
     if (!mounted) return null;
@@ -71,8 +54,7 @@ export default function Navbar({
                     exit={{ y: -100, opacity: 0 }}
                     transition={{ duration: 0.3, ease: "easeInOut" }}
                     className={cn(
-                        "fixed left-0 right-0 z-50 border-b border-slate-800 bg-slate-950/90 backdrop-blur-md shadow-lg transition-all duration-300",
-                        (pathname === "/" || pathname === "/gallery" || pathname === "/services" || pathname === "/features" || pathname === "/blog" || pathname === "/contact" || pathname === "/index.html" || pathname === "") ? "top-11" : "top-0"
+                        "fixed left-0 right-0 z-50 border-b border-slate-800 bg-slate-950/90 backdrop-blur-md shadow-lg transition-all duration-300 top-0"
                     )}
                 >
                     <div className="container mx-auto px-4 h-20 flex items-center justify-between">

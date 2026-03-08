@@ -69,7 +69,7 @@ export default function AnnouncementBar() {
 
     return (
         <div
-            className="fixed top-0 left-0 right-0 bg-slate-950 border-b border-cyan-500/20 h-10 w-full overflow-hidden z-[101] flex items-center group/ann"
+            className="fixed top-20 left-0 right-0 bg-slate-950 border-b border-cyan-500/20 h-10 w-full overflow-hidden z-[40] flex items-center group/ann"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >

@@ -36,7 +36,7 @@ export default function MainFrontendUI({ children, navLinks, ctaData }: MainFron
             <CustomCursor />
             <div className={cn(
                 "transition-all duration-300",
-                isAdminPage ? "pt-0" : (pathname === "/" || pathname === "/gallery" || pathname === "/services" || pathname === "/features" || pathname === "/blog" || pathname === "/contact" || pathname === "/index.html" || pathname === "" ? "pt-11" : "pt-0")
+                isAdminPage ? "pt-0" : (pathname === "/" || pathname === "/gallery" || pathname === "/services" || pathname === "/features" || pathname === "/blog" || pathname === "/contact" || pathname === "/index.html" || pathname === "" ? "pt-[120px]" : "pt-0")
             )}>
                 {children}
             </div>
