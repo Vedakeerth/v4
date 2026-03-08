@@ -35,7 +35,7 @@ export default function AnnouncementBar() {
                 const res = await fetch("/api/announcements");
                 if (res.ok) {
                     const data = await res.json();
-                    setAnnouncements(data);
+                    setAnnouncements(data.announcements || []);
                 }
             } catch (err) {
                 console.error("Failed to fetch announcements:", err);
@@ -47,16 +47,16 @@ export default function AnnouncementBar() {
     useAnimationFrame((t, delta) => {
         if (!containerRef.current || announcements.length === 0) return;
 
-        // Base speed: 100 pixels per second (normal), 30 pixels per second (slow)
-        const speed = isHovered ? 30 : 100;
+        // Significantly slower speed as requested
+        const speed = isHovered ? 20 : 60;
         const moveBy = (speed * delta) / 1000;
 
         let newX = x.get() - moveBy;
 
-        // Reset when half of the content (the original list) has passed
-        const contentWidth = containerRef.current.scrollWidth / 2;
-        if (newX <= -contentWidth) {
-            newX += contentWidth;
+        // Reset logic: Using 3 repetitions for a cleaner loop
+        const setWidth = containerRef.current.scrollWidth / 3;
+        if (newX <= -setWidth) {
+            newX += setWidth;
         }
 
         x.set(newX);
@@ -64,27 +64,27 @@ export default function AnnouncementBar() {
 
     if (!isVisible || announcements.length === 0) return null;
 
-    // Double the list for seamless loop
-    const marqueeList = [...announcements, ...announcements];
+    // Triple the list for a seamless but controlled loop
+    const marqueeList = [...announcements, ...announcements, ...announcements];
 
     return (
         <div
-            className="fixed top-0 left-0 right-0 bg-slate-950 border-b border-cyan-500/20 h-11 w-full overflow-hidden z-[101] flex items-center group/ann"
+            className="fixed top-0 left-0 right-0 bg-slate-950 border-b border-cyan-500/20 h-10 w-full overflow-hidden z-[101] flex items-center group/ann"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
             <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 via-transparent to-cyan-500/10 pointer-events-none" />
 
-            <div className="flex-1 h-full overflow-hidden flex items-center px-4">
+            <div className="flex-1 h-full overflow-hidden flex items-center">
                 <motion.div
                     ref={containerRef}
-                    className="flex items-center gap-32 whitespace-nowrap min-w-max"
+                    className="flex items-center gap-48 whitespace-nowrap min-w-max"
                     style={{ x }}
                 >
                     {marqueeList.map((ann, idx) => (
-                        <div key={`${ann.id}-${idx}`} className="flex items-center gap-6 shrink-0">
+                        <div key={`${ann.id}-${idx}`} className="flex items-center gap-10 shrink-0">
                             {ann.imageUrl ? (
-                                <div className="relative h-7 w-32 shrink-0">
+                                <div className="relative h-6 w-36 shrink-0">
                                     <Image
                                         src={ann.imageUrl}
                                         alt="Announcement"
@@ -96,7 +96,7 @@ export default function AnnouncementBar() {
                             ) : (
                                 <div className="flex items-center gap-4 shrink-0">
                                     <Megaphone size={14} className="text-cyan-400 shrink-0" />
-                                    <p className="text-[10px] sm:text-[11px] font-black text-white uppercase tracking-[0.3em] italic">
+                                    <p className="text-[10px] sm:text-[12px] font-black text-white uppercase tracking-[0.3em] italic drop-shadow-[0_0_8px_rgba(6,182,212,0.4)]">
                                         {ann.text}
                                     </p>
                                 </div>

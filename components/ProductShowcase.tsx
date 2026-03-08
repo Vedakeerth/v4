@@ -33,8 +33,10 @@ interface ProductShowcaseProps {
 }
 
 export default function ProductShowcase({ header, categories, products: initialProducts, delay = 0 }: ProductShowcaseProps) {
-    const [products, setProducts] = useState<Product[]>(initialProducts);
-    const [activeCategory, setActiveCategory] = useState(categories[0]?.id || '3D Printers');
+    const safeProducts = Array.isArray(initialProducts) ? initialProducts : [];
+    const safeCategories = Array.isArray(categories) ? categories : [];
+    const [products, setProducts] = useState<Product[]>(safeProducts);
+    const [activeCategory, setActiveCategory] = useState(safeCategories[0]?.id || '3D Printers');
     const [isLoading, setIsLoading] = useState(false);
     const [isVisible, setIsVisible] = useState(delay === 0);
 
@@ -50,14 +52,14 @@ export default function ProductShowcase({ header, categories, products: initialP
     }, [delay]);
 
     // Initial filtering to avoid showing empty tab if possible
-    const availableCategories = categories.filter(cat => products.some(p => p.category === cat.id));
+    const availableCategories = safeCategories.filter(cat => products.some(p => p?.category === cat?.id));
 
     // Safety check - if activeCategory is hidden/empty, switch to first available
     useEffect(() => {
-        if (availableCategories.length > 0 && !availableCategories.find(c => c.id === activeCategory)) {
-            setActiveCategory(availableCategories[0].id);
+        if (availableCategories.length > 0 && !availableCategories.find(c => c?.id === activeCategory)) {
+            setActiveCategory(availableCategories[0]?.id || "");
         }
-    }, [products, categories, activeCategory]);
+    }, [products, safeCategories, activeCategory]);
 
     const filteredProducts = products.filter(p => p.category === activeCategory);
 
@@ -76,7 +78,7 @@ export default function ProductShowcase({ header, categories, products: initialP
                         viewport={{ once: true }}
                         className="text-3xl md:text-5xl font-bold text-white mb-6"
                     >
-                        {header.title} <span className="text-cyan-500">{header.titleHighlight}</span> {header.suffix}
+                        {header?.title || "Explore Our"} <span className="text-cyan-500">{header?.titleHighlight || "Precision"}</span> {header?.suffix || "Catalog"}
                     </motion.h2>
                     <motion.p
                         initial={{ opacity: 0, y: 20 }}
@@ -85,26 +87,26 @@ export default function ProductShowcase({ header, categories, products: initialP
                         transition={{ delay: 0.1 }}
                         className="text-slate-400 text-lg max-w-2xl mx-auto"
                     >
-                        {header.description}
+                        {header?.description || "Browse our specialized range of engineering parts and 3D printing solutions."}
                     </motion.p>
                 </div>
 
                 {/* Category Navigation */}
                 <div className="flex flex-wrap justify-center gap-4 mb-16">
-                    {categories.filter(cat => products.some(p => p.category === cat.id)).map((cat) => {
-                        const Icon = ICON_MAP[cat.icon] || Printer;
+                    {safeCategories.filter(cat => products.some(p => p?.category === cat?.id)).map((cat) => {
+                        const Icon = ICON_MAP[cat?.icon || "Printer"] || Printer;
                         return (
                             <button
-                                key={cat.id}
-                                onClick={() => setActiveCategory(cat.id)}
-                                className={`group relative flex items-center gap-3 px-8 py-4 rounded-2xl font-bold transition-all duration-300 border ${activeCategory === cat.id
+                                key={cat?.id}
+                                onClick={() => setActiveCategory(cat?.id || "")}
+                                className={`group relative flex items-center gap-3 px-8 py-4 rounded-2xl font-bold transition-all duration-300 border ${activeCategory === cat?.id
                                     ? "bg-cyan-500 text-slate-950 border-cyan-400 shadow-[0_0_20px_rgba(6,182,212,0.3)]"
                                     : "bg-slate-900 text-slate-400 border-slate-800 hover:border-slate-700 hover:text-white"
                                     }`}
                             >
-                                <Icon size={20} className={activeCategory === cat.id ? "text-slate-950" : "text-cyan-500"} />
-                                {cat.label}
-                                {activeCategory === cat.id && (
+                                <Icon size={20} className={activeCategory === cat?.id ? "text-slate-950" : "text-cyan-500"} />
+                                {cat?.label || "Category"}
+                                {activeCategory === cat?.id && (
                                     <motion.div
                                         layoutId="activeTab"
                                         className="absolute inset-0 bg-white/10 rounded-2xl pointer-events-none"
@@ -132,16 +134,16 @@ export default function ProductShowcase({ header, categories, products: initialP
                                 transition={{ duration: 0.3 }}
                                 className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto"
                             >
-                                {filteredProducts.map((product) => (
+                                {filteredProducts.map((product, index) => (
                                     <div
-                                        key={product.id}
+                                        key={product?.id || index}
                                         onClick={() => setSelectedQuickView(product)}
                                         className="group flex flex-col md:flex-row bg-slate-900/50 border border-slate-800 rounded-3xl overflow-hidden hover:border-cyan-500/30 transition-all duration-500 cursor-pointer"
                                     >
                                         <div className="relative w-full md:w-2/5 aspect-square md:aspect-auto h-64 md:h-auto overflow-hidden bg-slate-950">
                                             <Image
-                                                src={product.image}
-                                                alt={product.name}
+                                                src={product?.image || "/placeholder-product.png"}
+                                                alt={product?.name || "Product"}
                                                 fill
                                                 className="object-cover group-hover:scale-105 transition-transform duration-700"
                                             />
@@ -150,26 +152,28 @@ export default function ProductShowcase({ header, categories, products: initialP
                                             <div>
                                                 <div className="flex items-center justify-between mb-4">
                                                     <span className="px-3 py-1 rounded-full bg-slate-800 text-cyan-400 text-[10px] font-bold uppercase tracking-widest border border-slate-700">
-                                                        {product.inStock ? "Ready to Ship" : "Backorder"}
+                                                        {product?.inStock ? "Ready to Ship" : "Backorder"}
                                                     </span>
                                                     <span className="text-xl font-bold text-white">
-                                                        {typeof product.price === 'number'
-                                                            ? `₹${product.price.toLocaleString('en-IN')}`
-                                                            : product.price.startsWith('₹') ? product.price : `₹${product.price}`}
+                                                        {product?.price
+                                                            ? (typeof product.price === 'number'
+                                                                ? `₹${product.price.toLocaleString('en-IN')}`
+                                                                : product.price.startsWith('₹') ? product.price : `₹${product.price}`)
+                                                            : "₹0"}
                                                     </span>
                                                 </div>
                                                 <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-cyan-400 transition-colors">
-                                                    {product.name}
+                                                    {product?.name || "Engineering Component"}
                                                 </h3>
                                                 <p className="text-slate-400 text-sm mb-6 leading-relaxed">
-                                                    {product.description}
+                                                    {product?.description || "High-precision component designed for advanced industrial applications."}
                                                 </p>
                                             </div>
                                             <div className="flex gap-3 mt-auto">
                                                 <button
                                                     onClick={(e) => {
                                                         e.stopPropagation();
-                                                        window.location.href = `/products/${product.id}`;
+                                                        if (product?.id) window.location.href = `/products/${product.id}`;
                                                     }}
                                                     className="flex-1 py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-sm transition-all duration-300 shadow-lg shadow-cyan-500/10 flex items-center justify-center gap-2"
                                                 >
@@ -179,7 +183,7 @@ export default function ProductShowcase({ header, categories, products: initialP
                                                 <button
                                                     onClick={(e) => {
                                                         e.stopPropagation();
-                                                        window.location.href = `/products/${product.id}`;
+                                                        if (product?.id) window.location.href = `/products/${product.id}`;
                                                     }}
                                                     className="p-3 rounded-xl bg-slate-800 border border-slate-700 text-white hover:bg-slate-700 transition-all duration-300"
                                                 >
@@ -201,9 +205,9 @@ export default function ProductShowcase({ header, categories, products: initialP
 
 
                 <div className="mt-16 text-center">
-                    <Link href={header.ctaLink}>
+                    <Link href={header?.ctaLink || "/products"}>
                         <button className="px-10 py-4 rounded-full border border-slate-800 text-white font-bold hover:bg-slate-900 transition-all duration-300 flex items-center gap-3 mx-auto">
-                            {header.ctaText}
+                            {header?.ctaText || "View Catalog"}
                             <ArrowRight size={20} />
                         </button>
                     </Link>

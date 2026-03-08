@@ -72,7 +72,7 @@ export default function BulkQuotePage() {
                             <h2 className="text-5xl font-black text-cyan-500 uppercase tracking-tighter mb-4">Quotation</h2>
                             <div className="space-y-1 text-sm">
                                 <p className="text-slate-400 font-bold uppercase tracking-widest">Quote ID: <span className="text-white">{quoteId}</span></p>
-                                <p className="text-slate-400 font-bold uppercase tracking-widest">Date: <span className="text-white">{Array.from(date)[0] as string}</span></p>
+                                <p className="text-slate-400 font-bold uppercase tracking-widest">Date: <span className="text-white">{(Array.from(date)[0] as string) || new Date().toLocaleDateString('en-IN')}</span></p>
                                 <p className="text-slate-400 font-bold uppercase tracking-widest">Valid Until: <span className="text-white">30 Days from Issue</span></p>
                             </div>
                         </div>

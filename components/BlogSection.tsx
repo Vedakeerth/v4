@@ -11,7 +11,8 @@ interface BlogSectionProps {
 }
 
 export default function BlogSection({ blogs }: BlogSectionProps) {
-    if (!blogs || blogs.length === 0) return null;
+    const safeBlogs = Array.isArray(blogs) ? blogs : [];
+    if (safeBlogs.length === 0) return null;
 
     return (
         <section className="py-24 bg-slate-950 relative">
@@ -30,23 +31,23 @@ export default function BlogSection({ blogs }: BlogSectionProps) {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-                    {blogs.slice(0, 3).map((blog) => (
+                    {safeBlogs.slice(0, 3).map((blog, index) => (
                         <Link
-                            href={`/blog/${blog.slug}`}
-                            key={blog.id}
+                            href={`/blog/${blog?.slug || "post"}`}
+                            key={blog?.id || index}
                             className="group bg-slate-900 rounded-2xl overflow-hidden border border-slate-800 hover:border-cyan-500/30 hover:shadow-2xl hover:shadow-cyan-500/10 transition-all duration-500 flex flex-col"
                         >
                             <div className="relative h-56 w-full overflow-hidden">
                                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent opacity-60 z-10" />
                                 <Image
-                                    src={blog.image || "/placeholder.png"}
-                                    alt={blog.title}
+                                    src={blog?.image || "/placeholder.png"}
+                                    alt={blog?.title || "Blog Post"}
                                     fill
                                     className="object-cover transform group-hover:scale-105 transition-transform duration-500"
                                 />
                                 <div className="absolute top-4 left-4 z-20">
                                     <span className="bg-cyan-500 text-slate-950 text-xs font-black px-3 py-1 rounded-md uppercase tracking-wide">
-                                        {blog.category}
+                                        {blog?.category || "Technology"}
                                     </span>
                                 </div>
                             </div>
@@ -54,18 +55,18 @@ export default function BlogSection({ blogs }: BlogSectionProps) {
                             <div className="p-6 flex-1 flex flex-col">
                                 <div className="flex items-center gap-4 text-xs text-slate-500 mb-4">
                                     <span className="flex items-center gap-1">
-                                        <Clock size={12} /> {blog.readTime}
+                                        <Clock size={12} /> {blog?.readTime || "5 min read"}
                                     </span>
                                     <span className="flex items-center gap-1">
-                                        <User size={12} /> {blog.author}
+                                        <User size={12} /> {blog?.author || "Vaelinsa Team"}
                                     </span>
                                 </div>
 
                                 <h3 className="text-xl font-bold text-white mb-3 group-hover:text-cyan-400 transition-colors line-clamp-2">
-                                    {blog.title}
+                                    {blog?.title || "Latest Engineering Insights"}
                                 </h3>
                                 <p className="text-slate-400 text-sm line-clamp-3 mb-6 flex-1">
-                                    {blog.excerpt}
+                                    {blog?.excerpt || "Discover the latest advancements in 3D printing and additive manufacturing solutions."}
                                 </p>
 
                                 <div className="flex items-center text-cyan-400 text-sm font-bold mt-auto group-hover:gap-2 transition-all">

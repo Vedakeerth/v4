@@ -37,12 +37,20 @@ const numberToWords = (num: number): string => {
         if (n_str.length > 9) return 'overflow';
         const n_match = ('000000000' + n_str).substr(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/);
         if (!n_match) return '';
+
         let str = '';
-        str += (Number(n_match[1]) !== 0) ? (a[Number(n_match[1])] || b[Number(n_match[1][0])] + ' ' + a[Number(n_match[1][1])]) + 'Crore ' : '';
-        str += (Number(n_match[2]) !== 0) ? (a[Number(n_match[2])] || b[Number(n_match[2][0])] + ' ' + a[Number(n_match[2][1])]) + 'Lakh ' : '';
-        str += (Number(n_match[3]) !== 0) ? (a[Number(n_match[3])] || b[Number(n_match[3][0])] + ' ' + a[Number(n_match[3][1])]) + 'Thousand ' : '';
-        str += (Number(n_match[4]) !== 0) ? (a[Number(n_match[4])] || b[Number(n_match[4][0])] + ' ' + a[Number(n_match[4][1])]) + 'Hundred ' : '';
-        str += (Number(n_match[5]) !== 0) ? ((str !== '') ? 'and ' : '') + (a[Number(n_match[5])] || b[Number(n_match[5][0])] + ' ' + a[Number(n_match[5][1])]) : '';
+        // Safely access match groups
+        const g1 = n_match[1];
+        const g2 = n_match[2];
+        const g3 = n_match[3];
+        const g4 = n_match[4];
+        const g5 = n_match[5];
+
+        str += (g1 && Number(g1) !== 0) ? (a[Number(g1)] || b[Number(g1[0])] + ' ' + a[Number(g1[1])]) + 'Crore ' : '';
+        str += (g2 && Number(g2) !== 0) ? (a[Number(g2)] || b[Number(g2[0])] + ' ' + a[Number(g2[1])]) + 'Lakh ' : '';
+        str += (g3 && Number(g3) !== 0) ? (a[Number(g3)] || b[Number(g3[0])] + ' ' + a[Number(g3[1])]) + 'Thousand ' : '';
+        str += (g4 && Number(g4) !== 0) ? (a[Number(g4)] || b[Number(g4[0])] + ' ' + a[Number(g4[1])]) + 'Hundred ' : '';
+        str += (g5 && Number(g5) !== 0) ? ((str !== '') ? 'and ' : '') + (a[Number(g5)] || b[Number(g5[0])] + ' ' + a[Number(g5[1])]) : '';
         return str.trim();
     };
 

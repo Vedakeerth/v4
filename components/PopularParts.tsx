@@ -37,8 +37,10 @@ export default function PopularParts({ header, parts }: PopularPartsProps) {
     useEffect(() => {
         // Initialize likes if not present
         const initialLikes: Record<string, number> = {};
-        parts.forEach(p => {
-            initialLikes[p.id.toString()] = Math.floor(Math.random() * 20) + 5;
+        (parts || []).forEach(p => {
+            if (p?.id) {
+                initialLikes[p.id.toString()] = Math.floor(Math.random() * 20) + 5;
+            }
         });
         setLikes(initialLikes);
     }, [parts]);
@@ -68,7 +70,7 @@ export default function PopularParts({ header, parts }: PopularPartsProps) {
                             viewport={{ once: true }}
                             className="text-3xl md:text-5xl font-bold text-white mb-4"
                         >
-                            {header.title} <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">{header.titleHighlight}</span>
+                            {header?.title || "Popular"} <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">{header?.titleHighlight || "Parts"}</span>
                         </motion.h2>
                         <motion.p
                             initial={{ opacity: 0, y: 20 }}
@@ -77,7 +79,7 @@ export default function PopularParts({ header, parts }: PopularPartsProps) {
                             transition={{ delay: 0.1 }}
                             className="text-slate-400 text-lg"
                         >
-                            {header.description}
+                            {header?.description || "Top rated engineering parts and components."}
                         </motion.p>
                     </div>
                     <motion.div
@@ -85,8 +87,8 @@ export default function PopularParts({ header, parts }: PopularPartsProps) {
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
                     >
-                        <Link href={header.ctaLink} className="group inline-flex items-center gap-2 text-cyan-400 font-semibold hover:text-cyan-300 transition-colors">
-                            {header.ctaText}
+                        <Link href={header?.ctaLink || "/products"} className="group inline-flex items-center gap-2 text-cyan-400 font-semibold hover:text-cyan-300 transition-colors">
+                            {header?.ctaText || "View All"}
                             <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
                         </Link>
                     </motion.div>
@@ -102,9 +104,9 @@ export default function PopularParts({ header, parts }: PopularPartsProps) {
                             </div>
                         ))
                     ) : (
-                        parts.map((part, index) => (
+                        (parts || []).map((part, index) => (
                             <motion.div
-                                key={part.id}
+                                key={part?.id || index}
                                 initial={{ opacity: 0, y: 30 }}
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
@@ -113,18 +115,18 @@ export default function PopularParts({ header, parts }: PopularPartsProps) {
                             >
                                 <div className="relative h-64 w-full overflow-hidden">
                                     <Image
-                                        src={part.image}
-                                        alt={part.name}
+                                        src={part?.image || "/images/placeholder.png"}
+                                        alt={part?.name || "Product"}
                                         fill
                                         className="object-cover group-hover:scale-110 transition-transform duration-700"
                                     />
                                     <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-60" />
 
                                     <button
-                                        onClick={(e) => toggleLike(e, part.id)}
+                                        onClick={(e) => toggleLike(e, part?.id)}
                                         className="absolute top-4 right-4 p-2.5 rounded-full bg-slate-950/80 border border-slate-800 text-white hover:bg-cyan-500 hover:border-cyan-400 transition-all duration-300 z-20 backdrop-blur-md"
                                     >
-                                        {liked[part.id] ? (
+                                        {liked[part?.id] ? (
                                             <Heart size={18} className="fill-red-500 text-red-500" />
                                         ) : (
                                             <Heart size={18} />
@@ -133,33 +135,35 @@ export default function PopularParts({ header, parts }: PopularPartsProps) {
 
                                     <div className="absolute bottom-4 left-4 z-10">
                                         <span className="px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-400 text-[10px] font-bold uppercase tracking-wider border border-cyan-500/30 backdrop-blur-sm">
-                                            {part.category}
+                                            {part?.category || "General"}
                                         </span>
                                     </div>
                                 </div>
 
                                 <div className="p-6">
                                     <h3 className="text-xl font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors">
-                                        {part.name}
+                                        {part?.name || "Engineering Specialized Part"}
                                     </h3>
                                     <p className="text-slate-400 text-sm mb-6 line-clamp-2">
-                                        {part.description}
+                                        {part?.description || "High precision component designed for advanced industrial applications."}
                                     </p>
                                     <div className="flex items-center justify-between">
                                         <div className="flex flex-col">
                                             <div className="flex items-center gap-2 mb-1">
                                                 <div className="flex items-center gap-1 text-red-400 bg-red-400/10 px-1.5 py-0.5 rounded text-[10px] font-bold border border-red-400/20">
-                                                    <Heart size={10} fill={liked[part.id.toString()] ? "currentColor" : "none"} />
-                                                    {likes[part.id.toString()] || 0}
+                                                    <Heart size={10} fill={liked[part?.id?.toString() || ""] ? "currentColor" : "none"} />
+                                                    {likes[part?.id?.toString() || ""] || 0}
                                                 </div>
                                             </div>
                                             <span className="text-2xl font-bold text-white">
-                                                {typeof part.price === 'number'
-                                                    ? `₹${part.price.toLocaleString('en-IN')}`
-                                                    : part.price.startsWith('₹') ? part.price : `₹${part.price}`}
+                                                {part?.price
+                                                    ? (typeof part.price === 'number'
+                                                        ? `₹${part.price.toLocaleString('en-IN')}`
+                                                        : part.price.startsWith('₹') ? part.price : `₹${part.price}`)
+                                                    : "₹0"}
                                             </span>
                                         </div>
-                                        <Link href={`/products/${part.id}`}>
+                                        <Link href={`/products/${part?.id}`}>
                                             <button className="px-5 py-2 rounded-xl bg-slate-800 hover:bg-cyan-500 text-white hover:text-slate-950 font-bold text-sm transition-all duration-300 border border-slate-700 hover:border-cyan-400">
                                                 View Details
                                             </button>

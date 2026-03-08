@@ -25,6 +25,7 @@ export default function CatalogGrid({ products }: CatalogGridProps) {
 
 
     const filteredProducts = useMemo(() => {
+        if (!Array.isArray(products)) return [];
         let result = [...products];
 
         // 1. Text Search

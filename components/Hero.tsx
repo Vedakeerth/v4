@@ -59,7 +59,7 @@ export default function Hero({ content }: HeroProps) {
 
                 // Change text after scroll out
                 setTimeout(() => {
-                    const phrases = content.phrases || ["In Record Time", "With Precision", "For Engineers", "On Demand"];
+                    const phrases = content?.phrases || ["Innovation", "Precision", "Excellence"];
                     index = (index + 1) % phrases.length;
                     setCurrentPhraseIndex(index);
 
@@ -149,9 +149,9 @@ export default function Hero({ content }: HeroProps) {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8 }}
                     >
-                        <h2 className="text-blue-500 font-medium tracking-wide mb-4 uppercase text-sm">{content.subtitle}</h2>
+                        <h2 className="text-blue-500 font-medium tracking-wide mb-4 uppercase text-sm">{content?.subtitle || "Vaelinsa"}</h2>
                         <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-white mb-2">
-                            {content.titleMain} <br />
+                            {content?.titleMain || "Future of Technology"} <br />
                             <span
                                 ref={textRef}
                                 className="inline-block text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-blue-500 to-indigo-500 min-w-[300px] mt-4 pb-4 relative animated-gradient-text"
@@ -165,26 +165,26 @@ export default function Hero({ content }: HeroProps) {
                                 }}
                             >
                                 <span style={{ display: 'inline-block' }}>
-                                    {content.phrases[currentPhraseIndex]}
+                                    {(content?.phrases || ["Precision", "Innovation", "Efficiency"])[currentPhraseIndex]}
                                 </span>
                             </span>
                         </h1>
                         <p className="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
-                            {content.description}
+                            {content?.description || "Providing cutting edge engineering solutions for the next generation."}
                         </p>
 
                         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                            <Link href={content.primaryCta.link || "/quote"}>
+                            <Link href={content?.primaryCta?.link || "/quote"}>
                                 <button className="group relative inline-flex h-12 items-center justify-center overflow-hidden rounded-md bg-blue-600 px-8 font-medium text-white transition-all duration-300 hover:bg-blue-500 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-slate-900">
-                                    <span className="mr-2">{content.primaryCta.text}</span>
+                                    <span className="mr-2">{content?.primaryCta?.text || "Get Started"}</span>
                                     <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                                     <div className="absolute inset-0 -z-10 bg-gradient-to-r from-blue-600 to-indigo-600 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
                                 </button>
                             </Link>
 
-                            <Link href={content.secondaryCta.link || "/contact"}>
+                            <Link href={content?.secondaryCta?.link || "/contact"}>
                                 <button className="inline-flex h-12 items-center justify-center rounded-md border border-slate-700 bg-transparent px-8 font-medium text-slate-300 transition-colors hover:bg-slate-800 hover:text-white focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-900">
-                                    {content.secondaryCta.text}
+                                    {content?.secondaryCta?.text || "Contact Us"}
                                 </button>
                             </Link>
                         </div>

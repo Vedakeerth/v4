@@ -44,29 +44,36 @@ const ProjectsSection = dynamic(() => import("@/components/ProjectsSection"));
 const BlogSection = dynamic(() => import("@/components/BlogSection"));
 
 export default async function Home() {
-  const settings = await getSettings();
+  const settings = await getSettings().catch(() => ({}));
 
   // Data Fetching
-  const [homeData, servicesContent, industriesContent, whyChooseUsContent, testimonialsContent, allProducts, allTestimonials, allProjects, allBlogs] = await Promise.all([
-    getPageContent('home'),
-    getPageContent('services'),
-    getPageContent('industries'),
-    getPageContent('why-choose-us'),
-    getPageContent('testimonials'),
-    getProducts(),
-    getTestimonials(),
-    getProjects(),
-    getBlogs()
+  const [homeData, servicesContent, industriesContent, whyChooseUsContent, testimonialsContent, allProductsRaw, allTestimonials, allProjects, allBlogs] = await Promise.all([
+    getPageContent('home').catch(() => null),
+    getPageContent('services').catch(() => null),
+    getPageContent('industries').catch(() => null),
+    getPageContent('why-choose-us').catch(() => null),
+    getPageContent('testimonials').catch(() => null),
+    getProducts().catch(() => []),
+    getTestimonials().catch(() => []),
+    getProjects().catch(() => []),
+    getBlogs().catch(() => [])
   ]);
 
-  const popularParts = allProducts.filter(p => p.isPopular).slice(0, 3);
+  const allProducts = Array.isArray(allProductsRaw) ? allProductsRaw : [];
+  const popularParts = allProducts.filter(p => p?.isPopular).slice(0, 3);
 
   return (
     <main className="min-h-screen bg-slate-950 selection:bg-blue-500/30 selection:text-blue-100 flex flex-col">
       <RightClickPreventer />
 
       {/* Hero with dynamic settings if applicable */}
-      <Hero content={{ ...homeData?.hero, title: settings.heroTitle || homeData?.hero?.title, subtitle: settings.heroSubtitle || homeData?.hero?.subtitle }} />
+      <Hero content={{
+        ...homeData?.hero,
+        titleMain: settings?.heroTitle || homeData?.hero?.titleMain || "Future of Technology",
+        subtitle: settings?.heroSubtitle || homeData?.hero?.subtitle || "Vaelinsa",
+        description: homeData?.hero?.description || "Providing cutting edge engineering solutions for the next generation.",
+        phrases: homeData?.hero?.phrases || ["Innovation", "Precision", "Excellence"]
+      }} />
 
       <Services content={servicesContent} />
 
@@ -78,32 +85,32 @@ export default async function Home() {
       <WhyChooseUs content={whyChooseUsContent} />
 
       {/* Projects Section - Controlled by Settings */}
-      {settings.showProjects && (
-        <ProjectsSection projects={allProjects} />
+      {(settings?.showProjects ?? true) && (
+        <ProjectsSection projects={allProjects || []} />
       )}
 
-      {settings.showMachinery && (
+      {(settings?.showMachinery ?? true) && (
         <ProductShowcase
           header={homeData?.productShowcase}
           categories={homeData?.productShowcase?.categories}
           products={allProducts}
-          delay={settings.machineryDelay}
+          delay={settings?.machineryDelay || 3000}
         />
       )}
 
       <Industries content={industriesContent} />
 
       {/* Testimonials - Controlled by Settings */}
-      {settings.showTestimonials && (
+      {(settings?.showTestimonials ?? true) && (
         <Testimonials
           header={testimonialsContent?.header}
-          testimonials={allTestimonials}
+          testimonials={allTestimonials || []}
         />
       )}
 
       {/* Blog Section - Controlled by Settings */}
-      {settings.showBlog && (
-        <BlogSection blogs={allBlogs} />
+      {(settings?.showBlog ?? true) && (
+        <BlogSection blogs={allBlogs || []} />
       )}
 
       <CTA content={homeData?.ctaSection} />

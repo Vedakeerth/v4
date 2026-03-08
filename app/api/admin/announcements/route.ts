@@ -10,7 +10,7 @@ export async function GET() {
 
     try {
         const announcements = await getAnnouncements(); // Admin sees all
-        return NextResponse.json(announcements);
+        return NextResponse.json({ announcements });
     } catch (error) {
         return NextResponse.json({ error: "Failed to fetch announcements" }, { status: 500 });
     }

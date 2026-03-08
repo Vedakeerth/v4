@@ -94,10 +94,10 @@ export default function Testimonials({ header, testimonials: initialTestimonials
                             transition={{ duration: 0.6 }}
                         >
                             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-                                {header.title}
+                                {header?.title || "What Our Clients Say"}
                             </h2>
                             <p className="text-slate-400 max-w-xl mx-auto mb-4">
-                                {header.description}
+                                {header?.description || "Read testimonials from our satisfied customers and partners."}
                             </p>
                             <div className="h-1 w-20 bg-blue-500 mx-auto rounded-full" />
                         </motion.div>
@@ -145,57 +145,61 @@ export default function Testimonials({ header, testimonials: initialTestimonials
                         ) : (
                             <>
                                 {/* Duplicate testimonials for seamless infinite scroll */}
-                                {[...testimonials, ...testimonials].map((testimonial, index) => (
-                                    <div
-                                        key={`${testimonial.id}-${index}`}
-                                        className="flex-shrink-0 w-[350px] group relative p-6 bg-slate-800/50 border border-slate-700 rounded-xl hover:border-blue-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-blue-900/20"
-                                    >
-                                        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-xl" />
+                                {(testimonials || []).length > 0 ? (
+                                    [...testimonials, ...testimonials].map((testimonial, index) => (
+                                        <div
+                                            key={`${testimonial?.id || index}-${index}`}
+                                            className="flex-shrink-0 w-[350px] group relative p-6 bg-slate-800/50 border border-slate-700 rounded-xl hover:border-blue-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-blue-900/20"
+                                        >
+                                            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-xl" />
 
-                                        <div className="relative z-10">
-                                            {/* Quote Icon */}
-                                            <div className="mb-4 transform group-hover:scale-110 transition-transform duration-300">
-                                                <Quote className="h-8 w-8 text-blue-400/50 group-hover:text-blue-400 transition-colors duration-300" />
-                                            </div>
+                                            <div className="relative z-10">
+                                                {/* Quote Icon */}
+                                                <div className="mb-4 transform group-hover:scale-110 transition-transform duration-300">
+                                                    <Quote className="h-8 w-8 text-blue-400/50 group-hover:text-blue-400 transition-colors duration-300" />
+                                                </div>
 
-                                            {/* Testimonial Text */}
-                                            <p className="text-slate-300 text-sm leading-relaxed mb-4 group-hover:text-slate-200 transition-colors duration-300">
-                                                &ldquo;{testimonial.text}&rdquo;
-                                            </p>
-
-
-
-                                            {/* Rating */}
-                                            <div className="flex items-center gap-1 mb-6">
-                                                {Array.from({ length: 5 }).map((_, i) => (
-                                                    <Star
-                                                        key={i}
-                                                        className={`h-4 w-4 transition-all duration-300 ${i < testimonial.rating
-                                                            ? "text-yellow-400 fill-yellow-400 group-hover:scale-110 group-hover:drop-shadow-[0_0_8px_rgba(250,204,21,0.5)]"
-                                                            : "text-slate-600"
-                                                            }`}
-                                                        style={{
-                                                            transitionDelay: `${i * 0.05}s`,
-                                                        }}
-                                                    />
-                                                ))}
-                                            </div>
-
-                                            {/* Author Info */}
-                                            <div className="border-t border-slate-700 pt-4 group-hover:border-blue-500/30 transition-colors duration-300">
-                                                <h4 className="text-white font-semibold text-sm mb-1 group-hover:text-blue-400 transition-colors duration-300">
-                                                    {testimonial.name}
-                                                </h4>
-                                                <p className="text-slate-400 text-xs group-hover:text-slate-300 transition-colors duration-300">
-                                                    {testimonial.role}
+                                                {/* Testimonial Text */}
+                                                <p className="text-slate-300 text-sm leading-relaxed mb-4 group-hover:text-slate-200 transition-colors duration-300">
+                                                    &ldquo;{testimonial?.text || "Vaelinsa provided exceptional service and delivered high-quality parts on time."}&rdquo;
                                                 </p>
-                                                <p className="text-blue-400 text-xs mt-1 group-hover:text-blue-300 group-hover:underline transition-all duration-300">
-                                                    {testimonial.company}
-                                                </p>
+
+                                                {/* Rating */}
+                                                <div className="flex items-center gap-1 mb-6">
+                                                    {Array.from({ length: 5 }).map((_, i) => (
+                                                        <Star
+                                                            key={i}
+                                                            className={`h-4 w-4 transition-all duration-300 ${i < (testimonial?.rating || 5)
+                                                                ? "text-yellow-400 fill-yellow-400 group-hover:scale-110 group-hover:drop-shadow-[0_0_8px_rgba(250,204,21,0.5)]"
+                                                                : "text-slate-600"
+                                                                }`}
+                                                            style={{
+                                                                transitionDelay: `${i * 0.05}s`,
+                                                            }}
+                                                        />
+                                                    ))}
+                                                </div>
+
+                                                {/* Author Info */}
+                                                <div className="border-t border-slate-700 pt-4 group-hover:border-blue-500/30 transition-colors duration-300">
+                                                    <h4 className="text-white font-semibold text-sm mb-1 group-hover:text-blue-400 transition-colors duration-300">
+                                                        {testimonial?.name || "Customer"}
+                                                    </h4>
+                                                    <p className="text-slate-400 text-xs group-hover:text-slate-300 transition-colors duration-300">
+                                                        {testimonial?.role || "Business Owner"}
+                                                    </p>
+                                                    <p className="text-blue-400 text-xs mt-1 group-hover:text-blue-300 group-hover:underline transition-all duration-300">
+                                                        {testimonial?.company || "Partner Company"}
+                                                    </p>
+                                                </div>
                                             </div>
                                         </div>
+                                    ))
+                                ) : (
+                                    <div className="flex-shrink-0 w-full p-12 text-center text-slate-500 italic">
+                                        Testimonials coming soon...
                                     </div>
-                                ))}
+                                )}
                             </>
                         )}
                     </div>

@@ -69,27 +69,27 @@ export default function WhyChooseUs({ content }: WhyChooseUsProps) {
                             </>
                         ) : (
                             <>
-                                <h2 className="text-blue-500 font-medium tracking-wide mb-2 uppercase text-sm">{content.header.badge}</h2>
+                                <h2 className="text-blue-500 font-medium tracking-wide mb-2 uppercase text-sm">{content?.header?.badge || "Why Choose Us"}</h2>
                                 <h3 className="text-3xl md:text-5xl font-bold text-white mb-6">
-                                    {content.header.title} <br />
-                                    <span className="text-slate-400">{content.header.titleSuffix}</span>
+                                    {content?.header?.title || "Excellence in"} <br />
+                                    <span className="text-slate-400">{content?.header?.titleSuffix || "Engineering"}</span>
                                 </h3>
                                 <p className="text-slate-400 text-lg mb-8 leading-relaxed">
-                                    {content.header.description}
+                                    {content?.header?.description || "Providing high-precision engineering and 3D printing solutions with unmatched speed and quality."}
                                 </p>
 
                                 <div className="space-y-6">
-                                    {content.features.map((feature, index) => (
+                                    {(content?.features || []).map((feature, index) => (
                                         <div key={index} className="flex items-start">
                                             <div className="mt-1 bg-blue-500/10 p-2 rounded-full mr-4">
                                                 {(() => {
-                                                    const Icon = ICON_MAP[feature.icon] || Zap;
+                                                    const Icon = ICON_MAP[feature?.icon || "Zap"] || Zap;
                                                     return <Icon className="h-5 w-5 text-blue-400" />;
                                                 })()}
                                             </div>
                                             <div>
-                                                <h4 className="text-white font-semibold mb-1">{feature.title}</h4>
-                                                <p className="text-slate-500 text-sm leading-relaxed">{feature.description}</p>
+                                                <h4 className="text-white font-semibold mb-1">{feature?.title || "Feature"}</h4>
+                                                <p className="text-slate-500 text-sm leading-relaxed">{feature?.description || "Details about this specialized engineering service."}</p>
                                             </div>
                                         </div>
                                     ))}
@@ -130,13 +130,13 @@ export default function WhyChooseUs({ content }: WhyChooseUsProps) {
                                             className="relative h-48 w-full overflow-hidden rounded-2xl border border-slate-700/50"
                                         >
                                             <Image
-                                                src={content.images[0]?.src || "/images/bento-1-precision.png"}
-                                                alt={content.images[0]?.label || "Precision Engineering"}
+                                                src={content?.images?.[0]?.src || "/images/bento-1-precision.png"}
+                                                alt={content?.images?.[0]?.label || "Precision Engineering"}
                                                 fill
                                                 className="object-cover hover:scale-105 transition-transform duration-500"
                                             />
                                             <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent" />
-                                            <div className="absolute bottom-2 left-3 font-mono text-xs text-blue-400">{content.images[0]?.label}</div>
+                                            <div className="absolute bottom-2 left-3 font-mono text-xs text-blue-400">{content?.images?.[0]?.label || "Precision"}</div>
                                         </motion.div>
                                         <motion.div
                                             initial={{ opacity: 0, scale: 0.9 }}
@@ -146,13 +146,13 @@ export default function WhyChooseUs({ content }: WhyChooseUsProps) {
                                             className="relative h-48 w-full overflow-hidden rounded-2xl border border-slate-700/50"
                                         >
                                             <Image
-                                                src={content.images[1]?.src || "/images/bento-4-mechanical.png"}
-                                                alt={content.images[1]?.label || "Mechanical Parts"}
+                                                src={content?.images?.[1]?.src || "/images/bento-4-mechanical.png"}
+                                                alt={content?.images?.[1]?.label || "Mechanical Parts"}
                                                 fill
                                                 className="object-cover hover:scale-105 transition-transform duration-500"
                                             />
                                             <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent" />
-                                            <div className="absolute bottom-2 left-3 font-mono text-xs text-blue-400">{content.images[1]?.label}</div>
+                                            <div className="absolute bottom-2 left-3 font-mono text-xs text-blue-400">{content?.images?.[1]?.label || "Mechanical"}</div>
                                         </motion.div>
                                     </div>
                                     <div className="space-y-4">
@@ -164,13 +164,13 @@ export default function WhyChooseUs({ content }: WhyChooseUsProps) {
                                             className="relative h-64 w-full overflow-hidden rounded-2xl border border-slate-700/50"
                                         >
                                             <Image
-                                                src={content.images[2]?.src || "/images/bento-2-industrial.png"}
-                                                alt={content.images[2]?.label || "Industrial Automation"}
+                                                src={content?.images?.[2]?.src || "/images/bento-2-industrial.png"}
+                                                alt={content?.images?.[2]?.label || "Industrial Automation"}
                                                 fill
                                                 className="object-cover hover:scale-105 transition-transform duration-500"
                                             />
                                             <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent" />
-                                            <div className="absolute bottom-2 left-3 font-mono text-xs text-blue-400">{content.images[2]?.label}</div>
+                                            <div className="absolute bottom-2 left-3 font-mono text-xs text-blue-400">{content?.images?.[2]?.label || "Automation"}</div>
                                         </motion.div>
                                         <motion.div
                                             initial={{ opacity: 0, scale: 0.9 }}
@@ -180,13 +180,13 @@ export default function WhyChooseUs({ content }: WhyChooseUsProps) {
                                             className="relative h-32 w-full overflow-hidden rounded-2xl border border-slate-700/50"
                                         >
                                             <Image
-                                                src={content.images[3]?.src || "/images/bento-3-shipping.png"}
-                                                alt={content.images[3]?.label || "Worldwide Shipping"}
+                                                src={content?.images?.[3]?.src || "/images/bento-3-shipping.png"}
+                                                alt={content?.images?.[3]?.label || "Worldwide Shipping"}
                                                 fill
                                                 className="object-cover hover:scale-105 transition-transform duration-500"
                                             />
                                             <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent" />
-                                            <div className="absolute bottom-2 left-3 font-mono text-xs text-blue-400">{content.images[3]?.label}</div>
+                                            <div className="absolute bottom-2 left-3 font-mono text-xs text-blue-400">{content?.images?.[3]?.label || "Logistics"}</div>
                                         </motion.div>
                                     </div>
                                 </div>

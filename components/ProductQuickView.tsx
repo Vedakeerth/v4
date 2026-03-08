@@ -25,7 +25,7 @@ export default function ProductQuickView({ product, onClose }: ProductQuickViewP
         if (!product?.images?.length) return;
 
         const interval = setInterval(() => {
-            setActiveImageIndex((prev) => (prev + 1) % product.images.length);
+            setActiveImageIndex((prev) => (prev + 1) % (product?.images?.length || 1));
         }, 5000);
 
         return () => clearInterval(interval);
@@ -134,11 +134,11 @@ export default function ProductQuickView({ product, onClose }: ProductQuickViewP
                             )}
 
                             <div className="absolute top-6 left-6 flex gap-2 z-20">
-                                <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border backdrop-blur-md ${product.inStock
+                                <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border backdrop-blur-md ${product?.inStock
                                     ? "bg-green-500/10 text-green-400 border-green-500/20"
                                     : "bg-red-500/10 text-red-400 border-red-500/20"
                                     }`}>
-                                    {product.inStock ? "In Stock" : "Out of Stock"}
+                                    {product?.inStock ? "In Stock" : "Out of Stock"}
                                 </span>
                             </div>
                         </div>
@@ -155,14 +155,16 @@ export default function ProductQuickView({ product, onClose }: ProductQuickViewP
                             </h2>
                             <div className="flex items-center justify-between mb-6">
                                 <div className="text-3xl font-black text-cyan-500 flex items-baseline gap-2">
-                                    {typeof product.price === 'number'
-                                        ? `₹${product.price.toLocaleString('en-IN')}`
-                                        : product.price.startsWith('₹') ? product.price : `₹${product.price}`}
+                                    {product?.price
+                                        ? (typeof product.price === 'number'
+                                            ? `₹${product.price.toLocaleString('en-IN')}`
+                                            : product.price.startsWith('₹') ? product.price : `₹${product.price}`)
+                                        : "₹0"}
                                     <span className="text-xs text-slate-500 font-bold uppercase tracking-widest">per unit</span>
                                 </div>
                                 <div className="flex items-center gap-2 text-red-400 bg-red-400/10 px-3 py-1.5 rounded-xl border border-red-400/20 shadow-lg shadow-red-500/5">
                                     <Heart size={18} fill="currentColor" />
-                                    <span className="text-lg font-black">{product.likes || 0}</span>
+                                    <span className="text-lg font-black">{product?.likes || 0}</span>
                                 </div>
                             </div>
 

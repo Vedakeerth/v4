@@ -44,9 +44,9 @@ export default function Services({ content }: ServicesProps) {
                             viewport={{ once: true }}
                             transition={{ duration: 0.6 }}
                         >
-                            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">{content?.header.title}</h2>
+                            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">{content?.header?.title || "Our Services"}</h2>
                             <p className="text-slate-400 max-w-xl mx-auto">
-                                {content?.header.description}
+                                {content?.header?.description || "Comprehensive engineering and technology solutions."}
                             </p>
                         </motion.div>
                     )}
@@ -65,7 +65,7 @@ export default function Services({ content }: ServicesProps) {
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {content?.services.map((service, index) => (
+                        {(content?.services || []).map((service, index) => (
                             <motion.div
                                 key={index}
                                 initial={{ opacity: 0, y: 30 }}
@@ -79,13 +79,13 @@ export default function Services({ content }: ServicesProps) {
                                 <div className="relative z-10">
                                     <div className="w-12 h-12 bg-slate-800/80 rounded-lg flex items-center justify-center mb-4 group-hover:bg-cyan-950/50 group-hover:text-cyan-400 transition-colors">
                                         {(() => {
-                                            const Icon = ICON_MAP[service.icon] || Printer;
+                                            const Icon = ICON_MAP[service?.icon || "Printer"] || Printer;
                                             return <Icon className="h-6 w-6 text-slate-300 group-hover:text-cyan-400" />;
                                         })()}
                                     </div>
-                                    <h3 className="text-xl font-semibold text-white mb-2">{service.title}</h3>
+                                    <h3 className="text-xl font-semibold text-white mb-2">{service?.title || "Specialized Service"}</h3>
                                     <p className="text-slate-400 text-sm leading-relaxed">
-                                        {service.description}
+                                        {service?.description || "High-quality engineering solutions tailored to your needs."}
                                     </p>
                                 </div>
                             </motion.div>
