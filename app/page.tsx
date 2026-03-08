@@ -44,7 +44,7 @@ const ProjectsSection = dynamic(() => import("@/components/ProjectsSection"));
 const BlogSection = dynamic(() => import("@/components/BlogSection"));
 
 export default async function Home() {
-  const settings = await getSettings().catch(() => ({}));
+  const settings = await getSettings();
 
   // Data Fetching
   const [homeData, servicesContent, industriesContent, whyChooseUsContent, testimonialsContent, allProductsRaw, allTestimonials, allProjects, allBlogs] = await Promise.all([
