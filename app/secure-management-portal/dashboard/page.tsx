@@ -47,9 +47,15 @@ export default function SecureDashboard() {
         if (status === "unauthenticated") {
             router.push("/secure-management-portal/login");
         }
-        if (status === "authenticated" && session?.user?.email !== "vaelinsa@gmail.com") {
-            alert("Only Admin Allowed");
-            signOut({ callbackUrl: "/secure-management-portal/login" });
+
+        if (status === "authenticated") {
+            const userRole = (session?.user as any)?.role;
+            const isAuthorized = userRole === "SUPER_ADMIN" || userRole === "ADMIN";
+
+            if (!isAuthorized) {
+                alert("Access Denied: You do not have permission to access the Management Portal.");
+                signOut({ callbackUrl: "/secure-management-portal/login?error=AccessDenied" });
+            }
         }
     }, [status, session, router]);
 

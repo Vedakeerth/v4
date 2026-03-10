@@ -26,8 +26,8 @@ export default function Navbar({
     ctaData = { text: "Get Quote", href: "/quote" }
 }: NavbarProps) {
     const pathname = usePathname();
-    const isHomePage = pathname === '/';
-    const [isVisible, setIsVisible] = useState(true);
+    const isHomePage = pathname === '/' || pathname === '/index.html' || pathname === '';
+    const [isVisible, setIsVisible] = useState(!isHomePage);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [mounted, setMounted] = useState(false);
     const { setIsCartOpen, cartCount } = useCart();
@@ -36,11 +36,26 @@ export default function Navbar({
         setMounted(true);
     }, []);
 
-
-
     useEffect(() => {
-        // Ensure navbar is visible
-        setIsVisible(true);
+        if (!isHomePage) {
+            setIsVisible(true);
+            return;
+        }
+
+        const handleScroll = () => {
+            const scrollY = window.scrollY;
+            if (scrollY > 50) {
+                setIsVisible(true);
+            } else {
+                setIsVisible(false);
+            }
+        };
+
+        window.addEventListener("scroll", handleScroll);
+        // Initial check
+        handleScroll();
+
+        return () => window.removeEventListener("scroll", handleScroll);
     }, [isHomePage]);
 
     if (!mounted) return null;
@@ -52,9 +67,9 @@ export default function Navbar({
                     initial={{ y: -100, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     exit={{ y: -100, opacity: 0 }}
-                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                    transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
                     className={cn(
-                        "fixed left-0 right-0 z-50 border-b border-slate-800 bg-slate-950/90 backdrop-blur-md shadow-lg transition-all duration-300 top-8"
+                        "fixed left-0 right-0 top-[30px] z-50 border-b border-slate-800 bg-slate-950/90 backdrop-blur-md shadow-2xl transition-all duration-300"
                     )}
                 >
                     <div className="container mx-auto px-4 h-20 flex items-center justify-between">
@@ -157,3 +172,5 @@ export default function Navbar({
         </AnimatePresence>
     );
 }
+
+

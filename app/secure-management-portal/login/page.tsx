@@ -74,13 +74,16 @@ function LoginContent() {
                     </div>
 
                     {(error || formError) && (
-                        <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg flex items-center gap-2 text-red-400">
+                        <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg flex items-center gap-3 text-red-400">
                             <AlertCircle className="h-5 w-5 shrink-0" />
-                            <span className="text-sm">
-                                {formError || (error === "AccessDenied"
-                                    ? "Access denied. Your account is not authorized."
-                                    : "Sign-in failed. Please try again.")}
-                            </span>
+                            <div className="flex flex-col gap-1">
+                                <span className="text-xs font-bold uppercase tracking-wider">Access Error</span>
+                                <span className="text-sm">
+                                    {formError || (error === "AccessDenied"
+                                        ? "Unauthorized: This Google account does not have admin permissions."
+                                        : "Authentication failed. Please check your credentials or try again later.")}
+                                </span>
+                            </div>
                         </div>
                     )}
 

@@ -5,7 +5,11 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { getUserByEmail } from "./users";
 
-const ADMIN_EMAIL = "vaelinsa@gmail.com";
+// Admin emails can be a comma-separated list in environment variables
+const getAdminEmails = () => {
+    const emails = process.env.ADMIN_EMAILS || "vaelinsa@gmail.com";
+    return emails.split(",").map(e => e.trim().toLowerCase());
+};
 
 export const authOptions: NextAuthOptions = {
     providers: [
@@ -38,11 +42,7 @@ export const authOptions: NextAuthOptions = {
                             email: user.email,
                             role: user.role,
                         };
-                    } else {
-                        console.log(`[Auth] Invalid password for: ${email}`);
                     }
-                } else {
-                    console.log(`[Auth] User not found or has no password set: ${email}`);
                 }
                 return null;
             },
@@ -51,18 +51,18 @@ export const authOptions: NextAuthOptions = {
     callbacks: {
         async signIn({ user, account }) {
             const email = user.email?.toLowerCase() ?? "";
+            const adminEmails = getAdminEmails();
 
             if (account?.provider === "google") {
-                // Only the admin email can sign in via Google
-                if (email === ADMIN_EMAIL) return true;
+                // If it's a primary admin email, allow
+                if (adminEmails.includes(email)) return true;
 
-                // Check if user is an approved user in Firestore
+                // Otherwise check if they exist in Firestore
                 const firestoreUser = await getUserByEmail(email);
                 return !!firestoreUser;
             }
 
             if (account?.provider === "credentials") {
-                // Credentials login — authorize() already validated
                 return true;
             }
 
@@ -71,9 +71,17 @@ export const authOptions: NextAuthOptions = {
         async jwt({ token, user, account }) {
             if (user) {
                 const email = user.email?.toLowerCase() ?? "";
+                const adminEmails = getAdminEmails();
 
                 if (account?.provider === "google") {
-                    token.role = email === ADMIN_EMAIL ? "SUPER_ADMIN" : "USER";
+                    // Default role for Google sign-in
+                    token.role = adminEmails.includes(email) ? "SUPER_ADMIN" : "USER";
+
+                    // Override with Firestore role if exists
+                    const firestoreUser = await getUserByEmail(email);
+                    if (firestoreUser?.role) {
+                        token.role = firestoreUser.role;
+                    }
                 } else {
                     token.role = (user as any).role || "USER";
                 }

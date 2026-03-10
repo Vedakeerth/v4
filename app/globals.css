@@ -206,3 +206,5 @@ input[type=number] {
 .text-animate-in {
   animation: textScrollIn 0.2s ease-out forwards;
 }
+
+.ticker-wrapper { width: 100%; overflow: hidden; background: #020b1c; position: fixed; top: 0; left: 0; right: 0; z-index: 100; height: 30px; display: flex; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.05); } .ticker-track { display: inline-flex; white-space: nowrap; animation: tickerMoveSeamless 40s linear infinite; font-size: 10px; font-weight: 800; color: #ffffff; text-transform: uppercase; font-style: italic; letter-spacing: 0.1em; will-change: transform; } .ticker-content { display: flex; gap: 200px; padding-right: 200px; } @keyframes tickerMoveSeamless { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(-33.33333%, 0, 0); } }

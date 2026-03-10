@@ -29,7 +29,7 @@ export default function AnnouncementsTab() {
             const res = await fetch("/api/admin/announcements");
             const data = await res.json();
             if (res.ok) {
-                setAnnouncements(data);
+                setAnnouncements(data.announcements || []);
             } else {
                 setError(data.error || "Failed to fetch announcements");
             }
@@ -85,7 +85,7 @@ export default function AnnouncementsTab() {
             if (res.ok) {
                 setIsAdding(false);
                 setEditingId(null);
-                setFormData({ text: "", imageUrl: "", active: true, order: announcements.length });
+                setFormData({ text: "", imageUrl: "", active: true, order: (announcements || []).length });
                 fetchAnnouncements();
             } else {
                 const data = await res.json();
@@ -124,7 +124,7 @@ export default function AnnouncementsTab() {
     const handleCancel = () => {
         setIsAdding(false);
         setEditingId(null);
-        setFormData({ text: "", imageUrl: "", active: true, order: announcements.length });
+        setFormData({ text: "", imageUrl: "", active: true, order: (announcements || []).length });
     };
 
     if (isLoading && announcements.length === 0) {
@@ -138,8 +138,8 @@ export default function AnnouncementsTab() {
     return (
         <div className="space-y-6">
             <div className="flex justify-between items-center">
-                {/* News Ticker */}
-                <NewsTicker items={announcements.map(a => ({ text: a.text, link: "#" }))} />
+                {/* News Ticker Preview */}
+                <NewsTicker initialItems={(announcements || []).map(a => ({ text: a.text, link: "#" }))} />
                 <div>
                     <h2 className="text-2xl font-bold text-white mb-1">Announcement Bar</h2>
                     <p className="text-slate-400 text-sm">Manage the top scrolling news and festival offers.</p>
@@ -234,7 +234,7 @@ export default function AnnouncementsTab() {
 
             <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-6">
-                    {announcements.map((item) => (
+                    {(announcements || []).map((item) => (
                         <div key={item.id} className="bg-slate-950 border border-slate-800 rounded-xl p-4 flex gap-4 group hover:border-cyan-500/30 transition-all shadow-lg">
                             <div className="w-20 h-16 bg-slate-900 rounded-lg shrink-0 flex items-center justify-center border border-slate-800 overflow-hidden relative">
                                 {item.imageUrl ? (
