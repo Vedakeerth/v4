@@ -4,6 +4,7 @@ import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { getUserByEmail } from "./users";
+import { getAdminAuth } from "./firebaseAdmin";
 
 // Admin emails can be a comma-separated list in environment variables
 const getAdminEmails = () => {
@@ -47,6 +48,45 @@ export const authOptions: NextAuthOptions = {
                 return null;
             },
         }),
+        CredentialsProvider({
+            id: "firebase",
+            name: "Firebase",
+            credentials: {
+                idToken: { label: "ID Token", type: "text" },
+            },
+            async authorize(credentials) {
+                if (!credentials?.idToken) return null;
+
+                try {
+                    const adminAuth = await getAdminAuth();
+                    const decodedToken = await adminAuth.verifyIdToken(credentials.idToken);
+                    const email = decodedToken.email?.toLowerCase();
+
+                    if (!email) return null;
+
+                    const adminEmails = getAdminEmails();
+                    let userRole = "USER";
+
+                    if (adminEmails.includes(email)) {
+                        userRole = "SUPER_ADMIN";
+                    } else {
+                        const firestoreUser = await getUserByEmail(email);
+                        if (!firestoreUser) return null;
+                        userRole = firestoreUser.role || "USER";
+                    }
+
+                    return {
+                        id: decodedToken.uid,
+                        name: decodedToken.name || email.split("@")[0],
+                        email: email,
+                        role: userRole,
+                    };
+                } catch (error) {
+                    console.error("Firebase auth error:", error);
+                    return null;
+                }
+            },
+        }),
     ],
     callbacks: {
         async signIn({ user, account }) {
@@ -62,7 +102,7 @@ export const authOptions: NextAuthOptions = {
                 return !!firestoreUser;
             }
 
-            if (account?.provider === "credentials") {
+            if (account?.provider === "credentials" || account?.provider === "firebase") {
                 return true;
             }
 

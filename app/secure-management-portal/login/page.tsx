@@ -6,6 +6,8 @@ import { AlertCircle, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { signIn, useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
+import { auth } from "@/lib/firebase";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
 function LoginContent() {
     const router = useRouter();
@@ -29,9 +31,33 @@ function LoginContent() {
 
     const handleGoogleSignIn = async () => {
         setIsGoogleLoading(true);
+        setFormError(""); // Reset previous error
         try {
-            await signIn("google", { callbackUrl: "/secure-management-portal/dashboard" });
-        } catch (err) {
+            const provider = new GoogleAuthProvider();
+            // 1. Sign in with Firebase Popup
+            const result = await signInWithPopup(auth, provider);
+            // 2. Get the Firebase ID Token
+            const idToken = await result.user.getIdToken();
+
+            // 3. Authenticate with NextAuth using the Firebase ID Token
+            const nextAuthResult = await signIn("firebase", {
+                idToken,
+                redirect: false,
+                callbackUrl: "/secure-management-portal/dashboard"
+            });
+
+            if (nextAuthResult?.error) {
+                // If NextAuth authorize callback returns null/false, show authorization error
+                setFormError("Unauthorized: This Google account does not have admin permissions.");
+                setIsGoogleLoading(false);
+            } else {
+                // Successfully authenticated with both
+                router.push("/secure-management-portal/dashboard");
+            }
+        } catch (err: any) {
+            console.error("Login error:", err);
+            // Handle Firebase specific error or general failure
+            setFormError(err.message || "Authentication failed. Please try again.");
             setIsGoogleLoading(false);
         }
     };

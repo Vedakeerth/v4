@@ -5,7 +5,8 @@ export type { User, UserRole } from "@/types";
 const USERS_COLLECTION = "users";
 
 export async function getUsers(): Promise<User[]> {
-    const { adminDb } = await import("./firebaseAdmin");
+    const { getAdminDb } = await import("./firebaseAdmin");
+    const adminDb = await getAdminDb();
     try {
         const snapshot = await adminDb.collection(USERS_COLLECTION).get();
         return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({ id: doc.id, ...doc.data() } as User));
@@ -16,7 +17,8 @@ export async function getUsers(): Promise<User[]> {
 }
 
 export async function getUserByEmail(email: string): Promise<User | undefined> {
-    const { adminDb } = await import("./firebaseAdmin");
+    const { getAdminDb } = await import("./firebaseAdmin");
+    const adminDb = await getAdminDb();
     try {
         const snapshot = await adminDb
             .collection(USERS_COLLECTION)
@@ -36,7 +38,8 @@ export async function getUserByEmail(email: string): Promise<User | undefined> {
 export async function addUser(
     user: Omit<User, "id">
 ): Promise<{ success: boolean; error?: string }> {
-    const { adminDb } = await import("./firebaseAdmin");
+    const { getAdminDb } = await import("./firebaseAdmin");
+    const adminDb = await getAdminDb();
     try {
         // Check if user already exists
         const existing = await getUserByEmail(user.email);
@@ -67,7 +70,8 @@ export async function addUser(
 }
 
 export async function deleteUser(id: string): Promise<boolean> {
-    const { adminDb } = await import("./firebaseAdmin");
+    const { getAdminDb } = await import("./firebaseAdmin");
+    const adminDb = await getAdminDb();
     try {
         const doc = await adminDb.collection(USERS_COLLECTION).doc(id).get();
         if (!doc.exists) return false;
@@ -87,7 +91,8 @@ export async function updateUser(
     id: string,
     updates: Partial<User>
 ): Promise<boolean> {
-    const { adminDb } = await import("./firebaseAdmin");
+    const { getAdminDb } = await import("./firebaseAdmin");
+    const adminDb = await getAdminDb();
     try {
         const doc = await adminDb.collection(USERS_COLLECTION).doc(id).get();
         if (!doc.exists) return false;

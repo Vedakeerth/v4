@@ -2,6 +2,7 @@
 // firebase-admin is only loaded on the server.
 
 let adminDb: any;
+let adminAuth: any;
 
 const isConfigured =
     process.env.FIREBASE_PROJECT_ID &&
@@ -31,14 +32,27 @@ const dummyDb = {
     })
 };
 
-if (typeof window === 'undefined') {
-    // We are on the server
+const dummyAuth = {
+    verifyIdToken: async () => {
+        console.warn("Firebase Admin not configured or running on client. verifyIdToken skipped.");
+        throw new Error("Firebase Admin not initialized");
+    }
+};
+
+// Initialize on demand to avoid top-level require/import issues in some environments
+async function initAdmin() {
+    if (typeof window !== 'undefined') return { db: dummyDb, auth: dummyAuth };
+
+    if (adminDb && adminAuth) return { db: adminDb, auth: adminAuth };
+
     try {
-        const { initializeApp, getApps, cert } = require("firebase-admin/app");
-        const { getFirestore } = require("firebase-admin/firestore");
+        const { initializeApp, getApps, cert } = await import("firebase-admin/app");
+        const { getFirestore } = await import("firebase-admin/firestore");
+        const { getAuth } = await import("firebase-admin/auth");
 
         let adminApp;
-        if (!getApps().length) {
+        const apps = getApps();
+        if (!apps.length) {
             if (isConfigured) {
                 adminApp = initializeApp({
                     credential: cert({
@@ -48,20 +62,27 @@ if (typeof window === 'undefined') {
                     }),
                 });
             } else {
-                adminApp = {};
+                adminApp = null;
             }
         } else {
-            adminApp = getApps()[0];
+            adminApp = apps[0];
         }
 
-        adminDb = isConfigured ? getFirestore(adminApp) : dummyDb;
+        adminDb = adminApp ? getFirestore(adminApp) : dummyDb;
+        adminAuth = adminApp ? getAuth(adminApp) : dummyAuth;
+
+        return { db: adminDb, auth: adminAuth };
     } catch (error) {
-        console.error("Failed to initialize Firebase Admin on server:", error);
-        adminDb = dummyDb;
+        console.error("Failed to initialize Firebase Admin:", error);
+        return { db: dummyDb, auth: dummyAuth };
     }
-} else {
-    // We are on the client
-    adminDb = dummyDb;
 }
 
-export { adminDb };
+// Export a proxy or helper to ensure initialization
+export const getAdminDb = async () => (await initAdmin()).db;
+export const getAdminAuth = async () => (await initAdmin()).auth;
+
+// For backward compatibility with existing code that imports adminDb directly
+// Note: This might still be null if imported before initAdmin completes, 
+// but getUserByEmail in lib/users.ts now uses dynamic imports.
+export { adminDb, adminAuth };
