@@ -4,14 +4,15 @@ import React, { useState, useEffect, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import { AlertCircle, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
-import { signIn, useSession } from "next-auth/react";
+import { signIn, signOut } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { auth } from "@/lib/firebase";
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut as firebaseSignOut, signInWithEmailAndPassword } from "firebase/auth";
+
+const ADMIN_EMAIL = "vaelinsa@gmail.com";
 
 function LoginContent() {
     const router = useRouter();
-    const { status } = useSession();
     const [isLoading, setIsLoading] = useState(false);
     const [isGoogleLoading, setIsGoogleLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
@@ -23,41 +24,49 @@ function LoginContent() {
     const [password, setPassword] = useState("");
     const [formError, setFormError] = useState("");
 
+    // Firebase Auth State Listener for persistence and auto-redirect
     useEffect(() => {
-        if (status === "authenticated") {
-            router.push("/secure-management-portal/dashboard");
-        }
-    }, [status, router]);
+        const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+            if (firebaseUser) {
+                if (firebaseUser.email?.toLowerCase() === ADMIN_EMAIL) {
+                    router.push("/secure-management-portal/admin");
+                } else {
+                    // Logged in but not admin - stay here and show error if it was a recent attempt
+                    // Note: handleGoogleSignIn will handle the signout for new attempts
+                }
+            }
+        });
+        return () => unsubscribe();
+    }, [router]);
 
     const handleGoogleSignIn = async () => {
         setIsGoogleLoading(true);
-        setFormError(""); // Reset previous error
+        setFormError("");
         try {
             const provider = new GoogleAuthProvider();
-            // 1. Sign in with Firebase Popup
             const result = await signInWithPopup(auth, provider);
-            // 2. Get the Firebase ID Token
-            const idToken = await result.user.getIdToken();
+            const user = result.user;
 
-            // 3. Authenticate with NextAuth using the Firebase ID Token
-            const nextAuthResult = await signIn("firebase", {
+            if (user.email?.toLowerCase() !== ADMIN_EMAIL) {
+                setFormError("Access Denied: You do not have admin permissions.");
+                await signOut({ redirect: false });
+                await firebaseSignOut(auth);
+                setIsGoogleLoading(false);
+                return;
+            }
+
+            // Get ID Token for NextAuth synchronization
+            const idToken = await user.getIdToken();
+            await signIn("firebase", {
                 idToken,
                 redirect: false,
-                callbackUrl: "/secure-management-portal/dashboard"
+                callbackUrl: "/secure-management-portal/admin"
             });
 
-            if (nextAuthResult?.error) {
-                // If NextAuth authorize callback returns null/false, show authorization error
-                setFormError("Unauthorized: This Google account does not have admin permissions.");
-                setIsGoogleLoading(false);
-            } else {
-                // Successfully authenticated with both. Use window.location for robust production redirect.
-                window.location.href = "/secure-management-portal/dashboard";
-            }
+            window.location.href = "/secure-management-portal/admin";
         } catch (err: any) {
             console.error("Login error:", err);
-            // Handle Firebase specific error or general failure
-            setFormError(err.message || "Authentication failed. Please try again.");
+            setFormError(err.message || "Authentication failed.");
             setIsGoogleLoading(false);
         }
     };
@@ -68,21 +77,29 @@ function LoginContent() {
         setFormError("");
 
         try {
-            const result = await signIn("credentials", {
-                email,
-                password,
+            // Firebase Sign In with Email/Password
+            const result = await signInWithEmailAndPassword(auth, email, password);
+            const user = result.user;
+
+            if (user.email?.toLowerCase() !== ADMIN_EMAIL) {
+                setFormError("Access Denied: Unauthorized account.");
+                await signOut({ redirect: false });
+                await firebaseSignOut(auth);
+                setIsLoading(false);
+                return;
+            }
+
+            // Sync with NextAuth
+            const idToken = await user.getIdToken();
+            await signIn("firebase", {
+                idToken,
                 redirect: false,
-                callbackUrl: "/secure-management-portal/dashboard"
+                callbackUrl: "/secure-management-portal/admin"
             });
 
-            if (result?.error) {
-                setFormError("Invalid email or password");
-                setIsLoading(false);
-            } else {
-                window.location.href = "/secure-management-portal/dashboard";
-            }
-        } catch (err) {
-            setFormError("An unexpected error occurred");
+            window.location.href = "/secure-management-portal/admin";
+        } catch (err: any) {
+            setFormError(err.code === "auth/invalid-credential" ? "Invalid email or password" : err.message);
             setIsLoading(false);
         }
     };
