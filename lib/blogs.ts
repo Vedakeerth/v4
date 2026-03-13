@@ -4,7 +4,8 @@ export type { BlogPost, Comment } from '@/types';
 
 export async function getBlogs(): Promise<BlogPost[]> {
     if (typeof window === 'undefined') {
-        const { adminDb } = await import('./firebaseAdmin');
+        const { getAdminDb } = await import('./firebaseAdmin');
+        const adminDb = await getAdminDb();
         try {
             const snapshot = await adminDb.collection('blogs').orderBy('createdAt', 'desc').get();
             return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({

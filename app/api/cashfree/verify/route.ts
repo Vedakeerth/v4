@@ -36,7 +36,7 @@ export async function POST(req: Request) {
 
         // Check if order status is PAID
         if (data.order_status === 'PAID') {
-            const updated = updateOrder(orderId, { status: 'Processing', notes: `Cashfree Payment ID: ${data.cf_order_id}` });
+            const updated = await updateOrder(orderId, { status: 'Processing', notes: `Cashfree Payment ID: ${data.cf_order_id}` });
             return NextResponse.json({ success: true, status: 'PAID' });
         } else {
             return NextResponse.json({ success: false, status: data.order_status });

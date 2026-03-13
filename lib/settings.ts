@@ -28,7 +28,8 @@ const defaultSettings: SiteSettings = {
 
 export async function getSettings(): Promise<SiteSettings> {
     if (typeof window === 'undefined') {
-        const { adminDb } = await import('./firebaseAdmin');
+        const { getAdminDb } = await import('./firebaseAdmin');
+        const adminDb = await getAdminDb();
         try {
             const doc = await adminDb.collection('config').doc('settings').get();
             if (!doc.exists) return defaultSettings;
@@ -47,7 +48,8 @@ export async function getSettings(): Promise<SiteSettings> {
 
 export async function saveSettings(settings: SiteSettings) {
     if (typeof window === 'undefined') {
-        const { adminDb } = await import('./firebaseAdmin');
+        const { getAdminDb } = await import('./firebaseAdmin');
+        const adminDb = await getAdminDb();
         await adminDb.collection('config').doc('settings').set({
             ...settings,
             updatedAt: new Date().toISOString()

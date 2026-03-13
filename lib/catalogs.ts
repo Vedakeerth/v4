@@ -4,7 +4,8 @@ export type { Catalog } from '@/types';
 
 export async function getCatalogs(): Promise<Catalog[]> {
     if (typeof window === 'undefined') {
-        const { adminDb } = await import('./firebaseAdmin');
+        const { getAdminDb } = await import('./firebaseAdmin');
+        const adminDb = await getAdminDb();
         const snapshot = await adminDb.collection('catalogs').get();
         return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
             id: doc.id,
@@ -18,7 +19,8 @@ export async function getCatalogs(): Promise<Catalog[]> {
 }
 
 export async function getCatalogById(id: string): Promise<Catalog | null> {
-    const { adminDb } = await import('./firebaseAdmin');
+    const { getAdminDb } = await import('./firebaseAdmin');
+    const adminDb = await getAdminDb();
     const doc = await adminDb.collection('catalogs').doc(id).get();
     if (!doc.exists) return null;
     return {
@@ -28,7 +30,8 @@ export async function getCatalogById(id: string): Promise<Catalog | null> {
 }
 
 export async function createCatalog(name: string, description: string, productIds: string[] = []): Promise<Catalog> {
-    const { adminDb } = await import('./firebaseAdmin');
+    const { getAdminDb } = await import('./firebaseAdmin');
+    const adminDb = await getAdminDb();
     const newCatalog: Omit<Catalog, 'id'> = {
         name,
         description,
@@ -45,7 +48,8 @@ export async function createCatalog(name: string, description: string, productId
 }
 
 export async function updateCatalog(id: string, updates: Partial<Catalog>): Promise<Catalog | null> {
-    const { adminDb } = await import('./firebaseAdmin');
+    const { getAdminDb } = await import('./firebaseAdmin');
+    const adminDb = await getAdminDb();
     const catalogRef = adminDb.collection('catalogs').doc(id);
     const doc = await catalogRef.get();
     if (!doc.exists) return null;
@@ -68,7 +72,8 @@ export async function updateCatalog(id: string, updates: Partial<Catalog>): Prom
 }
 
 export async function deleteCatalog(id: string): Promise<boolean> {
-    const { adminDb } = await import('./firebaseAdmin');
+    const { getAdminDb } = await import('./firebaseAdmin');
+    const adminDb = await getAdminDb();
     const catalogRef = adminDb.collection('catalogs').doc(id);
     const doc = await catalogRef.get();
     if (!doc.exists) return false;

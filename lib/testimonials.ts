@@ -4,7 +4,8 @@ export type { Testimonial } from '@/types';
 
 export async function getTestimonials(): Promise<Testimonial[]> {
     if (typeof window === 'undefined') {
-        const { adminDb } = await import('./firebaseAdmin');
+        const { getAdminDb } = await import('./firebaseAdmin');
+        const adminDb = await getAdminDb();
         try {
             const snapshot = await adminDb.collection('testimonials').orderBy('createdAt', 'desc').get();
             return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({

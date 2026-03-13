@@ -3,7 +3,8 @@ import { Order } from '@/types';
 export type { Order } from '@/types';
 
 export async function getOrders(): Promise<Order[]> {
-    const { adminDb } = await import('./firebaseAdmin');
+    const { getAdminDb } = await import('./firebaseAdmin');
+    const adminDb = await getAdminDb();
     try {
         const snapshot = await adminDb.collection("orders").orderBy("createdAt", "desc").get();
         return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
@@ -17,7 +18,8 @@ export async function getOrders(): Promise<Order[]> {
 }
 
 export async function addOrder(order: Order): Promise<void> {
-    const { adminDb } = await import('./firebaseAdmin');
+    const { getAdminDb } = await import('./firebaseAdmin');
+    const adminDb = await getAdminDb();
     try {
         const { id, ...orderData } = order;
         const docRef = id ? adminDb.collection("orders").doc(id) : adminDb.collection("orders").doc();
@@ -32,7 +34,8 @@ export async function addOrder(order: Order): Promise<void> {
 }
 
 export async function updateOrder(id: string, updates: Partial<Order>): Promise<boolean> {
-    const { adminDb } = await import('./firebaseAdmin');
+    const { getAdminDb } = await import('./firebaseAdmin');
+    const adminDb = await getAdminDb();
     try {
         await adminDb.collection("orders").doc(id).update(updates);
         return true;

@@ -27,7 +27,7 @@ export async function POST(req: Request) {
             notes: `Payment: ${paymentMethod?.toUpperCase() || 'N/A'}`
         };
 
-        addOrder(formattedOrder);
+        await addOrder(formattedOrder);
 
         return NextResponse.json({ success: true, orderId });
     } catch (error) {

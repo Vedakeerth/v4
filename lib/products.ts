@@ -4,7 +4,8 @@ export type { Product } from '@/types';
 
 export async function getProducts(): Promise<Product[]> {
     if (typeof window === 'undefined') {
-        const { adminDb } = await import('./firebaseAdmin');
+        const { getAdminDb } = await import('./firebaseAdmin');
+        const adminDb = await getAdminDb();
         try {
             const snapshot = await adminDb.collection('products').orderBy('createdAt', 'desc').get();
             return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
@@ -24,7 +25,8 @@ export async function getProducts(): Promise<Product[]> {
 
 export async function getProductById(id: string): Promise<Product | undefined> {
     if (typeof window === 'undefined') {
-        const { adminDb } = await import('./firebaseAdmin');
+        const { getAdminDb } = await import('./firebaseAdmin');
+        const adminDb = await getAdminDb();
         const doc = await adminDb.collection('products').doc(id).get();
         if (!doc.exists) return undefined;
         return { id: doc.id, ...doc.data() } as Product;

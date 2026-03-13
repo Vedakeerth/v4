@@ -51,8 +51,8 @@ function LoginContent() {
                 setFormError("Unauthorized: This Google account does not have admin permissions.");
                 setIsGoogleLoading(false);
             } else {
-                // Successfully authenticated with both
-                router.push("/secure-management-portal/dashboard");
+                // Successfully authenticated with both. Use window.location for robust production redirect.
+                window.location.href = "/secure-management-portal/dashboard";
             }
         } catch (err: any) {
             console.error("Login error:", err);
@@ -79,7 +79,7 @@ function LoginContent() {
                 setFormError("Invalid email or password");
                 setIsLoading(false);
             } else {
-                router.push("/secure-management-portal/dashboard");
+                window.location.href = "/secure-management-portal/dashboard";
             }
         } catch (err) {
             setFormError("An unexpected error occurred");
@@ -109,6 +109,11 @@ function LoginContent() {
                                         ? "Unauthorized: This Google account does not have admin permissions."
                                         : "Authentication failed. Please check your credentials or try again later.")}
                                 </span>
+                                {(isGoogleLoading || isLoading) && (
+                                    <Link href="/secure-management-portal/dashboard" className="text-[10px] underline hover:text-white mt-1">
+                                        Click here if not redirected automatically
+                                    </Link>
+                                )}
                             </div>
                         </div>
                     )}

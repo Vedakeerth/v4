@@ -16,6 +16,8 @@ export async function PATCH(
         const body = await req.json();
         const { status } = body;
 
+        const { getAdminDb } = await import("@/lib/firebaseAdmin");
+        const adminDb = await getAdminDb();
         const docRef = adminDb.collection('orders').doc(id);
         const doc = await docRef.get();
 
