@@ -4,11 +4,6 @@
 let adminDb: any;
 let adminAuth: any;
 
-const isConfigured =
-    process.env.FIREBASE_PROJECT_ID &&
-    process.env.FIREBASE_CLIENT_EMAIL &&
-    process.env.FIREBASE_PRIVATE_KEY;
-
 const dummyDb = {
     collection: () => ({
         get: async () => ({ docs: [], empty: true, size: 0 }),
@@ -39,11 +34,15 @@ const dummyAuth = {
     }
 };
 
-// Initialize on demand to avoid top-level require/import issues in some environments
+// Initialize on demand to avoid top-level require/import issues
 async function initAdmin() {
     if (typeof window !== 'undefined') return { db: dummyDb, auth: dummyAuth };
-
     if (adminDb && adminAuth) return { db: adminDb, auth: adminAuth };
+
+    const isConfigured =
+        process.env.FIREBASE_PROJECT_ID &&
+        process.env.FIREBASE_CLIENT_EMAIL &&
+        process.env.FIREBASE_PRIVATE_KEY;
 
     try {
         const { initializeApp, getApps, cert } = await import("firebase-admin/app");
@@ -52,20 +51,20 @@ async function initAdmin() {
 
         let adminApp;
         const apps = getApps();
-        if (!apps.length) {
-            if (isConfigured) {
-                adminApp = initializeApp({
-                    credential: cert({
-                        projectId: process.env.FIREBASE_PROJECT_ID,
-                        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-                        privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
-                    }),
-                });
-            } else {
-                adminApp = null;
-            }
-        } else {
+        if (apps.length > 0) {
             adminApp = apps[0];
+        } else if (isConfigured) {
+            adminApp = initializeApp({
+                credential: cert({
+                    projectId: process.env.FIREBASE_PROJECT_ID,
+                    clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+                    privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
+                }),
+            });
+            console.log("Firebase Admin Initialized for Project:", process.env.FIREBASE_PROJECT_ID);
+        } else {
+            console.warn("Firebase Admin credentials missing. Using dummy Firebase.");
+            adminApp = null;
         }
 
         adminDb = adminApp ? getFirestore(adminApp) : dummyDb;
@@ -73,7 +72,7 @@ async function initAdmin() {
 
         return { db: adminDb, auth: adminAuth };
     } catch (error) {
-        console.error("Failed to initialize Firebase Admin:", error);
+        console.error("CRITICAL: Failed to initialize Firebase Admin:", error);
         return { db: dummyDb, auth: dummyAuth };
     }
 }
@@ -82,7 +81,5 @@ async function initAdmin() {
 export const getAdminDb = async () => (await initAdmin()).db;
 export const getAdminAuth = async () => (await initAdmin()).auth;
 
-// For backward compatibility with existing code that imports adminDb directly
-// Note: This might still be null if imported before initAdmin completes, 
-// but getUserByEmail in lib/users.ts now uses dynamic imports.
+// For backward compatibility
 export { adminDb, adminAuth };

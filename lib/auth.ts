@@ -1,4 +1,4 @@
-import { getServerSession } from "next-auth/next";
+import { getServerSession } from "next-auth";
 import { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -15,8 +15,8 @@ const getAdminEmails = () => {
 export const authOptions: NextAuthOptions = {
     providers: [
         GoogleProvider({
-            clientId: process.env.GOOGLE_CLIENT_ID!,
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+            clientId: process.env.GOOGLE_CLIENT_ID || "",
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
         }),
         CredentialsProvider({
             name: "Credentials",
@@ -27,23 +27,27 @@ export const authOptions: NextAuthOptions = {
             async authorize(credentials) {
                 if (!credentials?.email || !credentials?.password) return null;
 
-                const email = credentials.email.trim().toLowerCase();
-                const user = await getUserByEmail(email);
+                try {
+                    const email = credentials.email.trim().toLowerCase();
+                    const user = await getUserByEmail(email);
 
-                if (user && user.password) {
-                    const isValid = await bcrypt.compare(
-                        credentials.password,
-                        user.password
-                    );
+                    if (user && user.password) {
+                        const isValid = await bcrypt.compare(
+                            credentials.password,
+                            user.password
+                        );
 
-                    if (isValid) {
-                        return {
-                            id: user.id,
-                            name: user.name,
-                            email: user.email,
-                            role: user.role,
-                        };
+                        if (isValid) {
+                            return {
+                                id: user.id,
+                                name: user.name,
+                                email: user.email,
+                                role: user.role,
+                            };
+                        }
                     }
+                } catch (error) {
+                    console.error("Credentials authorize error:", error);
                 }
                 return null;
             },
@@ -70,9 +74,15 @@ export const authOptions: NextAuthOptions = {
                     if (adminEmails.includes(email)) {
                         userRole = "SUPER_ADMIN";
                     } else {
-                        const firestoreUser = await getUserByEmail(email);
-                        if (!firestoreUser) return null;
-                        userRole = firestoreUser.role || "USER";
+                        try {
+                            const firestoreUser = await getUserByEmail(email);
+                            if (firestoreUser) {
+                                userRole = firestoreUser.role || "USER";
+                            }
+                        } catch (firestoreError) {
+                            console.error("Firestore lookup error during authorize:", firestoreError);
+                            // Fallback to minimal role if DB fails but token is valid
+                        }
                     }
 
                     return {
@@ -82,7 +92,7 @@ export const authOptions: NextAuthOptions = {
                         role: userRole,
                     };
                 } catch (error) {
-                    console.error("Firebase auth error:", error);
+                    console.error("Firebase authorize error:", error);
                     return null;
                 }
             },
@@ -90,51 +100,71 @@ export const authOptions: NextAuthOptions = {
     ],
     callbacks: {
         async signIn({ user, account }) {
-            const email = user.email?.toLowerCase() ?? "";
-            const adminEmails = getAdminEmails();
-
-            if (account?.provider === "google") {
-                // If it's a primary admin email, allow
-                if (adminEmails.includes(email)) return true;
-
-                // Otherwise check if they exist in Firestore
-                const firestoreUser = await getUserByEmail(email);
-                return !!firestoreUser;
-            }
-
-            if (account?.provider === "credentials" || account?.provider === "firebase") {
-                return true;
-            }
-
-            return false;
-        },
-        async jwt({ token, user, account }) {
-            if (user) {
+            try {
                 const email = user.email?.toLowerCase() ?? "";
                 const adminEmails = getAdminEmails();
 
                 if (account?.provider === "google") {
-                    // Default role for Google sign-in
-                    token.role = adminEmails.includes(email) ? "SUPER_ADMIN" : "USER";
+                    if (adminEmails.includes(email)) return true;
 
-                    // Override with Firestore role if exists
-                    const firestoreUser = await getUserByEmail(email);
-                    if (firestoreUser?.role) {
-                        token.role = firestoreUser.role;
+                    try {
+                        const firestoreUser = await getUserByEmail(email);
+                        return !!firestoreUser;
+                    } catch (e) {
+                        console.error("SignIn firestore error:", e);
+                        return false;
                     }
-                } else {
-                    token.role = (user as any).role || "USER";
                 }
-                token.id = user.id;
+
+                if (account?.provider === "credentials" || account?.provider === "firebase") {
+                    return true;
+                }
+
+                return false;
+            } catch (error) {
+                console.error("NextAuth signIn error:", error);
+                return false;
             }
-            return token;
+        },
+        async jwt({ token, user, account }) {
+            try {
+                if (user) {
+                    const email = user.email?.toLowerCase() ?? "";
+                    const adminEmails = getAdminEmails();
+
+                    if (account?.provider === "google") {
+                        token.role = adminEmails.includes(email) ? "SUPER_ADMIN" : "USER";
+
+                        try {
+                            const firestoreUser = await getUserByEmail(email);
+                            if (firestoreUser?.role) {
+                                token.role = firestoreUser.role;
+                            }
+                        } catch (e) {
+                            console.error("JWT firestore error:", e);
+                        }
+                    } else {
+                        token.role = (user as any).role || "USER";
+                    }
+                    token.id = user.id;
+                }
+                return token;
+            } catch (error) {
+                console.error("NextAuth jwt error:", error);
+                return token;
+            }
         },
         async session({ session, token }) {
-            if (session.user) {
-                (session.user as any).role = token.role;
-                (session.user as any).id = token.id;
+            try {
+                if (session.user) {
+                    (session.user as any).role = token.role || "USER";
+                    (session.user as any).id = token.id;
+                }
+                return session;
+            } catch (error) {
+                console.error("NextAuth session error:", error);
+                return session;
             }
-            return session;
         },
     },
     pages: {
@@ -144,7 +174,7 @@ export const authOptions: NextAuthOptions = {
     session: {
         strategy: "jwt",
     },
-    secret: process.env.NEXTAUTH_SECRET,
+    secret: process.env.NEXTAUTH_SECRET || "temp-secret-for-debug",
 };
 
 export async function isAuthenticated() {
