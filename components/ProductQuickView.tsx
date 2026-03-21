@@ -1,14 +1,15 @@
 "use client";
 
 import React from "react";
-import { X, Info, ShoppingCart, Heart, Share2 } from "lucide-react";
+import { X, Info, ShoppingCart, Heart, Zap } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Product } from "@/lib/products";
-import { cn } from "@/lib/utils";
+import { cn, parsePrice } from "@/lib/utils";
 import { useCart } from "@/context/CartContext";
 import { ChevronLeft, ChevronRight, Minus, Plus } from "lucide-react";
+import BuyNowModal from "./BuyNowModal";
 
 interface ProductQuickViewProps {
     product: Product | null;
@@ -19,6 +20,7 @@ export default function ProductQuickView({ product, onClose }: ProductQuickViewP
     const [activeImageIndex, setActiveImageIndex] = React.useState(0);
     const [selectedColor, setSelectedColor] = React.useState<string | null>(null);
     const [quantity, setQuantity] = React.useState(1);
+    const [showBuyNow, setShowBuyNow] = React.useState(false);
     const { addToCart } = useCart();
 
     React.useEffect(() => {
@@ -226,16 +228,27 @@ export default function ProductQuickView({ product, onClose }: ProductQuickViewP
                                 </div>
                             </div>
 
-                            <div className="mt-auto pt-8 border-t border-slate-800/50 space-y-4">
+                            <div className="mt-auto pt-8 border-t border-slate-800/50 space-y-3">
+                                {/* Instant Buy Now */}
+                                <button
+                                    onClick={() => setShowBuyNow(true)}
+                                    disabled={!product.inStock}
+                                    className="w-full py-5 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-slate-950 font-black rounded-2xl transition-all shadow-xl shadow-cyan-500/30 flex items-center justify-center gap-3 text-lg group disabled:opacity-40 disabled:cursor-not-allowed"
+                                >
+                                    <Zap size={20} className="group-hover:scale-110 transition-transform" fill="currentColor" />
+                                    Buy Now — ₹{(parsePrice(product.price) * quantity).toLocaleString('en-IN')}
+                                </button>
+
+                                {/* Add to Cart */}
                                 <button
                                     onClick={() => {
                                         addToCart(product, selectedColor || undefined, quantity);
                                         onClose();
                                     }}
-                                    className="w-full py-5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black rounded-2xl transition-all shadow-xl shadow-cyan-500/20 flex items-center justify-center gap-3 text-lg group"
+                                    className="w-full py-4 bg-slate-800 hover:bg-slate-700 text-white font-black rounded-2xl transition-all border border-slate-700 flex items-center justify-center gap-3 group"
                                 >
-                                    <ShoppingCart size={20} className="group-hover:scale-110 transition-transform" />
-                                    Add to Quote Cart
+                                    <ShoppingCart size={18} className="group-hover:scale-110 transition-transform" />
+                                    Add to Cart
                                 </button>
 
                                 <div className="flex gap-4">
@@ -263,6 +276,15 @@ export default function ProductQuickView({ product, onClose }: ProductQuickViewP
                 </motion.div>
             </motion.div>
 
+            {/* Buy Now Modal */}
+            {showBuyNow && (
+                <BuyNowModal
+                    product={product}
+                    quantity={quantity}
+                    selectedColor={selectedColor}
+                    onClose={() => setShowBuyNow(false)}
+                />
+            )}
         </AnimatePresence>
     );
 }

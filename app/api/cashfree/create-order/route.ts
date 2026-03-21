@@ -14,12 +14,28 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'Cashfree configuration error' }, { status: 500 });
         }
 
+        if (!amount || !email || !phone || !customerName) {
+            return NextResponse.json({ error: 'Missing required payment fields' }, { status: 400 });
+        }
+
         const baseUrl = env === 'sandbox'
             ? 'https://sandbox.cashfree.com/pg/orders'
             : 'https://api.cashfree.com/pg/orders';
 
-        // Clean phone number (remove + and spaces)
-        const cleanPhone = phone.replace(/[^+0-9]/g, '').replace(/^\+/, '');
+        // Clean phone: digits only, no + or spaces, max 10 digits for India
+        const cleanPhone = phone.replace(/\D/g, '').slice(-10);
+
+        // Cashfree customer_id: alphanumeric only, no @ or special chars
+        const customerId = email.replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 50);
+
+        // Cashfree order_id: alphanumeric, underscore, hyphen only
+        const safeOrderId = (orderId || `order_${Date.now()}`).replace(/[^a-zA-Z0-9_-]/g, '_');
+
+        // Ensure amount is a valid positive number with max 2 decimal places
+        const parsedAmount = Math.round(parseFloat(amount) * 100) / 100;
+        if (isNaN(parsedAmount) || parsedAmount <= 0) {
+            return NextResponse.json({ error: 'Invalid amount' }, { status: 400 });
+        }
 
         const response = await fetch(baseUrl, {
             method: 'POST',
@@ -30,11 +46,11 @@ export async function POST(req: Request) {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                order_id: orderId || `order_${Date.now()}`,
-                order_amount: parseFloat(amount),
+                order_id: safeOrderId,
+                order_amount: parsedAmount,
                 order_currency: "INR",
                 customer_details: {
-                    customer_id: email,
+                    customer_id: customerId,
                     customer_name: customerName,
                     customer_email: email,
                     customer_phone: cleanPhone

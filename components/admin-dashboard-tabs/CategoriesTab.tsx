@@ -14,6 +14,8 @@ interface Category {
 export default function CategoriesTab() {
     const [categories, setCategories] = useState<Category[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [categoriesSettings, setCategoriesSettings] = useState({ speed: 30 });
+    const [isSavingSettings, setIsSavingSettings] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [editingCategory, setEditingCategory] = useState<Category | null>(null);
     const [formData, setFormData] = useState({
@@ -24,7 +26,38 @@ export default function CategoriesTab() {
 
     useEffect(() => {
         fetchCategories();
+        fetchSettings();
     }, []);
+
+    const fetchSettings = async () => {
+        try {
+            const res = await fetch("/api/settings");
+            const data = await res.json();
+            if (data.success && data.settings?.categoriesSettings) {
+                setCategoriesSettings(data.settings.categoriesSettings);
+            }
+        } catch (err) {
+            console.error("Failed to fetch settings:", err);
+        }
+    };
+
+    const handleSaveSettings = async () => {
+        setIsSavingSettings(true);
+        try {
+            const res = await fetch("/api/settings", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ categoriesSettings })
+            });
+            if (!res.ok) throw new Error("Failed to save settings");
+            alert("Settings saved successfully!");
+        } catch (err) {
+            console.error(err);
+            alert("Failed to save settings");
+        } finally {
+            setIsSavingSettings(false);
+        }
+    };
 
     const fetchCategories = async () => {
         try {
@@ -46,7 +79,7 @@ export default function CategoriesTab() {
     };
 
     const handleImportDefaults = async () => {
-        const defaults = ["Hardware", "Enclosures", "Electronics", "Mechanical", "Tooling", "Uncategorized", "3D Printers", "3D Scanners", "3D Pens"];
+        const defaults = ["Gifts", "Table Decor", "Wall Decals", "Organizers", "3D Prints", "Machine Organizers", "Uncategorized"];
         if (!confirm(`This will add ${defaults.length} default categories. Proceed?`)) return;
 
         try {
@@ -118,6 +151,30 @@ export default function CategoriesTab() {
                             Import Defaults
                         </button>
                     )}
+                </div>
+            </div>
+
+            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 mb-8">
+                <h3 className="text-lg font-bold text-white mb-4">Categories Marquee Configuration</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="space-y-1">
+                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Speed</label>
+                        <input
+                            type="number"
+                            value={categoriesSettings.speed}
+                            onChange={(e) => setCategoriesSettings({ ...categoriesSettings, speed: parseInt(e.target.value) || 30 })}
+                            className="w-full px-5 py-3 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500 transition-all font-bold text-sm"
+                        />
+                    </div>
+                </div>
+                <div className="flex justify-end mt-4">
+                    <button
+                        onClick={handleSaveSettings}
+                        disabled={isSavingSettings}
+                        className="px-6 py-2.5 bg-slate-800 hover:bg-slate-700 text-white font-black rounded-xl transition-all flex items-center gap-2 uppercase tracking-widest text-xs"
+                    >
+                        {isSavingSettings ? "Saving..." : "Save Settings"}
+                    </button>
                 </div>
             </div>
 

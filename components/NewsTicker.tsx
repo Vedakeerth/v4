@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import Marquee from "react-fast-marquee";
 
 /**
  * NewsTicker Component - 3-Block Seamless Loop
@@ -15,6 +16,7 @@ import { usePathname } from "next/navigation";
  */
 export default function NewsTicker({ initialItems }: { initialItems?: { text: string; link?: string }[] }) {
     const [news, setNews] = useState<string[]>(initialItems?.map(item => item.text) || []);
+    const [settings, setSettings] = useState({ speed: 50, spacing: 200, showOnPages: "all" });
     const pathname = usePathname();
 
     const defaultNews = [
@@ -29,9 +31,20 @@ export default function NewsTicker({ initialItems }: { initialItems?: { text: st
 
         const fetchNews = async () => {
             try {
-                const res = await fetch("/api/announcements");
-                if (res.ok) {
-                    const data = await res.json();
+                const [newsRes, settingsRes] = await Promise.all([
+                    fetch("/api/announcements"),
+                    fetch("/api/settings")
+                ]);
+
+                if (settingsRes.ok) {
+                    const settingsData = await settingsRes.json();
+                    if (settingsData.success && settingsData.settings?.tickerSettings) {
+                        setSettings(settingsData.settings.tickerSettings);
+                    }
+                }
+
+                if (newsRes.ok) {
+                    const data = await newsRes.json();
                     const newsList = data.announcements?.map((a: any) => a.text.toUpperCase()) || [];
                     setNews(newsList.length > 0 ? newsList : defaultNews);
                 } else {
@@ -44,38 +57,26 @@ export default function NewsTicker({ initialItems }: { initialItems?: { text: st
         fetchNews();
     }, [initialItems]);
 
-    // Visibility logic for specific frontend pages
-    const isVisible = pathname === "/" ||
+    // Visibility logic based on settings
+    const isHomePage = pathname === "/" || pathname === "/index.html" || pathname === "";
+    const isVisible = settings.showOnPages === "home" ? isHomePage : (
+        isHomePage ||
         pathname === "/gallery" ||
         pathname === "/services" ||
         pathname === "/features" ||
         pathname === "/blog" ||
-        pathname === "/contact" ||
-        pathname === "/index.html" ||
-        pathname === "";
+        pathname === "/contact"
+    );
 
     if (!isVisible || news.length === 0) return null;
 
     return (
         <div className="ticker-wrapper">
-            <div className="ticker-track">
-                {/* 3nd-copy logic for perfect seamless and stable loop */}
-                <div className="ticker-content">
-                    {news.map((text, i) => (
-                        <span key={`a-${i}`}>{text}</span>
-                    ))}
-                </div>
-                <div className="ticker-content">
-                    {news.map((text, i) => (
-                        <span key={`b-${i}`}>{text}</span>
-                    ))}
-                </div>
-                <div className="ticker-content">
-                    {news.map((text, i) => (
-                        <span key={`c-${i}`}>{text}</span>
-                    ))}
-                </div>
-            </div>
+            <Marquee speed={settings.speed} gradient={false} autoFill={true}>
+                {news.map((text, i) => (
+                    <span key={i} className="ticker-text" style={{ marginRight: `${settings.spacing}px` }}>{text}</span>
+                ))}
+            </Marquee>
         </div>
     );
 }

@@ -71,7 +71,7 @@ export default function CheckoutPage() {
             const cashfreeData = await cashfreeRes.json();
 
             if (!cashfreeData.payment_session_id) {
-                throw new Error("Failed to initialize payment session.");
+                throw new Error(cashfreeData.error || "Failed to initialize payment session.");
             }
 
             // Step 3: Load and Trigger Cashfree SDK

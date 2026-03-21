@@ -12,6 +12,8 @@ export default function AnnouncementsTab() {
     const [announcements, setAnnouncements] = useState<Announcement[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState("");
+    const [tickerSettings, setTickerSettings] = useState({ speed: 50, spacing: 200, showOnPages: "all" });
+    const [isSavingSettings, setIsSavingSettings] = useState(false);
     const [isAdding, setIsAdding] = useState(false);
     const [editingId, setEditingId] = useState<string | null>(null);
     const [formData, setFormData] = useState({ text: "", imageUrl: "", active: true, order: 0 });
@@ -21,7 +23,38 @@ export default function AnnouncementsTab() {
 
     useEffect(() => {
         fetchAnnouncements();
+        fetchSettings();
     }, []);
+
+    const fetchSettings = async () => {
+        try {
+            const res = await fetch("/api/settings");
+            const data = await res.json();
+            if (data.success && data.settings?.tickerSettings) {
+                setTickerSettings(data.settings.tickerSettings);
+            }
+        } catch (err) {
+            console.error("Failed to fetch settings:", err);
+        }
+    };
+
+    const handleSaveSettings = async () => {
+        setIsSavingSettings(true);
+        try {
+            const res = await fetch("/api/settings", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ tickerSettings })
+            });
+            if (!res.ok) throw new Error("Failed to save settings");
+            alert("Settings saved successfully!");
+        } catch (err) {
+            console.error(err);
+            alert("Failed to save settings");
+        } finally {
+            setIsSavingSettings(false);
+        }
+    };
 
     const fetchAnnouncements = async () => {
         setIsLoading(true);
@@ -152,6 +185,50 @@ export default function AnnouncementsTab() {
                         <Plus size={18} /> New News
                     </button>
                 )}
+            </div>
+
+            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 mb-8">
+                <h3 className="text-lg font-bold text-white mb-4">Ticker Configuration</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="space-y-1">
+                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Speed</label>
+                        <input
+                            type="number"
+                            value={tickerSettings.speed}
+                            onChange={(e) => setTickerSettings({ ...tickerSettings, speed: parseInt(e.target.value) || 50 })}
+                            className="w-full px-5 py-3 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500 transition-all font-bold text-sm"
+                        />
+                    </div>
+                    <div className="space-y-1">
+                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Spacing (px)</label>
+                        <input
+                            type="number"
+                            value={tickerSettings.spacing}
+                            onChange={(e) => setTickerSettings({ ...tickerSettings, spacing: parseInt(e.target.value) || 200 })}
+                            className="w-full px-5 py-3 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500 transition-all font-bold text-sm"
+                        />
+                    </div>
+                    <div className="space-y-1">
+                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Visibility</label>
+                        <select
+                            value={tickerSettings.showOnPages}
+                            onChange={(e) => setTickerSettings({ ...tickerSettings, showOnPages: e.target.value })}
+                            className="w-full px-5 py-3 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500 transition-all font-bold text-sm"
+                        >
+                            <option value="all">Show on All Pages (Except Admin/Login)</option>
+                            <option value="home">Show on Home Page Only</option>
+                        </select>
+                    </div>
+                </div>
+                <div className="flex justify-end mt-4">
+                    <button
+                        onClick={handleSaveSettings}
+                        disabled={isSavingSettings}
+                        className="px-6 py-2.5 bg-slate-800 hover:bg-slate-700 text-white font-black rounded-xl transition-all flex items-center gap-2 uppercase tracking-widest text-xs"
+                    >
+                        {isSavingSettings ? <Loader2 className="w-4 h-4 animate-spin" /> : "Save Settings"}
+                    </button>
+                </div>
             </div>
 
             {isAdding && (

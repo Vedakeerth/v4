@@ -175,6 +175,20 @@ export const authOptions: NextAuthOptions = {
         strategy: "jwt",
     },
     secret: process.env.NEXTAUTH_SECRET || "temp-secret-for-debug",
+    logger: {
+        error(code, metadata) {
+            console.error("NEXTAUTH_ERROR", code, metadata);
+        },
+        warn(code) {
+            console.warn("NEXTAUTH_WARN", code);
+        },
+        debug(code, metadata) {
+            // Only log debug in dev
+            if (process.env.NODE_ENV === "development") {
+                console.log("NEXTAUTH_DEBUG", code, metadata);
+            }
+        },
+    },
 };
 
 export async function isAuthenticated() {
