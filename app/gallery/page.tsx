@@ -6,6 +6,12 @@ import Link from "next/link";
 import { getPageContent } from "@/lib/content";
 import { getProducts } from "@/lib/products";
 import GalleryGrid from "@/components/GalleryGrid";
+import { getPageMetadata } from "@/lib/seo";
+import { Metadata } from "next";
+
+export async function generateMetadata(): Promise<Metadata> {
+    return await getPageMetadata('Gallery');
+}
 
 export default async function GalleryPage() {
     const pageData = await getPageContent('gallery');

@@ -18,12 +18,25 @@ interface STLViewerProps {
     onDimensionsCalculated?: (dimensions: { x: number; y: number; z: number }) => void;
     scale: number;
     onScaleChange: (scale: number) => void;
+    rotation: { x: number; y: number; z: number };
+    onRotationChange: (rotation: { x: number; y: number; z: number }) => void;
     uploadedCount?: number;
 }
 
-function ViewControls({ onScale, scale }: { onScale: (val: number) => void; scale: number }) {
+function ViewControls({
+    onScale,
+    scale,
+    rotation,
+    onRotation
+}: {
+    onScale: (val: number) => void;
+    scale: number;
+    rotation: { x: number; y: number; z: number };
+    onRotation: (rot: { x: number; y: number; z: number }) => void;
+}) {
     const [isEditing, setIsEditing] = useState(false);
     const [editValue, setEditValue] = useState((scale * 100).toFixed(0));
+    const [showRotation, setShowRotation] = useState(false);
 
     useEffect(() => {
         setEditValue((scale * 100).toFixed(0));
@@ -49,47 +62,120 @@ function ViewControls({ onScale, scale }: { onScale: (val: number) => void; scal
     };
 
     return (
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-slate-950/90 backdrop-blur-sm px-6 py-3 rounded-full border border-slate-700 shadow-xl z-20">
-            <span className="text-xs text-slate-400 font-medium">Scale</span>
-            <input
-                type="range"
-                min="0.1"
-                max="3.0"
-                step="0.05"
-                value={scale}
-                onChange={(e) => onScale(parseFloat(e.target.value))}
-                className="w-32 accent-cyan-500 h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer"
-            />
-            <div className="w-16 flex items-center justify-end">
-                {isEditing ? (
-                    <div className="flex items-center gap-1">
-                        <input
-                            autoFocus
-                            type="text"
-                            value={editValue}
-                            onChange={(e) => setEditValue(e.target.value)}
-                            onBlur={handleBlur}
-                            onKeyDown={handleKeyDown}
-                            className="w-10 bg-slate-800 border-b border-cyan-500 text-xs font-bold text-cyan-400 outline-none text-right px-0.5"
-                        />
-                        <span className="text-[10px] text-cyan-500/50">%</span>
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 z-20">
+            {showRotation && (
+                <div className="bg-slate-950/90 backdrop-blur-sm px-6 py-4 rounded-2xl border border-slate-700 shadow-xl mb-2 w-64 space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                    <div className="flex justify-between items-center mb-2">
+                        <span className="text-[10px] font-black text-cyan-400 uppercase tracking-widest">Rotation (Degrees)</span>
+                        <button
+                            onClick={() => onRotation({ x: 0, y: 0, z: 0 })}
+                            className="text-[10px] text-slate-500 hover:text-cyan-400 font-bold uppercase"
+                        >
+                            Reset
+                        </button>
                     </div>
-                ) : (
-                    <span
-                        onClick={() => setIsEditing(true)}
-                        className="text-xs font-bold text-cyan-400 cursor-text hover:bg-slate-800/50 px-1 rounded transition-colors"
-                    >
-                        {(scale * 100).toFixed(0)}%
-                    </span>
-                )}
+                    <div className="space-y-3">
+                        <div className="space-y-1">
+                            <div className="flex justify-between text-[10px] text-slate-400 font-mono">
+                                <span>X Axis</span>
+                                <span className="text-cyan-500">{Math.round(rotation.x * (180 / Math.PI))}°</span>
+                            </div>
+                            <input
+                                type="range"
+                                min="-180"
+                                max="180"
+                                step="1"
+                                value={rotation.x * (180 / Math.PI)}
+                                onChange={(e) => onRotation({ ...rotation, x: parseFloat(e.target.value) * (Math.PI / 180) })}
+                                className="w-full accent-cyan-500 h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer"
+                            />
+                        </div>
+                        <div className="space-y-1">
+                            <div className="flex justify-between text-[10px] text-slate-400 font-mono">
+                                <span>Y Axis</span>
+                                <span className="text-cyan-500">{Math.round(rotation.y * (180 / Math.PI))}°</span>
+                            </div>
+                            <input
+                                type="range"
+                                min="-180"
+                                max="180"
+                                step="1"
+                                value={rotation.y * (180 / Math.PI)}
+                                onChange={(e) => onRotation({ ...rotation, y: parseFloat(e.target.value) * (Math.PI / 180) })}
+                                className="w-full accent-cyan-500 h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer"
+                            />
+                        </div>
+                        <div className="space-y-1">
+                            <div className="flex justify-between text-[10px] text-slate-400 font-mono">
+                                <span>Z Axis</span>
+                                <span className="text-cyan-500">{Math.round(rotation.z * (180 / Math.PI))}°</span>
+                            </div>
+                            <input
+                                type="range"
+                                min="-180"
+                                max="180"
+                                step="1"
+                                value={rotation.z * (180 / Math.PI)}
+                                onChange={(e) => onRotation({ ...rotation, z: parseFloat(e.target.value) * (Math.PI / 180) })}
+                                className="w-full accent-cyan-500 h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer"
+                            />
+                        </div>
+                    </div>
+                </div>
+            )}
+            <div className="flex items-center gap-4 bg-slate-950/90 backdrop-blur-sm px-6 py-3 rounded-full border border-slate-700 shadow-xl">
+                <button
+                    onClick={() => setShowRotation(!showRotation)}
+                    className={cn(
+                        "p-1.5 rounded-lg transition-all border active:scale-95 flex items-center justify-center shrink-0",
+                        showRotation ? "bg-cyan-500 text-slate-950 border-cyan-400" : "bg-slate-800 text-slate-400 border-slate-700 hover:text-cyan-400"
+                    )}
+                    title="Rotation Controls"
+                >
+                    <Box size={14} className={cn(showRotation && "animate-pulse")} />
+                </button>
+                <div className="w-[1px] h-4 bg-slate-800 mx-1" />
+                <span className="text-xs text-slate-400 font-medium">Scale</span>
+                <input
+                    type="range"
+                    min="0.1"
+                    max="3.0"
+                    step="0.05"
+                    value={scale}
+                    onChange={(e) => onScale(parseFloat(e.target.value))}
+                    className="w-32 accent-cyan-500 h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer"
+                />
+                <div className="w-16 flex items-center justify-end">
+                    {isEditing ? (
+                        <div className="flex items-center gap-1">
+                            <input
+                                autoFocus
+                                type="text"
+                                value={editValue}
+                                onChange={(e) => setEditValue(e.target.value)}
+                                onBlur={handleBlur}
+                                onKeyDown={handleKeyDown}
+                                className="w-10 bg-slate-800 border-b border-cyan-500 text-xs font-bold text-cyan-400 outline-none text-right px-0.5"
+                            />
+                            <span className="text-[10px] text-cyan-500/50">%</span>
+                        </div>
+                    ) : (
+                        <span
+                            onClick={() => setIsEditing(true)}
+                            className="text-xs font-bold text-cyan-400 cursor-text hover:bg-slate-800/50 px-1 rounded transition-colors"
+                        >
+                            {(scale * 100).toFixed(0)}%
+                        </span>
+                    )}
+                </div>
+                <button
+                    onClick={() => onScale(1)}
+                    className="ml-1 p-1.5 rounded-lg bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-cyan-400 transition-all border border-slate-700 active:scale-95 flex items-center justify-center shrink-0"
+                    title="Reset Scale"
+                >
+                    <RotateCcw size={14} />
+                </button>
             </div>
-            <button
-                onClick={() => onScale(1)}
-                className="ml-1 p-1.5 rounded-lg bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-cyan-400 transition-all border border-slate-700 active:scale-95 flex items-center justify-center shrink-0"
-                title="Reset Scale"
-            >
-                <RotateCcw size={14} />
-            </button>
         </div>
     );
 }
@@ -182,6 +268,7 @@ function STLMesh({
     onStatsCalculated?: (stats: { volumeCm3: number; surfaceAreaMm2: number; heightMm: number }) => void;
     onDimensionsCalculated?: (dimensions: { x: number; y: number; z: number }) => void;
     onGeometryLoaded?: (geometry: THREE.BufferGeometry) => void;
+    rotation: { x: number; y: number; z: number };
 }) {
     const meshRef = useRef<THREE.Mesh>(null);
     const [originalGeometry, setOriginalGeometry] = useState<THREE.BufferGeometry | null>(null);
@@ -316,6 +403,13 @@ function STLMesh({
         }
     }, [scale, originalGeometry, calculateMetrics, onDimensionsCalculated]);
 
+    // Handle Rotation Changes
+    useEffect(() => {
+        if (meshRef.current) {
+            meshRef.current.rotation.set(rotation.x, rotation.y, rotation.z);
+        }
+    }, [rotation]);
+
     if (!originalGeometry) return null;
 
     return (
@@ -352,7 +446,17 @@ function CameraController({
     return null;
 }
 
-export default function STLViewer({ file, color, onStatsCalculated, onDimensionsCalculated, scale, onScaleChange, uploadedCount = 0 }: STLViewerProps) {
+export default function STLViewer({
+    file,
+    color,
+    onStatsCalculated,
+    onDimensionsCalculated,
+    scale,
+    onScaleChange,
+    rotation,
+    onRotationChange,
+    uploadedCount = 0
+}: STLViewerProps) {
     const [dimensions, setDimensions] = useState<{ x: number; y: number; z: number } | null>(null);
     const [viewPosition, setViewPosition] = useState<[number, number, number] | null>(null);
     const [viewTarget, setViewTarget] = useState<[number, number, number] | null>(null);
@@ -475,6 +579,7 @@ export default function STLViewer({ file, color, onStatsCalculated, onDimensions
                     file={file}
                     color={color}
                     scale={scale}
+                    rotation={rotation}
                     onStatsCalculated={handleStatsCalculated}
                     onDimensionsCalculated={handleDimensionsCalculated}
                 />
@@ -512,6 +617,8 @@ export default function STLViewer({ file, color, onStatsCalculated, onDimensions
             <ViewControls
                 onScale={onScaleChange}
                 scale={scale}
+                rotation={rotation}
+                onRotation={onRotationChange}
             />
 
             {/* Vertical Zoom Control */}

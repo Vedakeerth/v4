@@ -2,438 +2,484 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Edit, Trash2, LogOut, Package, AlertCircle, X, Save, Image as ImageIcon } from "lucide-react";
+import { Plus, Edit, Trash2, LogOut, Package, AlertCircle, X, Save, Image as ImageIcon, Loader2 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { db, storage, auth } from "@/lib/firebase";
+import { 
+  collection, addDoc, updateDoc, deleteDoc, doc, 
+  getDocs, query, orderBy, serverTimestamp, Timestamp 
+} from "firebase/firestore";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { useAdminAuth } from "@/lib/adminAuth";
+import { signOut } from "firebase/auth";
 
 interface Product {
-    id: number;
-    name: string;
-    description: string;
-    price: string | number;
-    image: string;
-    images: string[];
-    category: string;
-    inStock: boolean;
+  id: string;
+  name: string;
+  price: number;
+  image: string;
+  stock: number;
+  createdAt: any;
+}
+
+interface Order {
+  id: string;
+  trackingId: string;
+  customerName: string;
+  phone: string;
+  address: string;
+  totalAmount: number;
+  status: string;
+  paymentStatus: string;
+  createdAt: any;
 }
 
 export default function AdminDashboard() {
-    const router = useRouter();
-    const [products, setProducts] = useState<Product[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [showAddModal, setShowAddModal] = useState(false);
-    const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-    const [deleteConfirm, setDeleteConfirm] = useState<number | null>(null);
+  const { user, isAdmin, loading: authLoading } = useAdminAuth();
+  const router = useRouter();
+  
+  // State
+  const [products, setProducts] = useState<Product[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [activeTab, setActiveTab] = useState<"products" | "orders">("products");
+  const [isLoading, setIsLoading] = useState(true);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
-    // Form state
-    const [formData, setFormData] = useState({
-        name: "",
-        description: "",
-        price: "",
-        image: "",
-        images: "",
-        category: "",
-        inStock: true,
-    });
+  // Form state
+  const [formData, setFormData] = useState({
+    name: "",
+    price: "",
+    image: "",
+    stock: "",
+  });
+  const [statusFilter, setStatusFilter] = useState<string>("all");
 
-    useEffect(() => {
-        checkAuth();
-    }, []);
-
-    const checkAuth = async () => {
-        try {
-            const res = await fetch("/api/auth/check");
-            const data = await res.json();
-            if (data.authenticated) {
-                setIsAuthenticated(true);
-                fetchProducts();
-            } else {
-                router.push("/secure-management-portal/login");
-            }
-        } catch (error) {
-            router.push("/admin/login");
-        }
-    };
-
-    const fetchProducts = async () => {
-        try {
-            setIsLoading(true);
-            const res = await fetch("/api/products");
-            const data = await res.json();
-            if (data.success) {
-                setProducts(data.products);
-            }
-        } catch (error) {
-            console.error("Error fetching products:", error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    const handleLogout = async () => {
-        try {
-            await fetch("/api/auth/logout", { method: "POST" });
-            router.push("/admin/login");
-        } catch (error) {
-            console.error("Logout failed:", error);
-        }
-    };
-
-    const handleAddProduct = () => {
-        setFormData({
-            name: "",
-            description: "",
-            price: "",
-            image: "",
-            images: "",
-            category: "",
-            inStock: true,
-        });
-        setEditingProduct(null);
-        setShowAddModal(true);
-    };
-
-    const handleEditProduct = (product: Product) => {
-        setFormData({
-            name: product.name,
-            description: product.description,
-            price: product.price.toString().replace("₹", ""),
-            image: product.image,
-            images: product.images.join(", "),
-            category: product.category,
-            inStock: product.inStock,
-        });
-        setEditingProduct(product);
-        setShowAddModal(true);
-    };
-
-    const handleSaveProduct = async () => {
-        try {
-            const imagesArray = formData.images
-                .split(",")
-                .map((img) => img.trim())
-                .filter((img) => img.length > 0);
-
-            const productData = {
-                name: formData.name,
-                description: formData.description,
-                price: formData.price.startsWith("₹") ? formData.price : `₹${formData.price}`,
-                image: formData.image,
-                images: imagesArray.length > 0 ? imagesArray : [formData.image],
-                category: formData.category,
-                inStock: formData.inStock,
-            };
-
-            let res;
-            if (editingProduct) {
-                // Update existing product
-                res = await fetch(`/api/products/${editingProduct.id}`, {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(productData),
-                });
-            } else {
-                // Add new product
-                res = await fetch("/api/products", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(productData),
-                });
-            }
-
-            const data = await res.json();
-            if (data.success) {
-                setShowAddModal(false);
-                fetchProducts();
-            } else {
-                alert(data.message || "Failed to save product");
-            }
-        } catch (error) {
-            console.error("Error saving product:", error);
-            alert("Failed to save product");
-        }
-    };
-
-    const handleDeleteProduct = async (id: number) => {
-        try {
-            const res = await fetch(`/api/products/${id}`, {
-                method: "DELETE",
-            });
-            const data = await res.json();
-            if (data.success) {
-                setDeleteConfirm(null);
-                fetchProducts();
-            } else {
-                alert(data.message || "Failed to delete product");
-            }
-        } catch (error) {
-            console.error("Error deleting product:", error);
-            alert("Failed to delete product");
-        }
-    };
-
-    const categories = ["Mechanical", "Hardware", "Enclosures", "Electronics", "Tooling", "Decoration", "3D Pens", "3D Printers"];
-
-    if (!isAuthenticated) {
-        return (
-            <main className="min-h-screen bg-slate-950 flex items-center justify-center">
-                <div className="text-white">Loading...</div>
-            </main>
-        );
+  useEffect(() => {
+    if (!authLoading) {
+      if (!isAdmin) {
+        router.push("/admin/login");
+      } else {
+        fetchProducts();
+        fetchOrders();
+      }
     }
+  }, [authLoading, isAdmin, router]);
 
+  const fetchProducts = async () => {
+    try {
+      const q = query(collection(db, "products"), orderBy("createdAt", "desc"));
+      const querySnapshot = await getDocs(q);
+      const productsData = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })) as Product[];
+      setProducts(productsData);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchOrders = async () => {
+    try {
+      const q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
+      const querySnapshot = await getDocs(q);
+      const ordersData = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })) as Order[];
+      setOrders(ordersData);
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+    }
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingImage(true);
+    try {
+      const storageRef = ref(storage, `products/${Date.now()}_${file.name}`);
+      await uploadBytes(storageRef, file);
+      const url = await getDownloadURL(storageRef);
+      setFormData(prev => ({ ...prev, image: url }));
+    } catch (error) {
+      console.error("Upload failed:", error);
+      alert("Image upload failed");
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
+  const handleSaveProduct = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.image) return alert("Please upload an image");
+    
+    setIsSaving(true);
+    try {
+      const productData = {
+        name: formData.name,
+        price: parseFloat(formData.price),
+        stock: parseInt(formData.stock),
+        image: formData.image,
+        createdAt: editingProduct ? editingProduct.createdAt : serverTimestamp(),
+      };
+
+      if (editingProduct) {
+        await updateDoc(doc(db, "products", editingProduct.id), productData);
+      } else {
+        await addDoc(collection(db, "products"), productData);
+      }
+      
+      setShowAddModal(false);
+      fetchProducts();
+    } catch (error) {
+      console.error("Error saving product:", error);
+      alert("Failed to save product");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleDeleteProduct = async (id: string) => {
+    try {
+      await deleteDoc(doc(db, "products", id));
+      setDeleteConfirm(null);
+      fetchProducts();
+    } catch (error) {
+      console.error("Error deleting product:", error);
+      alert("Failed to delete product");
+    }
+  };
+
+  const handleLogout = async () => {
+    await signOut(auth);
+    router.push("/admin/login");
+  };
+
+  const handleUpdateOrderStatus = async (orderId: string, newStatus: string) => {
+    try {
+      await updateDoc(doc(db, "orders", orderId), { status: newStatus });
+      fetchOrders();
+    } catch (error) {
+      console.error("Error updating order status:", error);
+      alert("Failed to update status");
+    }
+  };
+
+  const filteredOrders = statusFilter === "all" 
+    ? orders 
+    : orders.filter(o => o.status.toLowerCase() === statusFilter.toLowerCase());
+
+  if (authLoading || (isLoading && products.length === 0)) {
     return (
-        <main className="min-h-screen bg-slate-950 pt-24 pb-12">
-            <div className="container mx-auto px-4">
-                {/* Header */}
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
-                    <div>
-                        <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">Admin Dashboard</h1>
-                        <p className="text-slate-400">Manage your gallery products</p>
-                    </div>
-                    <div className="flex gap-4 mt-4 md:mt-0">
-                        <Link
-                            href="/gallery"
-                            className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg transition-colors"
-                        >
-                            View Gallery
-                        </Link>
-                        <button
-                            onClick={handleLogout}
-                            className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors flex items-center gap-2"
-                        >
-                            <LogOut className="h-4 w-4" />
-                            Logout
-                        </button>
-                    </div>
-                </div>
+      <main className="min-h-screen bg-slate-950 flex items-center justify-center">
+        <Loader2 className="h-12 w-12 text-blue-500 animate-spin" />
+      </main>
+    );
+  }
 
-                {/* Add Product Button */}
-                <div className="mb-6">
-                    <button
-                        onClick={handleAddProduct}
-                        className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors flex items-center gap-2"
-                    >
-                        <Plus className="h-5 w-5" />
-                        Add New Product
-                    </button>
-                </div>
+  return (
+    <main className="min-h-screen bg-slate-950 pt-24 pb-12">
+      <div className="container mx-auto px-4">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+          <div>
+            <h1 className="text-3xl font-bold text-white">Admin Dashboard</h1>
+            <p className="text-slate-400">Manage products and customer orders</p>
+          </div>
+          <div className="flex gap-4 mt-4 md:mt-0">
+            <button
+              onClick={handleLogout}
+              className="px-4 py-2 bg-red-600/20 hover:bg-red-600/30 text-red-400 rounded-lg transition-all flex items-center gap-2"
+            >
+              <LogOut className="h-4 w-4" />
+              Logout
+            </button>
+          </div>
+        </div>
 
-                {/* Products List */}
-                {isLoading ? (
-                    <div className="text-white">Loading products...</div>
-                ) : products.length === 0 ? (
-                    <div className="text-center py-12 bg-slate-900 rounded-lg border border-slate-800">
-                        <Package className="h-12 w-12 text-slate-600 mx-auto mb-4" />
-                        <p className="text-slate-400">No products found. Add your first product!</p>
+        {/* Tabs */}
+        <div className="flex border-b border-slate-800 mb-8">
+          <button
+            onClick={() => setActiveTab("products")}
+            className={`px-6 py-3 font-bold transition-all border-b-2 ${
+              activeTab === "products" 
+                ? "text-blue-400 border-blue-500 bg-blue-500/5" 
+                : "text-slate-500 border-transparent hover:text-white"
+            }`}
+          >
+            Products ({products.length})
+          </button>
+          <button
+            onClick={() => setActiveTab("orders")}
+            className={`px-6 py-3 font-bold transition-all border-b-2 ${
+              activeTab === "orders" 
+                ? "text-cyan-400 border-cyan-500 bg-cyan-500/5" 
+                : "text-slate-500 border-transparent hover:text-white"
+            }`}
+          >
+            Orders ({orders.length})
+          </button>
+        </div>
+
+        {activeTab === "products" ? (
+          <>
+            <button
+              onClick={() => {
+                setEditingProduct(null);
+                setFormData({ name: "", price: "", image: "", stock: "" });
+                setShowAddModal(true);
+              }}
+              className="mb-8 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition-all flex items-center gap-2 shadow-lg shadow-blue-600/20"
+            >
+              <Plus className="h-5 w-5" />
+              Add New Product
+            </button>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {products.map((product) => (
+                <div key={product.id} className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden hover:border-blue-500/50 transition-all group">
+                  <div className="relative h-48 w-full bg-slate-800">
+                    <Image src={product.image} alt={product.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                    <div className="absolute top-3 right-3">
+                      <span className={`px-2 py-1 rounded-md text-xs font-bold ${product.stock > 0 ? "bg-emerald-500/20 text-emerald-400" : "bg-red-500/20 text-red-400"}`}>
+                        Stock: {product.stock}
+                      </span>
                     </div>
-                ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {products.map((product) => (
-                            <div
-                                key={product.id}
-                                className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-blue-500/50 transition-colors"
-                            >
-                                <div className="relative h-48 w-full bg-slate-800">
-                                    <Image
-                                        src={product.image}
-                                        alt={product.name}
-                                        fill
-                                        className="object-cover"
-                                    />
-                                    <div className="absolute top-2 right-2">
-                                        <span
-                                            className={`px-2 py-1 rounded text-xs font-semibold ${product.inStock
-                                                    ? "bg-green-500/20 text-green-400"
-                                                    : "bg-red-500/20 text-red-400"
-                                                }`}
-                                        >
-                                            {product.inStock ? "In Stock" : "Out of Stock"}
-                                        </span>
-                                    </div>
-                                </div>
-                                <div className="p-4">
-                                    <h3 className="text-white font-semibold text-lg mb-1">{product.name}</h3>
-                                    <p className="text-slate-400 text-sm mb-2 line-clamp-2">{product.description}</p>
-                                    <div className="flex items-center justify-between mt-4">
-                                        <span className="text-blue-400 font-bold">{product.price}</span>
-                                        <span className="text-slate-500 text-xs">{product.category}</span>
-                                    </div>
-                                    <div className="flex gap-2 mt-4">
-                                        <button
-                                            onClick={() => handleEditProduct(product)}
-                                            className="flex-1 px-3 py-2 bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 rounded-lg transition-colors flex items-center justify-center gap-2 text-sm"
-                                        >
-                                            <Edit className="h-4 w-4" />
-                                            Edit
-                                        </button>
-                                        <button
-                                            onClick={() => setDeleteConfirm(product.id)}
-                                            className="flex-1 px-3 py-2 bg-red-600/20 hover:bg-red-600/30 text-red-400 rounded-lg transition-colors flex items-center justify-center gap-2 text-sm"
-                                        >
-                                            <Trash2 className="h-4 w-4" />
-                                            Delete
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
+                  </div>
+                  <div className="p-5">
+                    <h3 className="text-white font-bold text-xl mb-1">{product.name}</h3>
+                    <p className="text-blue-400 font-black text-lg mb-4">₹{product.price}</p>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => {
+                          setEditingProduct(product);
+                          setFormData({ 
+                            name: product.name, 
+                            price: product.price.toString(), 
+                            image: product.image, 
+                            stock: product.stock.toString() 
+                          });
+                          setShowAddModal(true);
+                        }}
+                        className="flex-1 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg transition-colors flex items-center justify-center gap-2 text-sm"
+                      >
+                        <Edit className="h-4 w-4" />
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => setDeleteConfirm(product.id)}
+                        className="p-2 bg-red-600/20 hover:bg-red-600/30 text-red-400 rounded-lg transition-colors"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
                     </div>
-                )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        ) : (
+          <div className="space-y-6">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+              <div className="flex bg-slate-900 p-1 rounded-xl border border-slate-800">
+                {["all", "pending", "confirmed", "processing", "shipped", "delivered"].map((filter) => (
+                  <button
+                    key={filter}
+                    onClick={() => setStatusFilter(filter)}
+                    className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest transition-all ${
+                      statusFilter === filter 
+                        ? "bg-cyan-500 text-slate-950 shadow-lg shadow-cyan-500/20" 
+                        : "text-slate-500 hover:text-white"
+                    }`}
+                  >
+                    {filter}
+                  </button>
+                ))}
+              </div>
             </div>
 
-            {/* Add/Edit Modal */}
-            {showAddModal && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-                    <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-                        <div className="flex justify-between items-center mb-6">
-                            <h2 className="text-2xl font-bold text-white">
-                                {editingProduct ? "Edit Product" : "Add New Product"}
-                            </h2>
-                            <button
-                                onClick={() => setShowAddModal(false)}
-                                className="text-slate-400 hover:text-white"
-                            >
-                                <X className="h-6 w-6" />
-                            </button>
-                        </div>
+            <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-slate-950/50 border-b border-slate-800">
+                    <th className="px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none">Order ID</th>
+                    <th className="px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none">Customer</th>
+                    <th className="px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none">Total</th>
+                    <th className="px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none">Payment</th>
+                    <th className="px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none">Status</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-800/50">
+                  {filteredOrders.map((order) => (
+                    <tr key={order.id} className="hover:bg-slate-800/20 transition-colors group">
+                      <td className="px-6 py-5">
+                        <p className="text-white font-black text-sm">{order.trackingId}</p>
+                        <p className="text-[10px] text-slate-500 font-medium mt-1">ID: {order.id}</p>
+                      </td>
+                      <td className="px-6 py-5">
+                        <p className="text-white font-bold text-sm">{order.customerName}</p>
+                        <p className="text-[10px] text-slate-500 font-medium mt-1">{order.phone}</p>
+                      </td>
+                      <td className="px-6 py-5">
+                        <p className="text-cyan-400 font-black text-sm">₹{order.totalAmount}</p>
+                      </td>
+                      <td className="px-6 py-5">
+                        <span className={`px-2 py-1 rounded text-[10px] font-black uppercase tracking-widest ${
+                          order.paymentStatus === 'paid' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-red-500/10 text-red-400'
+                        }`}>
+                          {order.paymentStatus}
+                        </span>
+                      </td>
+                      <td className="px-6 py-5">
+                        <select
+                          value={order.status}
+                          onChange={(e) => handleUpdateOrderStatus(order.id, e.target.value)}
+                          className={`bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-cyan-500/50 transition-all ${
+                            order.status === 'Delivered' ? 'text-emerald-400' : 
+                            order.status === 'Shipped' ? 'text-purple-400' :
+                            order.status === 'Processing' ? 'text-blue-400' : 'text-amber-400'
+                          }`}
+                        >
+                          <option value="Pending">Pending</option>
+                          <option value="Confirmed">Confirmed</option>
+                          <option value="Processing">Processing</option>
+                          <option value="Shipped">Shipped</option>
+                          <option value="Delivered">Delivered</option>
+                        </select>
+                      </td>
+                    </tr>
+                  ))}
+                  {filteredOrders.length === 0 && (
+                    <tr>
+                      <td colSpan={5} className="px-6 py-12 text-center text-slate-500 italic">No orders found for this filter.</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+      </div>
 
-                        <div className="space-y-4">
-                            <div>
-                                <label className="block text-sm font-medium text-slate-300 mb-2">Product Name</label>
-                                <input
-                                    type="text"
-                                    value={formData.name}
-                                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                    className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white"
-                                    placeholder="Enter product name"
-                                />
-                            </div>
+      {/* Add/Edit Modal */}
+      {showAddModal && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <form onSubmit={handleSaveProduct} className="bg-slate-900 border border-slate-800 rounded-2xl p-8 w-full max-w-lg shadow-2xl">
+            <div className="flex justify-between items-center mb-8">
+              <h2 className="text-2xl font-bold text-white">
+                {editingProduct ? "Edit Product" : "Add New Product"}
+              </h2>
+              <button type="button" onClick={() => setShowAddModal(false)} className="text-slate-400 hover:text-white">
+                <X className="h-6 w-6" />
+              </button>
+            </div>
 
-                            <div>
-                                <label className="block text-sm font-medium text-slate-300 mb-2">Description</label>
-                                <textarea
-                                    value={formData.description}
-                                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                                    className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white"
-                                    rows={3}
-                                    placeholder="Enter product description"
-                                />
-                            </div>
+            <div className="space-y-6">
+              <div>
+                <label className="block text-sm font-medium text-slate-300 mb-2">Product Name</label>
+                <input
+                  type="text"
+                  required
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  className="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  placeholder="e.g. Mechanical Keyboard"
+                />
+              </div>
 
-                            <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label className="block text-sm font-medium text-slate-300 mb-2">Price (₹)</label>
-                                    <input
-                                        type="text"
-                                        value={formData.price}
-                                        onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                                        className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white"
-                                        placeholder="149.99"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-slate-300 mb-2">Category</label>
-                                    <select
-                                        value={formData.category}
-                                        onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                                        className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white"
-                                    >
-                                        <option value="">Select category</option>
-                                        {categories.map((cat) => (
-                                            <option key={cat} value={cat}>
-                                                {cat}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div>
-                                <label className="block text-sm font-medium text-slate-300 mb-2">Main Image URL</label>
-                                <input
-                                    type="text"
-                                    value={formData.image}
-                                    onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                                    className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white"
-                                    placeholder="/images/product.png"
-                                />
-                            </div>
-
-                            <div>
-                                <label className="block text-sm font-medium text-slate-300 mb-2">
-                                    Additional Images (comma-separated)
-                                </label>
-                                <input
-                                    type="text"
-                                    value={formData.images}
-                                    onChange={(e) => setFormData({ ...formData, images: e.target.value })}
-                                    className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white"
-                                    placeholder="/images/img1.png, /images/img2.png"
-                                />
-                            </div>
-
-                            <div>
-                                <label className="flex items-center gap-2 cursor-pointer">
-                                    <input
-                                        type="checkbox"
-                                        checked={formData.inStock}
-                                        onChange={(e) => setFormData({ ...formData, inStock: e.target.checked })}
-                                        className="w-4 h-4"
-                                    />
-                                    <span className="text-sm text-slate-300">In Stock</span>
-                                </label>
-                            </div>
-
-                            <div className="flex gap-4 pt-4">
-                                <button
-                                    onClick={handleSaveProduct}
-                                    className="flex-1 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors flex items-center justify-center gap-2"
-                                >
-                                    <Save className="h-5 w-5" />
-                                    {editingProduct ? "Update Product" : "Add Product"}
-                                </button>
-                                <button
-                                    onClick={() => setShowAddModal(false)}
-                                    className="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-white rounded-lg transition-colors"
-                                >
-                                    Cancel
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">Price (₹)</label>
+                  <input
+                    type="number"
+                    required
+                    value={formData.price}
+                    onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                    className="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    placeholder="999"
+                  />
                 </div>
-            )}
-
-            {/* Delete Confirmation Modal */}
-            {deleteConfirm && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-                    <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 w-full max-w-md">
-                        <div className="flex items-center gap-3 mb-4">
-                            <AlertCircle className="h-6 w-6 text-red-400" />
-                            <h3 className="text-xl font-bold text-white">Delete Product</h3>
-                        </div>
-                        <p className="text-slate-400 mb-6">
-                            Are you sure you want to delete this product? This action cannot be undone.
-                        </p>
-                        <div className="flex gap-4">
-                            <button
-                                onClick={() => handleDeleteProduct(deleteConfirm)}
-                                className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
-                            >
-                                Delete
-                            </button>
-                            <button
-                                onClick={() => setDeleteConfirm(null)}
-                                className="flex-1 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg transition-colors"
-                            >
-                                Cancel
-                            </button>
-                        </div>
-                    </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">Stock</label>
+                  <input
+                    type="number"
+                    required
+                    value={formData.stock}
+                    onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
+                    className="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    placeholder="10"
+                  />
                 </div>
-            )}
-        </main>
-    );
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-300 mb-2">Product Image</label>
+                <div className="mt-1 flex items-center gap-4">
+                  {formData.image && (
+                    <div className="relative h-16 w-16 rounded-lg overflow-hidden border border-slate-700">
+                      <Image src={formData.image} alt="Preview" fill className="object-cover" />
+                    </div>
+                  )}
+                  <label className="flex-1 cursor-pointer bg-slate-800 border-2 border-dashed border-slate-700 hover:border-blue-500 rounded-xl p-4 transition-all text-center">
+                    <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} disabled={uploadingImage} />
+                    <div className="flex flex-col items-center gap-1">
+                      <ImageIcon className={`h-6 w-6 ${uploadingImage ? "animate-pulse" : "text-slate-400"}`} />
+                      <span className="text-xs text-slate-400">
+                        {uploadingImage ? "Uploading..." : "Click to upload image"}
+                      </span>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={isSaving || uploadingImage}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl transition-all disabled:opacity-50 shadow-xl shadow-blue-600/20 flex items-center justify-center gap-2"
+              >
+                {isSaving ? <Loader2 className="animate-spin h-5 w-5" /> : <Save className="h-5 w-5" />}
+                {editingProduct ? "Update Product" : "Save Product"}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* Delete Confirmation */}
+      {deleteConfirm && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-8 w-full max-w-sm shadow-2xl">
+            <div className="flex items-center gap-3 mb-4 text-red-400">
+              <AlertCircle className="h-8 w-8" />
+              <h3 className="text-xl font-bold">Delete Product?</h3>
+            </div>
+            <p className="text-slate-400 mb-8">This action is permanent and cannot be undone.</p>
+            <div className="flex gap-4">
+              <button
+                onClick={() => handleDeleteProduct(deleteConfirm)}
+                className="flex-1 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl transition-all"
+              >
+                Delete
+              </button>
+              <button
+                onClick={() => setDeleteConfirm(null)}
+                className="flex-1 py-3 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl transition-all"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </main>
+  );
 }

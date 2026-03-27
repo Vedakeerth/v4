@@ -71,9 +71,7 @@ export default function ContactPage() {
                   Office
                 </h2>
                 <p className="text-slate-300 text-sm leading-relaxed">
-                  Nandhini Store, TNP Nagar,<br />
-                  Thudiliyar, Coimbatore,<br />
-                  Tamil Nadu 641032
+                  Thudilyuar, coimbatore - 641034.
                 </p>
               </div>
 
@@ -85,8 +83,7 @@ export default function ContactPage() {
                   Phone
                 </h2>
                 <div className="space-y-2 text-sm">
-                  <a href="tel:+919047673454" className="block text-slate-300 hover:text-cyan-400 transition-colors">+91 90476 73454</a>
-                  <a href="tel:+918903678088" className="block text-slate-300 hover:text-cyan-400 transition-colors">+91 89036 78088</a>
+                  <a href="tel:+918903595542" className="block text-slate-300 hover:text-cyan-400 transition-colors">+91 89035 95542</a>
                 </div>
               </div>
 
@@ -98,8 +95,7 @@ export default function ContactPage() {
                   Email
                 </h2>
                 <div className="space-y-2 text-sm">
-                  <a href="mailto:info@vaelinsa.com" className="block text-slate-300 hover:text-cyan-400 transition-colors">info@vaelinsa.com</a>
-                  <a href="mailto:sales@vaelinsa.com" className="block text-slate-300 hover:text-cyan-400 transition-colors">sales@vaelinsa.com</a>
+                  <a href="mailto:support@vaelinsa.com" className="block text-slate-300 hover:text-cyan-400 transition-colors">support@vaelinsa.com</a>
                 </div>
               </div>
 

@@ -11,6 +11,25 @@ export async function POST(req: Request) {
             return NextResponse.json({ success: false, error: 'Missing required fields' }, { status: 400 });
         }
 
+        // Security: Limit name length
+        if (name.length > 100) {
+            return NextResponse.json({ success: false, error: 'Name too long' }, { status: 400 });
+        }
+
+        // Email Validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return NextResponse.json({ success: false, error: 'Invalid email format' }, { status: 400 });
+        }
+
+        // Phone Validation (Optional in this form, but validated if provided)
+        if (phone) {
+            const phoneRegex = /^\+?[\d]{10,15}$/;
+            if (!phoneRegex.test(phone.replace(/\s/g, ''))) {
+                return NextResponse.json({ success: false, error: 'Invalid phone format' }, { status: 400 });
+            }
+        }
+
         console.log('--- MOCK CONTACT FORM SUBMISSION ---');
         console.log('From:', name, `(${email})`);
         console.log('Phone:', phone || 'Not provided');
@@ -30,7 +49,7 @@ export async function POST(req: Request) {
             // Send to Company
             await transporter.sendMail({
                 from: `"VAELINSA Contact Form" <${process.env.SMTP_USER}>`,
-                to: 'info@vaelinsa.com',
+                to: 'support@vaelinsa.com',
                 subject: `New Contact Form Submission from ${name}`,
                 html: `
                     <div style="font-family: Arial, sans-serif; color: #334155; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px;">

@@ -1,70 +1,63 @@
-import { NextResponse } from 'next/server';
-import crypto from 'crypto';
+import { NextResponse } from "next/server";
+import { adminDb } from "@/lib/firebaseAdmin";
 
-export async function POST(req: Request) {
-    try {
-        const body = await req.json();
-        const { razorpay_order_id, razorpay_payment_id, razorpay_signature, partId, partName, color, quantity } = body;
+const CASHFREE_APP_ID = process.env.CASHFREE_APP_ID;
+const CASHFREE_SECRET_KEY = process.env.CASHFREE_SECRET_KEY;
+const CASHFREE_ENV = process.env.CASHFREE_ENV || "sandbox";
 
-        const razorpayKeySecret = process.env.RAZORPAY_KEY_SECRET;
+const CASHFREE_URL = CASHFREE_ENV === "production" 
+  ? "https://api.cashfree.com/pg/orders" 
+  : "https://sandbox.cashfree.com/pg/orders";
 
-        if (!razorpayKeySecret) {
-            return NextResponse.json(
-                { success: false, error: 'Payment gateway not configured' },
-                { status: 500 }
-            );
-        }
+export async function GET(req: Request) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const orderId = searchParams.get("orderId");
 
-        // Verify payment signature
-        const text = `${razorpay_order_id}|${razorpay_payment_id}`;
-        const generatedSignature = crypto
-            .createHmac('sha256', razorpayKeySecret)
-            .update(text)
-            .digest('hex');
-
-        const isSignatureValid = generatedSignature === razorpay_signature;
-
-        if (!isSignatureValid) {
-            return NextResponse.json(
-                { success: false, error: 'Invalid payment signature' },
-                { status: 400 }
-            );
-        }
-
-        // Payment verified successfully
-        // Here you can:
-        // 1. Save order to database
-        // 2. Send confirmation email
-        // 3. Update inventory
-        // 4. Send WhatsApp notification
-
-        // Example: Send order details via WhatsApp (you can integrate WhatsApp Business API)
-        const orderDetails = {
-            partId,
-            partName,
-            color,
-            quantity,
-            paymentId: razorpay_payment_id,
-            orderId: razorpay_order_id,
-            timestamp: new Date().toISOString()
-        };
-
-        console.log('Order placed successfully:', orderDetails);
-
-        // TODO: Integrate with your order management system
-        // TODO: Send WhatsApp notification to your business number
-
-        return NextResponse.json({
-            success: true,
-            message: 'Payment verified successfully',
-            orderDetails
-        });
-
-    } catch (error) {
-        console.error('Payment verification error:', error);
-        return NextResponse.json(
-            { success: false, error: 'Failed to verify payment' },
-            { status: 500 }
-        );
+    if (!orderId) {
+      return NextResponse.json({ success: false, error: "Missing orderId" }, { status: 400 });
     }
+
+    // --- CASHFREE STATUS CHECK ---
+    const cashfreeResponse = await fetch(`${CASHFREE_URL}/${orderId}`, {
+      method: "GET",
+      headers: {
+        "x-client-id": CASHFREE_APP_ID!,
+        "x-client-secret": CASHFREE_SECRET_KEY!,
+        "x-api-version": "2023-08-01",
+      },
+    });
+
+    const cashfreeData = await cashfreeResponse.json();
+
+    if (!cashfreeResponse.ok) {
+      return NextResponse.json({ 
+        success: false, 
+        error: cashfreeData.message || "Failed to verify with Cashfree" 
+      }, { status: 400 });
+    }
+
+    // --- UPDATE FIRESTORE IF PAID ---
+    if (cashfreeData.order_status === "PAID") {
+      await adminDb.collection("orders").doc(orderId).update({
+        paymentStatus: "paid",
+        status: "confirmed",
+      });
+
+      return NextResponse.json({ 
+        success: true, 
+        status: "paid",
+        message: "Payment verified and order updated" 
+      });
+    } else {
+      return NextResponse.json({ 
+        success: true, 
+        status: cashfreeData.order_status,
+        message: `Order status is ${cashfreeData.order_status}` 
+      });
+    }
+  } catch (error: any) {
+    console.error("Verification error:", error);
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  }
 }

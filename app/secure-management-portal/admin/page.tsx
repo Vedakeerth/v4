@@ -23,6 +23,7 @@ import OrdersTab from "@/components/admin-dashboard-tabs/OrdersTab";
 import UsersTab from "@/components/admin-dashboard-tabs/UsersTab";
 import AnnouncementsTab from "@/components/admin-dashboard-tabs/AnnouncementsTab";
 import CategoriesTab from "@/components/admin-dashboard-tabs/CategoriesTab";
+import QuoteSettingsTab from "@/components/admin-dashboard-tabs/QuoteSettingsTab";
 
 const ADMIN_EMAIL = "vaelinsa@gmail.com";
 
@@ -32,7 +33,7 @@ export default function SecureAdminPage() {
     const [loading, setLoading] = useState(true);
 
     // Valid tabs type
-    type TabType = "products" | "projects" | "testimonials" | "catalogs" | "blogs" | "seo" | "socials" | "settings" | "features" | "industries" | "coupons" | "orders" | "users" | "announcements" | "categories";
+    type TabType = "products" | "projects" | "testimonials" | "catalogs" | "blogs" | "seo" | "socials" | "settings" | "features" | "industries" | "coupons" | "orders" | "users" | "announcements" | "categories" | "quote-settings";
 
     const [activeTab, setActiveTab] = useState<TabType>("orders");
     const tabsContainerRef = React.useRef<HTMLDivElement>(null);
@@ -98,6 +99,7 @@ export default function SecureAdminPage() {
         { id: "coupons", label: "Coupons", icon: Ticket },
         { id: "announcements", label: "News", icon: Megaphone },
         { id: "users", label: "User Management", icon: LayoutGrid },
+        { id: "quote-settings", label: "Quote Pricing", icon: Settings },
         { id: "settings", label: "Settings", icon: Settings },
     ];
 
@@ -180,6 +182,7 @@ export default function SecureAdminPage() {
                     {activeTab === "orders" && <OrdersTab />}
                     {activeTab === "announcements" && <AnnouncementsTab />}
                     {activeTab === "categories" && <CategoriesTab />}
+                    {activeTab === "quote-settings" && <QuoteSettingsTab />}
                     {activeTab === "users" && <UsersTab />}
                 </div>
             </div>

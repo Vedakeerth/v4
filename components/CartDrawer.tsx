@@ -1,4 +1,4 @@
-"use client";
+import { redirectToCashfree } from "@/lib/cashfree";
 
 import React, { useState } from "react";
 import { X, ShoppingBag, Trash2, Plus, Minus, ArrowRight, Ticket, Zap, Lock, ShieldCheck, Loader2 } from "lucide-react";
@@ -117,16 +117,9 @@ export default function CartDrawer() {
                 throw new Error(cfData.error || "Payment gateway error. Please try again.");
             }
 
-            // Step 3: Launch Cashfree SDK — redirects to payment page
-            const { load } = await import('@cashfreepayments/cashfree-js');
-            const cashfree = await load({
-                mode: process.env.NEXT_PUBLIC_CASHFREE_ENV === 'production' ? 'production' : 'sandbox'
-            });
-
-            await cashfree.checkout({
-                paymentSessionId: cfData.payment_session_id,
-                redirectTarget: "_self"
-            });
+            // Step 3: Redirect browser directly to Cashfree checkout (same window)
+            redirectToCashfree(cfData.payment_session_id);
+            // Page will navigate away — no further code runs
 
         } catch (err: any) {
             console.error("Cart checkout error:", err);

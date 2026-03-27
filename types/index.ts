@@ -50,7 +50,7 @@ export interface Order {
     phone: string;
     date: string;
     totalAmount: string;
-    status: "Pending" | "Processing" | "Completed" | "Cancelled";
+    status: "Pending" | "Processing" | "Shipped" | "Delivered" | "Cancelled";
     items: any[];
     address: string;
     notes?: string;

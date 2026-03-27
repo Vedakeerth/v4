@@ -106,10 +106,9 @@ export default function QuotationDocument({
                             <img src="/images/logo-v2.png" alt="VAELINSA" className="h-16 w-auto object-contain" />
                         </div>
                         <div className="text-[12px] leading-relaxed text-[#475569] font-medium">
-                            Nandhini Store, TNP Nagar, Thudiliyar,<br />
-                            Coimbatore, Tamil Nadu 641032<br />
-                            Ph.no: +91-904757954, +91-8903678088,<br />
-                            Email: info@vaelinsa.com
+                            Thudilyuar, coimbatore - 641034.<br />
+                            Ph.no: +91-8903595542<br />
+                            Email: support@vaelinsa.com
                         </div>
                     </div>
 
@@ -232,11 +231,10 @@ export default function QuotationDocument({
                         <div>
                             <h4 className="text-[12px] font-black uppercase text-[#334155] mb-2 tracking-wider">SEND PAYMENTS TO:</h4>
                             <div className="text-[11px] font-medium text-[#475569] space-y-1.5">
-                                <p>Bank A/C Name - <span className="font-bold text-[#0B2339]">Vedakeerthi Periyasamy</span></p>
-                                <p>Bank A/C No - <span className="font-bold text-[#0B2339]">061601000048703</span></p>
-                                <p>Bank Name - <span className="font-bold text-[#0B2339]">Indian Overseas Bank</span></p>
-                                <p>Branch - <span className="font-bold text-[#0B2339]">Kurudampalayam</span></p>
-                                <p>IFSC Code - <span className="font-bold text-[#0B2339]">IOBA0000616</span></p>
+                                <p>Bank A/C Name - <span className="font-bold text-[#0B2339]">Vedakeerthi P</span></p>
+                                <p>Bank A/C No - <span className="font-bold text-[#0B2339]">6850329636</span></p>
+                                <p>Bank Name - <span className="font-bold text-[#0B2339]">Kotak Mahindra Bank</span></p>
+                                <p>IFSC Code - <span className="font-bold text-[#0B2339]">KKBK0008666</span></p>
                             </div>
                         </div>
                         <div>
@@ -285,7 +283,7 @@ export default function QuotationDocument({
                             <div className="w-6 h-6 rounded-full bg-[#00C2E0] flex items-center justify-center">
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="text-white"><path d="M6.62 10.79a15.15 15.15 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.17-.24c1.12.45 2.33.69 3.58.69a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A18 18 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.24 2.46.69 3.57a1 1 0 0 1-.24 1.18l-2.23 2.24z" /></svg>
                             </div>
-                            +91 90476 73454
+                            +91 89035 95542
                         </div>
                     </div>
                 </div>

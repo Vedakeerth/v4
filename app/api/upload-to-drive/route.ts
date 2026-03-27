@@ -297,6 +297,18 @@ export async function POST(request: NextRequest) {
             );
         }
 
+        // Basic Email Validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return NextResponse.json({ success: false, error: 'Invalid email address format' }, { status: 400 });
+        }
+
+        // Basic Phone Validation (Allows +, numbers, 10-15 digits)
+        const phoneRegex = /^\+?[\d]{10,15}$/;
+        if (!phoneRegex.test(phone.replace(/\s/g, ''))) {
+            return NextResponse.json({ success: false, error: 'Invalid phone number format. Use 10-15 digits.' }, { status: 400 });
+        }
+
         // Extract files - handle both indexed and direct file inputs
         const files: File[] = [];
 
@@ -594,26 +606,26 @@ export async function POST(request: NextRequest) {
 
         const orderFolderName = `Order_${orderId}`;
         const orderFolderId = await getOrCreateFolder(drive, uploadsFolderId, orderFolderName, supportsAllDrives);
-        const userFolderName = `${sanitizeFilename(fullName)}_${phone}`;
-        const userFolderId = await getOrCreateFolder(drive, orderFolderId, userFolderName, supportsAllDrives);
+        const userFolderId = orderFolderId; // Using orderId folder as the final destination
 
         // Upload files STRAIGHT to Google Drive
         // File → Buffer → Stream → Google Drive (direct upload, no temp files)
-        const uploadedFiles: Array<{ name: string; id: string; size: number }> = [];
-
-        for (const file of files) {
+        // Upload files STRAIGHT to Google Drive (in parallel)
+        const uploadPromises = files.map(async (file) => {
             const sanitizedFullName = sanitizeFilename(fullName);
             const sanitizedOriginalName = sanitizeFilename(file.name);
             const newFileName = `${orderId}_${sanitizedFullName}_${sanitizedOriginalName}`;
 
             // Direct upload: File → Google Drive (straight, no intermediate steps)
             const fileId = await uploadFileToDrive(drive, file, userFolderId, newFileName, supportsAllDrives);
-            uploadedFiles.push({
+            return {
                 name: file.name,
                 id: fileId,
                 size: file.size,
-            });
-        }
+            };
+        });
+
+        const uploadedFiles = await Promise.all(uploadPromises);
 
         // Store metadata (console log for now, can be extended to database)
         const metadata = {
@@ -628,7 +640,7 @@ export async function POST(request: NextRequest) {
                 driveId: f.id,
                 size: f.size,
             })),
-            folderPath: `Uploads/${orderFolderName}/${userFolderName}`,
+            folderPath: `Uploads/${orderFolderName}`,
         };
 
         console.log('=== FILE UPLOAD METADATA ===');

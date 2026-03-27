@@ -7,20 +7,17 @@ import Link from "next/link";
 import { ArrowLeft, CheckCircle, ArrowRight } from "lucide-react";
 import { useCart, CartItem } from "@/context/CartContext";
 import Footer from "@/components/Footer";
-import { cn } from "@/lib/utils";
+import { cn, validatePhone } from "@/lib/utils";
+import { redirectToCashfree } from "@/lib/cashfree";
 
 export default function CheckoutPage() {
     const { items, cartTotal, clearCart } = useCart();
     const [checkoutStep, setCheckoutStep] = useState<'shipping' | 'payment' | 'processing' | 'success'>('shipping');
     const [isOrderPlaced, setIsOrderPlaced] = useState(false);
     const [formData, setFormData] = useState({
-        firstName: "",
-        lastName: "",
-        email: "",
+        customerName: "",
         phone: "",
         address: "",
-        city: "",
-        zip: "",
     });
     const [paymentMethod, setPaymentMethod] = useState<'card' | 'upi' | 'netbanking' | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -32,6 +29,10 @@ export default function CheckoutPage() {
 
     const handleShippingSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        if (!validatePhone(formData.phone)) {
+            alert("Please enter a valid India phone number (+91 XXXXXXXXXX)");
+            return;
+        }
         setCheckoutStep('payment');
     };
 
@@ -40,54 +41,29 @@ export default function CheckoutPage() {
 
         try {
             // Step 1: Create Order in our system as "Pending"
-            const orderRes = await fetch('/api/checkout', {
+            const orderRes = await fetch('/api/create-order', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    user: formData,
+                    customerName: formData.customerName,
+                    phone: formData.phone,
+                    address: formData.address,
                     items,
-                    total: cartTotal,
-                    paymentMethod: 'cashfree' // Unified for real gateway
+                    totalAmount: cartTotal,
                 })
             });
             const orderData = await orderRes.json();
 
             if (!orderData.success) {
-                throw new Error("Failed to create order record.");
+                throw new Error("Failed to create order record: " + (orderData.error || "Unknown error"));
             }
 
-            // Step 2: Create Cashfree Payment Session
-            const cashfreeRes = await fetch('/api/cashfree/create-order', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    amount: cartTotal,
-                    customerName: `${formData.firstName} ${formData.lastName}`,
-                    email: formData.email,
-                    phone: formData.phone,
-                    orderId: orderData.orderId
-                })
-            });
-            const cashfreeData = await cashfreeRes.json();
-
-            if (!cashfreeData.payment_session_id) {
-                throw new Error(cashfreeData.error || "Failed to initialize payment session.");
+            // Step 2: Redirect directly to Cashfree using returning payment_session_id
+            if (!orderData.payment_session_id) {
+                throw new Error("Payment session missing from server response.");
             }
 
-            // Step 3: Load and Trigger Cashfree SDK
-            const { load } = await import('@cashfreepayments/cashfree-js');
-            const cashfree = await load({ mode: process.env.NEXT_PUBLIC_CASHFREE_ENV === 'production' ? 'production' : 'sandbox' });
-
-            const checkoutOptions = {
-                paymentSessionId: cashfreeData.payment_session_id,
-                redirectTarget: "_self", // Or "_modal" for overlay
-            };
-
-            await cashfree.checkout(checkoutOptions);
-
-            // Note: After redirection/completion, we should ideally verify.
-            // But since it's a redirect flow, the page will reload or redirect to return_url.
-            // If it's a modal, we can handle the result here.
+            redirectToCashfree(orderData.payment_session_id);
 
         } catch (error: any) {
             console.error("Payment Error:", error);
@@ -111,7 +87,7 @@ export default function CheckoutPage() {
                         </div>
                         <h1 className="text-3xl font-black text-white mb-4 uppercase italic">Order Confirmed!</h1>
                         <p className="text-slate-400 mb-8 font-medium">
-                            Thank you for your order. We have sent a confirmation email to <span className="text-cyan-400 font-bold">{formData.email}</span>.
+                            Thank you for your order, <span className="text-cyan-400 font-bold">{formData.customerName}</span>. Your tracking ID will be generated shortly.
                         </p>
                         <Link
                             href="/catalog"
@@ -220,105 +196,44 @@ export default function CheckoutPage() {
                                         Contact Information
                                     </h2>
                                     <form id="shipping-form" onSubmit={handleShippingSubmit} className="space-y-6">
-                                        <div className="grid grid-cols-2 gap-6">
-                                            <div className="space-y-2">
-                                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">First Name</label>
-                                                <input
-                                                    required
-                                                    type="text"
-                                                    name="firstName"
-                                                    placeholder="John"
-                                                    value={formData.firstName}
-                                                    onChange={handleInputChange}
-                                                    className="w-full px-5 py-3.5 bg-slate-950/50 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500/50 transition-all font-bold text-sm"
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Last Name</label>
-                                                <input
-                                                    required
-                                                    type="text"
-                                                    name="lastName"
-                                                    placeholder="Doe"
-                                                    value={formData.lastName}
-                                                    onChange={handleInputChange}
-                                                    className="w-full px-5 py-3.5 bg-slate-950/50 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500/50 transition-all font-bold text-sm"
-                                                />
-                                            </div>
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Full Name</label>
+                                            <input
+                                                required
+                                                type="text"
+                                                name="customerName"
+                                                placeholder="John Doe"
+                                                value={formData.customerName}
+                                                onChange={handleInputChange}
+                                                className="w-full px-5 py-3.5 bg-slate-950/50 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500/50 transition-all font-bold text-sm"
+                                            />
                                         </div>
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                            <div className="space-y-2">
-                                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Email Address</label>
-                                                <input
-                                                    required
-                                                    type="email"
-                                                    name="email"
-                                                    placeholder="john@example.com"
-                                                    value={formData.email}
-                                                    onChange={handleInputChange}
-                                                    className="w-full px-5 py-3.5 bg-slate-950/50 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500/50 transition-all font-bold text-sm"
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Phone Number</label>
-                                                <input
-                                                    required
-                                                    type="tel"
-                                                    name="phone"
-                                                    placeholder="+91 XXXXX XXXXX"
-                                                    value={formData.phone}
-                                                    onChange={handleInputChange}
-                                                    className="w-full px-5 py-3.5 bg-slate-950/50 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500/50 transition-all font-bold text-sm"
-                                                />
-                                            </div>
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Phone Number (India)</label>
+                                            <input
+                                                required
+                                                type="tel"
+                                                name="phone"
+                                                placeholder="+91 XXXXX XXXXX"
+                                                value={formData.phone}
+                                                onChange={handleInputChange}
+                                                className="w-full px-5 py-3.5 bg-slate-950/50 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500/50 transition-all font-bold text-sm"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Full Delivery Address</label>
+                                            <textarea
+                                                required
+                                                name="address"
+                                                rows={3}
+                                                placeholder="House No, Street, Landmark, City, PIN"
+                                                value={formData.address}
+                                                onChange={handleInputChange}
+                                                className="w-full px-5 py-3.5 bg-slate-950/50 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500/50 transition-all font-bold text-sm"
+                                            />
                                         </div>
 
-                                        <div className="pt-6 border-t border-slate-800">
-                                            <h2 className="text-xl font-black text-white mb-6 uppercase tracking-tight flex items-center gap-3 italic">
-                                                <div className="w-2 h-6 bg-cyan-500" />
-                                                Shipping Address
-                                            </h2>
-                                            <div className="space-y-6">
-                                                <div className="space-y-2">
-                                                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Full Address</label>
-                                                    <input
-                                                        required
-                                                        type="text"
-                                                        name="address"
-                                                        placeholder="Building, street and area..."
-                                                        value={formData.address}
-                                                        onChange={handleInputChange}
-                                                        className="w-full px-5 py-3.5 bg-slate-950/50 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500/50 transition-all font-bold text-sm"
-                                                    />
-                                                </div>
-                                                <div className="grid grid-cols-2 gap-6">
-                                                    <div className="space-y-2">
-                                                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">City</label>
-                                                        <input
-                                                            required
-                                                            type="text"
-                                                            name="city"
-                                                            placeholder="Indore"
-                                                            value={formData.city}
-                                                            onChange={handleInputChange}
-                                                            className="w-full px-5 py-3.5 bg-slate-950/50 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500/50 transition-all font-bold text-sm"
-                                                        />
-                                                    </div>
-                                                    <div className="space-y-2">
-                                                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Postal Code</label>
-                                                        <input
-                                                            required
-                                                            type="text"
-                                                            name="zip"
-                                                            placeholder="452001"
-                                                            value={formData.zip}
-                                                            onChange={handleInputChange}
-                                                            className="w-full px-5 py-3.5 bg-slate-950/50 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500/50 transition-all font-bold text-sm"
-                                                        />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+
 
                                         <button
                                             type="submit"

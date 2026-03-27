@@ -181,6 +181,12 @@ export default function ProductsTab() {
             if (data.success) {
                 setShowAddModal(false);
                 fetchProducts();
+                // Trigger cache revalidation
+                await fetch("/api/revalidate", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ tag: "products" }),
+                });
             } else {
                 alert(data.message || "Failed to save product");
             }
@@ -197,6 +203,12 @@ export default function ProductsTab() {
             if (data.success) {
                 setDeleteConfirm(null);
                 fetchProducts();
+                // Trigger cache revalidation
+                await fetch("/api/revalidate", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ tag: "products" }),
+                });
             }
         } catch (error) {
             alert("Failed to delete product");

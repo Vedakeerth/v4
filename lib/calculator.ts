@@ -24,12 +24,29 @@ export const PRINTER_CONSTANTS = {
         prepareTime: 420 // seconds
     },
     material: {
-        PLA: { density: 1.24, costPerKg: 1800, multiplier: 1.0 }, // Unified price: material + machine
-        ABS: { density: 1.04, costPerKg: 2000, multiplier: 1.2 },
-        PETG: { density: 1.27, costPerKg: 1900, multiplier: 1.1 },
-        TPU: { density: 1.21, costPerKg: 3000, multiplier: 1.5 },
+        'PLA': { density: 1.24, costPerKg: 1800, multiplier: 1.0 },
+        'ABS': { density: 1.04, costPerKg: 2000, multiplier: 1.2 },
+        'PETG': { density: 1.27, costPerKg: 1900, multiplier: 1.1 },
+        'TPU': { density: 1.21, costPerKg: 3000, multiplier: 1.5 },
     }
 };
+
+export interface QuoteSettings {
+    labourCost: number;
+    materials: {
+        [key: string]: {
+            costPerKg: number;
+            density: number;
+            multiplier: number;
+        }
+    };
+    colorMultipliers?: {
+        [hex: string]: number;
+    };
+    infillPatternMultipliers?: {
+        [pattern: string]: number;
+    };
+}
 
 export const MATERIALS = PRINTER_CONSTANTS.material;
 
@@ -162,9 +179,23 @@ export function calculatePrice(
     infillPattern: keyof typeof INFILL_PATTERNS,
     layerHeight: number = 0.2,
     surfaceAreaMm2: number = 0,
-    heightMm: number = 0
+    heightMm: number = 0,
+    color?: string,
+    settings?: QuoteSettings
 ) {
-    const matData = PRINTER_CONSTANTS.material[material];
+    const activeSettings = settings || {
+        labourCost: 25,
+        materials: PRINTER_CONSTANTS.material,
+        colorMultipliers: {} as Record<string, number>,
+        infillPatternMultipliers: {
+            'Line': 1.0,
+            'Grid': 1.1,
+            'Gyroid': 1.25,
+            'Cubic': 1.15,
+        } as Record<string, number>
+    };
+
+    const matData = activeSettings.materials[material] || PRINTER_CONSTANTS.material[material];
     const c = PRINTER_CONSTANTS;
 
     // 1. Inputs (mm3)
@@ -218,9 +249,12 @@ export function calculatePrice(
     const totalTimeSeconds = baseTimeSeconds + retractionTime + layerChangeTime + c.delays.prepareTime;
 
     // 6. Final Simplified Pricing
-    // Final Price = (Unified Filament Cost) + Labour
-    const unifiedFilamentCost = (weightGrams / 1000) * matData.costPerKg * matData.multiplier;
-    const labourCost = 25; // Standard processing fee
+    // Final Price = (Unified Filament Cost * Color Multiplier * Infill Multiplier) + Labour
+    const colorMult = color && activeSettings.colorMultipliers ? (activeSettings.colorMultipliers[color] || 1.0) : 1.0;
+    const infillMult = activeSettings.infillPatternMultipliers ? (activeSettings.infillPatternMultipliers[infillPattern] || 1.0) : 1.0;
+
+    const unifiedFilamentCost = (weightGrams / 1000) * matData.costPerKg * matData.multiplier * colorMult * infillMult;
+    const labourCost = activeSettings.labourCost;
 
     const finalPrice = Number((unifiedFilamentCost + labourCost).toFixed(2));
 

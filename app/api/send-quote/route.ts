@@ -21,7 +21,7 @@ export async function POST(req: Request) {
         // Simulating success allows the user to see the flow without credentials.
         console.log('--- MOCK EMAIL SEND ---');
         console.log('To Customer:', user.email);
-        console.log('To Company: info@vaelinsa.com'); // Mock Company Email
+        console.log('To Company: support@vaelinsa.com'); // Mock Company Email
         console.log('Order Details:', JSON.stringify(order, null, 2));
 
         // Construct Email Content (HTML)
@@ -81,7 +81,7 @@ export async function POST(req: Request) {
 
             // Send to Customer
             await transporter.sendMail({
-                from: '"VAELINSA" <info@vaelinsa.com>',
+                from: '"VAELINSA" <support@vaelinsa.com>',
                 to: user.email,
                 subject: `Your 3D Printing Quote (Ref: ${Math.floor(Math.random() * 10000)})`,
                 html: customerHtml,
@@ -89,8 +89,8 @@ export async function POST(req: Request) {
 
             // Send to Company
             await transporter.sendMail({
-                from: '"VAELINSA Website" <info@vaelinsa.com>',
-                to: 'info@vaelinsa.com', // Internal email
+                from: '"VAELINSA Website" <support@vaelinsa.com>',
+                to: 'support@vaelinsa.com', // Internal email
                 subject: `NEW ORDER: ${user.name} - ₹${order.total.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
                 html: `<p>New order received from website.</p><pre>${JSON.stringify(user, null, 2)}</pre><pre>${JSON.stringify(order, null, 2)}</pre>`
             });

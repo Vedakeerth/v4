@@ -25,10 +25,10 @@ function SuccessContent() {
 
         const verifyPayment = async () => {
             try {
-                const res = await fetch('/api/cashfree/verify', {
+                const res = await fetch('/api/verify-payment', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ orderId: oid })
+                    body: JSON.stringify({ order_id: oid })
                 });
                 const data = await res.json();
 
@@ -72,15 +72,22 @@ function SuccessContent() {
                             </div>
                             <h1 className="text-3xl font-black text-white uppercase italic">Payment Successful!</h1>
                             <p className="text-slate-400 font-medium">
-                                Thank you for your order <span className="text-cyan-400 font-bold">#{orderId}</span>. <br />
-                                We've received your payment and our team is already on it.
+                                Thank you for your order. We've received your payment and our team is already on it.
                             </p>
-                            <Link
-                                href="/catalog"
-                                className="inline-block px-10 py-4 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black rounded-2xl transition-all shadow-lg shadow-cyan-500/20 uppercase tracking-widest text-sm"
-                            >
-                                Continue Shopping
-                            </Link>
+                            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+                                <Link
+                                    href="/track-order"
+                                    className="px-10 py-4 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black rounded-2xl transition-all shadow-lg shadow-cyan-500/20 uppercase tracking-widest text-sm"
+                                >
+                                    Track My Order
+                                </Link>
+                                <Link
+                                    href="/catalog"
+                                    className="px-10 py-4 bg-slate-800 hover:bg-slate-700 text-white font-black rounded-2xl transition-all uppercase tracking-widest text-sm"
+                                >
+                                    Continue Shopping
+                                </Link>
+                            </div>
                         </div>
                     )}
 

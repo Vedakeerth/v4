@@ -6,6 +6,7 @@ import { X, Zap, Lock, Loader2, ShieldCheck } from "lucide-react";
 import Image from "next/image";
 import { Product } from "@/lib/products";
 import { parsePrice } from "@/lib/utils";
+import { redirectToCashfree } from "@/lib/cashfree";
 
 interface BuyNowModalProps {
     product: Product;
@@ -96,16 +97,8 @@ export default function BuyNowModal({ product, quantity = 1, selectedColor, onCl
                 throw new Error(cfData.error || "Failed to initialize payment. Please try again.");
             }
 
-            // Step 3: Launch Cashfree SDK
-            const { load } = await import('@cashfreepayments/cashfree-js');
-            const cashfree = await load({
-                mode: process.env.NEXT_PUBLIC_CASHFREE_ENV === 'production' ? 'production' : 'sandbox'
-            });
-
-            await cashfree.checkout({
-                paymentSessionId: cfData.payment_session_id,
-                redirectTarget: "_self"
-            });
+            // Step 3: Redirect directly to Cashfree (same window)
+            redirectToCashfree(cfData.payment_session_id);
 
         } catch (err: any) {
             console.error("Buy Now error:", err);

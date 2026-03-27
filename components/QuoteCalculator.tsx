@@ -1,11 +1,14 @@
 'use client';
 
+import { redirectToCashfree } from "@/lib/cashfree";
+
 import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 import { Upload, FileBox, Trash2, FileText, AlignJustify, Grid3x3, Waves, Box } from 'lucide-react';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 import { useDropzone } from 'react-dropzone';
 import { calculatePrice, LAYER_HEIGHTS, MATERIALS, INFILL_PATTERNS } from '@/lib/calculator';
+import { getQuoteSettings, type QuoteSettings } from '@/lib/quote-settings';
 import dynamic from 'next/dynamic';
 import { cn } from '@/lib/utils';
 
@@ -75,9 +78,10 @@ export default function QuoteCalculator() {
 
     const [material, setMaterial] = useState<keyof typeof MATERIALS>('PLA');
     const [infillPattern, setInfillPattern] = useState<keyof typeof INFILL_PATTERNS>('Line');
-    const [infillPercent, setInfillPercent] = useState(5);
+    const [infillPercent, setInfillPercent] = useState(10);
     const [layerHeight, setLayerHeight] = useState(0.2);
     const [isCustomDensity, setIsCustomDensity] = useState(false);
+    const [rotation, setRotation] = useState({ x: 0, y: 0, z: 0 });
 
     // Order acceptance states
     const [isPaymentAccepted, setIsPaymentAccepted] = useState(false);
@@ -110,7 +114,15 @@ export default function QuoteCalculator() {
     });
 
     const [isSending, setIsSending] = useState(false);
+    const [uploadProgress, setUploadProgress] = useState(0);
+    const [uploadStatus, setUploadStatus] = useState('');
     const [orderId, setOrderId] = useState('');
+    const [settings, setSettings] = useState<QuoteSettings | null>(null);
+
+    // Fetch settings on mount
+    useEffect(() => {
+        getQuoteSettings().then(setSettings);
+    }, []);
 
     // Pincode Lookup Handler
     const handlePincodeChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -161,7 +173,9 @@ export default function QuoteCalculator() {
                     infillPattern,
                     layerHeight,
                     file.surfaceArea,
-                    file.height
+                    file.height,
+                    file.color,
+                    settings || undefined
                 );
                 totalPrice += res.price * file.quantity;
                 totalWeight += res.weight * file.quantity;
@@ -178,7 +192,7 @@ export default function QuoteCalculator() {
             weight: Number(totalWeight.toFixed(1)),
             time: Math.round(totalTime * 10) / 10
         };
-    }, [uploadedFiles, material, infillPercent, infillPattern, layerHeight]);
+    }, [uploadedFiles, material, infillPercent, infillPattern, layerHeight, settings]);
 
     // File Drop Handler with validation
     const onDrop = useCallback((acceptedFiles: File[], rejectedFiles: any[]) => {
@@ -430,6 +444,8 @@ export default function QuoteCalculator() {
                                     onDimensionsCalculated={handleDimensionsCalculated}
                                     scale={selectedFile.scale || 1}
                                     onScaleChange={handleScaleChange}
+                                    rotation={rotation}
+                                    onRotationChange={setRotation}
                                     uploadedCount={uploadedFiles.length}
                                 />
                             ) : selectedFile?.file ? (
@@ -508,7 +524,9 @@ export default function QuoteCalculator() {
                                             infillPattern,
                                             layerHeight,
                                             file.surfaceArea,
-                                            file.height
+                                            file.height,
+                                            file.color,
+                                            settings || undefined
                                         )
                                         : null;
 
@@ -767,7 +785,9 @@ export default function QuoteCalculator() {
                                                     infillPattern,
                                                     layerHeight,
                                                     file.surfaceArea,
-                                                    file.height
+                                                    file.height,
+                                                    file.color,
+                                                    settings || undefined
                                                 ) : null;
 
                                                 if (!res) return null;
@@ -961,22 +981,53 @@ export default function QuoteCalculator() {
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover:-translate-x-1 transition-transform"><path d="m15 18-6-6 6-6" /></svg>
                                 Edit Details
                             </button>
-                            <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-                                <button
+                            <div className="flex flex-col w-full">
+                                {isSending && (
+                                    <div className="w-full mb-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                                        <div className="flex justify-between items-end mb-2">
+                                            <span className="text-emerald-400 font-bold text-xs uppercase tracking-wider">{uploadStatus}</span>
+                                            <span className="text-white font-black text-sm">{uploadProgress}%</span>
+                                        </div>
+                                        <div className="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                                            <div
+                                                className="bg-gradient-to-r from-emerald-500 to-cyan-500 h-full transition-all duration-500 ease-out"
+                                                style={{ width: `${uploadProgress}%` }}
+                                            />
+                                        </div>
+                                    </div>
+                                )}
+                                <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+                                    <button
                                     onClick={async () => {
+                                        if (!userDetails.name || !userDetails.phone || !userDetails.email) {
+                                            alert("Please fill in all contact details.");
+                                            return;
+                                        }
+
                                         setIsSending(true);
+                                        setUploadProgress(10);
+                                        setUploadStatus('Preparing files...');
+
                                         try {
                                             // 1. Upload files
+                                            setUploadStatus('Uploading 3D models to secure storage...');
+                                            setUploadProgress(20);
                                             const uploadFormData = new FormData();
                                             uploadFormData.append('fullName', userDetails.name);
                                             uploadFormData.append('email', userDetails.email);
                                             uploadFormData.append('phone', `${userDetails.countryCode}${userDetails.phone}`);
                                             uploadFormData.append('orderId', quoteDetails.id);
+                                            if (userDetails.message) uploadFormData.append('message', userDetails.message);
+
                                             uploadedFiles.forEach((fileData, index) => uploadFormData.append(`file${index}`, fileData.file));
 
                                             const uploadRes = await fetch('/api/upload-to-drive', { method: 'POST', body: uploadFormData });
                                             const uploadData = await uploadRes.json();
+                                            if (!uploadRes.ok) throw new Error(uploadData.error || "Upload failed");
+
                                             const driveFiles = uploadData.data?.files || [];
+                                            setUploadProgress(60);
+                                            setUploadStatus('Initializing payment session...');
 
                                             // 2. Create Cashfree Session
                                             const cashfreeRes = await fetch('/api/cashfree/create-order', {
@@ -991,14 +1042,11 @@ export default function QuoteCalculator() {
                                                 })
                                             });
                                             const cashfreeData = await cashfreeRes.json();
-
                                             if (!cashfreeData.payment_session_id) throw new Error("Payment initialization failed");
+                                            setUploadProgress(85);
+                                            setUploadStatus('Saving order details...');
 
-                                            // 3. Trigger Cashfree SDK
-                                            const { load } = await import('@cashfreepayments/cashfree-js');
-                                            const cashfree = await load({ mode: process.env.NEXT_PUBLIC_CASHFREE_ENV === 'production' ? 'production' : 'sandbox' });
-
-                                            // Step 4: Add order to system (Pending) before payment
+                                            // 3. Save order to system (Pending) before payment
                                             const fullAddress = `${userDetails.doorNo}, ${userDetails.street}, ${userDetails.city}, ${userDetails.district} - ${userDetails.pincode}, ${userDetails.state}`;
                                             await fetch('/api/send-quote', {
                                                 method: 'POST',
@@ -1023,11 +1071,16 @@ export default function QuoteCalculator() {
                                                     }
                                                 })
                                             });
+                                            setUploadProgress(100);
+                                            setUploadStatus('Redirecting to secure gateway...');
 
-                                            await cashfree.checkout({ paymentSessionId: cashfreeData.payment_session_id, redirectTarget: "_self" });
+                                            // 4. Redirect directly to Cashfree (same window)
+                                            redirectToCashfree(cashfreeData.payment_session_id);
 
                                         } catch (err: any) {
-                                            alert(err.message || "Payment failed");
+                                            console.error("Checkout error:", err);
+                                            alert(err.message || "Payment initialization failed. Please check your connection.");
+                                            setUploadProgress(0);
                                         } finally {
                                             setIsSending(false);
                                         }
@@ -1036,72 +1089,22 @@ export default function QuoteCalculator() {
                                     className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black px-8 py-3 rounded-xl transition-all shadow-lg flex items-center justify-center gap-3 disabled:opacity-50"
                                 >
                                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="5" width="20" height="14" rx="2" /><line x1="2" y1="10" x2="22" y2="10" /></svg>
-                                    Pay Online & Confirm
+                                    Proceed with Checkout
                                 </button>
 
                                 <button
-                                    onClick={async () => {
-                                        setIsSending(true);
-                                        handleDownloadPDF();
-                                        try {
-                                            // Existing flow for manual quotation
-                                            const uploadFormData = new FormData();
-                                            uploadFormData.append('fullName', userDetails.name);
-                                            uploadFormData.append('email', userDetails.email);
-                                            uploadFormData.append('phone', `${userDetails.countryCode}${userDetails.phone}`);
-                                            uploadFormData.append('orderId', quoteDetails.id);
-                                            uploadedFiles.forEach((fileData, index) => uploadFormData.append(`file${index}`, fileData.file));
-
-                                            const uploadRes = await fetch('/api/upload-to-drive', { method: 'POST', body: uploadFormData });
-                                            const uploadData = await uploadRes.json();
-                                            const driveFiles = uploadData.data?.files || [];
-
-                                            const fullAddress = `${userDetails.doorNo}, ${userDetails.street}, ${userDetails.city}, ${userDetails.district} - ${userDetails.pincode}, ${userDetails.state}`;
-                                            const response = await fetch('/api/send-quote', {
-                                                method: 'POST',
-                                                headers: { 'Content-Type': 'application/json' },
-                                                body: JSON.stringify({
-                                                    user: { ...userDetails, address: fullAddress },
-                                                    order: {
-                                                        id: quoteDetails.id,
-                                                        models: uploadedFiles.map((f, i) => ({
-                                                            name: f.file.name,
-                                                            dimensions: f.dimensions,
-                                                            scale: f.scale,
-                                                            volume: f.volume,
-                                                            color: f.color,
-                                                            quantity: f.quantity,
-                                                            driveFileId: driveFiles[i]?.id // Pass the file ID
-                                                        })),
-                                                        total: totalResults,
-                                                        totalQty: uploadedFiles.reduce((acc, f) => acc + f.quantity, 0),
-                                                        material,
-                                                        infillPercent,
-                                                        infillPattern
-                                                    }
-                                                })
-                                            });
-
-                                            if (response.ok) {
-                                                setOrderId(quoteDetails.id);
-                                                setOrderStep('success');
-                                            }
-                                        } catch (err) {
-                                            alert("Failed to send quotation.");
-                                        } finally {
-                                            setIsSending(false);
-                                        }
-                                    }}
-                                    disabled={isSending || !hasScrolledToBottom}
+                                    onClick={() => handleDownloadPDF()}
+                                    disabled={!hasScrolledToBottom}
                                     className="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black px-8 py-3 rounded-xl transition-all shadow-lg flex items-center justify-center gap-3 disabled:opacity-50"
                                 >
-                                    Confirm (Manual Payment)
+                                    Download Quotation Only
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
-            )}
+            </div>
+        )}
 
             {orderStep === 'success' && (
                 <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4">
@@ -1169,10 +1172,10 @@ export default function QuoteCalculator() {
                             <p>To start the manufacturing process, we require 100% advance payment.</p>
                             <div className="bg-slate-800/50 rounded-lg p-4 space-y-2">
                                 <h4 className="font-semibold text-cyan-400">Bank Transfer Details:</h4>
-                                <p>Account Name: VAELINSA TECHNOLOGIES</p>
-                                <p>Account Number: 1234567890</p>
-                                <p>IFSC Code: ABCD0123456</p>
-                                <p>Bank: State Bank of India</p>
+                                <p>Account Name: Vedakeerthi P</p>
+                                <p>Account Number: 6850329636</p>
+                                <p>IFSC Code: KKBK0008666</p>
+                                <p>Bank: Kotak Mahindra Bank</p>
                             </div>
                             <div className="bg-slate-800/50 rounded-lg p-4 space-y-2">
                                 <h4 className="font-semibold text-cyan-400">UPI Payment:</h4>
@@ -1264,10 +1267,10 @@ export default function QuoteCalculator() {
                             const day = String(now.getDate()).padStart(2, '0');
                             const quoteDate = `${day}-${month}-${now.getFullYear()}`;
 
-                            // Generate Due Date: 7 working days from today
+                            // Generate Due Date: 10 working days from today
                             const dueDateObj = new Date(now);
                             let workingDaysAdded = 0;
-                            while (workingDaysAdded < 7) {
+                            while (workingDaysAdded < 10) {
                                 dueDateObj.setDate(dueDateObj.getDate() + 1);
                                 // Skip weekends (Saturday = 6, Sunday = 0)
                                 if (dueDateObj.getDay() !== 0 && dueDateObj.getDay() !== 6) {

@@ -9,7 +9,7 @@ import RightClickPreventer from "@/components/RightClickPreventer";
 
 // Data
 import { getPageContent } from "@/lib/content";
-import { getProducts } from "@/lib/products";
+import { getProducts, getPopularProducts } from "@/lib/products";
 import { getTestimonials } from "@/lib/testimonials";
 import { getSEOData } from "@/lib/seo";
 import { getSettings } from "@/lib/settings";
@@ -46,21 +46,21 @@ const BlogSection = dynamic(() => import("@/components/BlogSection"));
 export default async function Home() {
   const settings = await getSettings();
 
-  // Data Fetching
-  const [homeData, servicesContent, industriesContent, whyChooseUsContent, testimonialsContent, allProductsRaw, allTestimonials, allProjects, allBlogs] = await Promise.all([
+  // Data Fetching: Use optimized and limited queries
+  const [homeData, servicesContent, industriesContent, whyChooseUsContent, testimonialsContent, popularParts, allProductsRaw, allTestimonials, allProjects, allBlogs] = await Promise.all([
     getPageContent('home').catch(() => null),
     getPageContent('services').catch(() => null),
     getPageContent('industries').catch(() => null),
     getPageContent('why-choose-us').catch(() => null),
     getPageContent('testimonials').catch(() => null),
-    getProducts().catch(() => []),
-    getTestimonials().catch(() => []),
+    getPopularProducts(3).catch(() => []), // Specialized query with limit(3)
+    getProducts().catch(() => []), // Still needed for ProductShowcase
+    getTestimonials(10).catch(() => []), // Specialized query with limit(10)
     getProjects().catch(() => []),
     getBlogs().catch(() => [])
   ]);
 
   const allProducts = Array.isArray(allProductsRaw) ? allProductsRaw : [];
-  const popularParts = allProducts.filter(p => p?.isPopular).slice(0, 3);
 
   return (
     <main className="min-h-screen bg-slate-950 selection:bg-blue-500/30 selection:text-blue-100 flex flex-col">

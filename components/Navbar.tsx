@@ -16,6 +16,7 @@ interface NavbarProps {
 
 export default function Navbar({
     navLinks = [
+        { name: "Catalog", href: "/catalog" },
         { name: "Services", href: "/services" },
         { name: "Gallery", href: "/gallery" },
         { name: "Projects", href: "/projects" },

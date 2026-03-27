@@ -15,3 +15,8 @@ export function formatINR(price: string | number): string {
   const numericPrice = typeof price === "number" ? price : parsePrice(price);
   return `₹${numericPrice.toLocaleString("en-IN")}`;
 }
+
+export function validatePhone(phone: string): boolean {
+  const re = /^(?:\+91|0)?[6-9]\d{9}$/;
+  return re.test(phone.replace(/\s/g, ""));
+}

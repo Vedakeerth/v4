@@ -43,15 +43,19 @@ export default function Footer() {
                     </div>
 
                     <div>
-                        <h4 className="text-white font-semibold mb-4">Company</h4>
+                        <h4 className="text-white font-semibold mb-4">Quick Links</h4>
                         <ul className="space-y-2 text-sm text-slate-400">
-                            <li className="hover:text-cyan-400 cursor-pointer">
-                                <Link href="/blog">Blog</Link>
+                            <li className="hover:text-cyan-400">
+                                <Link href="/catalog">Product Catalog</Link>
                             </li>
-                            <li className="hover:text-cyan-400 cursor-pointer">About Us</li>
-                            <li className="hover:text-cyan-400 cursor-pointer">Portfolio</li>
-                            <li className="hover:text-cyan-400 cursor-pointer">Materials</li>
-                            <li className="hover:text-cyan-400 cursor-pointer">FAQ</li>
+                            <li className="hover:text-cyan-400">
+                                <Link href="/track-order">Track My Order</Link>
+                            </li>
+                            <li className="hover:text-cyan-400">
+                                <Link href="/blog">Blog & Updates</Link>
+                            </li>
+                            <li className="hover:text-cyan-400">About Us</li>
+                            <li className="hover:text-cyan-400">FAQ</li>
                         </ul>
                     </div>
 
@@ -60,7 +64,7 @@ export default function Footer() {
                         <ul className="space-y-4 text-sm text-slate-400">
                             <li className="flex items-center gap-2">
                                 <Mail className="h-4 w-4 text-cyan-500" />
-                                <a href="mailto:sales@vaelinsa.com" className="text-slate-400 hover:text-cyan-400 transition-colors">sales@vaelinsa.com</a>
+                                <a href="mailto:support@vaelinsa.com" className="text-slate-400 hover:text-cyan-400 transition-colors">support@vaelinsa.com</a>
                             </li>
                         </ul>
                     </div>
