@@ -4,7 +4,7 @@ import { FieldValue } from 'firebase-admin/firestore';
 
 export async function POST(
     req: Request,
-    { params }: { params: Promise<{ id: string }> }
+    { params }: any
 ) {
     try {
         const { id } = await params;

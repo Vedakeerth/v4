@@ -4,7 +4,7 @@ import { getProducts } from '@/lib/products';
 import { isAuthenticated } from '@/lib/auth';
 
 // GET - Get products in a catalog
-export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(request: NextRequest, { params }: any) {
     try {
         const { id } = await params;
         const catalog = await getCatalogById(id);
@@ -33,7 +33,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 }
 
 // POST - Add products to catalog (requires auth)
-export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function POST(request: NextRequest, { params }: any) {
     try {
         const authenticated = await isAuthenticated();
         if (!authenticated) {

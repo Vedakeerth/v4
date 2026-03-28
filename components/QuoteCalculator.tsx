@@ -997,7 +997,15 @@ export default function QuoteCalculator() {
                                     </div>
                                 )}
                                 <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-                                    <button
+                                <button
+                                    onClick={() => handleDownloadPDF()}
+                                    disabled={!hasScrolledToBottom}
+                                    className="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black px-8 py-3 rounded-xl transition-all shadow-lg flex items-center justify-center gap-3 disabled:opacity-50"
+                                >
+                                    Download Quotation Only
+                                </button>
+
+                                <button
                                     onClick={async () => {
                                         if (!userDetails.name || !userDetails.phone || !userDetails.email) {
                                             alert("Please fill in all contact details.");
@@ -1090,14 +1098,6 @@ export default function QuoteCalculator() {
                                 >
                                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="5" width="20" height="14" rx="2" /><line x1="2" y1="10" x2="22" y2="10" /></svg>
                                     Proceed with Checkout
-                                </button>
-
-                                <button
-                                    onClick={() => handleDownloadPDF()}
-                                    disabled={!hasScrolledToBottom}
-                                    className="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black px-8 py-3 rounded-xl transition-all shadow-lg flex items-center justify-center gap-3 disabled:opacity-50"
-                                >
-                                    Download Quotation Only
                                 </button>
                             </div>
                         </div>
@@ -1267,16 +1267,9 @@ export default function QuoteCalculator() {
                             const day = String(now.getDate()).padStart(2, '0');
                             const quoteDate = `${day}-${month}-${now.getFullYear()}`;
 
-                            // Generate Due Date: 10 working days from today
+                            // Generate Due Date: 10 calendar days from today
                             const dueDateObj = new Date(now);
-                            let workingDaysAdded = 0;
-                            while (workingDaysAdded < 10) {
-                                dueDateObj.setDate(dueDateObj.getDate() + 1);
-                                // Skip weekends (Saturday = 6, Sunday = 0)
-                                if (dueDateObj.getDay() !== 0 && dueDateObj.getDay() !== 6) {
-                                    workingDaysAdded++;
-                                }
-                            }
+                            dueDateObj.setDate(dueDateObj.getDate() + 10);
                             const dueDay = String(dueDateObj.getDate()).padStart(2, '0');
                             const dueMonth = String(dueDateObj.getMonth() + 1).padStart(2, '0');
                             const dueDate = `${dueDay}-${dueMonth}-${dueDateObj.getFullYear()}`;

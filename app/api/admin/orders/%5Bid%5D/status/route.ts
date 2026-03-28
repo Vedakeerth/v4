@@ -1,12 +1,12 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { updateOrder } from '@/lib/orders';
 
 export async function PATCH(
-    req: Request,
-    { params }: { params: { id: string } }
+    req: NextRequest,
+    { params }: any
 ) {
     try {
-        const orderId = params.id;
+        const { id: orderId } = await params;
         const body = await req.json();
         const { status } = body;
 

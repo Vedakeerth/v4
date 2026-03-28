@@ -25,7 +25,7 @@ import AnnouncementsTab from "@/components/admin-dashboard-tabs/AnnouncementsTab
 import CategoriesTab from "@/components/admin-dashboard-tabs/CategoriesTab";
 import QuoteSettingsTab from "@/components/admin-dashboard-tabs/QuoteSettingsTab";
 
-const ADMIN_EMAIL = "vaelinsa@gmail.com";
+import { getAdminEmails } from "@/lib/adminConfig";
 
 export default function SecureAdminPage() {
     const router = useRouter();
@@ -54,16 +54,19 @@ export default function SecureAdminPage() {
             if (!firebaseUser) {
                 // Not logged in to Firebase
                 router.push("/secure-management-portal/login");
-            } else if (firebaseUser.email?.toLowerCase() !== ADMIN_EMAIL) {
-                // Logged in but not the admin
-                console.error("Access Denied: Restricted to admin only.");
-                await firebaseSignOut(auth);
-                await signOut({ redirect: false });
-                router.push("/secure-management-portal/login?error=AccessDenied");
             } else {
-                // Authorized
-                setUser(firebaseUser);
-                setLoading(false);
+                const adminEmails = getAdminEmails();
+                if (!firebaseUser.email?.toLowerCase() || !adminEmails.includes(firebaseUser.email.toLowerCase())) {
+                    // Logged in but not the admin
+                    console.error("Access Denied: Restricted to admin only.");
+                    await firebaseSignOut(auth);
+                    await signOut({ redirect: false });
+                    router.push("/secure-management-portal/login?error=AccessDenied");
+                } else {
+                    // Authorized
+                    setUser(firebaseUser);
+                    setLoading(false);
+                }
             }
         });
 

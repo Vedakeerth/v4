@@ -5,7 +5,7 @@ import { isAuthenticated } from '@/lib/auth';
 // GET single blog
 export async function GET(
     req: Request,
-    { params }: { params: Promise<{ id: string }> }
+    { params }: any
 ) {
     try {
         const { id } = await params;
@@ -23,7 +23,7 @@ export async function GET(
 }
 
 // PUT - Update blog (requires auth)
-export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function PUT(req: Request, { params }: any) {
     try {
         const { id } = await params;
         const authenticated = await isAuthenticated();
@@ -58,7 +58,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
 }
 
 // DELETE - Delete blog (requires auth)
-export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function DELETE(req: Request, { params }: any) {
     try {
         const { id } = await params;
         const authenticated = await isAuthenticated();

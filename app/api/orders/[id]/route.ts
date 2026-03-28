@@ -4,7 +4,7 @@ import { isAuthenticated } from "@/lib/auth";
 
 export async function PATCH(
     req: Request,
-    { params }: { params: Promise<{ id: string }> }
+    { params }: any
 ) {
     const { id } = await params;
     try {

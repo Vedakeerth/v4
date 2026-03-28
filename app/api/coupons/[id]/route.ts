@@ -4,7 +4,7 @@ import { isAuthenticated } from '@/lib/auth';
 
 export async function PATCH(
     req: NextRequest,
-    { params }: { params: Promise<{ id: string }> }
+    { params }: any
 ) {
     try {
         const authenticated = await isAuthenticated();
@@ -44,7 +44,7 @@ export async function PATCH(
 
 export async function DELETE(
     req: NextRequest,
-    { params }: { params: Promise<{ id: string }> }
+    { params }: any
 ) {
     try {
         const authenticated = await isAuthenticated();

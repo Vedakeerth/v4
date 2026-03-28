@@ -1,12 +1,12 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getAdminDb } from '@/lib/firebaseAdmin';
 
 export async function GET(
-    req: Request,
-    { params }: { params: { id: string } }
+    req: NextRequest,
+    { params }: any
 ) {
     try {
-        const orderId = params.id;
+        const { id: orderId } = await params;
         const { searchParams } = new URL(req.url);
         const contact = searchParams.get('contact'); // Email or Phone
 

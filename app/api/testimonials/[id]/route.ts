@@ -5,7 +5,7 @@ import { isAuthenticated } from '@/lib/auth';
 // GET single testimonial
 export async function GET(
     req: Request,
-    { params }: { params: Promise<{ id: string }> }
+    { params }: any
 ) {
     try {
         const { id } = await params;
@@ -31,7 +31,7 @@ export async function GET(
 // PUT - Update testimonial (requires auth)
 export async function PUT(
     req: Request,
-    { params }: { params: Promise<{ id: string }> }
+    { params }: any
 ) {
     try {
         const authenticated = await isAuthenticated();
@@ -84,7 +84,7 @@ export async function PUT(
 // DELETE - Delete testimonial (requires auth)
 export async function DELETE(
     req: Request,
-    { params }: { params: Promise<{ id: string }> }
+    { params }: any
 ) {
     try {
         const authenticated = await isAuthenticated();

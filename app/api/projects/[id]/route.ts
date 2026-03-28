@@ -4,7 +4,7 @@ import { isAuthenticated } from "@/lib/auth";
 
 export async function PUT(
     request: Request,
-    { params }: { params: Promise<{ id: string }> }
+    { params }: any
 ) {
     try {
         const authenticated = await isAuthenticated();
@@ -31,7 +31,7 @@ export async function PUT(
 
 export async function DELETE(
     request: Request,
-    { params }: { params: Promise<{ id: string }> }
+    { params }: any
 ) {
     try {
         const authenticated = await isAuthenticated();

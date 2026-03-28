@@ -9,7 +9,7 @@ import { useSearchParams } from "next/navigation";
 import { auth } from "@/lib/firebase";
 import { GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut as firebaseSignOut, signInWithEmailAndPassword } from "firebase/auth";
 
-const ADMIN_EMAIL = "vaelinsa@gmail.com";
+import { getAdminEmails } from "@/lib/adminConfig";
 
 function LoginContent() {
     const router = useRouter();
@@ -28,7 +28,8 @@ function LoginContent() {
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
             if (firebaseUser) {
-                if (firebaseUser.email?.toLowerCase() === ADMIN_EMAIL) {
+                const adminEmails = getAdminEmails();
+                if (firebaseUser.email?.toLowerCase() && adminEmails.includes(firebaseUser.email.toLowerCase())) {
                     router.push("/secure-management-portal/admin");
                 } else {
                     // Logged in but not admin - stay here and show error if it was a recent attempt
@@ -46,8 +47,9 @@ function LoginContent() {
             const provider = new GoogleAuthProvider();
             const result = await signInWithPopup(auth, provider);
             const user = result.user;
+            const adminEmails = getAdminEmails();
 
-            if (user.email?.toLowerCase() !== ADMIN_EMAIL) {
+            if (!user.email?.toLowerCase() || !adminEmails.includes(user.email.toLowerCase())) {
                 setFormError("Access Denied: You do not have admin permissions.");
                 await signOut({ redirect: false });
                 await firebaseSignOut(auth);
@@ -80,8 +82,9 @@ function LoginContent() {
             // Firebase Sign In with Email/Password
             const result = await signInWithEmailAndPassword(auth, email, password);
             const user = result.user;
+            const adminEmails = getAdminEmails();
 
-            if (user.email?.toLowerCase() !== ADMIN_EMAIL) {
+            if (!user.email?.toLowerCase() || !adminEmails.includes(user.email.toLowerCase())) {
                 setFormError("Access Denied: Unauthorized account.");
                 await signOut({ redirect: false });
                 await firebaseSignOut(auth);

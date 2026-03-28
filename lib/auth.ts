@@ -4,13 +4,8 @@ import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { getUserByEmail } from "./users";
+import { getAdminEmails } from "./adminConfig";
 import { getAdminAuth } from "./firebaseAdmin";
-
-// Admin emails can be a comma-separated list in environment variables
-const getAdminEmails = () => {
-    const emails = process.env.ADMIN_EMAILS || "vaelinsa@gmail.com";
-    return emails.split(",").map(e => e.trim().toLowerCase());
-};
 
 export const authOptions: NextAuthOptions = {
     providers: [
