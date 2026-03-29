@@ -276,17 +276,28 @@ export default function TrackOrderPage() {
                                 </div>
 
                                 {/* Support Info */}
-                                <div className="text-center text-slate-500 p-8 rounded-3xl border border-dashed border-slate-800">
-                                    <p className="text-xs font-medium mb-4 italic">Need help with your order?</p>
-                                    <a 
-                                        href="https://wa.me/919876543210" 
-                                        target="_blank" 
-                                        rel="noreferrer"
-                                        className="inline-flex items-center gap-2 text-cyan-400 font-bold hover:text-cyan-300 transition-colors uppercase tracking-widest text-[10px]"
-                                    >
-                                        Contact support on WhatsApp
-                                        <ArrowRight size={14} />
-                                    </a>
+                                <div className="bg-slate-900/50 backdrop-blur-sm p-8 rounded-3xl border border-slate-800/50 text-center">
+                                    <p className="text-slate-400 text-sm font-medium mb-6">
+                                        You will receive real-time notifications to your <span className="text-white font-bold">Email ID</span> for every status update.
+                                    </p>
+                                    <div className="flex flex-col md:flex-row items-center justify-center gap-6">
+                                        <a 
+                                            href="https://wa.me/919876543210" 
+                                            target="_blank" 
+                                            rel="noreferrer"
+                                            className="group flex items-center gap-3 px-6 py-3 bg-green-500/10 border border-green-500/20 rounded-2xl text-green-400 font-bold hover:bg-green-500/20 transition-all uppercase tracking-widest text-[10px]"
+                                        >
+                                            <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                                            WhatsApp Support
+                                        </a>
+                                        <a 
+                                            href="mailto:support@vaelinsa.com" 
+                                            className="group flex items-center gap-3 px-6 py-3 bg-cyan-500/10 border border-cyan-500/20 rounded-2xl text-cyan-400 font-bold hover:bg-cyan-500/20 transition-all uppercase tracking-widest text-[10px]"
+                                        >
+                                            <span className="w-2 h-2 rounded-full bg-cyan-500 animate-pulse" />
+                                            Email Support
+                                        </a>
+                                    </div>
                                 </div>
                             </motion.div>
                         )}

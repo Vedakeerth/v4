@@ -22,6 +22,7 @@ export default function Navbar({
         { name: "Projects", href: "/projects" },
         { name: "Features", href: "/features" },
         { name: "Blog", href: "/blog" },
+        { name: "Track Order", href: "/track-order" },
         { name: "Contact", href: "/contact" },
     ],
     ctaData = { text: "Get Quote", href: "/quote" }
@@ -70,7 +71,8 @@ export default function Navbar({
                     exit={{ y: -100, opacity: 0 }}
                     transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
                     className={cn(
-                        "fixed left-0 right-0 top-[30px] z-50 border-b border-slate-800 bg-slate-950/90 backdrop-blur-md shadow-2xl transition-all duration-300"
+                        "fixed left-0 right-0 z-50 border-b border-slate-800 bg-slate-950/90 backdrop-blur-md shadow-2xl transition-all duration-300",
+                        pathname === '/checkout' ? "top-0" : "top-[30px]"
                     )}
                 >
                     <div className="container mx-auto px-4 h-20 flex items-center justify-between">

@@ -1,18 +1,23 @@
+import { load } from '@cashfreepayments/cashfree-js';
+
 /**
- * Triggers a Cashfree payment by redirecting the current window directly.
- * Bypasses the JS SDK to guarantee true same-window navigation.
- *
- * Production URL: https://payments.cashfree.com/order/#payment_session_id={id}
- * Sandbox URL:    https://sandbox.cashfree.com/checkout/#payment_session_id={id}
+ * Triggers a Cashfree payment using their official seamless popup checkout.
  */
-export function redirectToCashfree(paymentSessionId: string): void {
-    const env = process.env.NEXT_PUBLIC_CASHFREE_ENV || 'sandbox';
-
-    const checkoutUrl =
-        env === 'production'
-            ? `https://payments.cashfree.com/order/#payment_session_id=${paymentSessionId}`
-            : `https://sandbox.cashfree.com/checkout/#payment_session_id=${paymentSessionId}`;
-
-    // True same-window redirect — guaranteed, no SDK popup behaviour
-    window.location.href = checkoutUrl;
+export async function redirectToCashfree(paymentSessionId: string): Promise<void> {
+    try {
+        const env = process.env.NEXT_PUBLIC_CASHFREE_ENV || 'sandbox';
+        
+        const cashfree = await load({
+            mode: env === 'production' ? 'production' : 'sandbox',
+        });
+        
+        // This will open the popup on the current page
+        await cashfree.checkout({
+            paymentSessionId: paymentSessionId
+        });
+    } catch (error) {
+        console.error("Cashfree SDK Error:", error);
+        alert("Payment gateway failed to load. Please try again.");
+    }
 }
+

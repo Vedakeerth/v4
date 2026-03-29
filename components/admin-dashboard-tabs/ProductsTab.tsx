@@ -340,6 +340,7 @@ export default function ProductsTab() {
                             </div>
                             <div className="p-5">
                                 <h3 className="text-white font-bold text-lg mb-1 truncate">{p.name}</h3>
+                                <p className="text-[9px] text-cyan-500/80 font-black uppercase tracking-widest mb-3 border-b border-slate-800 pb-2">ID: {p.id}</p>
                                 <p className="text-slate-400 text-xs line-clamp-2 h-8 mb-4">{p.description}</p>
                                 <div className="flex justify-between items-center mb-6">
                                     <span className="text-cyan-400 font-black text-xl">{p.price}</span>

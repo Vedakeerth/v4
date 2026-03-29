@@ -15,13 +15,13 @@ const CASHFREE_URL = CASHFREE_ENV === "production"
  */
 function generateTrackingId() {
   const randomNum = Math.floor(100000 + Math.random() * 900000);
-  return `VK${randomNum}`;
+  return `V${randomNum}`;
 }
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { customerName, phone, address, items, totalAmount } = body;
+    const { customerName, email, phone, address, items, totalAmount, message } = body;
 
     if (!customerName || !phone || !address || !items || !totalAmount) {
       return NextResponse.json({ success: false, error: "Missing required fields" }, { status: 400 });
@@ -32,11 +32,13 @@ export async function POST(req: Request) {
     const orderData = {
       trackingId,
       customerName,
+      email,
       phone,
       address,
+      message: message || "No additional message",
       items,
       totalAmount,
-      status: "pending",
+      status: "Waiting",
       paymentStatus: "unpaid",
       createdAt: FieldValue.serverTimestamp(),
     };
@@ -54,15 +56,16 @@ export async function POST(req: Request) {
       },
       body: JSON.stringify({
         order_id: docRef.id,
-        order_amount: totalAmount,
+        order_amount: Number(totalAmount).toFixed(2),
         order_currency: "INR",
         customer_details: {
-          customer_id: phone, // Using phone as customer_id for simplicity
+          customer_id: phone.replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 50) || "guest", 
           customer_name: customerName,
-          customer_phone: phone,
+          customer_email: email || "customer@example.com",
+          customer_phone: phone.replace(/\D/g, '').slice(-10),
         },
         order_meta: {
-          return_url: `${req.headers.get("origin")}/track-order?orderId={order_id}`,
+          return_url: `${req.headers.get("origin")}/checkout?order_id={order_id}&tracking_id=${trackingId}`,
         },
       }),
     });

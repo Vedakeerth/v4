@@ -6,6 +6,7 @@ import { motion, useMotionValue, useSpring } from 'framer-motion';
 export default function CustomCursor() {
     const [isHovered, setIsHovered] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
+    const [isHidden, setIsHidden] = useState(false);
     const cursorX = useMotionValue(-100);
     const cursorY = useMotionValue(-100);
 
@@ -21,10 +22,17 @@ export default function CustomCursor() {
         };
 
         const handleMouseOver = (e: MouseEvent) => {
-            if ((e.target as HTMLElement).closest('a, button, input, [role="button"]')) {
-                setIsHovered(true);
-            } else {
+            const target = e.target as HTMLElement;
+            if (target.closest('input, textarea, select')) {
+                setIsHidden(true);
                 setIsHovered(false);
+            } else {
+                setIsHidden(false);
+                if (target.closest('a, button, [role="button"]')) {
+                    setIsHovered(true);
+                } else {
+                    setIsHovered(false);
+                }
             }
         };
 
@@ -47,7 +55,7 @@ export default function CustomCursor() {
     return (
         <motion.div
             className="pointer-events-none fixed inset-0 z-[9999] hidden lg:block"
-            animate={{ opacity: isVisible ? 1 : 0 }}
+            animate={{ opacity: isVisible && !isHidden ? 1 : 0 }}
             transition={{ duration: 0.2 }}
         >
             <motion.div

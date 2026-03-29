@@ -39,10 +39,25 @@ export async function GET(req: Request) {
 
     // --- UPDATE FIRESTORE IF PAID ---
     if (cashfreeData.order_status === "PAID") {
-      await adminDb.collection("orders").doc(orderId).update({
+      const orderRef = adminDb.collection("orders").doc(orderId);
+      await orderRef.update({
         paymentStatus: "paid",
         status: "confirmed",
       });
+
+      // Send automated confirmation email
+      try {
+        const orderSnap = await orderRef.get();
+        if (orderSnap.exists) {
+          const { sendOrderConfirmation } = await import("@/lib/emailService");
+          await sendOrderConfirmation({
+            id: orderId,
+            ...orderSnap.data()
+          });
+        }
+      } catch (emailError) {
+        console.error("Failed to send verification confirmation email:", emailError);
+      }
 
       return NextResponse.json({ 
         success: true, 

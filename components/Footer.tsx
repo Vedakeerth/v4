@@ -49,7 +49,7 @@ export default function Footer() {
                                 <Link href="/catalog">Product Catalog</Link>
                             </li>
                             <li className="hover:text-cyan-400">
-                                <Link href="/track-order">Track My Order</Link>
+                                <Link href="/track-order">Track Your Order</Link>
                             </li>
                             <li className="hover:text-cyan-400">
                                 <Link href="/blog">Blog & Updates</Link>
