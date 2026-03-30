@@ -310,12 +310,12 @@ export default function ProductsTab() {
 
     return (
         <div>
-            <div className="flex gap-4 mb-8">
-                <button onClick={handleAddProduct} className="px-6 py-3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-xl flex items-center gap-2 shadow-lg shadow-cyan-500/20 transition-all">
-                    <Plus size={20} /> Add Product
+            <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:gap-4">
+                <button onClick={handleAddProduct} className="flex w-full items-center justify-center gap-2 rounded-xl bg-cyan-500 px-6 py-2.5 sm:py-3 font-black text-[10px] sm:text-sm text-slate-950 shadow-lg shadow-cyan-500/20 transition-all hover:bg-cyan-400 sm:w-auto uppercase tracking-widest">
+                    <Plus size={18} /> Add Product
                 </button>
-                <button onClick={() => setShowImportModal(true)} className="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl flex items-center gap-2 transition-all">
-                    <Upload size={20} /> Bulk Import
+                <button onClick={() => setShowImportModal(true)} className="flex w-full items-center justify-center gap-2 rounded-xl bg-slate-800 px-6 py-2.5 sm:py-3 font-black text-[10px] sm:text-sm text-white transition-all hover:bg-slate-700 sm:w-auto uppercase tracking-widest border border-slate-700">
+                    <Upload size={18} /> Bulk Import
                 </button>
             </div>
 
@@ -362,9 +362,9 @@ export default function ProductsTab() {
 
             {/* Product Modal */}
             {showAddModal && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-md">
-                    <div className="bg-slate-900 border border-slate-800 w-full max-w-2xl rounded-3xl p-8 shadow-2xl max-h-[90vh] overflow-y-auto custom-scrollbar">
-                        <div className="flex justify-between items-center mb-8">
+                <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/90 p-3 backdrop-blur-md sm:p-4">
+                    <div className="custom-scrollbar max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl border border-slate-800 bg-slate-900 p-4 shadow-2xl sm:p-6 lg:p-8">
+                        <div className="mb-6 flex items-start justify-between gap-4 sm:mb-8 sm:items-center">
                             <h2 className="text-2xl font-bold text-white">{editingProduct ? "Edit Product" : "Add New Product"}</h2>
                             <button onClick={() => setShowAddModal(false)} className="p-2 hover:bg-slate-800 rounded-full text-slate-400 transition-colors"><X size={24} /></button>
                         </div>
@@ -394,7 +394,7 @@ export default function ProductsTab() {
                                 />
                             </div>
                             <div className="space-y-4">
-                                <div className="flex gap-4">
+                                <div className="flex flex-col gap-4 sm:flex-row">
                                     <div className="flex-1">
                                         <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-2">Stock Count</label>
                                         <input type="number" value={formData.stockCount} onChange={e => setFormData({ ...formData, stockCount: parseInt(e.target.value) })} className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-500" />
@@ -416,13 +416,13 @@ export default function ProductsTab() {
                                 </div>
                                 <div>
                                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-2">Image URL / Upload</label>
-                                    <div className="flex gap-2">
+                                    <div className="flex flex-col gap-2 sm:flex-row">
                                         <input
                                             value={formData.image}
                                             onChange={e => setFormData({ ...formData, image: e.target.value })}
                                             className="flex-1 bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-xs focus:outline-none focus:border-cyan-500"
                                         />
-                                        <label className="cursor-pointer bg-slate-700 hover:bg-slate-600 px-4 py-3 rounded-xl flex items-center justify-center transition-all">
+                                        <label className="flex cursor-pointer items-center justify-center rounded-xl bg-slate-700 px-4 py-3 transition-all hover:bg-slate-600">
                                             <Upload size={18} className={isUploading ? "animate-bounce" : ""} />
                                             <input type="file" className="hidden" onChange={(e) => handleFileUpload(e, "image")} />
                                         </label>
@@ -467,9 +467,9 @@ export default function ProductsTab() {
                             <textarea value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} className="w-full h-24 bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-500 resize-none" />
                         </div>
 
-                        <div className="mt-8 pt-8 border-t border-slate-800 flex justify-end gap-4">
-                            <button onClick={() => setShowAddModal(false)} className="px-8 py-3 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl transition-all">Cancel</button>
-                            <button onClick={handleSaveProduct} className="px-8 py-3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-xl shadow-lg shadow-cyan-500/20 transition-all">Save {editingProduct ? "Changes" : "Product"}</button>
+                        <div className="mt-8 flex flex-col gap-3 border-t border-slate-800 pt-8 sm:flex-row sm:justify-end sm:gap-4">
+                            <button onClick={() => setShowAddModal(false)} className="rounded-xl bg-slate-800 px-8 py-3 font-bold text-white transition-all hover:bg-slate-700">Cancel</button>
+                            <button onClick={handleSaveProduct} className="rounded-xl bg-cyan-500 px-8 py-3 font-bold text-slate-950 shadow-lg shadow-cyan-500/20 transition-all hover:bg-cyan-400">Save {editingProduct ? "Changes" : "Product"}</button>
                         </div>
                     </div>
                 </div>
@@ -477,8 +477,8 @@ export default function ProductsTab() {
 
             {/* Import Modal */}
             {showImportModal && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-md">
-                    <div className="bg-slate-900 border border-slate-800 w-full max-w-md rounded-3xl p-8 shadow-2xl">
+                <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/90 p-3 backdrop-blur-md sm:p-4">
+                    <div className="w-full max-w-md rounded-3xl border border-slate-800 bg-slate-900 p-4 shadow-2xl sm:p-8">
                         <div className="flex justify-between items-center mb-6">
                             <h2 className="text-xl font-bold text-white">Bulk Import Products</h2>
                             <button onClick={() => setShowImportModal(false)} className="text-slate-500 hover:text-white"><X size={24} /></button>

@@ -147,7 +147,7 @@ export default function UsersTab() {
 
     return (
         <div className="space-y-6">
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <h2 className="text-2xl font-bold text-white mb-1">User Management</h2>
                     <p className="text-slate-400 text-sm">Manage dashboard users and their access levels (Max 5 users).</p>
@@ -155,7 +155,7 @@ export default function UsersTab() {
                 {!isAdding && (
                     <button
                         onClick={() => setIsAdding(true)}
-                        className="px-5 py-2.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black rounded-xl transition-all flex items-center gap-2 uppercase tracking-widest text-xs"
+                        className="flex w-full items-center justify-center gap-2 rounded-xl bg-cyan-500 px-5 py-2.5 text-xs font-black uppercase tracking-widest text-slate-950 transition-all hover:bg-cyan-400 sm:w-auto"
                     >
                         <UserPlus size={18} /> Add User
                     </button>
@@ -234,7 +234,7 @@ export default function UsersTab() {
                                 <option value="SUPER_ADMIN">Super Admin (Full Access)</option>
                             </select>
                         </div>
-                        <div className="md:col-span-2 flex justify-end gap-3 mt-4">
+                        <div className="mt-4 flex flex-col gap-3 md:col-span-2 sm:flex-row sm:justify-end">
                             <button
                                 type="button"
                                 onClick={handleCancel}
@@ -260,7 +260,7 @@ export default function UsersTab() {
                         <Shield className="text-cyan-400" size={20} />
                         <h3 className="text-lg font-bold text-white uppercase italic">Change Password: {isChangingPassword.name}</h3>
                     </div>
-                    <form onSubmit={handleChangePassword} className="flex flex-col md:flex-row gap-4 items-end">
+                    <form onSubmit={handleChangePassword} className="flex flex-col gap-4 md:flex-row md:items-end">
                         <div className="flex-1 space-y-1">
                             <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">New Password</label>
                             <div className="relative">
@@ -281,7 +281,7 @@ export default function UsersTab() {
                                 </button>
                             </div>
                         </div>
-                        <div className="flex gap-3">
+                        <div className="flex flex-col gap-3 sm:flex-row">
                             <button
                                 type="button"
                                 onClick={() => setIsChangingPassword(null)}
@@ -301,9 +301,9 @@ export default function UsersTab() {
                 </div>
             )}
 
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl">
+            <div className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-900 shadow-2xl">
                 <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
+                    <table className="min-w-[720px] w-full border-collapse text-left">
                         <thead>
                             <tr className="bg-slate-950/50 border-b border-slate-800">
                                 <th className="px-6 py-5 text-[10px] font-black text-slate-500 uppercase tracking-widest">User</th>

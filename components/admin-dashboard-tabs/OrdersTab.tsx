@@ -196,10 +196,10 @@ export default function OrdersTab() {
             <div
                 key={order.id}
                 onClick={() => { setSelectedOrder(order); setModalStatus(order.status); }}
-                className="bg-slate-900/40 cursor-pointer border border-slate-800/80 rounded-[2rem] p-7 h-full hover:border-cyan-500/50 transition-all group relative flex flex-col lg:flex-row gap-6 shadow-sm hover:shadow-2xl hover:shadow-cyan-950/10"
+                className="bg-slate-900/40 cursor-pointer border border-slate-800/80 rounded-2xl sm:rounded-[2rem] p-5 sm:p-7 h-full hover:border-cyan-500/50 transition-all group relative flex flex-col lg:flex-row gap-6 shadow-sm hover:shadow-2xl hover:shadow-cyan-950/10"
             >
                 <div className={cn(
-                    "absolute top-0 bottom-0 left-0 w-1 transition-opacity opacity-0 group-hover:opacity-100 rounded-l-[2rem]",
+                    "absolute top-0 bottom-0 left-0 w-1 transition-opacity opacity-0 group-hover:opacity-100 rounded-l-2xl sm:rounded-l-[2rem]",
                     isCustom ? "bg-purple-500" : "bg-cyan-500"
                 )} />
 
@@ -256,7 +256,7 @@ export default function OrdersTab() {
                         <p className="text-[8px] text-slate-500 font-black uppercase tracking-widest mb-1 flex items-center gap-1.5 justify-end">
                             <Calendar size={10}/> {safeDateStr(order)}
                         </p>
-                        <p className="font-black text-3xl italic tracking-tighter text-white">
+                        <p className="font-black text-2xl sm:text-3xl italic tracking-tighter text-white">
                             <span className="text-xs mr-1 opacity-50 not-italic uppercase">Rs</span>
                             {parseAmt(order.totalAmount).toLocaleString('en-IN')}
                         </p>
@@ -368,9 +368,9 @@ export default function OrdersTab() {
     }, [orders]);
 
     return (
-        <div className="space-y-10">
+        <div className="space-y-6 sm:space-y-10">
             {!isLoading && orders.length > 0 && (
-                <div className="bg-slate-900/40 border border-slate-800 rounded-[3rem] p-10 shadow-inner relative overflow-hidden flex flex-col gap-10">
+                <div className="bg-slate-900/40 border border-slate-800 rounded-xl sm:rounded-[2.5rem] lg:rounded-[3rem] p-4 sm:p-8 lg:p-10 shadow-inner relative overflow-hidden flex flex-col gap-6 sm:gap-10">
                     <div className="absolute -top-32 -right-32 w-80 h-80 bg-cyan-500/5 blur-3xl rounded-full pointer-events-none" />
                     
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 z-20">
@@ -379,15 +379,15 @@ export default function OrdersTab() {
                                 <BarChart3 size={16} />
                                 <h3 className="text-xs font-black uppercase tracking-[0.2em] italic">Total Growth Trajectory</h3>
                             </div>
-                            <p className="text-5xl font-black text-white italic tracking-tighter">
+                            <p className="text-3xl sm:text-5xl font-black text-white italic tracking-tighter">
                                 <span className="text-cyan-500 mr-2">Rs</span>
                                 {globalTotalRevenue.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
                             </p>
                         </div>
-                        <div className="flex flex-wrap gap-2.5">
+                        <div className="flex w-full overflow-x-auto pb-2 scrollbar-none no-scrollbar flex-nowrap gap-2.5 sm:w-auto sm:pb-0">
                             {["14D", "1M", "3M", "6M", "ALL"].map(f => (
                                 <button key={f} onClick={() => setGraphFilter(f as any)} 
-                                    className={cn("px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-[0.1em] transition-all", 
+                                    className={cn("px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl text-[9px] sm:text-[10px] font-black uppercase tracking-[0.1em] transition-all whitespace-nowrap", 
                                         graphFilter === f ? "bg-cyan-500 text-slate-950 shadow-xl shadow-cyan-500/20 scale-105" : "bg-slate-800 text-slate-400 border border-slate-700/50 hover:border-slate-500")}>
                                     {f}
                                 </button>
@@ -395,21 +395,23 @@ export default function OrdersTab() {
                         </div>
                     </div>
 
-                    <div className="flex flex-wrap gap-1.5 items-center bg-slate-950/40 p-1 rounded-2xl border border-slate-800/30 w-fit backdrop-blur-md">
-                        {[
-                            { id: "All", label: "Composite Growth", icon: <TrendingUp size={10} /> },
-                            { id: "Product", label: "Catalog Units", icon: <ShoppingBag size={10} /> },
-                            { id: "Custom", label: "Custom Assets", icon: <Zap size={10} /> },
-                        ].map((t) => (
-                            <button key={t.id} onClick={() => setRevenueType(t.id as any)} 
-                                className={cn("flex items-center gap-2.5 px-6 py-2.5 rounded-[1.1rem] text-[9px] font-black uppercase tracking-widest transition-all",
-                                    revenueType === t.id ? "bg-slate-800 text-white shadow-xl ring-1 ring-slate-700/50" : "text-slate-500 hover:text-slate-300 hover:bg-slate-900/30")}>
-                                {t.icon} {t.label}
-                            </button>
-                        ))}
+                    <div className="flex w-full overflow-x-auto pb-1 scrollbar-none no-scrollbar flex-nowrap gap-1.5 items-center md:pb-0">
+                        <div className="flex gap-1.5 items-center bg-slate-950/40 p-1 rounded-2xl border border-slate-800/30 backdrop-blur-md">
+                            {[
+                                { id: "All", label: "Composite Growth", icon: <TrendingUp size={10} /> },
+                                { id: "Product", label: "Catalog Units", icon: <ShoppingBag size={10} /> },
+                                { id: "Custom", label: "Custom Assets", icon: <Zap size={10} /> },
+                            ].map((t) => (
+                                <button key={t.id} onClick={() => setRevenueType(t.id as any)} 
+                                    className={cn("flex items-center gap-2.5 px-3 sm:px-6 py-2 sm:py-2.5 rounded-xl sm:rounded-[1.1rem] text-[8px] sm:text-[9px] font-black uppercase tracking-widest transition-all whitespace-nowrap",
+                                        revenueType === t.id ? "bg-slate-800 text-white shadow-xl ring-1 ring-slate-700/50" : "text-slate-500 hover:text-slate-300 hover:bg-slate-900/30")}>
+                                    {t.icon} {t.label}
+                                </button>
+                            ))}
+                        </div>
                     </div>
 
-                    <div className="w-full h-[350px] z-10 mt-6 xl:-ml-6">
+                    <div className="w-full h-[250px] sm:h-[350px] z-10 mt-6 xl:-ml-6">
                         {chartData.length === 0 ? (
                             <div className="w-full h-full flex items-center justify-center text-slate-700 text-xs italic opacity-50 font-black uppercase tracking-[0.4em]">Zero Trajectory Detected</div>
                         ) : (
@@ -423,16 +425,16 @@ export default function OrdersTab() {
                                         tickLine={false} 
                                         tick={{ fill: '#475569', fontSize: 10, fontWeight: '900' }} 
                                         tickFormatter={(val) => {
-                                            if (val === 0) return "Rs 0";
-                                            if (val < 1000) return `Rs ${val}`;
-                                            return `Rs ${val / 1000}k`;
+                                            if (val === 0) return "0";
+                                            if (val < 1000) return `${val}`;
+                                            return `${(val / 1000).toFixed(1)}k`;
                                         }} 
-                                        width={60} 
+                                        width={45} 
                                     />
-                                    <Tooltip contentStyle={{ backgroundColor: '#020617', borderColor: '#1e293b', borderRadius: '20px', color: '#fff', border: '1px solid rgba(6,182,212,0.1)', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)' }} itemStyle={{ fontWeight: '900', fontSize: '13px', paddingTop: '4px' }} formatter={(value: number, name: string) => [`Rs ${value.toLocaleString('en-IN')}`, name]} labelStyle={{ color: '#64748b', fontWeight: '900', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.1em' }} />
+                                    <Tooltip contentStyle={{ backgroundColor: '#020617', borderColor: '#1e293b', borderRadius: '20px', color: '#fff', border: '1px solid rgba(6,182,212,0.1)', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)' }} itemStyle={{ fontWeight: '900', fontSize: '13px', paddingTop: '4px' }} formatter={(value: any, name: any) => [`Rs ${value?.toLocaleString('en-IN')}`, name]} labelStyle={{ color: '#64748b', fontWeight: '900', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.1em' }} />
                                     <Legend wrapperStyle={{ fontSize: '11px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '0.15em', paddingTop: '30px', opacity: 0.8 }} iconType="cross" />
-                                    <Line name="Ready Stock" type="monotone" dataKey="standard" stroke="#22d3ee" strokeWidth={5} dot={{ r: 5, fill: '#020617', stroke: '#22d3ee', strokeWidth: 3 }} activeDot={{ r: 10, fill: '#22d3ee', stroke: '#020617', strokeWidth: 4 }} animationDuration={2500} connectNulls={true} />
-                                    <Line name="Custom Prints" type="monotone" dataKey="instantQuote" stroke="#a855f7" strokeWidth={5} dot={{ r: 5, fill: '#020617', stroke: '#a855f7', strokeWidth: 3 }} activeDot={{ r: 10, fill: '#a855f7', stroke: '#020617', strokeWidth: 4 }} animationDuration={2500} connectNulls={true} />
+                                    <Line name="Ready Stock" type="monotone" dataKey="standard" stroke="#22d3ee" strokeWidth={5} dot={false} activeDot={{ r: 10, fill: '#22d3ee', stroke: '#020617', strokeWidth: 4 }} animationDuration={2500} connectNulls={true} />
+                                    <Line name="Custom Prints" type="monotone" dataKey="instantQuote" stroke="#a855f7" strokeWidth={5} dot={false} activeDot={{ r: 10, fill: '#a855f7', stroke: '#020617', strokeWidth: 4 }} animationDuration={2500} connectNulls={true} />
                                 </LineChart>
                             </ResponsiveContainer>
                         )}
@@ -440,56 +442,58 @@ export default function OrdersTab() {
                 </div>
             )}
 
-            <div className="bg-slate-900/40 p-6 rounded-[2.5rem] border border-slate-800 shadow-2xl relative overflow-hidden">
+            <div className="bg-slate-900/40 p-4 sm:p-6 rounded-2xl sm:rounded-[2.5rem] border border-slate-800 shadow-2xl relative overflow-hidden">
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-500/20 to-transparent" />
                 <div className="relative z-10 flex flex-col xl:flex-row items-center gap-6">
                     {/* Search Field */}
                     <div className="flex-1 w-full">
-                        <div className="relative group flex items-center gap-4">
+                        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
                             <div className="relative flex-1">
-                                <Search className="absolute left-8 top-1/2 -translate-y-1/2 text-slate-500 h-5 w-5 group-focus-within:text-cyan-500 transition-colors z-10" />
+                                <Search className="absolute left-6 sm:left-8 top-1/2 -translate-y-1/2 text-slate-500 h-4 sm:h-5 w-4 sm:w-5 group-focus-within:text-cyan-500 transition-colors z-10" />
                                 <input 
                                     type="text" 
-                                    placeholder="Trace ID, Client name, or Secure mail..." 
+                                    placeholder="Trace ID, Client name..." 
                                     value={searchTerm} 
                                     onChange={(e) => setSearchTerm(e.target.value)} 
-                                    className="w-full h-[64px] bg-slate-950/50 border-2 border-slate-800/80 rounded-[1.25rem] pl-20 pr-8 text-white focus:outline-none focus:border-cyan-500/50 focus:ring-8 focus:ring-cyan-500/5 transition-all text-[12px] font-black uppercase tracking-[0.2em] placeholder:text-slate-600/50 shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] backdrop-blur-md caret-cyan-500" 
+                                    className="w-full h-12 sm:h-[64px] bg-slate-950/50 border-2 border-slate-800/80 rounded-xl sm:rounded-[1.25rem] pl-12 sm:pl-20 pr-4 sm:pr-8 text-white focus:outline-none focus:border-cyan-500/50 focus:ring-8 focus:ring-cyan-500/5 transition-all text-[9px] sm:text-[12px] font-black uppercase tracking-[0.2em] placeholder:text-slate-600/50 shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] backdrop-blur-md caret-cyan-500" 
                                 />
                             </div>
                             <button 
-                                className="h-[64px] px-10 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black rounded-[1.25rem] text-[11px] uppercase tracking-[0.25em] transition-all shadow-xl shadow-cyan-500/20 active:scale-95 flex items-center gap-3 whitespace-nowrap"
+                                className="h-12 sm:h-[64px] px-6 sm:px-10 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black rounded-xl sm:rounded-[1.25rem] text-[10px] sm:text-[11px] uppercase tracking-[0.25em] transition-all shadow-xl shadow-cyan-500/20 active:scale-95 flex items-center justify-center gap-3 whitespace-nowrap"
                             >
-                                <Zap size={16} className="fill-slate-950" />
+                                <Zap size={14} className="fill-slate-950" />
                                 Trace
                             </button>
                         </div>
                     </div>
 
                     {/* Inline Filters */}
-                    <div className="shrink-0">
-                        <div className="inline-flex p-1.5 bg-slate-950 rounded-2xl border border-slate-800/80 shadow-2xl shadow-cyan-950/5">
-                            {[
-                                { id: "Active", icon: <Clock size={14} />, label: "ACTIVE" },
-                                { id: "Completed", icon: <CheckCircle2 size={14} />, label: "COMPLETED" },
-                                { id: "Cancelled", icon: <XCircle size={14} />, label: "VOIDED" }
-                            ].map((mode) => (
-                                <button 
-                                    key={mode.id} 
-                                    onClick={() => setViewMode(mode.id as any)}
-                                    className={cn(
-                                        "flex items-center gap-3 px-8 py-3.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all relative group whitespace-nowrap",
-                                        viewMode === mode.id 
-                                            ? "bg-slate-800 text-white shadow-xl ring-1 ring-slate-700/50" 
-                                            : "text-slate-600 hover:text-slate-400 hover:bg-slate-900/50"
-                                    )}
-                                >
-                                    {mode.icon}
-                                    <span className="hidden sm:inline">{mode.label}</span>
-                                    {viewMode === mode.id && (
-                                        <motion.div layoutId="activeTabIndicator" className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-cyan-500 rounded-full shadow-[0_0_10px_#06b6d4]" />
-                                    )}
-                                </button>
-                            ))}
+                    <div className="w-full shrink-0 xl:w-auto">
+                        <div className="flex overflow-x-auto pb-1 scrollbar-none no-scrollbar sm:pb-0">
+                            <div className="inline-flex p-1 sm:p-1.5 bg-slate-950 rounded-xl sm:rounded-2xl border border-slate-800/80 shadow-2xl shadow-cyan-950/5">
+                                {[
+                                    { id: "Active", icon: <Clock size={12} />, label: "ACTIVE" },
+                                    { id: "Completed", icon: <CheckCircle2 size={12} />, label: "COMPLETED" },
+                                    { id: "Cancelled", icon: <XCircle size={12} />, label: "VOIDED" }
+                                ].map((mode) => (
+                                    <button 
+                                        key={mode.id} 
+                                        onClick={() => setViewMode(mode.id as any)}
+                                        className={cn(
+                                            "flex items-center gap-2 sm:gap-3 px-3 sm:px-8 py-2 sm:py-3.5 rounded-lg sm:rounded-xl text-[8px] sm:text-[10px] font-black uppercase tracking-widest transition-all relative group whitespace-nowrap",
+                                            viewMode === mode.id 
+                                                ? "bg-slate-800 text-white shadow-xl ring-1 ring-slate-700/50" 
+                                                : "text-slate-600 hover:text-slate-400 hover:bg-slate-900/50"
+                                        )}
+                                    >
+                                        {mode.icon}
+                                        <span className="inline">{mode.label}</span>
+                                        {viewMode === mode.id && (
+                                            <motion.div layoutId="activeTabIndicator" className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-cyan-500 rounded-full shadow-[0_0_10px_#06b6d4]" />
+                                        )}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -524,15 +528,15 @@ export default function OrdersTab() {
 
             <AnimatePresence>
                 {selectedOrder && (
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[160] flex items-center justify-center p-6 bg-slate-950/98 backdrop-blur-xl" onClick={() => setSelectedOrder(null)}>
-                        <motion.div initial={{ scale: 0.98, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.98, opacity: 0, y: 20 }} onClick={(e) => e.stopPropagation()} className="bg-slate-900 border border-slate-800/50 w-full max-w-4xl rounded-[4rem] p-12 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.7)] max-h-[92vh] overflow-y-auto custom-scrollbar relative">
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[160] flex items-center justify-center p-3 sm:p-6 bg-slate-950/98 backdrop-blur-xl" onClick={() => setSelectedOrder(null)}>
+                        <motion.div initial={{ scale: 0.98, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.98, opacity: 0, y: 20 }} onClick={(e) => e.stopPropagation()} className="bg-slate-900 border border-slate-800/50 w-full max-w-4xl rounded-3xl sm:rounded-[4rem] p-6 sm:p-12 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.7)] max-h-[92vh] overflow-y-auto custom-scrollbar relative">
                             <button onClick={() => setSelectedOrder(null)} className="absolute top-10 right-10 p-4 bg-slate-800/50 hover:bg-slate-800 text-slate-400 hover:text-white rounded-full transition-all border border-slate-700 shadow-2xl group">
                                 <XCircle size={28} className="group-hover:rotate-90 transition-transform" />
                             </button>
 
                             <div className="mb-14 text-left border-b border-slate-800 pb-10">
-                                <div className="flex items-center gap-6 mb-4">
-                                    <h2 className="text-5xl font-black text-white tracking-tighter uppercase italic underline decoration-cyan-500 decoration-[12px] underline-offset-[12px]">Operational Detail</h2>
+                                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 mb-4">
+                                    <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-white tracking-tighter uppercase italic underline decoration-cyan-500 decoration-[8px] sm:decoration-[12px] underline-offset-[8px] sm:underline-offset-[12px]">Operational Detail</h2>
                                     {selectedOrder.notes && (
                                         <div className="relative group/note cursor-help">
                                             <div className="w-12 h-12 rounded-[1.25rem] bg-amber-500/10 text-amber-500 flex items-center justify-center animate-pulse border border-amber-500/30 shadow-xl shadow-amber-500/5">
@@ -600,19 +604,19 @@ export default function OrdersTab() {
                                     <div className="pt-8 border-t-4 border-slate-800 flex justify-between items-end">
                                         <p className="text-[11px] font-black text-slate-500 uppercase tracking-[0.4em]">Gross Payload</p>
                                         <div className="text-right">
-                                            <p className="text-emerald-400 font-black text-5xl tracking-tighter italic">RS {parseAmt(selectedOrder.totalAmount).toLocaleString('en-IN')}</p>
+                                            <p className="text-emerald-400 font-black text-3xl sm:text-5xl tracking-tighter italic">RS {parseAmt(selectedOrder.totalAmount).toLocaleString('en-IN')}</p>
                                             <p className="text-[9px] font-black text-slate-700 uppercase mt-2 tracking-widest">Inclusive of all network taxes</p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="bg-slate-950 p-10 rounded-[3rem] border-2 border-slate-800 flex flex-col xl:flex-row items-start xl:items-center justify-between gap-10 shadow-2xl relative overflow-hidden">
+                            <div className="bg-slate-950 p-6 sm:p-10 rounded-2xl sm:rounded-[3rem] border-2 border-slate-800 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 sm:gap-10 shadow-2xl relative overflow-hidden">
                                 <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/5 blur-3xl rounded-full pointer-events-none" />
-                                <div className="w-full xl:w-auto z-10">
+                                <div className="w-full lg:w-auto z-10">
                                     <h4 className="text-[11px] font-black text-slate-600 uppercase tracking-[0.3em] mb-5 italic border-l-4 border-cyan-500 pl-4">Lifecycle State Override</h4>
                                     <div className="relative">
-                                        <select value={modalStatus} onChange={(e) => setModalStatus(e.target.value as Order["status"])} className={cn("w-full xl:w-80 px-8 py-5 pr-14 rounded-[1.5rem] text-[12px] font-black uppercase tracking-[0.4em] border-2 cursor-pointer focus:outline-none appearance-none transition-all shadow-2xl", getStatusStyle(modalStatus))}>
+                                        <select value={modalStatus} onChange={(e) => setModalStatus(e.target.value as Order["status"])} className={cn("w-full lg:w-80 px-4 sm:px-8 py-3 sm:py-5 pr-10 sm:pr-14 rounded-xl sm:rounded-[1.5rem] text-[10px] sm:text-[12px] font-black uppercase tracking-[0.4em] border-2 cursor-pointer focus:outline-none appearance-none transition-all shadow-2xl", getStatusStyle(modalStatus))}>
                                             {["Waiting", "Order Taken", "Processing", "Ready to Delivery", "Delivered", "Completed", "Cancelled"].map(s => (
                                                 <option key={s} value={s} className="bg-slate-950 font-black py-4">{s}</option>
                                             ))}
@@ -621,9 +625,9 @@ export default function OrdersTab() {
                                     </div>
                                 </div>
                                 
-                                <div className="flex gap-5 w-full xl:w-auto z-10">
-                                    <button onClick={() => setSelectedOrder(null)} className="flex-1 xl:w-44 py-5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-black rounded-[1.5rem] transition-all uppercase tracking-[0.2em] text-[11px] border border-slate-700 shadow-xl">Close Trace</button>
-                                    <button onClick={(e) => { if (modalStatus !== selectedOrder.status) updateOrderStatus(selectedOrder.id, modalStatus, e); setSelectedOrder(null); }} className="flex-1 xl:w-44 py-5 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-[1.5rem] transition-all uppercase tracking-[0.2em] text-[11px] shadow-[0_20px_40px_-10px_rgba(16,185,129,0.3)] ring-1 ring-emerald-400/50">Commit Shift</button>
+                                <div className="flex gap-3 sm:gap-5 w-full lg:w-auto z-10">
+                                    <button onClick={() => setSelectedOrder(null)} className="flex-1 lg:w-44 py-3 sm:py-5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-black rounded-xl sm:rounded-[1.5rem] transition-all uppercase tracking-[0.2em] text-[9px] sm:text-[11px] border border-slate-700 shadow-xl">Close Trace</button>
+                                    <button onClick={(e) => { if (modalStatus !== selectedOrder.status) updateOrderStatus(selectedOrder.id, modalStatus, e); setSelectedOrder(null); }} className="flex-1 lg:w-44 py-3 sm:py-5 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-xl sm:rounded-[1.5rem] transition-all uppercase tracking-[0.2em] text-[9px] sm:text-[11px] shadow-[0_20px_40px_-10px_rgba(16,185,129,0.3)] ring-1 ring-emerald-400/50">Commit Shift</button>
                                 </div>
                             </div>
                         </motion.div>

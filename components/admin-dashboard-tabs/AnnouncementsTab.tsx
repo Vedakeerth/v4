@@ -170,17 +170,19 @@ export default function AnnouncementsTab() {
 
     return (
         <div className="space-y-6">
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
                 {/* News Ticker Preview */}
-                <NewsTicker initialItems={(announcements || []).map(a => ({ text: a.text, link: "#" }))} />
-                <div>
+                <div className="w-full xl:max-w-xl">
+                    <NewsTicker initialItems={(announcements || []).map(a => ({ text: a.text, link: "#" }))} />
+                </div>
+                <div className="w-full xl:flex-1">
                     <h2 className="text-2xl font-bold text-white mb-1">Announcement Bar</h2>
                     <p className="text-slate-400 text-sm">Manage the top scrolling news and festival offers.</p>
                 </div>
                 {!isAdding && (
                     <button
                         onClick={() => setIsAdding(true)}
-                        className="px-5 py-2.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black rounded-xl transition-all flex items-center gap-2 uppercase tracking-widest text-xs"
+                        className="flex w-full items-center justify-center gap-2 rounded-xl bg-cyan-500 px-5 py-2.5 text-xs font-black uppercase tracking-widest text-slate-950 transition-all hover:bg-cyan-400 xl:w-auto"
                     >
                         <Plus size={18} /> New News
                     </button>
@@ -224,7 +226,7 @@ export default function AnnouncementsTab() {
                     <button
                         onClick={handleSaveSettings}
                         disabled={isSavingSettings}
-                        className="px-6 py-2.5 bg-slate-800 hover:bg-slate-700 text-white font-black rounded-xl transition-all flex items-center gap-2 uppercase tracking-widest text-xs"
+                        className="flex w-full items-center justify-center gap-2 rounded-xl bg-slate-800 px-6 py-2.5 text-xs font-black uppercase tracking-widest text-white transition-all hover:bg-slate-700 sm:w-auto"
                     >
                         {isSavingSettings ? <Loader2 className="w-4 h-4 animate-spin" /> : "Save Settings"}
                     </button>
@@ -289,7 +291,7 @@ export default function AnnouncementsTab() {
                             </div>
                         </div>
 
-                        <div className="flex justify-end gap-3 pt-4 border-t border-slate-800">
+                        <div className="flex flex-col gap-3 border-t border-slate-800 pt-4 sm:flex-row sm:justify-end">
                             <button
                                 type="button"
                                 onClick={handleCancel}

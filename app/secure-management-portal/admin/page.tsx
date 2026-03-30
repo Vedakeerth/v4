@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { LogOut, LayoutGrid, Package, MessageSquare, BookOpen, Globe, Share2, Settings, Briefcase, FileText, Ticket, ShoppingBag, Megaphone, ChevronLeft, ChevronRight } from "lucide-react";
+import { LogOut, LayoutGrid, Package, MessageSquare, BookOpen, Globe, Share2, Settings, Briefcase, FileText, Ticket, ShoppingBag, Megaphone, ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { auth } from "@/lib/firebase";
 import { onAuthStateChanged, signOut as firebaseSignOut } from "firebase/auth";
@@ -107,19 +107,18 @@ export default function SecureAdminPage() {
     ];
 
     return (
-        <main className="min-h-screen bg-slate-950 pt-8 pb-12">
-            <div className="container mx-auto px-4">
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+        <main className="min-h-screen bg-slate-950 px-0 pt-4 pb-8 sm:pt-8 sm:pb-12">
+            <div className="container mx-auto px-3 sm:px-4">
+                <div className="mb-6 flex flex-col gap-4 sm:mb-8 md:flex-row md:items-center md:justify-between">
                     <div>
-                        <h1 className="text-4xl font-bold text-white mb-2 tracking-tight underline decoration-cyan-500 decoration-4 underline-offset-8">Admin Portal</h1>
-                        <p className="text-slate-400 mt-2 font-medium">Welcome back, <span className="text-white font-bold">{user.email}</span></p>
+                        <h1 className="mb-2 text-2xl font-bold tracking-tight text-white underline decoration-cyan-500 decoration-4 underline-offset-8 sm:text-4xl">Admin Portal</h1>
+                        <p className="mt-4 break-all text-[10px] font-black uppercase tracking-widest text-slate-500 sm:text-sm">Sequence Authorized: <span className="text-white italic">{user.email}</span></p>
                     </div>
-                    <button onClick={handleLogout} className="px-6 py-3 bg-red-500/10 hover:bg-red-500/20 text-red-500 rounded-xl border border-red-500/20 transition-all flex items-center gap-2 font-bold shadow-lg shadow-red-500/5">
+                    <button onClick={handleLogout} className="flex w-full items-center justify-center gap-2 rounded-xl border border-red-500/20 bg-red-500/10 px-5 py-3 font-bold text-red-500 shadow-lg shadow-red-500/5 transition-all hover:bg-red-500/20 sm:w-auto">
                         <LogOut size={18} /> Logout Session
                     </button>
                 </div>
 
-                {/* Desktop Tabs */}
                 <div className="hidden lg:flex items-center gap-2 mb-8 border-b border-white/5 pb-1 relative group bg-slate-900/40 p-1 rounded-t-2xl">
                     <button
                         onClick={() => scrollTabs("left")}
@@ -157,20 +156,23 @@ export default function SecureAdminPage() {
                 </div>
 
                 {/* Mobile Tab Select */}
-                <div className="lg:hidden mb-8">
+                <div className="mb-6 lg:hidden sm:mb-8 relative group">
                     <select
                         value={activeTab}
                         onChange={(e) => setActiveTab(e.target.value as TabType)}
-                        className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-4 text-white font-bold focus:outline-none focus:border-cyan-500 shadow-xl"
+                        className="w-full appearance-none rounded-2xl border-2 border-slate-800 bg-slate-900/50 px-6 py-4 text-[11px] sm:text-[13px] font-black uppercase tracking-[0.2em] text-white shadow-xl focus:border-cyan-500/50 focus:outline-none focus:ring-8 focus:ring-cyan-500/5 transition-all cursor-pointer backdrop-blur-md"
                     >
                         {tabs.map(tab => (
-                            <option key={tab.id} value={tab.id}>{tab.label}</option>
+                            <option key={tab.id} value={tab.id} className="bg-slate-950 text-white font-black py-4">
+                                {tab.label.toUpperCase()}
+                            </option>
                         ))}
                     </select>
+                    <ChevronDown size={20} className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none group-focus-within:text-cyan-500 transition-colors" />
                 </div>
 
                 {/* Content Area */}
-                <div className="animate-in fade-in zoom-in-95 slide-in-from-bottom-4 duration-700 bg-slate-900/20 rounded-2xl p-4 border border-white/5">
+                <div className="animate-in slide-in-from-bottom-4 fade-in zoom-in-95 rounded-2xl border border-white/5 bg-slate-900/20 p-3 duration-700 sm:p-4">
                     {activeTab === "products" && <ProductsTab />}
                     {activeTab === "projects" && <ProjectsTab />}
                     {activeTab === "features" && <FeaturesTab />}
