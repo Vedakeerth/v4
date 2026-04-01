@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Plus, Edit, Trash2, X, Star } from "lucide-react";
-import { Testimonial } from "@/lib/testimonials";
+import { Testimonial } from "@/types";
 
 export default function TestimonialsTab() {
     const [testimonials, setTestimonials] = useState<Testimonial[]>([]);

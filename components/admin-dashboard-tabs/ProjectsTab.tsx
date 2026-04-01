@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Plus, Edit, Trash2, X, Save, Upload, Image as ImageIcon } from "lucide-react";
 import Image from "next/image";
-import { Project } from "@/lib/projects";
+import { Project } from "@/types";
 
 export default function ProjectsTab() {
     const [projects, setProjects] = useState<Project[]>([]);

@@ -1,3 +1,5 @@
+import type { QueryDocumentSnapshot, DocumentData } from 'firebase-admin/firestore';
+import { Testimonial } from '@/types';
 import { unstable_cache } from 'next/cache';
 
 export const getTestimonials = unstable_cache(

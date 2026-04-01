@@ -4,7 +4,7 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Briefcase } from "lucide-react";
-import { Project } from "@/lib/projects";
+import { Project } from "@/types";
 
 interface ProjectsSectionProps {
     projects: Project[];

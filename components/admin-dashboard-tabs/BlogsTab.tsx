@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Plus, Edit, Trash2, X, Image as ImageIcon, ArrowLeft, Eye } from "lucide-react";
 import Image from "next/image";
-import { BlogPost } from "@/lib/blogs";
+import { BlogPost } from "@/types";
 import BlogContent from "@/components/BlogContent";
 
 export default function BlogsTab() {

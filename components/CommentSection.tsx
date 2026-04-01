@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { MessageSquare, Send, User } from "lucide-react";
-import { Comment } from "@/lib/blogs";
+import { Comment } from "@/types";
 
 interface CommentSectionProps {
     blogId: string;

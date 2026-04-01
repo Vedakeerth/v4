@@ -1,3 +1,5 @@
+import type { QueryDocumentSnapshot, DocumentData } from 'firebase-admin/firestore';
+import { Project } from '@/types';
 import { unstable_cache } from 'next/cache';
 
 export const getProjects = unstable_cache(

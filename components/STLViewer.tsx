@@ -260,7 +260,8 @@ function STLMesh({
     scale,
     onStatsCalculated,
     onDimensionsCalculated,
-    onGeometryLoaded
+    onGeometryLoaded,
+    rotation
 }: {
     file: File;
     color: string;

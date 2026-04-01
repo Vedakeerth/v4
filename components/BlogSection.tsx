@@ -4,7 +4,7 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, BookOpen, Clock, User } from "lucide-react";
-import { BlogPost } from "@/lib/blogs";
+import { BlogPost } from "@/types";
 
 interface BlogSectionProps {
     blogs: BlogPost[];

@@ -10,9 +10,9 @@ import Footer from "@/components/Footer";
 import { cn, validatePhone } from "@/lib/utils";
 import { redirectToCashfree } from "@/lib/cashfree";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, Suspense } from "react";
 
-export default function CheckoutPage() {
+function CheckoutContent() {
     const { items, cartTotal, clearCart, appliedCoupon, discountAmount, finalTotal } = useCart();
     const searchParams = useSearchParams();
     const router = useRouter();
@@ -572,5 +572,20 @@ export default function CheckoutPage() {
             </div>
             <Footer />
         </main>
+    );
+}
+
+export default function CheckoutPage() {
+    return (
+        <Suspense fallback={
+            <main className="min-h-screen bg-slate-950 pt-24 pb-0 flex items-center justify-center">
+                <div className="relative w-12 h-12 mx-auto">
+                    <div className="absolute inset-0 border-4 border-cyan-500/20 rounded-full" />
+                    <div className="absolute inset-0 border-4 border-cyan-500 rounded-full border-t-transparent animate-spin" />
+                </div>
+            </main>
+        }>
+            <CheckoutContent />
+        </Suspense>
     );
 }
