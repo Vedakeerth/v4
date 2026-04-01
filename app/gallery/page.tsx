@@ -19,18 +19,18 @@ export default async function GalleryPage() {
     const products = allProducts;
 
     return (
-        <main className="min-h-screen bg-slate-950 pt-24">
-            <section className="py-16 bg-slate-950 relative overflow-hidden">
+        <main className="min-h-screen bg-slate-950 pt-20">
+            <section className="pt-8 pb-16 bg-slate-950 relative overflow-hidden">
                 <div className="container mx-auto px-4 relative z-10">
                     {/* Header */}
-                    <div className="text-center mb-12">
-                        <h1 className="text-2xl md:text-3xl font-bold text-white mb-4">
+                    <div className="text-center mb-8">
+                        <h1 className="text-xl md:text-3xl font-bold text-white mb-3 uppercase tracking-tight">
                             {pageData?.header.title}
                         </h1>
-                        <p className="text-slate-400 max-w-2xl mx-auto text-sm">
+                        <p className="text-slate-400 max-w-2xl mx-auto text-xs md:text-sm">
                             {pageData?.header.description}
                         </p>
-                        <div className="h-1 w-20 bg-cyan-500 mx-auto mt-6 rounded-full" />
+                        <div className="h-1 w-16 bg-cyan-500 mx-auto mt-6 rounded-full" />
                     </div>
 
                     <GalleryGrid parts={products} />

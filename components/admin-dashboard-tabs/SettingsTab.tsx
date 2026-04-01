@@ -101,6 +101,22 @@ export default function SettingsTab() {
                 </div>
 
                 <div className="space-y-4">
+                    <h3 className="text-slate-500 text-xs font-black uppercase tracking-widest mb-4">Products Page Contextual Sections</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <Toggle
+                            label="Show Projects on Products Page"
+                            check={settings.showProjectsOnProducts}
+                            onChange={() => setSettings({ ...settings, showProjectsOnProducts: !settings.showProjectsOnProducts })}
+                        />
+                        <Toggle
+                            label="Show Product Showcase on Products Page"
+                            check={settings.showProductsOnProducts}
+                            onChange={() => setSettings({ ...settings, showProductsOnProducts: !settings.showProductsOnProducts })}
+                        />
+                    </div>
+                </div>
+
+                <div className="space-y-4">
                     <h3 className="text-slate-500 text-xs font-black uppercase tracking-widest mb-4">Machinery Section Settings</h3>
                     <div className="space-y-4 bg-slate-900 p-6 rounded-2xl border border-slate-800">
                         <div>

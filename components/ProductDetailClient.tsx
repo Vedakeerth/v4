@@ -288,7 +288,7 @@ export default function ProductDetailClient({ product, similarProducts, pageData
                                 transition={{ duration: 0.4, delay: idx * 0.1 }}
                             >
                                 <Link
-                                    href={`/products/${item.id}`}
+                                    href={`/gallery/${require("@/lib/seo-utils").createSeoSlug(item.name, item.id)}`}
                                     className="block bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-cyan-500/50 hover:shadow-lg hover:shadow-cyan-900/20 transition-all group"
                                 >
                                     <div className="relative h-48 w-full bg-slate-800">

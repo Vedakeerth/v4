@@ -30,16 +30,16 @@ export default function BlogContent({ content }: BlogContentProps) {
     if (!content) return null;
 
     return (
-        <article className="prose prose-invert prose-cyan lg:prose-xl max-w-none prose-headings:font-black prose-headings:uppercase prose-headings:tracking-tighter prose-p:text-slate-400 prose-p:leading-[1.8] prose-p:text-lg prose-strong:text-white prose-a:text-cyan-500 hover:prose-a:text-cyan-400 prose-blockquote:border-l-cyan-500 prose-blockquote:bg-slate-900/50 prose-blockquote:p-8 prose-blockquote:rounded-3xl prose-img:rounded-3xl prose-img:border prose-img:border-slate-800 shadow-2xl shadow-cyan-900/5">
+        <article className="prose prose-invert prose-cyan lg:prose-xl max-w-none prose-headings:font-extrabold prose-headings:uppercase prose-headings:tracking-tight prose-p:text-slate-400 prose-p:leading-relaxed prose-p:text-lg prose-strong:text-white prose-a:text-cyan-500 hover:prose-a:text-cyan-400 prose-blockquote:border-l-cyan-500 prose-blockquote:bg-slate-900/50 prose-blockquote:p-8 prose-blockquote:rounded-3xl prose-img:rounded-3xl prose-img:border prose-img:border-slate-800 shadow-2xl shadow-cyan-900/5">
             {content.split('\n\n').map((para, i) => {
                 // Handling Headings
                 if (para.startsWith('###')) {
                     const headingText = para.replace(/^###\s*/, '').trim();
-                    return <h3 key={i} className="text-3xl font-black text-white mt-16 mb-8 uppercase tracking-tighter border-l-4 border-cyan-500 pl-6">{parseInlineContent(headingText)}</h3>;
+                    return <h3 key={i} className="text-3xl font-extrabold text-white mt-16 mb-8 uppercase tracking-tight border-l-4 border-cyan-500 pl-6">{parseInlineContent(headingText)}</h3>;
                 }
                 if (para.startsWith('####')) {
                     const headingText = para.replace(/^####\s*/, '').trim();
-                    return <h4 key={i} className="text-2xl font-black text-white mt-12 mb-6 uppercase tracking-tight">{parseInlineContent(headingText)}</h4>;
+                    return <h4 key={i} className="text-2xl font-extrabold text-white mt-12 mb-6 uppercase tracking-tight">{parseInlineContent(headingText)}</h4>;
                 }
 
                 // Handling Lists

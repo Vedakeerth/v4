@@ -21,7 +21,7 @@ export default function MainFrontendUI({ children, navLinks, ctaData }: MainFron
 
     // Check if current path is an admin page or secure portal
     const isAdminPage = pathname?.startsWith("/admin") || pathname?.startsWith("/secure-management-portal");
-    const isSpecialPage = pathname === "/" || pathname === "/gallery" || pathname === "/services" || pathname === "/features" || pathname === "/blog" || pathname === "/contact" || pathname === "/index.html" || pathname === "";
+    const isSpecialPage = pathname === "/" || pathname === "/gallery" || pathname === "/services" || pathname === "/products" || pathname === "/blog" || pathname === "/contact" || pathname === "/index.html" || pathname === "";
     const isCheckout = pathname === "/checkout";
 
     if (isAdminPage) {

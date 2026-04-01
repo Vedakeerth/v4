@@ -51,17 +51,35 @@ export const getPopularProducts = unstable_cache(
     { revalidate: 3600, tags: ['products', 'popular'] }
 );
 
-export const getProductById = (id: string) => unstable_cache(
+export const getProductBySeoSlug = (seoSlug: string) => unstable_cache(
     async (): Promise<Product | undefined> => {
+        const { extractIdFromSlug } = await import('./seo-utils');
+        const hashId = extractIdFromSlug(seoSlug);
+        if (!hashId) return undefined;
+
         if (typeof window === 'undefined') {
             const { getAdminDb } = await import('./firebaseAdmin');
             const adminDb = await getAdminDb();
-            const doc = await adminDb.collection('products').doc(id).get();
-            if (!doc.exists) return undefined;
+            
+            // Search in 'products' by 'hash' field
+            const snapshot = await adminDb.collection('products').where('hash', '==', hashId).limit(1).get();
+            if (snapshot.empty) {
+                // Fallback to searching by document ID if hashId matches length
+                if (hashId.length >= 20) {
+                    const doc = await adminDb.collection('products').doc(hashId).get();
+                    if (doc.exists) return { id: doc.id, ...doc.data() } as Product;
+                }
+                return undefined;
+            }
+            const doc = snapshot.docs[0];
             return { id: doc.id, ...doc.data() } as Product;
+        } else {
+            const products = await getProducts();
+            return products.find(p => p.id.endsWith(hashId));
         }
-        return undefined;
     },
-    [`product-${id}`],
-    { revalidate: 3600, tags: [`product-${id}`] }
+    [`product-seo-${seoSlug}`],
+    { revalidate: 3600, tags: [`product-${seoSlug}`] }
 )();
+
+export const getProductById = (id: string) => getProductBySeoSlug(id);

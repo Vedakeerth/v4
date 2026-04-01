@@ -24,6 +24,7 @@ export interface BlogPost {
     metaTitle?: string;
     metaDescription?: string;
     createdAt?: string;
+    hash?: string;
 }
 
 export interface Product {
@@ -41,6 +42,7 @@ export interface Product {
     quantity?: number; // Used for cart
     colors?: string[]; // Hex codes or names
     likes?: number;
+    hash?: string;
 }
 
 export interface Order {
@@ -87,6 +89,7 @@ export interface Project {
     date: string;
     client?: string;
     createdAt?: string;
+    hash?: string;
 }
 
 export type UserRole = "SUPER_ADMIN" | "USER";

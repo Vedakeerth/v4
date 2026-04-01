@@ -30,20 +30,35 @@ export const getProjects = unstable_cache(
     { revalidate: 3600, tags: ['projects'] }
 );
 
-export const getProjectById = (id: string) => unstable_cache(
+export const getProjectBySeoSlug = (seoSlug: string) => unstable_cache(
     async (): Promise<Project | undefined> => {
+        const { extractIdFromSlug } = await import('./seo-utils');
+        const hashId = extractIdFromSlug(seoSlug);
+        if (!hashId) return undefined;
+
         if (typeof window === 'undefined') {
             const { getAdminDb } = await import('./firebaseAdmin');
             const adminDb = await getAdminDb();
-            const doc = await adminDb.collection('projects').doc(id).get();
-            if (!doc.exists) return undefined;
+            
+            // Search in 'projects' by 'hash' field
+            const snapshot = await adminDb.collection('projects').where('hash', '==', hashId).limit(1).get();
+            if (snapshot.empty) {
+                // Fallback to searching by document ID if hashId matches length
+                if (hashId.length >= 20) {
+                    const doc = await adminDb.collection('projects').doc(hashId).get();
+                    if (doc.exists) return { id: doc.id, ...doc.data() } as Project;
+                }
+                return undefined;
+            }
+            const doc = snapshot.docs[0];
             return { id: doc.id, ...doc.data() } as Project;
         } else {
-            const res = await fetch(`/api/projects/${id}`);
-            const data = await res.json();
-            return data.project;
+            const projects = await getProjects();
+            return projects.find(p => p.id.endsWith(hashId));
         }
     },
-    [`project-${id}`],
-    { revalidate: 3600, tags: [`project-${id}`] }
+    [`project-seo-${seoSlug}`],
+    { revalidate: 60, tags: [`project-${seoSlug}`] } // ISR 60 as requested
 )();
+
+export const getProjectById = (id: string) => getProjectBySeoSlug(id);

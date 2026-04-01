@@ -103,7 +103,7 @@ export default function Products({ products, isLoading = false }: ProductsProps)
                                     </div>
                                     <div className="flex gap-2">
                                         <Link
-                                            href={`/products/${product.id}`}
+                                            href={`/gallery/${require("@/lib/seo-utils").createSeoSlug(product.name, product.id)}`}
                                             onClick={(e) => e.stopPropagation()}
                                             className="w-full px-4 py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2 text-sm shadow-lg shadow-blue-600/20"
                                         >

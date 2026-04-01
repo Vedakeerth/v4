@@ -49,7 +49,7 @@ export default function FeaturesTab() {
                     body: JSON.stringify(settings),
                 })
             ]);
-            alert("Features page and settings saved!");
+            alert("Products page and settings saved!");
         } catch (error) {
             alert("Failed to save changes");
         }
@@ -67,7 +67,7 @@ export default function FeaturesTab() {
     return (
         <div className="space-y-10 max-w-5xl">
             <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-bold text-white">Features Page Management</h2>
+                <h2 className="text-2xl font-bold text-white">Why Choose Us (Products) Management</h2>
                 <button
                     onClick={handleSave}
                     className="px-6 py-3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-xl flex items-center gap-2 shadow-lg shadow-cyan-500/20 transition-all"
@@ -89,10 +89,10 @@ export default function FeaturesTab() {
                             <span className="text-xs text-slate-500">Display latest projects block</span>
                         </div>
                         <button
-                            onClick={() => setSettings({ ...settings, showProjectsOnFeatures: !settings.showProjectsOnFeatures })}
-                            className={`transition-colors ${settings.showProjectsOnFeatures ? "text-cyan-400" : "text-slate-600"}`}
+                            onClick={() => setSettings({ ...settings, showProjectsOnProducts: !settings.showProjectsOnProducts })}
+                            className={`transition-colors ${settings.showProjectsOnProducts ? "text-cyan-400" : "text-slate-600"}`}
                         >
-                            {settings.showProjectsOnFeatures ? <ToggleRight size={32} /> : <ToggleLeft size={32} />}
+                            {settings.showProjectsOnProducts ? <ToggleRight size={32} /> : <ToggleLeft size={32} />}
                         </button>
                     </div>
                     <div className="flex items-center justify-between p-4 bg-slate-950 rounded-xl border border-slate-800">
@@ -101,16 +101,16 @@ export default function FeaturesTab() {
                             <span className="text-xs text-slate-500">Display product showcase block</span>
                         </div>
                         <button
-                            onClick={() => setSettings({ ...settings, showProductsOnFeatures: !settings.showProductsOnFeatures })}
-                            className={`transition-colors ${settings.showProductsOnFeatures ? "text-cyan-400" : "text-slate-600"}`}
+                            onClick={() => setSettings({ ...settings, showProductsOnProducts: !settings.showProductsOnProducts })}
+                            className={`transition-colors ${settings.showProductsOnProducts ? "text-cyan-400" : "text-slate-600"}`}
                         >
-                            {settings.showProductsOnFeatures ? <ToggleRight size={32} /> : <ToggleLeft size={32} />}
+                            {settings.showProductsOnProducts ? <ToggleRight size={32} /> : <ToggleLeft size={32} />}
                         </button>
                     </div>
-                    <div className="flex items-center justify-between p-4 bg-slate-950 rounded-xl border border-slate-800 opacity-50 cursor-not-allowed" title="Always visible on Features page">
+                    <div className="flex items-center justify-between p-4 bg-slate-950 rounded-xl border border-slate-800 opacity-50 cursor-not-allowed" title="Always visible on Products page">
                         <div>
                             <span className="block text-slate-300 font-bold">Show "Why Choose Us"</span>
-                            <span className="text-xs text-slate-500">Core features content (Always On)</span>
+                            <span className="text-xs text-slate-500">Core content (Always On)</span>
                         </div>
                         <ToggleRight size={32} className="text-cyan-400" />
                     </div>

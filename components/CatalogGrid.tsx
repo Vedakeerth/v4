@@ -217,7 +217,8 @@ export default function CatalogGrid({ products }: CatalogGridProps) {
                                         <button
                                             onClick={(e) => {
                                                 e.stopPropagation();
-                                                router.push(`/products/${product.id}`);
+                                                const { createSeoSlug } = require("@/lib/seo-utils");
+                                                router.push(`/gallery/${createSeoSlug(product.name, product.id)}`);
                                             }}
                                             className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors flex items-center justify-center gap-2 text-sm"
                                         >

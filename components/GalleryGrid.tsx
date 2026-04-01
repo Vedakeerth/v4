@@ -7,6 +7,7 @@ import { Heart, MessageSquare, Search, X, ChevronDown, Filter, SlidersHorizontal
 import { useRouter } from "next/navigation";
 import { cn, parsePrice } from "@/lib/utils";
 import { Product } from "@/lib/products";
+import { createSeoSlug } from "@/lib/seo-utils";
 import InstantQuoteModal from "./InstantQuoteModal";
 import ProductQuickView from "./ProductQuickView";
 import { ShoppingBag } from "lucide-react";
@@ -93,8 +94,9 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
 
     const totalPages = Math.ceil(filteredAndSortedParts.length / itemsPerPage);
 
-    const handlePartClick = (partId: string) => {
-        router.push(`/products/${partId}`);
+    const handlePartClick = (part: Product) => {
+        const seoUrl = `/gallery/${createSeoSlug(part.name, part.id)}`;
+        router.push(seoUrl);
     };
 
     const handleLike = async (e: React.MouseEvent, partId: string) => {
@@ -127,14 +129,15 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
     };
 
     const handleShare = (part: Product) => {
+        const seoUrl = window.location.origin + `/gallery/${createSeoSlug(part.name, part.id)}`;
         if (navigator.share) {
             navigator.share({
                 title: part.name,
                 text: part.description,
-                url: window.location.origin + `/products/${part.id}`,
+                url: seoUrl,
             }).catch(console.error);
         } else {
-            navigator.clipboard.writeText(window.location.origin + `/products/${part.id}`);
+            navigator.clipboard.writeText(seoUrl);
             alert("Link copied to clipboard!");
         }
     };

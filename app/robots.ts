@@ -8,7 +8,14 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/api/', '/admin/', '/secure-management-portal/', '/_next/'],
+        disallow: [
+          '/api/', 
+          '/admin/', 
+          '/secure-management-portal/', 
+          '/_next/', 
+          '/orders/', // Private orders Detail
+          '/quote/*', // Individual dynamic quotes
+        ],
       },
     ],
     sitemap: `${baseUrl}/sitemap.xml`,

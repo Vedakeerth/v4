@@ -2,7 +2,8 @@ import React from "react";
 import Image from "next/image";
 import { getProjects } from "@/lib/projects";
 import { Metadata } from 'next';
-
+import Link from "next/link";
+import { createSeoSlug } from "@/lib/seo-utils";
 import { getPageMetadata } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -26,8 +27,9 @@ export default async function ProjectsPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {projects.map((project) => (
-                        <div
+                        <Link
                             key={project.id}
+                            href={`/projects/${createSeoSlug(project.title, project.id)}`}
                             className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden hover:border-cyan-500/30 transition-all group"
                         >
                             <div className="relative h-72 w-full overflow-hidden">
@@ -47,7 +49,7 @@ export default async function ProjectsPage() {
                                 <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-cyan-400 transition-colors">
                                     {project.title}
                                 </h3>
-                                <p className="text-slate-400 mb-6 line-clamp-3">
+                                <p className="text-slate-400 mb-6 line-clamp-3 text-sm">
                                     {project.description}
                                 </p>
                                 <div className="flex justify-between items-center text-sm">
@@ -60,7 +62,7 @@ export default async function ProjectsPage() {
                                     </span>
                                 </div>
                             </div>
-                        </div>
+                        </Link>
                     ))}
                 </div>
             </div>

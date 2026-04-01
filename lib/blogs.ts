@@ -30,20 +30,37 @@ export const getBlogs = unstable_cache(
     { revalidate: 3600, tags: ['blogs'] }
 );
 
-export const getBlogBySlug = (slug: string) => unstable_cache(
+export const getBlogBySeoSlug = (seoSlug: string) => unstable_cache(
     async (): Promise<BlogPost | undefined> => {
+        const { extractIdFromSlug } = await import('./seo-utils');
+        const hashId = extractIdFromSlug(seoSlug);
+        if (!hashId) return undefined;
+
         if (typeof window === 'undefined') {
             const { getAdminDb } = await import('./firebaseAdmin');
             const adminDb = await getAdminDb();
-            const snapshot = await adminDb.collection('blogs').where('slug', '==', slug).limit(1).get();
-            if (snapshot.empty) return undefined;
+            
+            // First try fetching by ID (if hashId was the actual doc ID or slice)
+            // But requirement says "decode to get original ID"
+            // For now, assume it's the doc ID slice or stored 'hash'
+            const snapshot = await adminDb.collection('blogs').where('hash', '==', hashId).limit(1).get();
+            if (snapshot.empty) {
+                // Fallback to searching by document ID if hashId matches length
+                if (hashId.length >= 20) {
+                    const doc = await adminDb.collection('blogs').doc(hashId).get();
+                    if (doc.exists) return { id: doc.id, ...doc.data() } as BlogPost;
+                }
+                return undefined;
+            }
             const doc = snapshot.docs[0];
             return { id: doc.id, ...doc.data() } as BlogPost;
         } else {
             const blogs = await getBlogs();
-            return blogs.find(b => b.slug === slug);
+            return blogs.find(b => b.id.endsWith(hashId));
         }
     },
-    [`blog-${slug}`],
-    { revalidate: 3600, tags: [`blog-${slug}`] }
+    [`blog-seo-${seoSlug}`],
+    { revalidate: 3600, tags: [`blog-${seoSlug}`] }
 )();
+
+export const getBlogBySlug = (slug: string) => getBlogBySeoSlug(slug);

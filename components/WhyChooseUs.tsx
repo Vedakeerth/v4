@@ -88,7 +88,7 @@ export default function WhyChooseUs({ content }: WhyChooseUsProps) {
                                                 })()}
                                             </div>
                                             <div>
-                                                <h4 className="text-white font-semibold mb-1">{feature?.title || "Feature"}</h4>
+                                                <h4 className="text-white font-semibold mb-1">{feature?.title || "Product"}</h4>
                                                 <p className="text-slate-500 text-sm leading-relaxed">{feature?.description || "Details about this specialized engineering service."}</p>
                                             </div>
                                         </div>

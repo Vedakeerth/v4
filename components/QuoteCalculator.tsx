@@ -62,7 +62,11 @@ function AnimationLoop5Times() {
     );
 }
 
-export default function QuoteCalculator() {
+interface QuoteCalculatorProps {
+    sessionId?: string;
+}
+
+export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
     const [uploadedFiles, setUploadedFiles] = useState<{
         id: string;
         file: File;

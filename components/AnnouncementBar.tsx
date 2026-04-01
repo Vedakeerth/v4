@@ -21,7 +21,7 @@ export default function AnnouncementBar() {
     const isVisible = pathname === "/" ||
         pathname === "/gallery" ||
         pathname === "/services" ||
-        pathname === "/features" ||
+        pathname === "/products" ||
         pathname === "/blog" ||
         pathname === "/contact" ||
         pathname === "/index.html" ||

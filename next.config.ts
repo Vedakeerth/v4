@@ -41,6 +41,11 @@ const nextConfig: NextConfig = {
         destination: '/secure-management-portal/login',
         permanent: false,
       },
+      {
+        source: '/features',
+        destination: '/products',
+        permanent: true,
+      },
     ];
   },
   async headers() {

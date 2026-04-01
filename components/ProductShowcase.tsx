@@ -173,7 +173,10 @@ export default function ProductShowcase({ header, categories, products: initialP
                                                 <button
                                                     onClick={(e) => {
                                                         e.stopPropagation();
-                                                        if (product?.id) window.location.href = `/products/${product.id}`;
+                                                        if (product?.id) {
+                                                            const { createSeoSlug } = require("@/lib/seo-utils");
+                                                            window.location.href = `/gallery/${createSeoSlug(product.name, product.id)}`;
+                                                        }
                                                     }}
                                                     className="flex-1 py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-sm transition-all duration-300 shadow-lg shadow-cyan-500/10 flex items-center justify-center gap-2"
                                                 >
@@ -183,7 +186,10 @@ export default function ProductShowcase({ header, categories, products: initialP
                                                 <button
                                                     onClick={(e) => {
                                                         e.stopPropagation();
-                                                        if (product?.id) window.location.href = `/products/${product.id}`;
+                                                        if (product?.id) {
+                                                            const { createSeoSlug } = require("@/lib/seo-utils");
+                                                            window.location.href = `/gallery/${createSeoSlug(product.name, product.id)}`;
+                                                        }
                                                     }}
                                                     className="p-3 rounded-xl bg-slate-800 border border-slate-700 text-white hover:bg-slate-700 transition-all duration-300"
                                                 >

@@ -20,7 +20,7 @@ export default function Navbar({
         { name: "Services", href: "/services" },
         { name: "Gallery", href: "/gallery" },
         { name: "Projects", href: "/projects" },
-        { name: "Features", href: "/features" },
+        { name: "Products", href: "/products" },
         { name: "Blog", href: "/blog" },
         { name: "Track Order", href: "/track-order" },
         { name: "Contact", href: "/contact" },
@@ -60,6 +60,17 @@ export default function Navbar({
         return () => window.removeEventListener("scroll", handleScroll);
     }, [isHomePage]);
 
+    useEffect(() => {
+        const handleOutsideClick = (e: MouseEvent) => {
+            const target = e.target as HTMLElement;
+            if (isMenuOpen && !target.closest('.navbar-container')) {
+                setIsMenuOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleOutsideClick);
+        return () => document.removeEventListener('mousedown', handleOutsideClick);
+    }, [isMenuOpen]);
+
     if (!mounted) return null;
 
     return (
@@ -71,7 +82,7 @@ export default function Navbar({
                     exit={{ y: -100, opacity: 0 }}
                     transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
                     className={cn(
-                        "fixed left-0 right-0 z-50 border-b border-slate-800 bg-slate-950/90 backdrop-blur-md shadow-2xl transition-all duration-300",
+                        "navbar-container fixed left-0 right-0 z-50 border-b border-slate-800 bg-slate-950/90 backdrop-blur-md shadow-2xl transition-all duration-300",
                         pathname === '/checkout' ? "top-0" : "top-[30px]"
                     )}
                 >
@@ -94,10 +105,10 @@ export default function Navbar({
                             {navLinks.map((link) => (
                                 <Link
                                     key={link.name}
-                                    href={link.href}
+                                    href={link.href === "/features" ? "/products" : link.href}
                                     className="text-sm font-medium text-slate-300 hover:text-cyan-400 transition-colors"
                                 >
-                                    {link.name}
+                                    {link.name === "Features" ? "Products" : link.name}
                                 </Link>
                             ))}
                         </nav>
@@ -154,11 +165,11 @@ export default function Navbar({
                                     {navLinks.map((link) => (
                                         <Link
                                             key={link.name}
-                                            href={link.href}
+                                            href={link.href === "/features" ? "/products" : link.href}
                                             onClick={() => setIsMenuOpen(false)}
                                             className="text-lg font-medium text-slate-300 hover:text-cyan-400 transition-colors py-2"
                                         >
-                                            {link.name}
+                                            {link.name === "Features" ? "Products" : link.name}
                                         </Link>
                                     ))}
                                     <Link href={ctaData.href} onClick={() => setIsMenuOpen(false)} className="mt-4">

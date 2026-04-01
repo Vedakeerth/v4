@@ -63,7 +63,7 @@ export default function NewsTicker({ initialItems }: { initialItems?: { text: st
         isHomePage ||
         pathname === "/gallery" ||
         pathname === "/services" ||
-        pathname === "/features" ||
+        pathname === "/products" ||
         pathname === "/blog" ||
         pathname === "/contact"
     );

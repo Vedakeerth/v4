@@ -90,9 +90,9 @@ export default function SecureAdminPage() {
     const tabs = [
         { id: "orders", label: "Orders", icon: ShoppingBag },
         { id: "categories", label: "Categories", icon: LayoutGrid },
-        { id: "products", label: "Products", icon: Package },
+        { id: "products", label: "Catalog", icon: Package },
         { id: "projects", label: "Projects", icon: Briefcase },
-        { id: "features", label: "Features", icon: LayoutGrid },
+        { id: "features", label: "Products", icon: LayoutGrid },
         { id: "industries", label: "Industries", icon: Briefcase },
         { id: "testimonials", label: "Testimonials", icon: MessageSquare },
         { id: "blogs", label: "Blog", icon: FileText },

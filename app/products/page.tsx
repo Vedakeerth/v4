@@ -23,21 +23,21 @@ import { getProducts } from "@/lib/products";
 import { getProjects } from "@/lib/projects";
 import { getSettings } from "@/lib/settings";
 
-export default async function FeaturesPage() {
+export default async function ProductsPage() {
   const whyChooseUsContent = await getPageContent('why-choose-us');
   const products = await getProducts();
   const projects = await getProjects();
   const settings = await getSettings();
 
   return (
-    <main className="min-h-screen bg-slate-950 pt-24">
+    <main className="min-h-screen bg-slate-950 pt-20">
       <WhyChooseUs content={whyChooseUsContent} />
 
-      {settings.showProjectsOnFeatures && (
+      {settings.showProjectsOnProducts && (
         <ProjectsSection projects={projects} />
       )}
 
-      {settings.showProductsOnFeatures && (
+      {settings.showProductsOnProducts && (
         <Products products={products} />
       )}
 

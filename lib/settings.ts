@@ -8,9 +8,9 @@ export interface SiteSettings {
     machineryDelay: number;
     heroTitle: string;
     heroSubtitle: string;
-    // Features Page Settings
-    showProjectsOnFeatures: boolean;
-    showProductsOnFeatures: boolean;
+    // Products Page Settings
+    showProjectsOnProducts: boolean;
+    showProductsOnProducts: boolean;
 }
 
 const defaultSettings: SiteSettings = {
@@ -22,8 +22,8 @@ const defaultSettings: SiteSettings = {
     machineryDelay: 0,
     heroTitle: "Future of 3D Printing",
     heroSubtitle: "Innovating the world one layer at a time.",
-    showProjectsOnFeatures: false,
-    showProductsOnFeatures: true
+    showProjectsOnProducts: false,
+    showProductsOnProducts: true
 };
 
 export async function getSettings(): Promise<SiteSettings> {

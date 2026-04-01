@@ -253,7 +253,7 @@ export default function ProductQuickView({ product, onClose }: ProductQuickViewP
 
                                 <div className="flex gap-4">
                                     <Link
-                                        href={`/products/${product.id}`}
+                                        href={`/gallery/${require("@/lib/seo-utils").createSeoSlug(product.name, product.id)}`}
                                         onClick={onClose}
                                         className="flex-1"
                                     >

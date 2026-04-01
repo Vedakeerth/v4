@@ -10,22 +10,36 @@ import LikeButton from "@/components/LikeButton";
 import CommentSection from "@/components/CommentSection";
 import type { Metadata } from "next";
 import BlogContent from "@/components/BlogContent";
+import { getBlogs, getBlogBySeoSlug } from "@/lib/blogs";
+import { createSeoSlug } from "@/lib/seo-utils";
 
 interface PageProps {
     params: Promise<{ slug: string }>;
 }
 
-export const revalidate = 0;
+// SSG: Static generation for blogs
+export async function generateStaticParams() {
+    const blogs = await getBlogs(100); // Fetch all for static generation
+    return blogs.map((blog) => ({
+        slug: createSeoSlug(blog.title, blog.id),
+    }));
+}
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
     const { slug } = await params;
-    const blog = await getBlogBySlug(slug);
+    const blog = await getBlogBySeoSlug(slug);
     if (!blog) return {};
+
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://vaelinsa.com';
+    const canonicalUrl = `${baseUrl}/blog/${slug}`;
 
     return {
         title: blog.metaTitle || `${blog.title} | VAELINSA Insights`,
         description: blog.metaDescription || blog.excerpt,
         keywords: blog.hashtags || [],
+        alternates: {
+            canonical: canonicalUrl,
+        },
         openGraph: {
             title: blog.metaTitle || blog.title,
             description: blog.metaDescription || blog.excerpt,
@@ -45,12 +59,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function BlogDetailPage({ params }: PageProps) {
     const { slug } = await params;
-    const blog = await getBlogBySlug(slug);
+    const blog = await getBlogBySeoSlug(slug);
 
     if (!blog) notFound();
 
     return (
-        <main className="min-h-screen bg-slate-950 pt-24 text-white">
+        <main className="min-h-screen bg-slate-950 pt-20 text-white">
 
             {/* Hero Section */}
             <header className="relative h-[70vh] min-h-[500px] w-full overflow-hidden">
@@ -71,7 +85,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
                         </Link>
 
                         <div className="flex flex-wrap gap-3 mb-8">
-                            <span className="px-4 py-1.5 rounded-full bg-cyan-500 text-slate-950 text-[10px] font-black uppercase tracking-widest shadow-[0_0_20px_rgba(6,182,212,0.4)]">
+                            <span className="px-4 py-1.5 rounded-full bg-cyan-500 text-slate-950 text-[10px] font-extrabold uppercase tracking-widest shadow-[0_0_20px_rgba(6,182,212,0.4)]">
                                 {blog.category}
                             </span>
                             <span className="px-4 py-1.5 rounded-full bg-slate-900/80 backdrop-blur-md border border-white/10 text-slate-300 text-[10px] font-bold uppercase tracking-widest">
@@ -79,7 +93,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
                             </span>
                         </div>
 
-                        <h1 className="text-4xl md:text-7xl font-black text-white leading-[0.9] max-w-5xl uppercase tracking-tighter mb-8">
+                        <h1 className="text-4xl md:text-8xl font-extrabold text-white leading-[0.95] max-w-5xl uppercase tracking-tight mb-10">
                             {blog.title}
                         </h1>
 
