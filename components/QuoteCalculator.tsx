@@ -822,7 +822,7 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                                             }
                                         }}
                                         options={[
-                                            ...[5, 10, 20, 50, 70, 100].map(val => ({ value: String(val), label: `${val}%` })),
+                                            ...[5, 10, 15, 20, 50, 70, 100].map(val => ({ value: String(val), label: `${val}%` })),
                                             { value: 'custom', label: 'Custom' }
                                         ]}
                                         className="flex-1"
