@@ -29,11 +29,11 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 const ProductShowcase = dynamic(() => import("@/components/ProductShowcase"), {
-  loading: () => <div className="h-96 w-full animate-pulse bg-slate-900/50" />,
+  loading: () => <div className="h-96 w-full animate-pulse bg-slate-50 dark:bg-slate-900/50" />,
 });
 
 const Services = dynamic(() => import("@/components/Services"), {
-  loading: () => <div className="h-96 w-full animate-pulse bg-slate-900/10" />,
+  loading: () => <div className="h-96 w-full animate-pulse bg-slate-50 dark:bg-slate-900/10" />,
 });
 const WhyChooseUs = dynamic(() => import("@/components/WhyChooseUs"));
 const Industries = dynamic(() => import("@/components/Industries"));
@@ -63,7 +63,7 @@ export default async function Home() {
   const allProducts = Array.isArray(allProductsRaw) ? allProductsRaw : [];
 
   return (
-    <main className="min-h-screen bg-slate-950 selection:bg-blue-500/30 selection:text-blue-100 flex flex-col">
+    <main className="min-h-screen bg-white dark:bg-slate-950 selection:bg-blue-500/30 selection:text-blue-100 flex flex-col">
       <RightClickPreventer />
 
       {/* Hero with dynamic settings if applicable */}

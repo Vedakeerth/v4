@@ -50,7 +50,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
 
     if (!product) {
         return (
-            <main className="min-h-screen bg-slate-950 pt-32 px-4 flex flex-col items-center">
+            <main className="min-h-screen bg-white dark:bg-slate-950 pt-32 px-4 flex flex-col items-center">
                 <h1 className="text-2xl text-white mb-4 uppercase font-black">Part Not Found</h1>
                 <Link href="/gallery" className="text-cyan-400 hover:text-cyan-300 flex items-center gap-2 font-bold">
                     <ArrowLeft size={20} /> Back to Gallery
@@ -65,7 +65,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
         .slice(0, 4);
 
     return (
-        <main className="min-h-screen bg-slate-950 pt-24">
+        <main className="min-h-screen bg-white dark:bg-slate-950 pt-24">
             <ProductDetailClient
                 product={product}
                 similarProducts={similarProducts}

@@ -77,15 +77,15 @@ export default function FeaturesTab() {
             </div>
 
             {/* Layout Settings Section */}
-            <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8">
-                <div className="flex items-center gap-3 mb-6 border-b border-slate-800 pb-4">
+            <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8">
+                <div className="flex items-center gap-3 mb-6 border-b border-slate-200 dark:border-slate-800 pb-4">
                     <LayoutDashboard className="text-cyan-400" />
                     <h3 className="text-lg font-bold text-white">Page Layout & Sections</h3>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="flex items-center justify-between p-4 bg-slate-950 rounded-xl border border-slate-800">
+                    <div className="flex items-center justify-between p-4 bg-white dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-800">
                         <div>
-                            <span className="block text-slate-300 font-bold">Show Projects Section</span>
+                            <span className="block text-slate-700 dark:text-slate-300 font-bold">Show Projects Section</span>
                             <span className="text-xs text-slate-500">Display latest projects block</span>
                         </div>
                         <button
@@ -95,9 +95,9 @@ export default function FeaturesTab() {
                             {settings.showProjectsOnProducts ? <ToggleRight size={32} /> : <ToggleLeft size={32} />}
                         </button>
                     </div>
-                    <div className="flex items-center justify-between p-4 bg-slate-950 rounded-xl border border-slate-800">
+                    <div className="flex items-center justify-between p-4 bg-white dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-800">
                         <div>
-                            <span className="block text-slate-300 font-bold">Show Products Section</span>
+                            <span className="block text-slate-700 dark:text-slate-300 font-bold">Show Products Section</span>
                             <span className="text-xs text-slate-500">Display product showcase block</span>
                         </div>
                         <button
@@ -107,9 +107,9 @@ export default function FeaturesTab() {
                             {settings.showProductsOnProducts ? <ToggleRight size={32} /> : <ToggleLeft size={32} />}
                         </button>
                     </div>
-                    <div className="flex items-center justify-between p-4 bg-slate-950 rounded-xl border border-slate-800 opacity-50 cursor-not-allowed" title="Always visible on Products page">
+                    <div className="flex items-center justify-between p-4 bg-white dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-800 opacity-50 cursor-not-allowed" title="Always visible on Products page">
                         <div>
-                            <span className="block text-slate-300 font-bold">Show "Why Choose Us"</span>
+                            <span className="block text-slate-700 dark:text-slate-300 font-bold">Show "Why Choose Us"</span>
                             <span className="text-xs text-slate-500">Core content (Always On)</span>
                         </div>
                         <ToggleRight size={32} className="text-cyan-400" />
@@ -118,8 +118,8 @@ export default function FeaturesTab() {
             </div>
 
             {/* Content Edit Section */}
-            <div className="bg-slate-900/50 border border-slate-800 rounded-3xl p-8">
-                <h3 className="text-lg font-bold text-white mb-6 border-b border-slate-800 pb-2">"Why Choose Us" Content</h3>
+            <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-3xl p-8">
+                <h3 className="text-lg font-bold text-white mb-6 border-b border-slate-200 dark:border-slate-800 pb-2">"Why Choose Us" Content</h3>
 
                 {/* Header Editors */}
                 <div className="grid grid-cols-1 gap-4 mb-8">
@@ -129,13 +129,13 @@ export default function FeaturesTab() {
                             <input
                                 value={content.header?.title || ""}
                                 onChange={(e) => setContent({ ...content, header: { ...content.header, title: e.target.value } })}
-                                className="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none"
+                                className="flex-1 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none"
                                 placeholder="Prefix"
                             />
                             <input
                                 value={content.header?.titleSuffix || ""}
                                 onChange={(e) => setContent({ ...content, header: { ...content.header, titleSuffix: e.target.value } })}
-                                className="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none"
+                                className="flex-1 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none"
                                 placeholder="Suffix (Color)"
                             />
                         </div>
@@ -145,7 +145,7 @@ export default function FeaturesTab() {
                         <textarea
                             value={content.header?.description || ""}
                             onChange={(e) => setContent({ ...content, header: { ...content.header, description: e.target.value } })}
-                            className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none h-24 resize-none"
+                            className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none h-24 resize-none"
                         />
                     </div>
                 </div>
@@ -154,14 +154,14 @@ export default function FeaturesTab() {
                 <h4 className="text-md font-bold text-white mb-4">Feature Blocks</h4>
                 <div className="grid grid-cols-1 gap-6">
                     {content.features?.map((feat: any, i: number) => (
-                        <div key={i} className="bg-slate-950 border border-slate-800 rounded-2xl p-6">
+                        <div key={i} className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl p-6">
                             <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
                                 <div className="md:col-span-2">
                                     <label className="block text-slate-500 text-[10px] font-bold uppercase mb-1.5 ml-1">Icon</label>
                                     <select
                                         value={feat.icon}
                                         onChange={(e) => updateFeature(i, "icon", e.target.value)}
-                                        className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-3 text-white focus:border-cyan-500/50 outline-none text-sm"
+                                        className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-3 text-white focus:border-cyan-500/50 outline-none text-sm"
                                     >
                                         {AVAILABLE_ICONS.map(icon => <option key={icon} value={icon}>{icon}</option>)}
                                     </select>
@@ -171,7 +171,7 @@ export default function FeaturesTab() {
                                     <input
                                         value={feat.title}
                                         onChange={(e) => updateFeature(i, "title", e.target.value)}
-                                        className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none font-bold"
+                                        className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none font-bold"
                                     />
                                 </div>
                                 <div className="md:col-span-6">
@@ -179,7 +179,7 @@ export default function FeaturesTab() {
                                     <textarea
                                         value={feat.description}
                                         onChange={(e) => updateFeature(i, "description", e.target.value)}
-                                        className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none resize-none h-20"
+                                        className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none resize-none h-20"
                                     />
                                 </div>
                             </div>

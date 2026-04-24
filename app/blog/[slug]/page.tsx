@@ -64,7 +64,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
     if (!blog) notFound();
 
     return (
-        <main className="min-h-screen bg-slate-950 pt-20 text-white">
+        <main className="min-h-screen bg-white dark:bg-slate-950 pt-20 text-white">
 
             {/* Hero Section */}
             <header className="relative h-[70vh] min-h-[500px] w-full overflow-hidden">
@@ -88,7 +88,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
                             <span className="px-4 py-1.5 rounded-full bg-cyan-500 text-slate-950 text-[10px] font-extrabold uppercase tracking-widest shadow-[0_0_20px_rgba(6,182,212,0.4)]">
                                 {blog.category}
                             </span>
-                            <span className="px-4 py-1.5 rounded-full bg-slate-900/80 backdrop-blur-md border border-white/10 text-slate-300 text-[10px] font-bold uppercase tracking-widest">
+                            <span className="px-4 py-1.5 rounded-full bg-slate-50 dark:bg-slate-900/80 backdrop-blur-md border border-white/10 text-slate-700 dark:text-slate-300 text-[10px] font-bold uppercase tracking-widest">
                                 {blog.readTime}
                             </span>
                         </div>
@@ -97,9 +97,9 @@ export default async function BlogDetailPage({ params }: PageProps) {
                             {blog.title}
                         </h1>
 
-                        <div className="flex flex-wrap items-center gap-6 text-slate-400">
+                        <div className="flex flex-wrap items-center gap-6 text-slate-600 dark:text-slate-400">
                             <div className="flex items-center gap-3">
-                                <div className="w-12 h-12 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center text-cyan-500 font-black text-xl shadow-xl">
+                                <div className="w-12 h-12 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center justify-center text-cyan-500 font-black text-xl shadow-xl">
                                     {blog.author.charAt(0)}
                                 </div>
                                 <div>
@@ -107,7 +107,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
                                     <span className="text-[10px] uppercase font-bold tracking-widest text-slate-600">Lead Engineer</span>
                                 </div>
                             </div>
-                            <div className="h-8 w-px bg-slate-800 hidden sm:block" />
+                            <div className="h-8 w-px bg-slate-100 dark:bg-slate-800 hidden sm:block" />
                             <div className="flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-slate-500">
                                 <Calendar size={16} className="text-cyan-500" />
                                 {new Date(blog.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
@@ -124,7 +124,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
                         <LikeButton blogId={blog.id} initialLikes={blog.likes || 0} />
                         <div className="group flex items-center gap-4">
                             <span className="text-[10px] font-black text-slate-600 uppercase tracking-[0.2em] group-hover:text-cyan-500 transition-colors">Share Insight</span>
-                            <button className="p-3 bg-slate-900 hover:bg-cyan-500/10 hover:text-cyan-400 rounded-2xl text-slate-400 transition-all border border-slate-800">
+                            <button className="p-3 bg-slate-50 dark:bg-slate-900 hover:bg-cyan-500/10 hover:text-cyan-400 rounded-2xl text-slate-600 dark:text-slate-400 transition-all border border-slate-200 dark:border-slate-800">
                                 <Share2 size={20} />
                             </button>
                         </div>
@@ -137,7 +137,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
                     {blog.hashtags && blog.hashtags.length > 0 && (
                         <div className="mt-16 flex flex-wrap gap-2">
                             {blog.hashtags.map((tag, i) => (
-                                <span key={i} className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-900/50 border border-slate-800 text-slate-500 text-xs font-bold hover:text-cyan-400 hover:border-cyan-500/30 transition-all cursor-pointer">
+                                <span key={i} className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 text-slate-500 text-xs font-bold hover:text-cyan-400 hover:border-cyan-500/30 transition-all cursor-pointer">
                                     <Hash size={12} className="text-cyan-500" />
                                     {tag}
                                 </span>

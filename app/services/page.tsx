@@ -15,7 +15,7 @@ export default async function ServicesPage() {
   const servicesContent = await getPageContent('services');
 
   return (
-    <main className="min-h-screen bg-slate-950 pt-24">
+    <main className="min-h-screen bg-white dark:bg-slate-950 pt-24">
       <Services content={servicesContent} />
       <Footer />
     </main>

@@ -180,20 +180,20 @@ export default function AdminDashboard() {
 
   if (authLoading || (isLoading && products.length === 0)) {
     return (
-      <main className="min-h-screen bg-slate-950 flex items-center justify-center">
+      <main className="min-h-screen bg-white dark:bg-slate-950 flex items-center justify-center">
         <Loader2 className="h-12 w-12 text-blue-500 animate-spin" />
       </main>
     );
   }
 
   return (
-    <main className="min-h-screen bg-slate-950 pt-24 pb-12">
+    <main className="min-h-screen bg-white dark:bg-slate-950 pt-24 pb-12">
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold text-white">Admin Dashboard</h1>
-            <p className="text-slate-400">Manage products and customer orders</p>
+            <p className="text-slate-600 dark:text-slate-400">Manage products and customer orders</p>
           </div>
           <div className="flex gap-4 mt-4 md:mt-0">
             <button
@@ -207,7 +207,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* Tabs */}
-        <div className="flex border-b border-slate-800 mb-8">
+        <div className="flex border-b border-slate-200 dark:border-slate-800 mb-8">
           <button
             onClick={() => setActiveTab("products")}
             className={`px-6 py-3 font-bold transition-all border-b-2 ${
@@ -246,8 +246,8 @@ export default function AdminDashboard() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {products.map((product) => (
-                <div key={product.id} className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden hover:border-blue-500/50 transition-all group">
-                  <div className="relative h-48 w-full bg-slate-800">
+                <div key={product.id} className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden hover:border-blue-500/50 transition-all group">
+                  <div className="relative h-48 w-full bg-slate-100 dark:bg-slate-800">
                     <Image src={product.image} alt={product.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
                     <div className="absolute top-3 right-3">
                       <span className={`px-2 py-1 rounded-md text-xs font-bold ${product.stock > 0 ? "bg-emerald-500/20 text-emerald-400" : "bg-red-500/20 text-red-400"}`}>
@@ -270,7 +270,7 @@ export default function AdminDashboard() {
                           });
                           setShowAddModal(true);
                         }}
-                        className="flex-1 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg transition-colors flex items-center justify-center gap-2 text-sm"
+                        className="flex-1 px-3 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:bg-slate-700 text-white rounded-lg transition-colors flex items-center justify-center gap-2 text-sm"
                       >
                         <Edit className="h-4 w-4" />
                         Edit
@@ -290,7 +290,7 @@ export default function AdminDashboard() {
         ) : (
           <div className="space-y-6">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-              <div className="flex bg-slate-900 p-1 rounded-xl border border-slate-800">
+              <div className="flex bg-slate-50 dark:bg-slate-900 p-1 rounded-xl border border-slate-200 dark:border-slate-800">
                 {["all", "pending", "confirmed", "processing", "shipped", "delivered"].map((filter) => (
                   <button
                     key={filter}
@@ -307,10 +307,10 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden overflow-x-auto">
+            <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="bg-slate-950/50 border-b border-slate-800">
+                  <tr className="bg-white dark:bg-slate-950/50 border-b border-slate-200 dark:border-slate-800">
                     <th className="px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none">Order ID</th>
                     <th className="px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none">Customer</th>
                     <th className="px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none">Total</th>
@@ -320,7 +320,7 @@ export default function AdminDashboard() {
                 </thead>
                 <tbody className="divide-y divide-slate-800/50">
                   {filteredOrders.map((order) => (
-                    <tr key={order.id} className="hover:bg-slate-800/20 transition-colors group">
+                    <tr key={order.id} className="hover:bg-slate-100 dark:bg-slate-800/20 transition-colors group">
                       <td className="px-6 py-5">
                         <p className="text-white font-black text-sm">{order.trackingId}</p>
                         <p className="text-[10px] text-slate-500 font-medium mt-1">ID: {order.id}</p>
@@ -343,7 +343,7 @@ export default function AdminDashboard() {
                         <select
                           value={order.status}
                           onChange={(e) => handleUpdateOrderStatus(order.id, e.target.value)}
-                          className={`bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-cyan-500/50 transition-all ${
+                          className={`bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-cyan-500/50 transition-all ${
                             order.status === 'Delivered' ? 'text-emerald-400' : 
                             order.status === 'Shipped' ? 'text-purple-400' :
                             order.status === 'Processing' ? 'text-blue-400' : 'text-amber-400'
@@ -373,67 +373,67 @@ export default function AdminDashboard() {
       {/* Add/Edit Modal */}
       {showAddModal && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <form onSubmit={handleSaveProduct} className="bg-slate-900 border border-slate-800 rounded-2xl p-8 w-full max-w-lg shadow-2xl">
+          <form onSubmit={handleSaveProduct} className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 w-full max-w-lg shadow-2xl">
             <div className="flex justify-between items-center mb-8">
               <h2 className="text-2xl font-bold text-white">
                 {editingProduct ? "Edit Product" : "Add New Product"}
               </h2>
-              <button type="button" onClick={() => setShowAddModal(false)} className="text-slate-400 hover:text-white">
+              <button type="button" onClick={() => setShowAddModal(false)} className="text-slate-600 dark:text-slate-400 hover:text-white">
                 <X className="h-6 w-6" />
               </button>
             </div>
 
             <div className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">Product Name</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Product Name</label>
                 <input
                   type="text"
                   required
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  className="w-full px-4 py-3 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
                   placeholder="e.g. Mechanical Keyboard"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-2">Price (₹)</label>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Price (₹)</label>
                   <input
                     type="number"
                     required
                     value={formData.price}
                     onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                    className="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    className="w-full px-4 py-3 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
                     placeholder="999"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-2">Stock</label>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Stock</label>
                   <input
                     type="number"
                     required
                     value={formData.stock}
                     onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
-                    className="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    className="w-full px-4 py-3 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
                     placeholder="10"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">Product Image</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Product Image</label>
                 <div className="mt-1 flex items-center gap-4">
                   {formData.image && (
-                    <div className="relative h-16 w-16 rounded-lg overflow-hidden border border-slate-700">
+                    <div className="relative h-16 w-16 rounded-lg overflow-hidden border border-slate-300 dark:border-slate-700">
                       <Image src={formData.image} alt="Preview" fill className="object-cover" />
                     </div>
                   )}
-                  <label className="flex-1 cursor-pointer bg-slate-800 border-2 border-dashed border-slate-700 hover:border-blue-500 rounded-xl p-4 transition-all text-center">
+                  <label className="flex-1 cursor-pointer bg-slate-100 dark:bg-slate-800 border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-blue-500 rounded-xl p-4 transition-all text-center">
                     <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} disabled={uploadingImage} />
                     <div className="flex flex-col items-center gap-1">
-                      <ImageIcon className={`h-6 w-6 ${uploadingImage ? "animate-pulse" : "text-slate-400"}`} />
-                      <span className="text-xs text-slate-400">
+                      <ImageIcon className={`h-6 w-6 ${uploadingImage ? "animate-pulse" : "text-slate-600 dark:text-slate-400"}`} />
+                      <span className="text-xs text-slate-600 dark:text-slate-400">
                         {uploadingImage ? "Uploading..." : "Click to upload image"}
                       </span>
                     </div>
@@ -457,12 +457,12 @@ export default function AdminDashboard() {
       {/* Delete Confirmation */}
       {deleteConfirm && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-8 w-full max-w-sm shadow-2xl">
+          <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 w-full max-w-sm shadow-2xl">
             <div className="flex items-center gap-3 mb-4 text-red-400">
               <AlertCircle className="h-8 w-8" />
               <h3 className="text-xl font-bold">Delete Product?</h3>
             </div>
-            <p className="text-slate-400 mb-8">This action is permanent and cannot be undone.</p>
+            <p className="text-slate-600 dark:text-slate-400 mb-8">This action is permanent and cannot be undone.</p>
             <div className="flex gap-4">
               <button
                 onClick={() => handleDeleteProduct(deleteConfirm)}
@@ -472,7 +472,7 @@ export default function AdminDashboard() {
               </button>
               <button
                 onClick={() => setDeleteConfirm(null)}
-                className="flex-1 py-3 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl transition-all"
+                className="flex-1 py-3 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:bg-slate-700 text-white font-bold rounded-xl transition-all"
               >
                 Cancel
               </button>

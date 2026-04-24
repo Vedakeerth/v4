@@ -57,18 +57,18 @@ export default function QuoteSettingsTab() {
 
     return (
         <div className="max-w-4xl mx-auto py-6">
-            <div className="flex justify-between items-center mb-8 bg-slate-900/50 p-6 rounded-3xl border border-white/5">
+            <div className="flex justify-between items-center mb-8 bg-slate-50 dark:bg-slate-900/50 p-6 rounded-3xl border border-white/5">
                 <div>
                     <h2 className="text-2xl font-bold text-white mb-2 flex items-center gap-2">
                         <Settings2 className="text-cyan-400" /> Quote Pricing Engine
                     </h2>
-                    <p className="text-slate-400 text-sm">Configure base costs, material properties, and variable multipliers.</p>
+                    <p className="text-slate-600 dark:text-slate-400 text-sm">Configure base costs, material properties, and variable multipliers.</p>
                 </div>
                 <div className="flex gap-3">
                     <button
                         onClick={handleReset}
                         disabled={isResetting}
-                        className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-sm font-bold transition-all flex items-center gap-2"
+                        className="px-4 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-sm font-bold transition-all flex items-center gap-2"
                     >
                         <RefreshCcw size={16} className={isResetting ? "animate-spin" : ""} /> Reset
                     </button>
@@ -90,31 +90,31 @@ export default function QuoteSettingsTab() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {/* General & Labour */}
-                <section className="bg-slate-900/40 p-6 rounded-3xl border border-white/5 space-y-6">
+                <section className="bg-slate-50 dark:bg-slate-900/40 p-6 rounded-3xl border border-white/5 space-y-6">
                     <h3 className="text-xs font-black text-slate-500 uppercase tracking-widest flex items-center gap-2 mb-4">
                         <Info size={14} className="text-cyan-500" /> General & Operations
                     </h3>
                     <div>
-                        <label className="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-tighter">Processing/Labour Fee (₹ per order)</label>
+                        <label className="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-2 uppercase tracking-tighter">Processing/Labour Fee (₹ per order)</label>
                         <input
                             type="number"
                             value={settings.labourCost}
                             onChange={(e) => setSettings({ ...settings, labourCost: parseFloat(e.target.value) || 0 })}
-                            className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-500 font-mono"
+                            className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-500 font-mono"
                         />
                         <p className="text-[10px] text-slate-500 mt-2">Fixed cost added to every order for handling and post-processing.</p>
                     </div>
                 </section>
 
                 {/* Infill Pattern Multipliers */}
-                <section className="bg-slate-900/40 p-6 rounded-3xl border border-white/5 space-y-6">
+                <section className="bg-slate-50 dark:bg-slate-900/40 p-6 rounded-3xl border border-white/5 space-y-6">
                     <h3 className="text-xs font-black text-slate-500 uppercase tracking-widest flex items-center gap-2 mb-4">
                         <Grid3x3 size={14} className="text-cyan-500" /> Infill Pattern Complexity
                     </h3>
                     <div className="grid grid-cols-2 gap-4">
                         {Object.entries(settings.infillPatternMultipliers).map(([pattern, multiplier]) => (
                             <div key={pattern}>
-                                <label className="block text-[10px] font-bold text-slate-400 mb-1 uppercase">{pattern}</label>
+                                <label className="block text-[10px] font-bold text-slate-600 dark:text-slate-400 mb-1 uppercase">{pattern}</label>
                                 <div className="relative">
                                     <input
                                         type="number"
@@ -127,7 +127,7 @@ export default function QuoteSettingsTab() {
                                                 [pattern]: parseFloat(e.target.value) || 1.0
                                             }
                                         })}
-                                        className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-cyan-500 font-mono text-sm"
+                                        className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-cyan-500 font-mono text-sm"
                                     />
                                     <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-slate-500 font-bold">x</span>
                                 </div>
@@ -137,13 +137,13 @@ export default function QuoteSettingsTab() {
                 </section>
 
                 {/* Materials Pricing */}
-                <section className="col-span-1 md:col-span-2 bg-slate-900/40 p-6 rounded-3xl border border-white/5">
+                <section className="col-span-1 md:col-span-2 bg-slate-50 dark:bg-slate-900/40 p-6 rounded-3xl border border-white/5">
                     <h3 className="text-xs font-black text-slate-500 uppercase tracking-widest flex items-center gap-2 mb-6">
                         <Thermometer size={14} className="text-cyan-500" /> Material & Filament Costs
                     </h3>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                         {Object.entries(settings.materials).map(([mat, data]) => (
-                            <div key={mat} className="bg-slate-950/50 p-4 rounded-2xl border border-white/5">
+                            <div key={mat} className="bg-white dark:bg-slate-950/50 p-4 rounded-2xl border border-white/5">
                                 <p className="text-cyan-400 font-black mb-3">{mat}</p>
                                 <div className="space-y-4">
                                     <div>
@@ -156,7 +156,7 @@ export default function QuoteSettingsTab() {
                                                 newMaterials[mat] = { ...data, costPerKg: parseFloat(e.target.value) || 0 };
                                                 setSettings({ ...settings, materials: newMaterials });
                                             }}
-                                            className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-500 font-mono text-xs"
+                                            className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-500 font-mono text-xs"
                                         />
                                     </div>
                                     <div>
@@ -170,7 +170,7 @@ export default function QuoteSettingsTab() {
                                                 newMaterials[mat] = { ...data, density: parseFloat(e.target.value) || 0 };
                                                 setSettings({ ...settings, materials: newMaterials });
                                             }}
-                                            className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-500 font-mono text-xs"
+                                            className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-500 font-mono text-xs"
                                         />
                                     </div>
                                     <div>
@@ -184,7 +184,7 @@ export default function QuoteSettingsTab() {
                                                 newMaterials[mat] = { ...data, multiplier: parseFloat(e.target.value) || 1.0 };
                                                 setSettings({ ...settings, materials: newMaterials });
                                             }}
-                                            className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-500 font-mono text-xs"
+                                            className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-500 font-mono text-xs"
                                         />
                                     </div>
                                 </div>
@@ -193,37 +193,58 @@ export default function QuoteSettingsTab() {
                     </div>
                 </section>
 
-                {/* Color Multipliers */}
-                <section className="col-span-1 md:col-span-2 bg-slate-900/40 p-6 rounded-3xl border border-white/5">
+                {/* Color Multipliers & Availability */}
+                <section className="col-span-1 md:col-span-2 bg-slate-50 dark:bg-slate-900/40 p-6 rounded-3xl border border-white/5">
                     <h3 className="text-xs font-black text-slate-500 uppercase tracking-widest flex items-center gap-2 mb-6">
-                        <Palette size={14} className="text-cyan-500" /> Color Specific Surcharges
+                        <Palette size={14} className="text-cyan-500" /> Color Specific Surcharges & Availability
                     </h3>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
-                        {Object.entries(settings.colorMultipliers).map(([hex, multiplier]) => {
-                            const colorName = hex === '#2563eb' ? 'Blue' :
-                                            hex === '#ef4444' ? 'Red' :
-                                            hex === '#22c55e' ? 'Green' :
-                                            hex === '#eab308' ? 'Yellow' :
-                                            hex === '#ffffff' ? 'White' :
-                                            hex === '#000000' ? 'Black' : 'Custom';
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                        {Object.entries(settings.colors).map(([hex, data]) => {
                             return (
-                                <div key={hex} className="bg-slate-950/30 p-4 rounded-2xl border border-white/5 flex flex-col items-center gap-3">
-                                    <div className="w-8 h-8 rounded-full border border-white/10 shadow-lg" style={{ backgroundColor: hex }} />
-                                    <div className="text-center">
-                                        <p className="text-[10px] font-bold text-slate-400 mb-1">{colorName}</p>
-                                        <input
-                                            type="number"
-                                            step="0.01"
-                                            value={multiplier}
-                                            onChange={(e) => setSettings({
-                                                ...settings,
-                                                colorMultipliers: {
-                                                    ...settings.colorMultipliers,
-                                                    [hex]: parseFloat(e.target.value) || 1.0
-                                                }
-                                            })}
-                                            className="w-20 bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-white focus:outline-none focus:border-cyan-500 font-mono text-xs text-center"
-                                        />
+                                <div key={hex} className={`bg-white dark:bg-slate-950/30 p-4 rounded-2xl border transition-all ${data.isAvailable ? 'border-white/5' : 'border-red-500/20 opacity-60'} flex flex-col items-center gap-3`}>
+                                    <div className="w-8 h-8 rounded-full border border-white/10 shadow-lg relative" style={{ backgroundColor: hex }}>
+                                        {!data.isAvailable && (
+                                            <div className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-full">
+                                                <div className="w-full h-0.5 bg-red-500 rotate-45 shadow-sm" />
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className="text-center w-full">
+                                        <p className="text-[10px] font-bold text-slate-600 dark:text-slate-400 mb-2">{data.name}</p>
+                                        
+                                        <div className="space-y-3">
+                                            <div className="flex flex-col gap-1">
+                                                <label className="text-[8px] font-black text-slate-500 uppercase tracking-tighter text-left">Multiplier</label>
+                                                <div className="relative">
+                                                    <input
+                                                        type="number"
+                                                        step="0.01"
+                                                        value={data.multiplier}
+                                                        onChange={(e) => {
+                                                            const newColors = { ...settings.colors };
+                                                            newColors[hex] = { ...data, multiplier: parseFloat(e.target.value) || 1.0 };
+                                                            setSettings({ ...settings, colors: newColors });
+                                                        }}
+                                                        className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-2 py-1.5 text-white focus:outline-none focus:border-cyan-500 font-mono text-xs text-center"
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <button
+                                                onClick={() => {
+                                                    const newColors = { ...settings.colors };
+                                                    newColors[hex] = { ...data, isAvailable: !data.isAvailable };
+                                                    setSettings({ ...settings, colors: newColors });
+                                                }}
+                                                className={`w-full py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${
+                                                    data.isAvailable 
+                                                    ? 'bg-cyan-500/10 text-cyan-500 border border-cyan-500/20 hover:bg-cyan-500/20' 
+                                                    : 'bg-red-500/10 text-red-500 border border-red-500/20 hover:bg-red-500/20'
+                                                }`}
+                                            >
+                                                {data.isAvailable ? 'Available' : 'Unavailable'}
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             );

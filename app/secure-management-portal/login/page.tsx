@@ -108,15 +108,15 @@ function LoginContent() {
     };
 
     return (
-        <main className="min-h-screen bg-slate-950 flex items-center justify-center px-4">
+        <main className="min-h-screen bg-white dark:bg-slate-950 flex items-center justify-center px-4">
             <div className="w-full max-w-md">
-                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-2xl">
+                <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 shadow-2xl">
                     <div className="text-center mb-10">
                         <Link href="/" className="inline-block mb-4">
                             <h1 className="text-3xl font-bold text-white tracking-widest">VAELINSA</h1>
                         </Link>
                         <h2 className="text-2xl font-bold text-white mb-2">Admin Access</h2>
-                        <p className="text-slate-400 text-sm">Secure Management Portal</p>
+                        <p className="text-slate-600 dark:text-slate-400 text-sm">Secure Management Portal</p>
                     </div>
 
                     {(error || formError) && (
@@ -146,7 +146,7 @@ function LoginContent() {
                                 type="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                className="w-full px-5 py-3.5 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500 transition-all font-bold text-sm"
+                                className="w-full px-5 py-3.5 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500 transition-all font-bold text-sm"
                                 placeholder="admin@vaelinsa.com"
                             />
                         </div>
@@ -158,7 +158,7 @@ function LoginContent() {
                                     type={showPassword ? "text" : "password"}
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className="w-full px-5 py-3.5 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500 transition-all font-bold text-sm"
+                                    className="w-full px-5 py-3.5 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500 transition-all font-bold text-sm"
                                     placeholder="••••••••"
                                 />
                                 <button
@@ -184,9 +184,9 @@ function LoginContent() {
                     </form>
 
                     <div className="relative flex items-center gap-4 mb-8">
-                        <div className="flex-1 border-t border-slate-800"></div>
-                        <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest bg-slate-900 px-2 relative -top-[1px]">OR</span>
-                        <div className="flex-1 border-t border-slate-800"></div>
+                        <div className="flex-1 border-t border-slate-200 dark:border-slate-800"></div>
+                        <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest bg-slate-50 dark:bg-slate-900 px-2 relative -top-[1px]">OR</span>
+                        <div className="flex-1 border-t border-slate-200 dark:border-slate-800"></div>
                     </div>
 
                     <button
@@ -213,7 +213,7 @@ function LoginContent() {
                         Authorized personnel only
                     </p>
 
-                    <div className="mt-10 text-center pt-6 border-t border-slate-800">
+                    <div className="mt-10 text-center pt-6 border-t border-slate-200 dark:border-slate-800">
                         <Link href="/" className="text-sm text-slate-500 hover:text-cyan-400 transition-colors">
                             ← Back to main website
                         </Link>
@@ -227,7 +227,7 @@ function LoginContent() {
 export default function SecureLoginPage() {
     return (
         <Suspense fallback={
-            <main className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
+            <main className="min-h-screen bg-white dark:bg-slate-950 flex items-center justify-center p-4">
                 <div className="h-12 w-12 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin" />
             </main>
         }>

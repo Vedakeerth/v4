@@ -73,15 +73,15 @@ export default function IndustriesTab() {
             </div>
 
             {/* Header Section */}
-            <div className="bg-slate-900/50 border border-slate-800 rounded-3xl p-8">
-                <h3 className="text-lg font-bold text-white mb-6 border-b border-slate-800 pb-2">Page Header</h3>
+            <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-3xl p-8">
+                <h3 className="text-lg font-bold text-white mb-6 border-b border-slate-200 dark:border-slate-800 pb-2">Page Header</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label className="block text-slate-500 text-[10px] font-bold uppercase mb-1.5 ml-1">Title</label>
                         <input
                             value={content.header?.title || ""}
                             onChange={(e) => setContent({ ...content, header: { ...content.header, title: e.target.value } })}
-                            className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none"
+                            className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none"
                         />
                     </div>
                     <div>
@@ -89,7 +89,7 @@ export default function IndustriesTab() {
                         <input
                             value={content.header?.subtitle || ""}
                             onChange={(e) => setContent({ ...content, header: { ...content.header, subtitle: e.target.value } })}
-                            className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none"
+                            className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none"
                         />
                     </div>
                 </div>
@@ -104,7 +104,7 @@ export default function IndustriesTab() {
 
                 <div className="grid grid-cols-1 gap-6">
                     {content.industries?.map((ind: any, i: number) => (
-                        <div key={i} className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 relative group hover:border-slate-700 transition-all">
+                        <div key={i} className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 relative group hover:border-slate-300 dark:border-slate-700 transition-all">
                             <button
                                 onClick={() => removeIndustry(i)}
                                 className="absolute top-4 right-4 p-2 text-slate-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all"
@@ -118,7 +118,7 @@ export default function IndustriesTab() {
                                     <select
                                         value={ind.icon}
                                         onChange={(e) => updateIndustry(i, "icon", e.target.value)}
-                                        className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-3 text-white focus:border-cyan-500/50 outline-none text-sm"
+                                        className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-3 text-white focus:border-cyan-500/50 outline-none text-sm"
                                     >
                                         {AVAILABLE_ICONS.map(icon => <option key={icon} value={icon}>{icon}</option>)}
                                     </select>
@@ -128,7 +128,7 @@ export default function IndustriesTab() {
                                     <input
                                         value={ind.name}
                                         onChange={(e) => updateIndustry(i, "name", e.target.value)}
-                                        className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none font-bold"
+                                        className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none font-bold"
                                     />
                                 </div>
                                 <div className="md:col-span-6">
@@ -136,7 +136,7 @@ export default function IndustriesTab() {
                                     <textarea
                                         value={ind.description}
                                         onChange={(e) => updateIndustry(i, "description", e.target.value)}
-                                        className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none resize-none h-24"
+                                        className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none resize-none h-24"
                                     />
                                 </div>
                             </div>

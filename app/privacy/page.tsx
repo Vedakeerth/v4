@@ -61,14 +61,15 @@ export default function PrivacyPolicyPage() {
     const lastUpdated = "January 30, 2026";
 
     return (
-        <main className="min-h-screen bg-slate-950 pt-24">
-            <div className="container mx-auto px-4 py-12">
-                <div className="mb-8">
-                    <Link href="/" className="text-blue-400 hover:text-blue-300 text-sm mb-4 inline-block">
-                        ← Back to Home
+        <main className="min-h-screen bg-white dark:bg-slate-950 pt-24">
+            <div className="dynamic-container py-12">
+                <div className="mb-12">
+                    <Link href="/" className="text-cyan-400 hover:text-cyan-300 text-xs font-black uppercase tracking-widest mb-6 inline-flex items-center gap-2 group">
+                        <span className="group-hover:-translate-x-1 transition-transform">←</span> Back to Home
                     </Link>
-                    <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">Privacy Policy</h1>
-                    <p className="text-slate-400">Last updated: {lastUpdated}</p>
+                    <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-6 uppercase tracking-tight">Privacy Policy</h1>
+                    <p className="text-slate-500 font-bold uppercase tracking-widest text-[10px]">Last updated: {lastUpdated}</p>
+                    <div className="h-1 w-20 bg-cyan-500 mt-8 rounded-full shadow-[0_0_15px_rgba(6,182,212,0.5)]" />
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
@@ -78,7 +79,7 @@ export default function PrivacyPolicyPage() {
                     </div>
 
                     {/* Main Content */}
-                    <div className="lg:col-span-3 prose prose-invert max-w-none space-y-8 text-slate-300">
+                    <div className="lg:col-span-3 prose prose-invert max-w-none space-y-8 text-slate-700 dark:text-slate-300">
                         <section id="introduction">
                             <h2 className="text-2xl font-bold text-white mb-4">1. Introduction</h2>
                             <p className="mb-4">
@@ -343,7 +344,7 @@ export default function PrivacyPolicyPage() {
                             <p className="mb-4">
                                 For privacy-related questions or requests:
                             </p>
-                            <div className="bg-slate-900/50 p-6 rounded-lg border border-slate-800">
+                            <div className="bg-slate-50 dark:bg-slate-900/50 p-6 rounded-lg border border-slate-200 dark:border-slate-800">
                                 <p className="mb-2"><strong className="text-white">VAELINSA</strong></p>
                                 <p className="mb-2">📧 Email: <a href="mailto:sales@vaelinsa.com" className="text-blue-400 hover:text-blue-300">sales@vaelinsa.com</a></p>
                                 <p>🌐 Website: <a href="https://vaelinsa.com" className="text-blue-400 hover:text-blue-300">www.vaelinsa.com</a></p>

@@ -50,6 +50,7 @@ export async function POST(req: Request) {
             images: body.images || [body.image],
             category: body.category,
             inStock: body.inStock !== undefined ? body.inStock : true,
+            isPopular: body.isPopular || false,
             stockCount: body.stockCount || 0,
             availabilityStatus: body.availabilityStatus || (body.inStock !== false ? 'In Stock' : 'Out of Stock'),
             createdAt: new Date().toISOString(),

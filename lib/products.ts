@@ -30,24 +30,43 @@ export const getPopularProducts = unstable_cache(
         if (typeof window === 'undefined') {
             const { getAdminDb } = await import('./firebaseAdmin');
             const adminDb = await getAdminDb();
+            let products: Product[] = [];
             try {
                 const snapshot = await adminDb.collection('products')
                     .where('isPopular', '==', true)
                     .orderBy('createdAt', 'desc')
                     .limit(limitCount)
                     .get();
-                return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+                
+                products = snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
                     id: doc.id,
                     ...doc.data()
                 } as Product));
             } catch (error) {
-                console.error('Error fetching popular products:', error);
-                return [];
+                console.error('Error fetching popular products (likely missing index):', error);
+                // Continue to fallback
             }
+
+            // Fallback: If no popular products (or query failed), return the latest X products
+            if (products.length === 0) {
+                try {
+                    const fallbackSnapshot = await adminDb.collection('products')
+                        .orderBy('createdAt', 'desc')
+                        .limit(limitCount)
+                        .get();
+                    products = fallbackSnapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+                        id: doc.id,
+                        ...doc.data()
+                    } as Product));
+                } catch (fallbackError) {
+                    console.error('Error in popular products fallback:', fallbackError);
+                }
+            }
+            return products;
         }
         return [];
     },
-    ['popular-products'],
+    ['popular-products-v2'],
     { revalidate: 3600, tags: ['products', 'popular'] }
 );
 

@@ -52,9 +52,10 @@ export function extractIdFromSlug(slug: string): string | null {
     return parts[parts.length - 1]; // Return the hash part
 }
 
-export function createSeoSlug(title: string, id: string): string {
-    const slug = generateSlug(title);
-    const shortId = id.slice(-8); // Use last 8 chars for "hash" look
+export function createSeoSlug(title: string, id: string | number): string {
+    const slug = generateSlug(title || "");
+    const idStr = String(id || "");
+    const shortId = idStr.slice(-8); // Use last 8 chars for "hash" look
     return `${slug}-${shortId}`;
 }
 

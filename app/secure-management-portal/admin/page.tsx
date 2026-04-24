@@ -26,6 +26,7 @@ import CategoriesTab from "@/components/admin-dashboard-tabs/CategoriesTab";
 import QuoteSettingsTab from "@/components/admin-dashboard-tabs/QuoteSettingsTab";
 
 import { getAdminEmails } from "@/lib/adminConfig";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export default function SecureAdminPage() {
     const router = useRouter();
@@ -114,9 +115,12 @@ export default function SecureAdminPage() {
                         <h1 className="mb-2 text-2xl font-bold tracking-tight text-white underline decoration-cyan-500 decoration-4 underline-offset-8 sm:text-4xl">Admin Portal</h1>
                         <p className="mt-4 break-all text-[10px] font-black uppercase tracking-widest text-slate-500 sm:text-sm">Sequence Authorized: <span className="text-white italic">{user.email}</span></p>
                     </div>
-                    <button onClick={handleLogout} className="flex w-full items-center justify-center gap-2 rounded-xl border border-red-500/20 bg-red-500/10 px-5 py-3 font-bold text-red-500 shadow-lg shadow-red-500/5 transition-all hover:bg-red-500/20 sm:w-auto">
-                        <LogOut size={18} /> Logout Session
-                    </button>
+                    <div className="flex items-center gap-4">
+                        <ThemeToggle />
+                        <button onClick={handleLogout} className="flex w-full items-center justify-center gap-2 rounded-xl border border-red-500/20 bg-red-500/10 px-5 py-3 font-bold text-red-500 shadow-lg shadow-red-500/5 transition-all hover:bg-red-500/20 sm:w-auto">
+                            <LogOut size={18} /> Logout Session
+                        </button>
+                    </div>
                 </div>
 
                 <div className="hidden lg:flex items-center gap-2 mb-8 border-b border-white/5 pb-1 relative group bg-slate-900/40 p-1 rounded-t-2xl">

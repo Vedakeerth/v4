@@ -33,12 +33,12 @@ export default function CTA({ content }: CTAProps) {
     }, []);
 
     return (
-        <section className="py-24 relative overflow-hidden">
+        <section className="py-20 md:py-28 relative overflow-hidden">
             {/* Background Gradient */}
             <div className="absolute inset-0 bg-gradient-to-r from-cyan-900/40 to-indigo-900/40" />
-            <div className="absolute inset-0 bg-slate-950/80" />
+            <div className="absolute inset-0 bg-white dark:bg-slate-950/80" />
 
-            <div className="container relative z-10 mx-auto px-4 text-center">
+            <div className="dynamic-container relative z-10 text-center">
                 {isLoading ? (
                     <>
                         <Skeleton variant="text" width="70%" height={48} className="mx-auto mb-6" />
@@ -47,11 +47,11 @@ export default function CTA({ content }: CTAProps) {
                     </>
                 ) : (
                     <>
-                        <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+                        <h2 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-6">
                             {(content?.title || "Ready to Start Your Project").replace(content?.titleHighlight || "Project", "")}
                             <span className="text-cyan-400">{content?.titleHighlight || "Project"}</span>
                         </h2>
-                        <p className="text-xl text-slate-300 mb-10 max-w-2xl mx-auto">
+                        <p className="text-xl text-slate-700 dark:text-slate-300 mb-10 max-w-2xl mx-auto">
                             {content?.description || "Get high-precision engineering parts delivered with unmatched quality and speed."}
                         </p>
                         <Link href={content?.buttonLink || "/quote"}>

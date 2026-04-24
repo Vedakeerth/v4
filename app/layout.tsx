@@ -47,11 +47,23 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const navContent = await getPageContent('navigation');
-  const navLinks = navContent?.navLinks;
-  const ctaData = navContent?.cta;
+  
+  // Prioritize local data to ensure manual updates are reflected immediately
+  let navLinks = null;
+  let ctaData = null;
+  
+  try {
+    const localNav = (await import("@/data/pages/navigation.json")).default;
+    navLinks = localNav.navLinks;
+    ctaData = localNav.cta;
+  } catch (e) {
+    console.warn("Failed to load local navigation", e);
+    navLinks = navContent?.navLinks;
+    ctaData = navContent?.cta;
+  }
 
   return (
-    <html lang="en" className="dark scroll-smooth">
+    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <body className={cn(inter.variable, "font-sans bg-background text-foreground min-h-screen")}>
         <Providers>
           <CartProvider>

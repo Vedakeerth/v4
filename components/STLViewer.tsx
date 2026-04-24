@@ -64,7 +64,7 @@ function ViewControls({
     return (
         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 z-20">
             {showRotation && (
-                <div className="bg-slate-950/90 backdrop-blur-sm px-6 py-4 rounded-2xl border border-slate-700 shadow-xl mb-2 w-64 space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                <div className="bg-white dark:bg-slate-950/90 backdrop-blur-sm px-6 py-4 rounded-2xl border border-slate-300 dark:border-slate-700 shadow-xl mb-2 w-64 space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
                     <div className="flex justify-between items-center mb-2">
                         <span className="text-[10px] font-black text-cyan-400 uppercase tracking-widest">Rotation (Degrees)</span>
                         <button
@@ -76,7 +76,7 @@ function ViewControls({
                     </div>
                     <div className="space-y-3">
                         <div className="space-y-1">
-                            <div className="flex justify-between text-[10px] text-slate-400 font-mono">
+                            <div className="flex justify-between text-[10px] text-slate-600 dark:text-slate-400 font-mono">
                                 <span>X Axis</span>
                                 <span className="text-cyan-500">{Math.round(rotation.x * (180 / Math.PI))}°</span>
                             </div>
@@ -87,11 +87,11 @@ function ViewControls({
                                 step="1"
                                 value={rotation.x * (180 / Math.PI)}
                                 onChange={(e) => onRotation({ ...rotation, x: parseFloat(e.target.value) * (Math.PI / 180) })}
-                                className="w-full accent-cyan-500 h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer"
+                                className="w-full accent-cyan-500 h-1 bg-slate-100 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer"
                             />
                         </div>
                         <div className="space-y-1">
-                            <div className="flex justify-between text-[10px] text-slate-400 font-mono">
+                            <div className="flex justify-between text-[10px] text-slate-600 dark:text-slate-400 font-mono">
                                 <span>Y Axis</span>
                                 <span className="text-cyan-500">{Math.round(rotation.y * (180 / Math.PI))}°</span>
                             </div>
@@ -102,11 +102,11 @@ function ViewControls({
                                 step="1"
                                 value={rotation.y * (180 / Math.PI)}
                                 onChange={(e) => onRotation({ ...rotation, y: parseFloat(e.target.value) * (Math.PI / 180) })}
-                                className="w-full accent-cyan-500 h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer"
+                                className="w-full accent-cyan-500 h-1 bg-slate-100 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer"
                             />
                         </div>
                         <div className="space-y-1">
-                            <div className="flex justify-between text-[10px] text-slate-400 font-mono">
+                            <div className="flex justify-between text-[10px] text-slate-600 dark:text-slate-400 font-mono">
                                 <span>Z Axis</span>
                                 <span className="text-cyan-500">{Math.round(rotation.z * (180 / Math.PI))}°</span>
                             </div>
@@ -117,25 +117,25 @@ function ViewControls({
                                 step="1"
                                 value={rotation.z * (180 / Math.PI)}
                                 onChange={(e) => onRotation({ ...rotation, z: parseFloat(e.target.value) * (Math.PI / 180) })}
-                                className="w-full accent-cyan-500 h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer"
+                                className="w-full accent-cyan-500 h-1 bg-slate-100 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer"
                             />
                         </div>
                     </div>
                 </div>
             )}
-            <div className="flex items-center gap-4 bg-slate-950/90 backdrop-blur-sm px-6 py-3 rounded-full border border-slate-700 shadow-xl">
+            <div className="flex items-center gap-4 bg-white dark:bg-slate-950/90 backdrop-blur-sm px-6 py-3 rounded-full border border-slate-300 dark:border-slate-700 shadow-xl">
                 <button
                     onClick={() => setShowRotation(!showRotation)}
                     className={cn(
                         "p-1.5 rounded-lg transition-all border active:scale-95 flex items-center justify-center shrink-0",
-                        showRotation ? "bg-cyan-500 text-slate-950 border-cyan-400" : "bg-slate-800 text-slate-400 border-slate-700 hover:text-cyan-400"
+                        showRotation ? "bg-cyan-500 text-slate-950 border-cyan-400" : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-300 dark:border-slate-700 hover:text-cyan-400"
                     )}
                     title="Rotation Controls"
                 >
                     <Box size={14} className={cn(showRotation && "animate-pulse")} />
                 </button>
-                <div className="w-[1px] h-4 bg-slate-800 mx-1" />
-                <span className="text-xs text-slate-400 font-medium">Scale</span>
+                <div className="w-[1px] h-4 bg-slate-100 dark:bg-slate-800 mx-1" />
+                <span className="text-xs text-slate-600 dark:text-slate-400 font-medium">Scale</span>
                 <input
                     type="range"
                     min="0.1"
@@ -143,7 +143,7 @@ function ViewControls({
                     step="0.05"
                     value={scale}
                     onChange={(e) => onScale(parseFloat(e.target.value))}
-                    className="w-32 accent-cyan-500 h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer"
+                    className="w-32 accent-cyan-500 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer"
                 />
                 <div className="w-16 flex items-center justify-end">
                     {isEditing ? (
@@ -155,14 +155,14 @@ function ViewControls({
                                 onChange={(e) => setEditValue(e.target.value)}
                                 onBlur={handleBlur}
                                 onKeyDown={handleKeyDown}
-                                className="w-10 bg-slate-800 border-b border-cyan-500 text-xs font-bold text-cyan-400 outline-none text-right px-0.5"
+                                className="w-10 bg-slate-100 dark:bg-slate-800 border-b border-cyan-500 text-xs font-bold text-cyan-400 outline-none text-right px-0.5"
                             />
                             <span className="text-[10px] text-cyan-500/50">%</span>
                         </div>
                     ) : (
                         <span
                             onClick={() => setIsEditing(true)}
-                            className="text-xs font-bold text-cyan-400 cursor-text hover:bg-slate-800/50 px-1 rounded transition-colors"
+                            className="text-xs font-bold text-cyan-400 cursor-text hover:bg-slate-100 dark:bg-slate-800/50 px-1 rounded transition-colors"
                         >
                             {(scale * 100).toFixed(0)}%
                         </span>
@@ -170,7 +170,7 @@ function ViewControls({
                 </div>
                 <button
                     onClick={() => onScale(1)}
-                    className="ml-1 p-1.5 rounded-lg bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-cyan-400 transition-all border border-slate-700 active:scale-95 flex items-center justify-center shrink-0"
+                    className="ml-1 p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:bg-slate-700 hover:text-cyan-400 transition-all border border-slate-300 dark:border-slate-700 active:scale-95 flex items-center justify-center shrink-0"
                     title="Reset Scale"
                 >
                     <RotateCcw size={14} />
@@ -225,7 +225,7 @@ function ZoomSlider({ controlsRef, zoom, onZoomUpdate }: { controlsRef: React.Re
     };
 
     return (
-        <div className="absolute right-4 top-1/2 -translate-y-1/2 flex flex-col items-center gap-3 bg-slate-950/90 backdrop-blur-sm p-3 rounded-full border border-slate-700 shadow-xl z-20">
+        <div className="absolute right-4 top-1/2 -translate-y-1/2 flex flex-col items-center gap-3 bg-white dark:bg-slate-950/90 backdrop-blur-sm p-3 rounded-full border border-slate-300 dark:border-slate-700 shadow-xl z-20">
             <button
                 onClick={() => handleZoomChange(Math.min(100, zoom + 10))}
                 className="text-slate-500 hover:text-cyan-400 transition-colors p-1"
@@ -476,6 +476,24 @@ export default function STLViewer({
         }
     }, [dimensions]);
 
+    const fitCameraToCenteredGeometry = useCallback((geometry: THREE.BufferGeometry) => {
+        geometry.computeBoundingSphere();
+        const sphere = geometry.boundingSphere!;
+        const radius = sphere.radius;
+        const offset = 1.6; // Padding factor
+        
+        // Use camera FOV (50) to calculate required distance
+        const fov = 50;
+        const distance = (radius * offset) / Math.tan((fov * Math.PI) / 360);
+        
+        // Initial isometric-style view based on model size
+        setViewPosition([distance, distance * 0.8, distance]);
+        setViewTarget([0, 0, 0]);
+        
+        // Update zoom slider state (normalized mid-range)
+        setZoom(50);
+    }, []);
+
     const handleStatsCalculated = useCallback((stats: { volumeCm3: number; surfaceAreaMm2: number; heightMm: number }) => {
         onStatsCalculated?.(stats);
     }, [onStatsCalculated]);
@@ -527,16 +545,16 @@ export default function STLViewer({
 
     if (!file) {
         return (
-            <div className="flex h-full w-full min-h-[400px] flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-700 hover:border-cyan-500/50 hover:bg-slate-800/30 transition-all text-center p-8 group">
-                <div className="mb-4 rounded-full bg-slate-800 p-4 group-hover:bg-cyan-500/20 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400 group-hover:text-cyan-400"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" x2="12" y1="3" y2="15" /></svg>
+            <div className="flex h-full w-full min-h-[400px] flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-cyan-500/50 hover:bg-slate-100 dark:bg-slate-800/30 transition-all text-center p-8 group">
+                <div className="mb-4 rounded-full bg-slate-100 dark:bg-slate-800 p-4 group-hover:bg-cyan-500/20 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-600 dark:text-slate-400 group-hover:text-cyan-400"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" x2="12" y1="3" y2="15" /></svg>
                 </div>
-                <h3 className="text-lg font-semibold text-slate-200">Click to Upload STL Files</h3>
+                <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-200">Click to Upload STL Files</h3>
                 <p className="text-sm text-slate-500 mt-2">or drag and drop below</p>
                 <p className="text-xs text-slate-600 mt-4">Max size: 25MB per file • Max files: 5</p>
                 <p className="text-xs text-slate-600 mt-1">Format: STL files only</p>
-                <div className="mt-8 px-6 py-2 bg-slate-800/50 rounded-full border border-slate-700/50">
-                    <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">
+                <div className="mt-8 px-6 py-2 bg-slate-100 dark:bg-slate-800/50 rounded-full border border-slate-300 dark:border-slate-700/50">
+                    <span className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">
                         Uploaded Models ({uploadedCount}/5)
                     </span>
                 </div>
@@ -554,12 +572,12 @@ export default function STLViewer({
     return (
         <div
             ref={containerRef}
-            className="h-full w-full min-h-[500px] overflow-hidden rounded-xl bg-slate-900/50 border border-slate-800 relative group"
+            className="h-full w-full min-h-[500px] overflow-hidden rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 relative group"
         >
             <Canvas
                 shadows
                 camera={{ position: [50, 50, 50], fov: 50 }}
-                className="bg-slate-950"
+                className="bg-white dark:bg-slate-950"
             >
                 <CameraController
                     viewPosition={viewPosition}
@@ -583,6 +601,7 @@ export default function STLViewer({
                     rotation={rotation}
                     onStatsCalculated={handleStatsCalculated}
                     onDimensionsCalculated={handleDimensionsCalculated}
+                    onGeometryLoaded={fitCameraToCenteredGeometry}
                 />
 
                 <gridHelper args={[200, 20, '#334155', '#1e293b']} position={[0, 0, 0]} />
@@ -602,14 +621,14 @@ export default function STLViewer({
 
             {/* Dimensions Overlay (Top-Left) */}
             {scaledDims && (
-                <div className="absolute top-4 left-4 bg-slate-950/90 px-4 py-3 rounded-lg text-xs text-slate-300 backdrop-blur-sm border border-slate-700 shadow-xl transition-all duration-300">
+                <div className="absolute top-4 left-4 bg-white dark:bg-slate-950/90 px-4 py-3 rounded-lg text-xs text-slate-700 dark:text-slate-300 backdrop-blur-sm border border-slate-300 dark:border-slate-700 shadow-xl transition-all duration-300">
                     <div className="font-semibold text-cyan-400 mb-2 flex items-center gap-2">
                         <Box size={14} /> Size ({scale !== 1 ? 'Scaled' : 'Original'})
                     </div>
                     <div className="space-y-1 font-mono">
-                        <div className="flex justify-between gap-4"><span>L:</span> <span className="text-white font-bold">{scaledDims.x} mm</span></div>
-                        <div className="flex justify-between gap-4"><span>W:</span> <span className="text-white font-bold">{scaledDims.y} mm</span></div>
-                        <div className="flex justify-between gap-4"><span>H:</span> <span className="text-white font-bold">{scaledDims.z} mm</span></div>
+                        <div className="flex justify-between gap-4"><span>L:</span> <span className="text-slate-900 dark:text-white font-bold">{scaledDims.x} mm</span></div>
+                        <div className="flex justify-between gap-4"><span>W:</span> <span className="text-slate-900 dark:text-white font-bold">{scaledDims.y} mm</span></div>
+                        <div className="flex justify-between gap-4"><span>H:</span> <span className="text-slate-900 dark:text-white font-bold">{scaledDims.z} mm</span></div>
                     </div>
                 </div>
             )}
@@ -625,7 +644,7 @@ export default function STLViewer({
             {/* Vertical Zoom Control */}
             <ZoomSlider controlsRef={controlsRef} zoom={zoom} onZoomUpdate={setZoom} />
 
-            <div className="absolute bottom-4 right-4 bg-slate-950/80 px-3 py-1 rounded-full text-xs text-slate-400 backdrop-blur-sm pointer-events-none">
+            <div className="absolute bottom-4 right-4 bg-white dark:bg-slate-950/80 px-3 py-1 rounded-full text-xs text-slate-600 dark:text-slate-400 backdrop-blur-sm pointer-events-none">
                 3D Preview ⦁ by VAELINSA
             </div>
         </div>

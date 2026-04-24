@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from "react";
+import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -8,6 +9,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ShoppingCart, Menu, X } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { cn } from "@/lib/utils";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 interface NavbarProps {
     navLinks?: { name: string; href: string }[];
@@ -16,14 +18,12 @@ interface NavbarProps {
 
 export default function Navbar({
     navLinks = [
-        { name: "Catalog", href: "/catalog" },
-        { name: "Services", href: "/services" },
-        { name: "Gallery", href: "/gallery" },
-        { name: "Projects", href: "/projects" },
+        { name: "Service", href: "/services" },
         { name: "Products", href: "/products" },
-        { name: "Blog", href: "/blog" },
-        { name: "Track Order", href: "/track-order" },
+        { name: "Blogs", href: "/blog" },
+        { name: "Gallery", href: "/gallery" },
         { name: "Contact", href: "/contact" },
+        { name: "Tracking Product", href: "/track-order" },
     ],
     ctaData = { text: "Get Quote", href: "/quote" }
 }: NavbarProps) {
@@ -32,6 +32,7 @@ export default function Navbar({
     const [isVisible, setIsVisible] = useState(!isHomePage);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [mounted, setMounted] = useState(false);
+    const { resolvedTheme } = useTheme();
     const { setIsCartOpen, cartCount } = useCart();
 
     useEffect(() => {
@@ -82,16 +83,16 @@ export default function Navbar({
                     exit={{ y: -100, opacity: 0 }}
                     transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
                     className={cn(
-                        "navbar-container fixed left-0 right-0 z-50 border-b border-slate-800 bg-slate-950/90 backdrop-blur-md shadow-2xl transition-all duration-300",
+                        "navbar-container fixed left-0 right-0 z-50 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950/90 backdrop-blur-md shadow-2xl transition-all duration-300",
                         pathname === '/checkout' ? "top-0" : "top-[30px]"
                     )}
                 >
-                    <div className="container mx-auto px-4 h-20 flex items-center justify-between">
+                    <div className="dynamic-container h-20 flex items-center justify-between">
                         {/* Logo */}
                         <Link href="/" className="flex items-center gap-2 group">
                             <div className="relative h-10 w-auto aspect-[3/1]">
                                 <Image
-                                    src="/images/logo.png"
+                                    src={resolvedTheme === 'dark' ? "/images/logo.png" : "/images/logo-v2.png"}
                                     alt="VAELINSA Logo"
                                     fill
                                     className="object-contain"
@@ -106,7 +107,7 @@ export default function Navbar({
                                 <Link
                                     key={link.name}
                                     href={link.href === "/features" ? "/products" : link.href}
-                                    className="text-sm font-medium text-slate-300 hover:text-cyan-400 transition-colors"
+                                    className="text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-cyan-400 transition-colors"
                                 >
                                     {link.name === "Features" ? "Products" : link.name}
                                 </Link>
@@ -115,6 +116,7 @@ export default function Navbar({
 
                         {/* CTA & Actions */}
                         <div className="flex items-center gap-2 md:gap-4">
+                            <ThemeToggle />
                             <Link href={ctaData.href} className="hidden sm:block">
                                 <button className="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-2 px-6 rounded-full text-sm transition-colors shadow-[0_0_20px_rgba(6,182,212,0.3)] hover:shadow-[0_0_30px_rgba(6,182,212,0.5)]">
                                     {ctaData.text}
@@ -124,7 +126,7 @@ export default function Navbar({
                             {!pathname.startsWith('/admin') && (
                                 <button
                                     onClick={() => setIsCartOpen(true)}
-                                    className="p-2 relative text-slate-300 hover:text-white transition-colors"
+                                    className="p-2 relative text-slate-700 dark:text-slate-300 hover:text-cyan-500 transition-colors"
                                 >
                                     <ShoppingCart className="w-6 h-6" />
                                     <AnimatePresence>
@@ -145,7 +147,7 @@ export default function Navbar({
                             {/* Mobile Toggle */}
                             <button
                                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                                className="md:hidden p-2 text-slate-300 hover:text-cyan-400 transition-colors"
+                                className="md:hidden p-2 text-slate-700 dark:text-slate-300 hover:text-cyan-400 transition-colors"
                             >
                                 {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
                             </button>
@@ -159,7 +161,7 @@ export default function Navbar({
                                 initial={{ opacity: 0, height: 0 }}
                                 animate={{ opacity: 1, height: 'auto' }}
                                 exit={{ opacity: 0, height: 0 }}
-                                className="md:hidden border-t border-slate-800 bg-slate-950 overflow-hidden"
+                                className="md:hidden border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 overflow-hidden"
                             >
                                 <div className="container mx-auto px-4 py-6 flex flex-col gap-4">
                                     {navLinks.map((link) => (
@@ -167,7 +169,7 @@ export default function Navbar({
                                             key={link.name}
                                             href={link.href === "/features" ? "/products" : link.href}
                                             onClick={() => setIsMenuOpen(false)}
-                                            className="text-lg font-medium text-slate-300 hover:text-cyan-400 transition-colors py-2"
+                                            className="text-lg font-medium text-slate-700 dark:text-slate-300 hover:text-cyan-400 transition-colors py-2"
                                         >
                                             {link.name === "Features" ? "Products" : link.name}
                                         </Link>

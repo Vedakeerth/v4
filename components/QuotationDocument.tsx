@@ -24,6 +24,7 @@ interface QuotationDocumentProps {
     }>;
     totalAmount: number;
     totalQty: number;
+    discount?: number;
 }
 
 const numberToWords = (num: number): string => {
@@ -71,11 +72,13 @@ export default function QuotationDocument({
     client,
     items,
     totalAmount,
-    totalQty
+    totalQty,
+    discount = 0
 }: QuotationDocumentProps) {
     const subtotal = totalAmount;
-    const finalTotal = Math.round(subtotal);
-    const roundOff = finalTotal - subtotal;
+    const netTotalBeforeRound = subtotal - discount;
+    const finalTotal = Math.round(netTotalBeforeRound);
+    const roundOff = finalTotal - netTotalBeforeRound;
 
     return (
         <div
@@ -118,17 +121,17 @@ export default function QuotationDocument({
                         <div className="inline-block text-left text-[13px] space-y-2">
                             <div className="grid grid-cols-[100px_10px_1fr]">
                                 <span className="font-bold text-[#64748b]">Quote ID</span>
-                                <span className="text-slate-400">:</span>
+                                <span className="text-slate-600 dark:text-slate-400">:</span>
                                 <span className="text-slate-900 font-semibold">{quoteId}</span>
                             </div>
                             <div className="grid grid-cols-[100px_10px_1fr]">
                                 <span className="font-bold text-[#64748b]">Quote Date</span>
-                                <span className="text-slate-400">:</span>
+                                <span className="text-slate-600 dark:text-slate-400">:</span>
                                 <span className="text-slate-900 font-semibold">{date}</span>
                             </div>
                             <div className="grid grid-cols-[100px_10px_1fr]">
                                 <span className="font-bold text-[#64748b]">Due Date</span>
-                                <span className="text-slate-400">:</span>
+                                <span className="text-slate-600 dark:text-slate-400">:</span>
                                 <span className="text-slate-900 font-semibold">{dueDate}</span>
                             </div>
                         </div>
@@ -175,7 +178,7 @@ export default function QuotationDocument({
                                             {item.name}<br />
                                             <div className="flex items-center gap-1.5 mt-0.5">
                                                 <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: item.color }}></span>
-                                                <span className="text-[10px] text-slate-400 font-normal">
+                                                <span className="text-[10px] text-slate-600 dark:text-slate-400 font-normal">
                                                     {item.description} {item.weight ? `• ${item.weight.toFixed(1)}g` : ''}
                                                 </span>
                                             </div>
@@ -200,16 +203,25 @@ export default function QuotationDocument({
                                 </div>
                             </div>
 
+                            {discount > 0 && (
+                                <div className="flex items-center gap-12 text-[12.5px] font-bold text-green-600">
+                                    <span className="font-bold text-[11px] uppercase tracking-wider">Coupon Discount</span>
+                                    <span className="w-[110px] text-right">
+                                        - ₹ {discount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                    </span>
+                                </div>
+                            )}
+
                             <div className="flex items-center gap-12 text-[12.5px] font-bold">
                                 <span className="text-slate-500 font-bold text-[11px] uppercase tracking-wider">Round off</span>
                                 <span className="text-slate-800 w-[110px] text-right">
-                                    {roundOff > 0 ? `+ ₹${roundOff.toFixed(2)}` : `- ₹${Math.abs(roundOff).toFixed(2)}`}
+                                    {roundOff >= 0 ? `+ ₹${roundOff.toFixed(2)}` : `- ₹${Math.abs(roundOff).toFixed(2)}`}
                                 </span>
                             </div>
 
                             <div className="flex items-baseline gap-0 text-[14px] font-black border-t-2 border-slate-900 mt-2 pt-2">
                                 <div className="w-[90px] text-center ml-auto">
-                                    <span className="text-slate-400 font-bold">-</span>
+                                    <span className="text-slate-600 dark:text-slate-400 font-bold">-</span>
                                 </div>
                                 <div className="w-[140px] text-right">
                                     <span className="text-slate-900">₹ {finalTotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>

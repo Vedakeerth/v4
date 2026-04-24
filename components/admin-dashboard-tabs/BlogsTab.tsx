@@ -134,10 +134,10 @@ export default function BlogsTab() {
 
     if (isEditing) {
         return (
-            <div className="bg-slate-900 rounded-2xl border border-slate-800 p-6">
-                <div className="flex justify-between items-center mb-6 border-b border-slate-800 pb-6">
+            <div className="bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6">
+                <div className="flex justify-between items-center mb-6 border-b border-slate-200 dark:border-slate-800 pb-6">
                     <div className="flex items-center gap-4">
-                        <button onClick={() => setIsEditing(false)} className="p-2 hover:bg-slate-800 rounded-lg text-slate-400 hover:text-white transition-colors">
+                        <button onClick={() => setIsEditing(false)} className="p-2 hover:bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-600 dark:text-slate-400 hover:text-white transition-colors">
                             <ArrowLeft size={24} />
                         </button>
                         <h2 className="text-2xl font-bold text-white">{activeBlog ? "Edit Post" : "New Post"}</h2>
@@ -155,65 +155,65 @@ export default function BlogsTab() {
                         <div className="space-y-4">
                             <div>
                                 <label className="block text-slate-500 text-[10px] font-bold uppercase mb-1.5 ml-1">Title</label>
-                                <input value={title} onChange={e => setTitle(e.target.value)} className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none text-lg font-bold" placeholder="Post Title" />
+                                <input value={title} onChange={e => setTitle(e.target.value)} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none text-lg font-bold" placeholder="Post Title" />
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-slate-500 text-[10px] font-bold uppercase mb-1.5 ml-1">Category</label>
-                                    <input value={category} onChange={e => setCategory(e.target.value)} className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none" placeholder="Tech" />
+                                    <input value={category} onChange={e => setCategory(e.target.value)} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none" placeholder="Tech" />
                                 </div>
                                 <div>
                                     <label className="block text-slate-500 text-[10px] font-bold uppercase mb-1.5 ml-1">Cover Image URL</label>
-                                    <input value={image} onChange={e => setImage(e.target.value)} className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none" placeholder="https://..." />
+                                    <input value={image} onChange={e => setImage(e.target.value)} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none" placeholder="https://..." />
                                 </div>
                             </div>
 
                             {/* Metadata Fields */}
-                            <div className="p-4 bg-slate-950/50 border border-slate-800 rounded-2xl space-y-4">
-                                <h3 className="text-cyan-500 text-[10px] font-black uppercase tracking-widest border-b border-slate-800 pb-2">SEO & Metadata</h3>
+                            <div className="p-4 bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-2xl space-y-4">
+                                <h3 className="text-cyan-500 text-[10px] font-black uppercase tracking-widest border-b border-slate-200 dark:border-slate-800 pb-2">SEO & Metadata</h3>
                                 <div>
                                     <label className="block text-slate-500 text-[10px] font-bold uppercase mb-1.5 ml-1">Hashtags (comma separated)</label>
-                                    <input value={hashtags} onChange={e => setHashtags(e.target.value)} className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none text-xs" placeholder="3DPrinting, Innovation, Robots" />
+                                    <input value={hashtags} onChange={e => setHashtags(e.target.value)} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none text-xs" placeholder="3DPrinting, Innovation, Robots" />
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
                                         <label className="block text-slate-500 text-[10px] font-bold uppercase mb-1.5 ml-1">Meta Title</label>
-                                        <input value={metaTitle} onChange={e => setMetaTitle(e.target.value)} className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none text-xs" placeholder="Meta title for SEO" />
+                                        <input value={metaTitle} onChange={e => setMetaTitle(e.target.value)} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none text-xs" placeholder="Meta title for SEO" />
                                     </div>
                                     <div>
                                         <label className="block text-slate-500 text-[10px] font-bold uppercase mb-1.5 ml-1">Meta Description</label>
-                                        <textarea value={metaDescription} onChange={e => setMetaDescription(e.target.value)} className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white h-20 focus:border-cyan-500/50 outline-none text-xs resize-none" placeholder="Short description for search results" />
+                                        <textarea value={metaDescription} onChange={e => setMetaDescription(e.target.value)} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-white h-20 focus:border-cyan-500/50 outline-none text-xs resize-none" placeholder="Short description for search results" />
                                     </div>
                                 </div>
                             </div>
 
                             <div>
                                 <label className="block text-slate-500 text-[10px] font-bold uppercase mb-1.5 ml-1">Excerpt</label>
-                                <textarea value={excerpt} onChange={e => setExcerpt(e.target.value)} className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white h-24 focus:border-cyan-500/50 outline-none resize-none" placeholder="Short description for the blog list..." />
+                                <textarea value={excerpt} onChange={e => setExcerpt(e.target.value)} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-white h-24 focus:border-cyan-500/50 outline-none resize-none" placeholder="Short description for the blog list..." />
                             </div>
 
                             <div className="space-y-2">
                                 <div className="flex justify-between items-center mb-1.5 ml-1">
                                     <label className="block text-slate-500 text-[10px] font-bold uppercase">Content (Markdown)</label>
                                     {/* Toolbar */}
-                                    <div className="flex items-center gap-1 bg-slate-950 border border-slate-800 rounded-lg p-1">
-                                        <button onClick={() => insertText("### ")} title="Heading 3" className="p-1.5 hover:bg-slate-800 rounded text-slate-400 font-bold text-xs px-2">H3</button>
-                                        <button onClick={() => insertText("#### ")} title="Heading 4" className="p-1.5 hover:bg-slate-800 rounded text-slate-400 font-bold text-xs px-2">H4</button>
-                                        <button onClick={() => insertText("**", "**")} title="Bold" className="p-1.5 hover:bg-slate-800 rounded text-slate-400 font-bold text-xs px-2">B</button>
-                                        <button onClick={() => insertText("- ")} title="Bullet List" className="p-1.5 hover:bg-slate-800 rounded text-slate-400"><X size={14} className="rotate-45" /> {/* Using X as a hacky bullet icon or just text */}</button>
-                                        <button onClick={() => insertText("1. ")} title="Numbered List" className="p-1.5 hover:bg-slate-800 rounded text-slate-400 font-bold text-xs px-2">1.</button>
-                                        <div className="w-px h-4 bg-slate-800 mx-1" />
+                                    <div className="flex items-center gap-1 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg p-1">
+                                        <button onClick={() => insertText("### ")} title="Heading 3" className="p-1.5 hover:bg-slate-100 dark:bg-slate-800 rounded text-slate-600 dark:text-slate-400 font-bold text-xs px-2">H3</button>
+                                        <button onClick={() => insertText("#### ")} title="Heading 4" className="p-1.5 hover:bg-slate-100 dark:bg-slate-800 rounded text-slate-600 dark:text-slate-400 font-bold text-xs px-2">H4</button>
+                                        <button onClick={() => insertText("**", "**")} title="Bold" className="p-1.5 hover:bg-slate-100 dark:bg-slate-800 rounded text-slate-600 dark:text-slate-400 font-bold text-xs px-2">B</button>
+                                        <button onClick={() => insertText("- ")} title="Bullet List" className="p-1.5 hover:bg-slate-100 dark:bg-slate-800 rounded text-slate-600 dark:text-slate-400"><X size={14} className="rotate-45" /> {/* Using X as a hacky bullet icon or just text */}</button>
+                                        <button onClick={() => insertText("1. ")} title="Numbered List" className="p-1.5 hover:bg-slate-100 dark:bg-slate-800 rounded text-slate-600 dark:text-slate-400 font-bold text-xs px-2">1.</button>
+                                        <div className="w-px h-4 bg-slate-100 dark:bg-slate-800 mx-1" />
                                         <button onClick={() => {
                                             const url = prompt("Enter Image URL:");
                                             if (url) insertText(`![image](${url})`);
-                                        }} title="Insert Image" className="p-1.5 hover:bg-slate-800 rounded text-slate-400"><ImageIcon size={14} /></button>
+                                        }} title="Insert Image" className="p-1.5 hover:bg-slate-100 dark:bg-slate-800 rounded text-slate-600 dark:text-slate-400"><ImageIcon size={14} /></button>
                                     </div>
                                 </div>
                                 <textarea
                                     id="blog-content-area"
                                     value={content}
                                     onChange={e => setContent(e.target.value)}
-                                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-6 text-white h-[600px] font-mono text-sm focus:border-cyan-500/50 outline-none leading-relaxed"
+                                    className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-6 text-white h-[600px] font-mono text-sm focus:border-cyan-500/50 outline-none leading-relaxed"
                                     placeholder="# Write your post here..."
                                 />
                             </div>
@@ -221,7 +221,7 @@ export default function BlogsTab() {
                     </div>
 
                     {/* Preview Pane */}
-                    <div className="bg-slate-950 rounded-2xl border border-slate-800 p-8 overflow-y-auto custom-scrollbar hidden lg:block">
+                    <div className="bg-white dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 p-8 overflow-y-auto custom-scrollbar hidden lg:block">
                         <div className="prose prose-invert max-w-none">
                             <h1 className="text-3xl font-bold mb-4">{title || "Post Title"}</h1>
                             {image && (
@@ -251,26 +251,26 @@ export default function BlogsTab() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {blogs.map(blog => (
-                    <div key={blog.id} className="bg-slate-900 shadow-xl border border-slate-800 rounded-2xl overflow-hidden group hover:border-cyan-500/30 transition-all">
-                        <div className="relative h-48 bg-slate-800">
+                    <div key={blog.id} className="bg-slate-50 dark:bg-slate-900 shadow-xl border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden group hover:border-cyan-500/30 transition-all">
+                        <div className="relative h-48 bg-slate-100 dark:bg-slate-800">
                             <Image src={blog.image || "/placeholder.png"} alt={blog.title} fill className="object-cover" />
-                            <div className="absolute top-3 right-3 bg-slate-950/80 backdrop-blur px-3 py-1 rounded-lg text-[10px] font-bold text-white uppercase tracking-widest border border-white/10">
+                            <div className="absolute top-3 right-3 bg-white dark:bg-slate-950/80 backdrop-blur px-3 py-1 rounded-lg text-[10px] font-bold text-white uppercase tracking-widest border border-white/10">
                                 {blog.category}
                             </div>
                         </div>
                         <div className="p-5">
                             <h3 className="text-white font-bold text-lg mb-2 line-clamp-1 group-hover:text-cyan-400 transition-colors">{blog.title}</h3>
                             <p className="text-slate-500 text-sm mb-4 line-clamp-2 h-10">{blog.excerpt}</p>
-                            <div className="flex gap-2 pt-2 border-t border-slate-800">
+                            <div className="flex gap-2 pt-2 border-t border-slate-200 dark:border-slate-800">
                                 <button
                                     onClick={() => handleStartEdit(blog)}
-                                    className="flex-1 py-2 bg-slate-800 hover:bg-cyan-500/10 hover:text-cyan-400 rounded-lg text-xs font-bold transition-all border border-slate-700 flex items-center justify-center gap-2"
+                                    className="flex-1 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-cyan-500/10 hover:text-cyan-400 rounded-lg text-xs font-bold transition-all border border-slate-300 dark:border-slate-700 flex items-center justify-center gap-2"
                                 >
                                     <Edit size={14} /> Edit
                                 </button>
                                 <button
                                     onClick={() => handleDelete(blog.id)}
-                                    className="flex-1 py-2 bg-slate-800 hover:bg-red-500/10 hover:text-red-400 rounded-lg text-xs font-bold transition-all border border-slate-700 flex items-center justify-center gap-2"
+                                    className="flex-1 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-red-500/10 hover:text-red-400 rounded-lg text-xs font-bold transition-all border border-slate-300 dark:border-slate-700 flex items-center justify-center gap-2"
                                 >
                                     <Trash2 size={14} /> Delete
                                 </button>

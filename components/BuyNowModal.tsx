@@ -114,7 +114,7 @@ export default function BuyNowModal({ product, quantity = 1, selectedColor, onCl
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 onClick={onClose}
-                className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-950/95 backdrop-blur-xl"
+                className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-white dark:bg-slate-950/95 backdrop-blur-xl"
             >
                 <motion.div
                     initial={{ scale: 0.92, opacity: 0, y: 20 }}
@@ -122,7 +122,7 @@ export default function BuyNowModal({ product, quantity = 1, selectedColor, onCl
                     exit={{ scale: 0.92, opacity: 0, y: 20 }}
                     transition={{ type: "spring", stiffness: 300, damping: 25 }}
                     onClick={(e) => e.stopPropagation()}
-                    className="relative w-full max-w-md bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden shadow-[0_0_80px_rgba(6,182,212,0.08)]"
+                    className="relative w-full max-w-md bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl overflow-hidden shadow-[0_0_80px_rgba(6,182,212,0.08)]"
                 >
                     {/* Top accent */}
                     <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500" />
@@ -130,7 +130,7 @@ export default function BuyNowModal({ product, quantity = 1, selectedColor, onCl
                     {/* Close */}
                     <button
                         onClick={onClose}
-                        className="absolute top-5 right-5 z-10 p-2 bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white rounded-full transition-all border border-slate-700"
+                        className="absolute top-5 right-5 z-10 p-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:text-white rounded-full transition-all border border-slate-300 dark:border-slate-700"
                     >
                         <X size={16} />
                     </button>
@@ -154,8 +154,8 @@ export default function BuyNowModal({ product, quantity = 1, selectedColor, onCl
                         /* Form State */
                         <div className="p-7">
                             {/* Product mini card */}
-                            <div className="flex items-center gap-4 p-4 bg-slate-950/60 border border-slate-800 rounded-2xl mb-7">
-                                <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-slate-800 flex-shrink-0 border border-slate-700">
+                            <div className="flex items-center gap-4 p-4 bg-white dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-2xl mb-7">
+                                <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800 flex-shrink-0 border border-slate-300 dark:border-slate-700">
                                     <Image
                                         src={product.image}
                                         alt={product.name}
@@ -203,7 +203,7 @@ export default function BuyNowModal({ product, quantity = 1, selectedColor, onCl
                                         placeholder="John Doe"
                                         value={form.name}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-3.5 bg-slate-950 border border-slate-800 rounded-xl text-white text-sm font-medium placeholder:text-slate-600 focus:outline-none focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/10 transition-all"
+                                        className="w-full px-4 py-3.5 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-white text-sm font-medium placeholder:text-slate-600 focus:outline-none focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/10 transition-all"
                                     />
                                 </div>
 
@@ -218,7 +218,7 @@ export default function BuyNowModal({ product, quantity = 1, selectedColor, onCl
                                         placeholder="+91 98765 43210"
                                         value={form.phone}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-3.5 bg-slate-950 border border-slate-800 rounded-xl text-white text-sm font-medium placeholder:text-slate-600 focus:outline-none focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/10 transition-all"
+                                        className="w-full px-4 py-3.5 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-white text-sm font-medium placeholder:text-slate-600 focus:outline-none focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/10 transition-all"
                                     />
                                 </div>
 
@@ -233,7 +233,7 @@ export default function BuyNowModal({ product, quantity = 1, selectedColor, onCl
                                         placeholder="john@example.com"
                                         value={form.email}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-3.5 bg-slate-950 border border-slate-800 rounded-xl text-white text-sm font-medium placeholder:text-slate-600 focus:outline-none focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/10 transition-all"
+                                        className="w-full px-4 py-3.5 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-white text-sm font-medium placeholder:text-slate-600 focus:outline-none focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/10 transition-all"
                                     />
                                 </div>
 

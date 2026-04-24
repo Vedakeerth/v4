@@ -177,7 +177,7 @@ export default function AnnouncementsTab() {
                 </div>
                 <div className="w-full xl:flex-1">
                     <h2 className="text-2xl font-bold text-white mb-1">Announcement Bar</h2>
-                    <p className="text-slate-400 text-sm">Manage the top scrolling news and festival offers.</p>
+                    <p className="text-slate-600 dark:text-slate-400 text-sm">Manage the top scrolling news and festival offers.</p>
                 </div>
                 {!isAdding && (
                     <button
@@ -189,7 +189,7 @@ export default function AnnouncementsTab() {
                 )}
             </div>
 
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 mb-8">
+            <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 mb-8">
                 <h3 className="text-lg font-bold text-white mb-4">Ticker Configuration</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="space-y-1">
@@ -198,7 +198,7 @@ export default function AnnouncementsTab() {
                             type="number"
                             value={tickerSettings.speed}
                             onChange={(e) => setTickerSettings({ ...tickerSettings, speed: parseInt(e.target.value) || 50 })}
-                            className="w-full px-5 py-3 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500 transition-all font-bold text-sm"
+                            className="w-full px-5 py-3 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500 transition-all font-bold text-sm"
                         />
                     </div>
                     <div className="space-y-1">
@@ -207,7 +207,7 @@ export default function AnnouncementsTab() {
                             type="number"
                             value={tickerSettings.spacing}
                             onChange={(e) => setTickerSettings({ ...tickerSettings, spacing: parseInt(e.target.value) || 200 })}
-                            className="w-full px-5 py-3 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500 transition-all font-bold text-sm"
+                            className="w-full px-5 py-3 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500 transition-all font-bold text-sm"
                         />
                     </div>
                     <div className="space-y-1">
@@ -215,7 +215,7 @@ export default function AnnouncementsTab() {
                         <select
                             value={tickerSettings.showOnPages}
                             onChange={(e) => setTickerSettings({ ...tickerSettings, showOnPages: e.target.value })}
-                            className="w-full px-5 py-3 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500 transition-all font-bold text-sm"
+                            className="w-full px-5 py-3 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500 transition-all font-bold text-sm"
                         >
                             <option value="all">Show on All Pages (Except Admin/Login)</option>
                             <option value="home">Show on Home Page Only</option>
@@ -226,7 +226,7 @@ export default function AnnouncementsTab() {
                     <button
                         onClick={handleSaveSettings}
                         disabled={isSavingSettings}
-                        className="flex w-full items-center justify-center gap-2 rounded-xl bg-slate-800 px-6 py-2.5 text-xs font-black uppercase tracking-widest text-white transition-all hover:bg-slate-700 sm:w-auto"
+                        className="flex w-full items-center justify-center gap-2 rounded-xl bg-slate-100 dark:bg-slate-800 px-6 py-2.5 text-xs font-black uppercase tracking-widest text-white transition-all hover:bg-slate-200 dark:bg-slate-700 sm:w-auto"
                     >
                         {isSavingSettings ? <Loader2 className="w-4 h-4 animate-spin" /> : "Save Settings"}
                     </button>
@@ -234,7 +234,7 @@ export default function AnnouncementsTab() {
             </div>
 
             {isAdding && (
-                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 mb-8 animate-in fade-in slide-in-from-top-4">
+                <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 mb-8 animate-in fade-in slide-in-from-top-4">
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-1">
@@ -243,7 +243,7 @@ export default function AnnouncementsTab() {
                                     required
                                     value={formData.text}
                                     onChange={(e) => setFormData({ ...formData, text: e.target.value })}
-                                    className="w-full px-5 py-4 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500 transition-all font-bold text-sm"
+                                    className="w-full px-5 py-4 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500 transition-all font-bold text-sm"
                                     placeholder="e.g. MEGA DIWALI SALE - UP TO 50% OFF!"
                                 />
                             </div>
@@ -252,7 +252,7 @@ export default function AnnouncementsTab() {
                                 <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Upload Image (Optional)</label>
                                 <div
                                     onClick={() => fileInputRef.current?.click()}
-                                    className="relative h-[54px] bg-slate-950 border border-slate-800 rounded-xl cursor-pointer hover:border-cyan-500/50 transition-all flex items-center px-5 group"
+                                    className="relative h-[54px] bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl cursor-pointer hover:border-cyan-500/50 transition-all flex items-center px-5 group"
                                 >
                                     <input
                                         type="file"
@@ -268,10 +268,10 @@ export default function AnnouncementsTab() {
                                     ) : formData.imageUrl ? (
                                         <div className="flex items-center justify-between w-full">
                                             <div className="flex items-center gap-3">
-                                                <div className="relative h-8 w-12 rounded overflow-hidden bg-slate-800 border border-slate-700">
+                                                <div className="relative h-8 w-12 rounded overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
                                                     <NextImage src={formData.imageUrl} alt="preview" fill className="object-contain" />
                                                 </div>
-                                                <span className="text-xs text-slate-400 truncate max-w-[150px]">Image Uploaded</span>
+                                                <span className="text-xs text-slate-600 dark:text-slate-400 truncate max-w-[150px]">Image Uploaded</span>
                                             </div>
                                             <button
                                                 type="button"
@@ -282,7 +282,7 @@ export default function AnnouncementsTab() {
                                             </button>
                                         </div>
                                     ) : (
-                                        <div className="flex items-center gap-3 text-slate-500 group-hover:text-slate-300 transition-colors">
+                                        <div className="flex items-center gap-3 text-slate-500 group-hover:text-slate-700 dark:text-slate-300 transition-colors">
                                             <UploadCloud size={18} />
                                             <span className="text-xs font-bold uppercase tracking-wider">Click to upload news banner</span>
                                         </div>
@@ -291,11 +291,11 @@ export default function AnnouncementsTab() {
                             </div>
                         </div>
 
-                        <div className="flex flex-col gap-3 border-t border-slate-800 pt-4 sm:flex-row sm:justify-end">
+                        <div className="flex flex-col gap-3 border-t border-slate-200 dark:border-slate-800 pt-4 sm:flex-row sm:justify-end">
                             <button
                                 type="button"
                                 onClick={handleCancel}
-                                className="px-6 py-3 border border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl font-bold transition-all uppercase tracking-widest text-xs"
+                                className="px-6 py-3 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-white hover:bg-slate-100 dark:bg-slate-800 rounded-xl font-bold transition-all uppercase tracking-widest text-xs"
                             >
                                 Cancel
                             </button>
@@ -311,11 +311,11 @@ export default function AnnouncementsTab() {
                 </div>
             )}
 
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl">
+            <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-2xl">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-6">
                     {(announcements || []).map((item) => (
-                        <div key={item.id} className="bg-slate-950 border border-slate-800 rounded-xl p-4 flex gap-4 group hover:border-cyan-500/30 transition-all shadow-lg">
-                            <div className="w-20 h-16 bg-slate-900 rounded-lg shrink-0 flex items-center justify-center border border-slate-800 overflow-hidden relative">
+                        <div key={item.id} className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-4 flex gap-4 group hover:border-cyan-500/30 transition-all shadow-lg">
+                            <div className="w-20 h-16 bg-slate-50 dark:bg-slate-900 rounded-lg shrink-0 flex items-center justify-center border border-slate-200 dark:border-slate-800 overflow-hidden relative">
                                 {item.imageUrl ? (
                                     <NextImage src={item.imageUrl} alt="news" fill className="object-contain" />
                                 ) : (
@@ -337,14 +337,14 @@ export default function AnnouncementsTab() {
                                 <div className="flex justify-end gap-2 transition-opacity">
                                     <button
                                         onClick={() => handleEdit(item)}
-                                        className="p-2 text-slate-400 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider"
+                                        className="p-2 text-slate-600 dark:text-slate-400 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider"
                                     >
                                         <Edit size={14} />
                                         Edit
                                     </button>
                                     <button
                                         onClick={() => handleDelete(item.id)}
-                                        className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all"
+                                        className="p-2 text-slate-600 dark:text-slate-400 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all"
                                     >
                                         <Trash2 size={14} />
                                     </button>

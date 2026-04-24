@@ -1,7 +1,11 @@
+"use client";
+
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Mail, Instagram, Facebook, Linkedin, Twitter, Youtube, Share2 } from "lucide-react";
 import { getSocials } from "@/lib/socials";
+import { useTheme } from "next-themes";
 
 const ICON_MAP: Record<string, any> = {
     Instagram,
@@ -12,29 +16,64 @@ const ICON_MAP: Record<string, any> = {
 };
 
 export default function Footer() {
+    const [mounted, setMounted] = useState(false);
+    const { resolvedTheme } = useTheme();
     const socials = getSocials();
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    if (!mounted) {
+        return (
+            <footer className="bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 py-4 md:py-8">
+                <div className="dynamic-container">
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 md:gap-8 mb-4 md:mb-8">
+                        <div className="col-span-1 md:col-span-1">
+                            <div className="mb-4">
+                                <Image
+                                    src="/images/logo-v2.png"
+                                    alt="VAELINSA Logo"
+                                    width={120}
+                                    height={40}
+                                    className="h-10 w-auto"
+                                />
+                            </div>
+                            <p className="text-slate-700 dark:text-slate-400 text-sm leading-relaxed">
+                                Premium additive manufacturing and design services for the modern engineer.
+                            </p>
+                        </div>
+                        <div /> <div /> <div />
+                    </div>
+                </div>
+            </footer>
+        );
+    }
+
+    const logoSrc = resolvedTheme === 'dark' ? "/images/logo.png" : "/images/logo-v2.png";
+
     return (
-        <footer className="bg-slate-950 border-t border-slate-900 py-12">
-            <div className="container mx-auto px-4">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+        <footer className="bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 py-4 md:py-8">
+            <div className="dynamic-container">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 md:gap-8 mb-4 md:mb-8">
                     <div className="col-span-1 md:col-span-1">
                         <div className="mb-4">
                             <Image
-                                src="/images/logo.png"
+                                src={logoSrc}
                                 alt="VAELINSA Logo"
                                 width={120}
                                 height={40}
                                 className="h-10 w-auto"
                             />
                         </div>
-                        <p className="text-slate-500 text-sm leading-relaxed">
+                        <p className="text-slate-700 dark:text-slate-400 text-sm leading-relaxed">
                             Premium additive manufacturing and design services for the modern engineer.
                         </p>
                     </div>
 
                     <div>
-                        <h4 className="text-white font-semibold mb-4">Services</h4>
-                        <ul className="space-y-2 text-sm text-slate-400">
+                        <h4 className="text-slate-900 dark:text-white font-semibold mb-4">Services</h4>
+                        <ul className="space-y-2 text-sm text-slate-700 dark:text-slate-400">
                             <li className="hover:text-cyan-400 cursor-pointer">FDM Printing</li>
                             <li className="hover:text-cyan-400 cursor-pointer">SLA Resin</li>
                             <li className="hover:text-cyan-400 cursor-pointer">Product Design</li>
@@ -43,34 +82,38 @@ export default function Footer() {
                     </div>
 
                     <div>
-                        <h4 className="text-white font-semibold mb-4">Quick Links</h4>
-                        <ul className="space-y-2 text-sm text-slate-400">
-                            <li className="hover:text-cyan-400">
+                        <h4 className="text-slate-900 dark:text-white font-semibold mb-4">Quick Links</h4>
+                        <ul className="space-y-4 text-sm text-slate-700 dark:text-slate-400">
+                            <li className="hover:text-cyan-400 transition-colors">
                                 <Link href="/catalog">Product Catalog</Link>
                             </li>
-                            <li className="hover:text-cyan-400">
+                            <li className="hover:text-cyan-400 transition-colors">
                                 <Link href="/track-order">Track Your Order</Link>
                             </li>
-                            <li className="hover:text-cyan-400">
+                            <li className="hover:text-cyan-400 transition-colors">
                                 <Link href="/blog">Blog & Updates</Link>
                             </li>
-                            <li className="hover:text-cyan-400">About Us</li>
-                            <li className="hover:text-cyan-400">FAQ</li>
+                            <li className="hover:text-cyan-400 transition-colors">
+                                <Link href="/privacy">Privacy Policy</Link>
+                            </li>
+                            <li className="hover:text-cyan-400 transition-colors">
+                                <Link href="/refunds">Return & Refund Policy</Link>
+                            </li>
                         </ul>
                     </div>
 
                     <div>
-                        <h4 className="text-white font-semibold mb-4">Contact</h4>
-                        <ul className="space-y-4 text-sm text-slate-400">
+                        <h4 className="text-slate-900 dark:text-white font-semibold mb-4">Contact</h4>
+                        <ul className="space-y-4 text-sm text-slate-700 dark:text-slate-400">
                             <li className="flex items-center gap-2">
                                 <Mail className="h-4 w-4 text-cyan-500" />
-                                <a href="mailto:support@vaelinsa.com" className="text-slate-400 hover:text-cyan-400 transition-colors">support@vaelinsa.com</a>
+                                <a href="mailto:support@vaelinsa.com" className="text-slate-700 dark:text-slate-400 hover:text-cyan-400 transition-colors">support@vaelinsa.com</a>
                             </li>
                         </ul>
                     </div>
                 </div>
 
-                <div className="border-t border-slate-900 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-slate-600">
+                <div className="border-t border-slate-200 dark:border-slate-800 pt-6 flex flex-col md:flex-row justify-between items-center text-xs text-slate-600">
                     <div className="flex items-center gap-6 mb-4 md:mb-0">
                         {socials.map((social) => {
                             const Icon = ICON_MAP[social.icon] || Share2;
@@ -80,7 +123,7 @@ export default function Footer() {
                                     href={social.url}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-slate-500 hover:text-cyan-400 transition-colors"
+                                    className="text-slate-600 hover:text-cyan-400 transition-colors"
                                     title={social.name}
                                 >
                                     <Icon size={18} />
@@ -89,9 +132,9 @@ export default function Footer() {
                         })}
                     </div>
                     <div className="flex gap-4">
-                        <Link href="/privacy" className="hover:text-slate-400 transition-colors">Privacy Policy</Link>
-                        <Link href="/terms" className="hover:text-slate-400 transition-colors">Terms of Service</Link>
-                        <Link href="/refunds" className="hover:text-slate-400 transition-colors">Refunds & Cancellations</Link>
+                        <Link href="/privacy" className="hover:text-slate-700 dark:text-slate-300 transition-colors">Privacy Policy</Link>
+                        <Link href="/terms" className="hover:text-slate-700 dark:text-slate-300 transition-colors">Terms of Service</Link>
+                        <Link href="/refunds" className="hover:text-slate-700 dark:text-slate-300 transition-colors">Return & Refund Policy</Link>
                     </div>
                 </div>
             </div>

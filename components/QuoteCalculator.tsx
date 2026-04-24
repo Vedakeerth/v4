@@ -13,7 +13,7 @@ import dynamic from 'next/dynamic';
 import { cn } from '@/lib/utils';
 
 const STLViewer = dynamic(() => import('./STLViewer'), {
-    loading: () => <div className="flex h-full w-full min-h-[400px] items-center justify-center rounded-xl bg-slate-900/50"><Skeleton variant="rounded" height={400} className="w-full" /></div>,
+    loading: () => <div className="flex h-full w-full min-h-[400px] items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-900/50"><Skeleton variant="rounded" height={400} className="w-full" /></div>,
     ssr: false,
 });
 import QuotationDocument from './QuotationDocument';
@@ -82,7 +82,7 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
 
     const [material, setMaterial] = useState<keyof typeof MATERIALS>('PLA');
     const [infillPattern, setInfillPattern] = useState<keyof typeof INFILL_PATTERNS>('Line');
-    const [infillPercent, setInfillPercent] = useState(10);
+    const [infillPercent, setInfillPercent] = useState(15);
     const [layerHeight, setLayerHeight] = useState(0.2);
     const [isCustomDensity, setIsCustomDensity] = useState(false);
     const [rotation, setRotation] = useState({ x: 0, y: 0, z: 0 });
@@ -95,6 +95,36 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
     const [showContactForm, setShowContactForm] = useState(false);
 
     const [isCalculating, setIsCalculating] = useState(false);
+    const [useCoupon, setUseCoupon] = useState(false);
+    const [couponCode, setCouponCode] = useState('');
+    const [appliedCoupon, setAppliedCoupon] = useState<any>(null);
+    const [couponError, setCouponError] = useState('');
+    const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
+
+    const handleApplyCoupon = async () => {
+        if (!couponCode) return;
+        setIsApplyingCoupon(true);
+        setCouponError('');
+        try {
+            const res = await fetch('/api/coupons/validate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code: couponCode })
+            });
+            const data = await res.json();
+            if (data.success) {
+                setAppliedCoupon(data.coupon);
+                setCouponError('');
+            } else {
+                setAppliedCoupon(null);
+                setCouponError(data.message || 'Invalid coupon code');
+            }
+        } catch (err) {
+            setCouponError('Failed to validate coupon');
+        } finally {
+            setIsApplyingCoupon(false);
+        }
+    };
 
     // Modal & Order State
     // const [isModalOpen, setIsModalOpen] = useState(false);
@@ -110,6 +140,7 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
         countryCode: '+91',
         doorNo: '',
         street: '',
+        area: '',
         city: '',
         district: '',
         state: '',
@@ -146,6 +177,7 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                             city: details.Block !== 'NA' ? details.Block : details.Name,
                             district: details.District,
                             state: details.State,
+                            area: details.Name, // Explicitly set area from pincode
                             pincode: code
                         }));
                     }
@@ -191,8 +223,21 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
         if (!hasVolume && uploadedFiles.length > 0) return null; // Calculating...
         if (uploadedFiles.length === 0) return null;
 
+        let discount = 0;
+        if (appliedCoupon) {
+            if (appliedCoupon.type === 'percentage') {
+                discount = (totalPrice * appliedCoupon.value) / 100;
+            } else if (appliedCoupon.type === 'fixed') {
+                discount = appliedCoupon.value;
+            }
+        }
+
+        const netPrice = Math.max(0, totalPrice - discount);
+
         return {
             price: totalPrice,
+            discount: discount,
+            netPrice: netPrice,
             weight: Number(totalWeight.toFixed(1)),
             time: Math.round(totalTime * 10) / 10
         };
@@ -234,7 +279,7 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                 height: 0,
                 dimensions: null,
                 scale: 1,
-                color: '#2563eb',
+                color: '#000000',
                 quantity: 1
             }));
 
@@ -375,8 +420,18 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
         }
     };
 
-    const getColorName = (hex: string): string => {
-        const colorMap: { [key: string]: string } = {
+    const getColorName = (hex: string) => {
+        const lowerHex = hex.toLowerCase();
+        if (settings?.colors && settings.colors[lowerHex]) {
+            return settings.colors[lowerHex].name;
+        }
+        if (settings?.colors) {
+            // Fallback to searching by key if literal match fails
+            const found = Object.entries(settings.colors).find(([h]) => h.toLowerCase() === lowerHex);
+            if (found) return found[1].name;
+        }
+
+        const colorMap: Record<string, string> = {
             '#2563eb': 'Blue',
             '#ef4444': 'Red',
             '#22c55e': 'Green',
@@ -384,7 +439,7 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
             '#ffffff': 'White',
             '#000000': 'Black'
         };
-        return colorMap[hex.toLowerCase()] || 'Custom';
+        return colorMap[lowerHex] || 'Custom';
     };
 
     const numberToWords = (num: number): string => {
@@ -443,7 +498,7 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                             {selectedFile?.file && selectedFile.file.name.toLowerCase().endsWith('.stl') ? (
                                 <STLViewer
                                     file={selectedFile.file}
-                                    color={selectedFile.color || '#2563eb'}
+                                    color={selectedFile.color || '#000000'}
                                     onStatsCalculated={handleStatsCalculated}
                                     onDimensionsCalculated={handleDimensionsCalculated}
                                     scale={selectedFile.scale || 1}
@@ -453,28 +508,28 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                                     uploadedCount={uploadedFiles.length}
                                 />
                             ) : selectedFile?.file ? (
-                                <div className="flex h-full w-full min-h-[400px] flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-700 bg-slate-900/50 text-center p-8">
-                                    <div className="mb-4 rounded-full bg-slate-800 p-4">
+                                <div className="flex h-full w-full min-h-[400px] flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 text-center p-8">
+                                    <div className="mb-4 rounded-full bg-slate-100 dark:bg-slate-800 p-4">
                                         <FileText className="text-cyan-400" size={48} />
                                     </div>
-                                    <h3 className="text-lg font-semibold text-slate-200 mb-2">{selectedFile.file.name}</h3>
-                                    <p className="text-sm text-slate-400">
+                                    <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-200 mb-2">{selectedFile.file.name}</h3>
+                                    <p className="text-sm text-slate-700 dark:text-slate-400">
                                         {(selectedFile.file.size / 1024 / 1024).toFixed(2)} MB
                                     </p>
                                     <p className="text-xs text-slate-500 mt-4">STL 3D Model</p>
                                     <p className="text-xs text-slate-600 mt-2">Processing 3D model...</p>
                                 </div>
                             ) : (
-                                <div className="flex h-full w-full min-h-[400px] flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-700 hover:border-cyan-500/50 hover:bg-slate-800/30 transition-all text-center p-8 group">
-                                    <div className="mb-4 rounded-full bg-slate-800 p-4 group-hover:bg-cyan-500/20 transition-colors">
-                                        <Upload className="text-slate-400 group-hover:text-cyan-400" size={32} />
+                                <div className="flex h-full w-full min-h-[400px] flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-cyan-500/50 hover:bg-slate-100 dark:bg-slate-800/30 transition-all text-center p-8 group">
+                                    <div className="mb-4 rounded-full bg-slate-100 dark:bg-slate-800 p-4 group-hover:bg-cyan-500/20 transition-colors">
+                                        <Upload className="text-slate-600 dark:text-slate-400 group-hover:text-cyan-400" size={32} />
                                     </div>
-                                    <h3 className="text-lg font-semibold text-slate-200">Click to Upload STL Files</h3>
-                                    <p className="text-sm text-slate-500 mt-2">or drag and drop below</p>
-                                    <p className="text-xs text-slate-600 mt-4">Max size: 25MB per file • Max files: 5</p>
-                                    <p className="text-xs text-slate-600 mt-1">Format: STL files only</p>
-                                    <div className="mt-8 px-6 py-2 bg-slate-800/50 rounded-full border border-slate-700/50">
-                                        <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">
+                                    <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-200">Click to Upload STL Files</h3>
+                                    <p className="text-sm text-slate-600 mt-2">or drag and drop below</p>
+                                    <p className="text-xs text-slate-700 mt-4">Max size: 25MB per file • Max files: 5</p>
+                                    <p className="text-xs text-slate-700 mt-1">Format: STL files only</p>
+                                    <div className="mt-8 px-6 py-2 bg-slate-100 dark:bg-slate-800/50 rounded-full border border-slate-300 dark:border-slate-700/50">
+                                        <span className="text-xs font-bold text-slate-700 dark:text-slate-400 uppercase tracking-widest">
                                             Uploaded Files ({uploadedFiles.length}/5)
                                         </span>
                                     </div>
@@ -494,27 +549,27 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                         </div>
 
                         {selectedFile && selectedFile.dimensions && (
-                            <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-4 flex justify-between items-center">
+                            <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl p-4 flex justify-between items-center">
                                 <div className="flex items-center gap-4">
-                                    <div className="h-10 w-10 bg-slate-800 rounded-lg flex items-center justify-center text-cyan-500">
+                                    <div className="h-10 w-10 bg-slate-100 dark:bg-slate-800 rounded-lg flex items-center justify-center text-cyan-500">
                                         <FileBox size={20} />
                                     </div>
                                     <div>
-                                        <div className="text-white font-medium">{selectedFile.file.name}</div>
-                                        <div className="text-xs text-slate-500">{(selectedFile.file.size / 1024 / 1024).toFixed(2)} MB</div>
+                                        <div className="text-slate-900 dark:text-white font-medium">{selectedFile.file.name}</div>
+                                        <div className="text-xs text-slate-600 dark:text-slate-500">{(selectedFile.file.size / 1024 / 1024).toFixed(2)} MB</div>
                                     </div>
                                 </div>
                                 <div className="text-right">
-                                    <div className="text-xs text-slate-400 mb-1">Dimensions</div>
-                                    <div className="text-sm font-bold text-cyan-400 font-mono">
+                                    <div className="text-xs text-slate-700 dark:text-slate-400 mb-1">Dimensions</div>
+                                    <div className="text-sm font-bold text-cyan-600 dark:text-cyan-400 font-mono">
                                         {selectedFile.dimensions.x} x {selectedFile.dimensions.y} x {selectedFile.dimensions.z} mm
                                     </div>
                                 </div>
                             </div>
                         )}
 
-                        <div className="bg-slate-900/50 p-6 rounded-2xl border border-slate-800 backdrop-blur-sm">
-                            <h3 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-5">
+                        <div className="bg-slate-50 dark:bg-slate-900/50 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 backdrop-blur-sm">
+                            <h3 className="text-xs font-black text-slate-700 dark:text-slate-400 uppercase tracking-[0.2em] mb-5">
                                 MODEL LIST
                             </h3>
 
@@ -543,61 +598,71 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                                             key={file.id}
                                             onClick={() => setSelectedFileId(file.id)}
                                             className={cn(
-                                                "relative p-3 rounded-xl border transition-all cursor-pointer group",
+                                                "relative p-4 rounded-2xl border transition-all cursor-pointer group",
                                                 selectedFileId === file.id
-                                                    ? "bg-cyan-500/5 border-cyan-500/50 shadow-[0_0_15px_rgba(6,182,212,0.1)]"
-                                                    : "bg-slate-800/20 border-slate-700/50 hover:bg-slate-800/40 hover:border-slate-600"
+                                                    ? "bg-cyan-500/5 border-cyan-500/50 shadow-xl shadow-cyan-500/10"
+                                                    : "bg-white dark:bg-slate-900/50 border-slate-200 dark:border-slate-800 hover:border-cyan-500/30 shadow-sm"
                                             )}
                                         >
-                                            {/* Line 1: Model name, Dimensions, Material */}
-                                            <div className="flex justify-between items-center mb-2">
-                                                <div className="flex items-center gap-4 flex-wrap">
-                                                    <div className="text-sm font-bold text-white">{idx + 1}. {file.file.name}</div>
-                                                    <div className="flex items-center gap-2 text-xs">
-                                                        <span className="text-slate-500">Dimensions:</span>
-                                                        <span className="text-slate-200 font-medium">{dimString}</span>
-                                                    </div>
-                                                    <div className="flex items-center gap-2 text-xs">
-                                                        <span className="text-slate-500">Material:</span>
-                                                        <span className="text-slate-200 font-medium">{material}</span>
-                                                    </div>
+                                            <div className="flex items-center gap-4">
+                                                <div className={cn(
+                                                    "w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-colors",
+                                                    selectedFileId === file.id ? "bg-cyan-500 text-white" : "bg-cyan-50 dark:bg-cyan-950/30 text-cyan-500"
+                                                )}>
+                                                    <FileText size={24} />
                                                 </div>
-                                                <button
-                                                    onClick={(e) => removeFile(file.id, e)}
-                                                    className="text-slate-500 hover:text-red-400 p-1.5 hover:bg-red-500/10 rounded transition-colors opacity-0 group-hover:opacity-100 shrink-0"
-                                                    title="Remove model"
-                                                >
-                                                    <Trash2 size={16} />
-                                                </button>
-                                            </div>
-
-                                            {/* Line 2: Scale, Weight, Quantity, Color, Total */}
-                                            <div className="flex justify-between items-center border-t border-slate-700/30 pt-2">
-                                                <div className="flex items-center gap-5">
-                                                    <div>
-                                                        <div className="text-[10px] text-slate-500 mb-0.5">Scale</div>
-                                                        <div className="text-xs font-bold text-white">{Math.round(file.scale * 100)}%</div>
-                                                    </div>
-                                                    <div>
-                                                        <div className="text-[10px] text-slate-500 mb-0.5">Weight</div>
-                                                        <div className="text-xs font-semibold text-slate-200">{fileStats?.weight || 0}g</div>
-                                                    </div>
-                                                    <div>
-                                                        <div className="text-[10px] text-slate-500 mb-0.5">Quantity</div>
-                                                        <div className="text-xs font-semibold text-slate-200">Nos {file.quantity}</div>
-                                                    </div>
-                                                    <div>
-                                                        <div className="text-[10px] text-slate-500 mb-0.5">Color</div>
-                                                        <div className="flex items-center gap-1.5">
-                                                            <div className="w-3 h-3 rounded border border-slate-600" style={{ backgroundColor: file.color }} />
-                                                            <span className="text-xs font-semibold text-slate-200">{getColorName(file.color)}</span>
+                                                
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="flex justify-between items-start">
+                                                        <div className="truncate pr-4">
+                                                            <div className="text-sm font-bold text-slate-900 dark:text-white truncate">
+                                                                {file.file.name}
+                                                            </div>
+                                                            <div className="text-[10px] text-slate-500 font-medium uppercase tracking-wider mt-1">
+                                                                {(file.file.size / 1024 / 1024).toFixed(2)} MB • {material}
+                                                            </div>
+                                                        </div>
+                                                        <div className="text-right shrink-0">
+                                                            <div className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1">Dimensions</div>
+                                                            <div className="text-[11px] font-bold text-cyan-600 dark:text-cyan-400 font-mono">
+                                                                {dimString}
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div className="text-right">
-                                                    <div className="text-[10px] text-slate-500 mb-0.5">Total</div>
-                                                    <div className="text-xl font-black text-cyan-400">
-                                                        ₹{((fileStats?.price || 0) * file.quantity).toFixed(2)}
+
+                                                    <div className="flex items-center gap-6 mt-3 pt-3 border-t border-slate-100 dark:border-slate-800/50">
+                                                        <div className="flex items-center gap-2">
+                                                            <span className="text-[9px] font-black text-slate-400 uppercase">Scale</span>
+                                                            <span className="text-xs font-bold text-slate-700 dark:text-slate-300">{Math.round(file.scale * 100)}%</span>
+                                                        </div>
+                                                        <div className="flex items-center gap-2 border-l border-slate-200 dark:border-slate-800 pl-6">
+                                                            <span className="text-[9px] font-black text-slate-400 uppercase">Qty</span>
+                                                            <span className="text-xs font-bold text-slate-700 dark:text-slate-300">{file.quantity}</span>
+                                                        </div>
+                                                        <div className="flex items-center gap-2 border-l border-slate-200 dark:border-slate-800 pl-6">
+                                                            <span className="text-[9px] font-black text-slate-400 uppercase">Weight</span>
+                                                            <span className="text-xs font-bold text-slate-700 dark:text-slate-300">{fileStats?.weight || 0}g</span>
+                                                        </div>
+                                                        <div className="flex items-center gap-2 border-l border-slate-200 dark:border-slate-800 pl-6">
+                                                            <span className="text-[9px] font-black text-slate-400 uppercase">Color</span>
+                                                            <div className="flex items-center gap-1.5">
+                                                                <div className="w-3 h-3 rounded-full border border-slate-400" style={{ backgroundColor: file.color }} />
+                                                                <span className="text-xs font-bold text-slate-700 dark:text-slate-300">{getColorName(file.color)}</span>
+                                                            </div>
+                                                        </div>
+                                                        <div className="ml-auto text-right">
+                                                            <div className="text-[9px] font-black text-slate-400 uppercase mb-0.5">Item Total</div>
+                                                            <div className="text-lg font-black text-cyan-500">
+                                                                ₹{((fileStats?.price || 0) * file.quantity).toFixed(0)}
+                                                            </div>
+                                                        </div>
+                                                        <button
+                                                            onClick={(e) => removeFile(file.id, e)}
+                                                            className="text-slate-400 hover:text-red-500 p-1 rounded-lg transition-colors ml-2"
+                                                            title="Remove model"
+                                                        >
+                                                            <Trash2 size={16} />
+                                                        </button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -609,12 +674,12 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                     </div>
 
                     <div className="lg:col-span-5 space-y-6">
-                        <div className="bg-slate-900/50 p-6 rounded-2xl border border-slate-800 backdrop-blur-sm">
-                            <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                        <div className="bg-slate-50 dark:bg-slate-900/50 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 backdrop-blur-sm">
+                            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
                                 Print Settings
                             </h3>
                             <div className="space-y-4 mb-6">
-                                <label className="text-sm font-medium text-slate-400">Material</label>
+                                <label className="text-sm font-medium text-slate-700 dark:text-slate-400">Material</label>
                                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                                     {(Object.keys(MATERIALS) as Array<keyof typeof MATERIALS>).map((m) => {
                                         const isAvailable = ['PLA', 'ABS'].includes(m);
@@ -635,15 +700,15 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                                                     material === m && isAvailable
                                                         ? "bg-cyan-500 text-slate-950 border-cyan-500"
                                                         : isAvailable
-                                                            ? "bg-slate-800 text-slate-300 border-slate-700 hover:border-cyan-500/50"
-                                                            : "bg-slate-900 text-slate-600 border-slate-800 cursor-not-allowed opacity-60"
+                                                            ? "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700 hover:border-cyan-500/50"
+                                                            : "bg-slate-50 dark:bg-slate-900 text-slate-600 border-slate-200 dark:border-slate-800 cursor-not-allowed opacity-60"
                                                 )}
                                             >
                                                 <span className={cn(!isAvailable && "line-through decoration-slate-500/50 decoration-2")}>
                                                     {m}
                                                 </span>
                                                 {!isAvailable && (
-                                                    <div className="absolute inset-0 flex items-center justify-center bg-slate-950/80 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <div className="absolute inset-0 flex items-center justify-center bg-white dark:bg-slate-950/80 opacity-0 group-hover:opacity-100 transition-opacity">
                                                         <span className="text-[9px] uppercase tracking-tighter text-red-400 font-bold px-1 text-center leading-tight">
                                                             Unavailable
                                                         </span>
@@ -657,15 +722,19 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
 
                             <div className="flex flex-col sm:flex-row gap-6 mb-6">
                                 <div className="space-y-3 flex-1">
-                                    <label className="text-sm font-medium text-slate-400">Color</label>
+                                    <label className="text-sm font-medium text-slate-700 dark:text-slate-400">Color</label>
                                     <div className="flex gap-2">
-                                        {['#2563eb', '#ef4444', '#22c55e', '#eab308', '#ffffff', '#000000'].map((c) => (
+                                        {(settings?.colors ? Object.keys(settings.colors).filter(hex => settings.colors[hex].isAvailable) : ['#2563eb', '#ef4444', '#22c55e', '#eab308', '#ffffff', '#000000']).map((c) => (
                                             <button
                                                 key={c}
                                                 onClick={() => handleColorChange(c)}
                                                 className={cn(
                                                     "w-8 h-8 rounded-full border-2 transition-transform hover:scale-110",
-                                                    selectedFile?.color === c ? "border-white scale-110" : "border-transparent"
+                                                    selectedFile?.color === c 
+                                                        ? "border-slate-900 dark:border-white scale-110" 
+                                                        : c === '#ffffff' 
+                                                            ? "border-slate-200 dark:border-transparent" 
+                                                            : "border-transparent"
                                                 )}
                                                 style={{ backgroundColor: c }}
                                                 aria-label={`Select color ${c}`}
@@ -675,26 +744,26 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                                 </div>
 
                                 <div className="space-y-3">
-                                    <label className="text-sm font-medium text-slate-400">Quantity</label>
-                                    <div className="flex items-center bg-slate-800 rounded-lg p-1 border border-slate-700">
+                                    <label className="text-sm font-medium text-slate-700 dark:text-slate-400">Quantity</label>
+                                    <div className="flex items-center bg-slate-100 dark:bg-slate-800 rounded-lg p-1 border border-slate-300 dark:border-slate-700">
                                         <button
                                             onClick={() => {
                                                 if (!selectedFile) return;
                                                 const newQty = Math.max(1, selectedFile.quantity - 1);
                                                 setUploadedFiles(prev => prev.map(f => f.id === selectedFile.id ? { ...f, quantity: newQty } : f));
                                             }}
-                                            className="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-700 rounded-md transition-colors"
+                                            className="w-8 h-8 flex items-center justify-center text-slate-600 dark:text-slate-400 hover:text-white hover:bg-slate-200 dark:bg-slate-700 rounded-md transition-colors"
                                         >
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12" /></svg>
                                         </button>
-                                        <span className="w-10 text-center font-bold text-white">{selectedFile?.quantity || 1}</span>
+                                        <span className="w-10 text-center font-bold text-slate-900 dark:text-white">{selectedFile?.quantity || 1}</span>
                                         <button
                                             onClick={() => {
                                                 if (!selectedFile) return;
                                                 const newQty = (selectedFile.quantity || 1) + 1;
                                                 setUploadedFiles(prev => prev.map(f => f.id === selectedFile.id ? { ...f, quantity: newQty } : f));
                                             }}
-                                            className="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-700 rounded-md transition-colors"
+                                            className="w-8 h-8 flex items-center justify-center text-slate-600 dark:text-slate-400 hover:text-white hover:bg-slate-200 dark:bg-slate-700 rounded-md transition-colors"
                                         >
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
                                         </button>
@@ -714,8 +783,8 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                                 />
 
                                 <div className="space-y-2">
-                                    <label className="text-xs font-medium text-slate-400">Infill Pattern</label>
-                                    <div className="grid grid-cols-2 gap-2">
+                                    <label className="text-xs font-medium text-slate-700 dark:text-slate-400">Infill Pattern</label>
+                                    <div className="grid grid-cols-4 gap-2">
                                         {(Object.keys(INFILL_PATTERNS) as Array<keyof typeof INFILL_PATTERNS>).map((p) => {
                                             const Icon = PATTERN_ICONS[p] || Box;
                                             const isSelected = infillPattern === p;
@@ -726,8 +795,8 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                                                     className={cn(
                                                         "flex items-center gap-2 px-3 py-2 rounded-lg border text-xs font-bold transition-all",
                                                         isSelected
-                                                            ? "bg-cyan-500/10 border-cyan-500 text-cyan-400"
-                                                            : "bg-slate-800 border-slate-700 text-slate-400 hover:bg-slate-700 hover:border-slate-600"
+                                                            ? "bg-cyan-500/10 border-cyan-500 text-cyan-600 dark:text-cyan-400"
+                                                            : "bg-slate-100 dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:bg-slate-700 hover:border-slate-400 dark:border-slate-600"
                                                     )}
                                                 >
                                                     <Icon size={14} className={cn(isSelected ? "text-cyan-500" : "text-slate-500")} />
@@ -740,7 +809,7 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                             </div>
 
                             <div className="space-y-4 mb-6">
-                                <label className="text-xs font-medium text-slate-400 block">Density</label>
+                                <label className="text-xs font-medium text-slate-700 dark:text-slate-400 block">Density</label>
                                 <div className="flex gap-2">
                                     <CustomDropdown
                                         value={isCustomDensity ? 'custom' : String(infillPercent)}
@@ -767,19 +836,19 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                                                 max="100"
                                                 value={infillPercent}
                                                 onChange={(e) => setInfillPercent(Math.min(100, Math.max(1, Number(e.target.value))))}
-                                                className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500 pr-8"
+                                                className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500 pr-8"
                                             />
-                                            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-slate-500">%</span>
+                                            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-slate-700 dark:text-slate-500">%</span>
                                         </div>
                                     )}
                                 </div>
                             </div>
 
-                            <div className="border-t border-slate-800 pt-6">
+                            <div className="border-t border-slate-200 dark:border-slate-800 pt-6">
                                 {/* Detailed Item Breakdown (Model Wise) */}
                                 {uploadedFiles.length > 0 && (
                                     <div className="mb-6 space-y-3">
-                                        <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-3">Model Wise breakdown</h4>
+                                        <h4 className="text-[10px] font-black text-slate-600 dark:text-slate-500 uppercase tracking-[0.2em] mb-3">Model Wise breakdown</h4>
                                         <div className="space-y-2">
                                             {uploadedFiles.map((file, idx) => {
                                                 const res = file.volume > 0 ? calculatePrice(
@@ -802,17 +871,17 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                                                     : '--';
 
                                                 return (
-                                                    <div key={file.id} className="text-[11px] pb-2 border-b border-white/5">
+                                                    <div key={file.id} className="text-[11px] pb-2 border-b border-slate-200 dark:border-white/5">
                                                         <div className="grid grid-cols-12 gap-2 items-start">
                                                             <div className="col-span-7">
-                                                                <div className="font-bold text-slate-300 truncate">
+                                                                <div className="font-bold text-slate-900 dark:text-slate-300 truncate">
                                                                     {idx + 1}. {file.file.name}
                                                                 </div>
-                                                                <div className="text-[10px] text-slate-500 mt-0.5">
+                                                                <div className="text-[10px] text-slate-600 dark:text-slate-500 mt-0.5">
                                                                     {dimString}
                                                                 </div>
                                                             </div>
-                                                            <div className="col-span-2 text-center text-slate-400">
+                                                            <div className="col-span-2 text-center text-slate-700 dark:text-slate-400">
                                                                 Nos {file.quantity}
                                                             </div>
                                                             <div className="col-span-3 text-right text-cyan-400 font-black">
@@ -829,25 +898,33 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                                 {(totalResults || isCalculating) && (
                                     <div className="space-y-4">
                                         <div className="flex justify-between items-center text-sm">
-                                            <span className="text-slate-400">Total Price</span>
+                                            <span className="text-slate-700 dark:text-slate-400">Total Price</span>
                                             {isCalculating ? (
                                                 <Skeleton variant="text" width={120} height={28} />
                                             ) : (
-                                                <span className="text-xl font-bold text-cyan-400">
-                                                    ₹${(totalResults?.price || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                                <span className="text-xl font-bold text-slate-400">
+                                                    ₹{(totalResults?.price || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                                 </span>
                                             )}
                                         </div>
+
+                                        {appliedCoupon && (
+                                            <div className="flex justify-between items-center text-sm text-green-500">
+                                                <span>Coupon Discount ({appliedCoupon.type === 'percentage' ? `${appliedCoupon.value}%` : 'Fixed'})</span>
+                                                <span className="font-bold">- ₹{(totalResults?.discount || 0).toFixed(2)}</span>
+                                            </div>
+                                        )}
+
                                         <div className="flex justify-between items-center text-[12.5px] font-bold">
-                                            <span className="text-slate-500 font-bold text-[11px] uppercase tracking-wider">Round off</span>
+                                            <span className="text-slate-700 dark:text-slate-500 font-bold text-[11px] uppercase tracking-wider">Round off</span>
                                             <span className={(() => {
-                                                const total = totalResults?.price || 0;
+                                                const total = totalResults?.netPrice || 0;
                                                 const rounded = Math.ceil(total);
                                                 const diff = rounded - total;
-                                                return diff === 0 ? "text-slate-400 text-[10px] uppercase font-medium" : "text-slate-200";
+                                                return diff === 0 ? "text-slate-700 dark:text-slate-400 text-[10px] uppercase font-medium" : "text-slate-900 dark:text-slate-200";
                                             })()}>
                                                 {(() => {
-                                                    const total = totalResults?.price || 0;
+                                                    const total = totalResults?.netPrice || 0;
                                                     const rounded = Math.ceil(total);
                                                     const diff = rounded - total;
                                                     if (diff === 0) {
@@ -857,30 +934,75 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                                                 })()}
                                             </span>
                                         </div>
-                                        <div className="border-t border-slate-700/50 pt-3">
+                                        <div className="border-t border-slate-300 dark:border-slate-700/50 pt-3">
                                             <div className="flex justify-between items-center">
-                                                <span className="text-slate-300 font-bold">Net Price</span>
+                                                <span className="text-slate-700 dark:text-slate-300 font-bold">Net Price</span>
                                                 <span className="text-2xl font-black text-cyan-400">
-                                                    ₹{Math.ceil(totalResults?.price || 0).toFixed(2)}
+                                                    ₹{Math.ceil(totalResults?.netPrice || 0).toFixed(2)}
                                                 </span>
                                             </div>
                                             <div className="text-right mt-1">
-                                                <span className="text-[10px] text-slate-500 uppercase">
-                                                    {numberToWords(Math.ceil(totalResults?.price || 0))}
+                                                <span className="text-[10px] text-slate-600 dark:text-slate-500 uppercase">
+                                                    {numberToWords(Math.ceil(totalResults?.netPrice || 0))}
                                                 </span>
                                             </div>
                                         </div>
 
+                                        {/* Coupon Code */}
+                                        <div className="space-y-3 pb-3 border-b border-slate-200 dark:border-slate-800/50 mb-3">
+                                            <div className="flex items-center gap-2">
+                                                <input
+                                                    type="checkbox"
+                                                    id="use-coupon"
+                                                    checked={useCoupon}
+                                                    onChange={(e) => setUseCoupon(e.target.checked)}
+                                                    className="appearance-none w-4 h-4 rounded border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 checked:bg-cyan-500 checked:border-cyan-500 transition-all cursor-pointer shrink-0 relative after:content-[''] after:absolute after:hidden checked:after:block after:left-[5px] after:top-[1px] after:w-[6px] after:h-[10px] after:border-r-2 after:border-b-2 after:border-white after:rotate-45"
+                                                />
+                                                <label htmlFor="use-coupon" className="text-xs font-bold text-slate-700 dark:text-slate-300 cursor-pointer">
+                                                    Apply Coupon Code
+                                                </label>
+                                            </div>
+                                            {useCoupon && (
+                                                <div className="flex flex-col gap-2 animate-in fade-in slide-in-from-top-2 duration-300">
+                                                    <div className="flex gap-2">
+                                                        <input
+                                                            type="text"
+                                                            value={couponCode}
+                                                            onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                                                            placeholder="ENTER CODE"
+                                                            className={cn(
+                                                                "flex-1 bg-white dark:bg-slate-950 border rounded-lg px-3 py-2 text-xs font-mono tracking-widest focus:outline-none focus:border-cyan-500",
+                                                                couponError ? "border-red-500/50" : (appliedCoupon ? "border-green-500/50" : "border-slate-200 dark:border-slate-800")
+                                                            )}
+                                                        />
+                                                        <button 
+                                                            onClick={handleApplyCoupon}
+                                                            disabled={isApplyingCoupon || !couponCode}
+                                                            className="px-4 py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-950 text-[10px] font-black rounded-lg uppercase tracking-wider disabled:opacity-50"
+                                                        >
+                                                            {isApplyingCoupon ? '...' : (appliedCoupon ? 'Applied' : 'Apply')}
+                                                        </button>
+                                                    </div>
+                                                    {couponError && <p className="text-[10px] text-red-500 font-bold">{couponError}</p>}
+                                                    {appliedCoupon && (
+                                                        <p className="text-[10px] text-green-500 font-bold">
+                                                            Discount Applied: {appliedCoupon.type === 'percentage' ? `${appliedCoupon.value}%` : `₹${appliedCoupon.value}`}
+                                                        </p>
+                                                    )}
+                                                </div>
+                                            )}
+                                        </div>
+
                                         {/* Checkboxes */}
-                                        <div className="space-y-3 pt-2 border-t border-slate-800/50">
+                                        <div className="space-y-3 pt-2">
                                             <div className="flex items-start gap-2">
                                                 <input
                                                     type="checkbox"
                                                     checked={isPaymentAccepted}
                                                     onChange={(e) => setIsPaymentAccepted(e.target.checked)}
-                                                    className="mt-1 peer appearance-none w-4 h-4 rounded border border-slate-700 bg-slate-950 checked:bg-cyan-500 checked:border-cyan-500 transition-all cursor-pointer shrink-0 relative after:content-[''] after:absolute after:hidden checked:after:block after:left-[5px] after:top-[1px] after:w-[6px] after:h-[10px] after:border-r-2 after:border-b-2 after:border-white after:rotate-45"
+                                                    className="mt-1 peer appearance-none w-4 h-4 rounded border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 checked:bg-cyan-500 checked:border-cyan-500 transition-all cursor-pointer shrink-0 relative after:content-[''] after:absolute after:hidden checked:after:block after:left-[5px] after:top-[1px] after:w-[6px] after:h-[10px] after:border-r-2 after:border-b-2 after:border-white after:rotate-45"
                                                 />
-                                                <div className="text-xs text-slate-300">
+                                                <div className="text-xs text-slate-700 dark:text-slate-300">
                                                     Kindly, make sure the 100% payment to start your process. You will get your parts in 10 to 14 working days.
                                                     <button
                                                         onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowPaymentInfo(true); }}
@@ -895,9 +1017,9 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                                                     type="checkbox"
                                                     checked={isTermsAccepted}
                                                     onChange={(e) => setIsTermsAccepted(e.target.checked)}
-                                                    className="mt-1 peer appearance-none w-4 h-4 rounded border border-slate-700 bg-slate-950 checked:bg-cyan-500 checked:border-cyan-500 transition-all cursor-pointer shrink-0 relative after:content-[''] after:absolute after:hidden checked:after:block after:left-[5px] after:top-[1px] after:w-[6px] after:h-[10px] after:border-r-2 after:border-b-2 after:border-white after:rotate-45"
+                                                    className="mt-1 peer appearance-none w-4 h-4 rounded border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 checked:bg-cyan-500 checked:border-cyan-500 transition-all cursor-pointer shrink-0 relative after:content-[''] after:absolute after:hidden checked:after:block after:left-[5px] after:top-[1px] after:w-[6px] after:h-[10px] after:border-r-2 after:border-b-2 after:border-white after:rotate-45"
                                                 />
-                                                <div className="text-xs text-slate-300">
+                                                <div className="text-xs text-slate-700 dark:text-slate-300">
                                                     Agree our
                                                     <button
                                                         onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowTermsInfo(true); }}
@@ -928,9 +1050,9 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
             {orderStep === 'preview' && (
                 <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4">
                     <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden">
-                        <div className="p-4 bg-slate-900 flex justify-between items-center shrink-0">
+                        <div className="p-4 bg-slate-50 dark:bg-slate-900 flex justify-between items-center shrink-0">
                             <button onClick={() => setOrderStep('form')} className="text-cyan-400 font-bold">Back</button>
-                            <span className="font-bold text-white">Quotation Preview</span>
+                            <span className="font-bold text-slate-900 dark:text-white">Quotation Preview</span>
                         </div>
 
                         <div
@@ -938,7 +1060,7 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                             onScroll={handleScroll}
                         >
                             {/* Standalone Quotation Template Component */}
-                            <div className="flex justify-center p-4 min-h-screen bg-slate-100">
+                             <div className="flex justify-center p-4 min-h-screen bg-slate-100">
                                 <QuotationDocument
                                     quoteId={quoteDetails.id}
                                     date={quoteDetails.date}
@@ -946,7 +1068,7 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                                     client={{
                                         name: userDetails.name || 'name',
                                         details: 'customer details, phone number',
-                                        address: `${userDetails.doorNo} ${userDetails.street}, ${userDetails.city} - ${userDetails.pincode}`,
+                                        address: `${userDetails.doorNo}, ${userDetails.street}, ${userDetails.area}, ${userDetails.city} - ${userDetails.pincode}`,
                                         email: userDetails.email || 'mail ID',
                                         phone: `${userDetails.countryCode}${userDetails.phone}`
                                     }}
@@ -958,29 +1080,32 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                                             infillPattern,
                                             layerHeight,
                                             f.surfaceArea,
-                                            f.height
+                                            f.height,
+                                            f.color,
+                                            settings || undefined
                                         );
                                         return {
                                             name: f.file.name,
-                                            description: `${material} â€¢ ${infillPercent}% â€¢ ${f.dimensions ? `${(f.dimensions.x * f.scale).toFixed(1)}x${(f.dimensions.y * f.scale).toFixed(1)}x${(f.dimensions.z * f.scale).toFixed(1)}` : '--'}mm`,
+                                            description: `${material} • ${infillPercent}% • ${f.dimensions ? `${(f.dimensions.x * f.scale).toFixed(1)}x${(f.dimensions.y * f.scale).toFixed(1)}x${(f.dimensions.z * f.scale).toFixed(1)}` : '--'}mm`,
                                             price: res.price,
                                             quantity: f.quantity,
                                             total: res.price * f.quantity,
                                             color: f.color,
-                                            weight: res.weight,
-                                            time: res.time
+                                            weight: res.price > 0 ? res.filament_weight_g : 0,
+                                            time: res.price > 0 ? res.print_time_hours : 0
                                         };
                                     })}
                                     totalAmount={totalResults?.price || 0}
                                     totalQty={uploadedFiles.reduce((acc, f) => acc + f.quantity, 0)}
+                                    discount={totalResults?.discount || 0}
                                 />
                             </div>
                         </div>
 
-                        <div className="p-6 bg-slate-900 flex flex-col sm:flex-row gap-4 items-center justify-between shrink-0">
+                        <div className="p-6 bg-slate-50 dark:bg-slate-900 flex flex-col sm:flex-row gap-4 items-center justify-between shrink-0">
                             <button
                                 onClick={() => setOrderStep('form')}
-                                className="text-slate-400 hover:text-white font-bold px-6 flex items-center gap-2 group transition-colors"
+                                className="text-slate-900 dark:text-slate-400 hover:text-cyan-500 font-bold px-6 flex items-center gap-2 group transition-colors"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover:-translate-x-1 transition-transform"><path d="m15 18-6-6 6-6" /></svg>
                                 Edit Details
@@ -990,9 +1115,9 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                                     <div className="w-full mb-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
                                         <div className="flex justify-between items-end mb-2">
                                             <span className="text-emerald-400 font-bold text-xs uppercase tracking-wider">{uploadStatus}</span>
-                                            <span className="text-white font-black text-sm">{uploadProgress}%</span>
+                                            <span className="text-slate-900 dark:text-white font-black text-sm">{uploadProgress}%</span>
                                         </div>
-                                        <div className="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                                        <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-1.5 overflow-hidden">
                                             <div
                                                 className="bg-gradient-to-r from-emerald-500 to-cyan-500 h-full transition-all duration-500 ease-out"
                                                 style={{ width: `${uploadProgress}%` }}
@@ -1059,7 +1184,7 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                                             setUploadStatus('Saving order details...');
 
                                             // 3. Save order to system (Pending) before payment
-                                            const fullAddress = `${userDetails.doorNo}, ${userDetails.street}, ${userDetails.city}, ${userDetails.district} - ${userDetails.pincode}, ${userDetails.state}`;
+                                            const fullAddress = `${userDetails.doorNo}, ${userDetails.street}, ${userDetails.area}, ${userDetails.city}, ${userDetails.district} - ${userDetails.pincode}, ${userDetails.state}`;
                                             await fetch('/api/send-quote', {
                                                 method: 'POST',
                                                 headers: { 'Content-Type': 'application/json' },
@@ -1112,7 +1237,7 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
 
             {orderStep === 'success' && (
                 <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4">
-                    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-8 max-w-md w-full relative z-10">
+                    <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 max-w-md w-full relative z-10">
                         {/* DotLottie Confetti Animation - In front of popup */}
                         <AnimationLoop5Times />
                         {/* Close Button */}
@@ -1135,7 +1260,7 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                                     message: ''
                                 });
                             }}
-                            className="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors p-1 z-30"
+                            className="absolute top-4 right-4 text-slate-600 dark:text-slate-400 hover:text-white transition-colors p-1 z-30"
                             aria-label="Close"
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -1148,8 +1273,8 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                             <div className="w-16 h-16 bg-green-500/10 text-green-500 rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
                             </div>
-                            <h2 className="text-2xl font-bold text-white mb-2">Quote Sent Successfully! 🎉</h2>
-                            <p className="text-slate-400 mb-8 max-w-sm mx-auto">
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Quote Sent Successfully! 🎉</h2>
+                            <p className="text-slate-700 dark:text-slate-400 mb-8 max-w-sm mx-auto">
                                 We have sent the quotation summary to <b>{userDetails.email}</b>. Our team will review the files and contact you shortly.
                             </p>
 
@@ -1170,18 +1295,18 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
             {/* Payment Info Modal */}
             {showPaymentInfo && (
                 <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4" onClick={() => setShowPaymentInfo(false)}>
-                    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-md w-full" onClick={(e) => e.stopPropagation()}>
-                        <h3 className="text-xl font-bold text-white mb-4">Payment Details</h3>
-                        <div className="space-y-3 text-sm text-slate-300">
+                    <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 max-w-md w-full" onClick={(e) => e.stopPropagation()}>
+                        <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-4">Payment Details</h3>
+                        <div className="space-y-3 text-sm text-slate-800 dark:text-slate-300">
                             <p>To start the manufacturing process, we require 100% advance payment.</p>
-                            <div className="bg-slate-800/50 rounded-lg p-4 space-y-2">
+                            <div className="bg-slate-100 dark:bg-slate-800/50 rounded-lg p-4 space-y-2">
                                 <h4 className="font-semibold text-cyan-400">Bank Transfer Details:</h4>
                                 <p>Account Name: Vedakeerthi P</p>
                                 <p>Account Number: 6850329636</p>
                                 <p>IFSC Code: KKBK0008666</p>
                                 <p>Bank: Kotak Mahindra Bank</p>
                             </div>
-                            <div className="bg-slate-800/50 rounded-lg p-4 space-y-2">
+                            <div className="bg-slate-100 dark:bg-slate-800/50 rounded-lg p-4 space-y-2">
                                 <h4 className="font-semibold text-cyan-400">UPI Payment:</h4>
                                 <p>UPI ID: vaelinsa@sbi</p>
                                 <p>Or scan the QR code (available after order confirmation)</p>
@@ -1205,9 +1330,9 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
             {/* Terms & Conditions Modal */}
             {showTermsInfo && (
                 <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4" onClick={() => setShowTermsInfo(false)}>
-                    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-                        <h3 className="text-xl font-bold text-white mb-4">Terms & Conditions</h3>
-                        <div className="space-y-4 text-sm text-slate-300">
+                    <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+                        <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-4">Terms & Conditions</h3>
+                        <div className="space-y-4 text-sm text-slate-800 dark:text-slate-300">
                             <section>
                                 <h4 className="font-semibold text-cyan-400 mb-2">1. Order Processing</h4>
                                 <p>Orders are processed only after 100% advance payment confirmation. Manufacturing begins within 24 hours of payment receipt.</p>
@@ -1251,8 +1376,8 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
             {/* Contact Form Modal */}
             {showContactForm && (
                 <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4" onClick={() => setShowContactForm(false)}>
-                    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-                        <h3 className="text-xl font-bold text-white mb-6">Contact Details</h3>
+                    <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+                        <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6">Contact Details</h3>
                         <form onSubmit={(e) => {
                             e.preventDefault();
                             if (userDetails.phone.length !== 10) {
@@ -1289,33 +1414,33 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                         }}>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <label className="text-xs font-medium text-slate-400">Full Name *</label>
+                                    <label className="text-xs font-medium text-slate-700 dark:text-slate-400">Full Name *</label>
                                     <input
                                         required
                                         type="text"
-                                        className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-cyan-500"
+                                        className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg px-4 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500"
                                         value={userDetails.name}
                                         onChange={e => setUserDetails({ ...userDetails, name: e.target.value })}
                                     />
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-xs font-medium text-slate-400">Email Address *</label>
+                                    <label className="text-xs font-medium text-slate-700 dark:text-slate-400">Email Address *</label>
                                     <input
                                         required
                                         type="email"
-                                        className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-cyan-500"
+                                        className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg px-4 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500"
                                         value={userDetails.email}
                                         onChange={e => setUserDetails({ ...userDetails, email: e.target.value })}
                                     />
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-xs font-medium text-slate-400">Phone Number *</label>
+                                    <label className="text-xs font-medium text-slate-700 dark:text-slate-400">Phone Number *</label>
                                     <div className="flex gap-2">
                                         <input
                                             type="text"
-                                            className="w-16 bg-slate-950 border border-slate-800 rounded-lg px-3 py-2.5 text-white focus:outline-none focus:border-cyan-500 shrink-0"
+                                            className="w-16 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500 shrink-0"
                                             value={userDetails.countryCode}
                                             onChange={e => {
                                                 const value = e.target.value.replace(/[^+0-9]/g, '');
@@ -1329,7 +1454,7 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                                             required
                                             type="tel"
                                             inputMode="numeric"
-                                            className="w-[180px] bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-cyan-500"
+                                            className="w-[180px] bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg px-4 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500"
                                             value={userDetails.phone.length > 5 ? `${userDetails.phone.slice(0, 5)} ${userDetails.phone.slice(5, 10)}` : userDetails.phone}
                                             onChange={e => {
                                                 const value = e.target.value.replace(/[^0-9]/g, '').slice(0, 10);
@@ -1342,71 +1467,84 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-xs font-medium text-slate-400">Pincode *</label>
+                                    <label className="text-xs font-medium text-slate-700 dark:text-slate-400">Pincode *</label>
                                     <input
                                         required
                                         type="number"
-                                        className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-cyan-500"
+                                        className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg px-4 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500"
                                         value={userDetails.pincode}
                                         onChange={handlePincodeChange}
                                     />
                                 </div>
 
                                 <div className="space-y-2 md:col-span-2">
-                                    <label className="text-xs font-medium text-slate-400">Door No / Building *</label>
+                                    <label className="text-xs font-medium text-slate-700 dark:text-slate-400">Door No / Building *</label>
                                     <input
                                         required
                                         type="text"
-                                        className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-cyan-500"
+                                        className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg px-4 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500"
                                         value={userDetails.doorNo}
                                         onChange={e => setUserDetails({ ...userDetails, doorNo: e.target.value })}
                                     />
                                 </div>
 
                                 <div className="space-y-2 md:col-span-2">
-                                    <label className="text-xs font-medium text-slate-400">Street / Area *</label>
+                                    <label className="text-xs font-medium text-slate-700 dark:text-slate-400">Street *</label>
                                     <input
                                         required
                                         type="text"
-                                        className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-cyan-500"
+                                        className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg px-4 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500"
                                         value={userDetails.street}
                                         onChange={e => setUserDetails({ ...userDetails, street: e.target.value })}
+                                        placeholder="Main Road, Cross Street..."
                                     />
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-xs font-medium text-slate-400">City</label>
+                                    <label className="text-xs font-medium text-slate-700 dark:text-slate-400">Area / Landmark *</label>
+                                    <input
+                                        required
+                                        type="text"
+                                        className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg px-4 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500"
+                                        value={userDetails.area}
+                                        onChange={e => setUserDetails({ ...userDetails, area: e.target.value })}
+                                        placeholder="Fetched automatically"
+                                    />
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-xs font-medium text-slate-700 dark:text-slate-400">City</label>
                                     <input
                                         type="text"
-                                        className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-cyan-500"
+                                        className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg px-4 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500"
                                         value={userDetails.city}
                                         onChange={e => setUserDetails({ ...userDetails, city: e.target.value })}
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-xs font-medium text-slate-400">District</label>
+                                    <label className="text-xs font-medium text-slate-700 dark:text-slate-400">District</label>
                                     <input
                                         type="text"
-                                        className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-cyan-500"
+                                        className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg px-4 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500"
                                         value={userDetails.district}
                                         onChange={e => setUserDetails({ ...userDetails, district: e.target.value })}
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-xs font-medium text-slate-400">State</label>
+                                    <label className="text-xs font-medium text-slate-700 dark:text-slate-400">State</label>
                                     <input
                                         type="text"
-                                        className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-cyan-500"
+                                        className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg px-4 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500"
                                         value={userDetails.state}
                                         onChange={e => setUserDetails({ ...userDetails, state: e.target.value })}
                                     />
                                 </div>
 
                                 <div className="space-y-2 md:col-span-2">
-                                    <label className="text-xs font-medium text-slate-400">Message / Notes (Optional)</label>
+                                    <label className="text-xs font-medium text-slate-700 dark:text-slate-400">Message / Notes (Optional)</label>
                                     <textarea
                                         rows={3}
-                                        className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-cyan-500 resize-none"
+                                        className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg px-4 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500 resize-none"
                                         value={userDetails.message}
                                         onChange={e => setUserDetails({ ...userDetails, message: e.target.value })}
                                         placeholder="Any additional information or special requirements..."
@@ -1418,7 +1556,7 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                                 <button
                                     type="button"
                                     onClick={() => setShowContactForm(false)}
-                                    className="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-bold py-3 rounded-lg transition-colors"
+                                    className="flex-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white font-bold py-3 rounded-lg transition-colors"
                                 >
                                     Cancel
                                 </button>

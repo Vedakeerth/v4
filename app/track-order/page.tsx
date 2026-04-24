@@ -7,14 +7,15 @@ import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Metadata } from "next";
+import ReCAPTCHA from "react-google-recaptcha";
 
 // Metadata moved to layout or parent for App Router compatibility in "use client" files
 
 const STATUS_STEPS = [
-    { label: "Pending", icon: Clock, color: "text-amber-400", bg: "bg-amber-400/10" },
-    { label: "Processing", icon: Package, color: "text-blue-400", bg: "bg-blue-400/10" },
-    { label: "Shipped", icon: MapPin, color: "text-purple-400", bg: "bg-purple-400/10" },
-    { label: "Delivered", icon: CheckCircle, color: "text-emerald-400", bg: "bg-emerald-400/10" },
+    { label: "Pending", icon: Clock, color: "text-amber-600 dark:text-amber-400", bg: "bg-amber-500/10 dark:bg-amber-400/10" },
+    { label: "Processing", icon: Package, color: "text-blue-600 dark:text-blue-400", bg: "bg-blue-500/10 dark:bg-blue-400/10" },
+    { label: "Shipped", icon: MapPin, color: "text-purple-600 dark:text-purple-400", bg: "bg-purple-500/10 dark:bg-purple-400/10" },
+    { label: "Delivered", icon: CheckCircle, color: "text-emerald-600 dark:text-emerald-400", bg: "bg-emerald-500/10 dark:bg-emerald-400/10" },
 ];
 
 export default function TrackOrderPage() {
@@ -23,9 +24,14 @@ export default function TrackOrderPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [order, setOrder] = useState<any>(null);
     const [error, setError] = useState<string | null>(null);
+    const [captchaVerified, setCaptchaVerified] = useState(false);
 
     const handleTrack = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (!captchaVerified) {
+            setError("Please verify that you are not a robot.");
+            return;
+        }
         setError(null);
         setIsLoading(true);
 
@@ -49,18 +55,18 @@ export default function TrackOrderPage() {
     const currentStepIndex = STATUS_STEPS.findIndex(s => s.label === order?.status);
 
     return (
-        <main className="min-h-screen bg-slate-950 text-white selection:bg-cyan-500/30">
+        <main className="min-h-screen bg-white dark:bg-slate-950 text-slate-900 dark:text-white selection:bg-cyan-500/30">
             {/* Top accent */}
             <div className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 z-[100]" />
 
-            <div className="container mx-auto px-4 pt-32 pb-20">
-                <div className="max-w-4xl mx-auto">
+            <div className="dynamic-container px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 pt-24 pb-20">
+                <div className="w-full max-w-5xl mx-auto">
                     {/* Header */}
                     <div className="text-center mb-12">
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-[10px] font-black uppercase tracking-[0.2em] mb-4"
+                            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-500 dark:text-cyan-400 text-[10px] font-black uppercase tracking-[0.2em] mb-4"
                         >
                             <Package size={12} />
                             Order Tracking
@@ -69,15 +75,15 @@ export default function TrackOrderPage() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.1 }}
-                            className="text-4xl md:text-5xl font-black italic uppercase tracking-tighter mb-4"
+                            className="text-4xl md:text-6xl font-extrabold uppercase tracking-tight mb-6 text-slate-900 dark:text-white"
                         >
-                            Track Your <span className="text-cyan-400">Order</span>
+                            Track Your <span className="text-cyan-500 dark:text-cyan-400">Order</span>
                         </motion.h1>
                         <motion.p 
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.2 }}
-                            className="text-slate-500 font-medium max-w-md mx-auto"
+                            className="text-slate-600 dark:text-slate-400 font-medium max-w-md mx-auto"
                         >
                             Enter your Order ID and the email or phone number used during checkout.
                         </motion.p>
@@ -88,15 +94,15 @@ export default function TrackOrderPage() {
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: 0.3 }}
-                        className="bg-slate-900/50 backdrop-blur-xl border border-slate-800 rounded-3xl p-8 mb-12 shadow-[0_0_50px_rgba(0,0,0,0.3)]"
+                        className="bg-slate-50 dark:bg-slate-900/50 backdrop-blur-xl border border-slate-200 dark:border-slate-800 rounded-3xl p-8 mb-12 shadow-[0_0_50px_rgba(0,0,0,0.1)] dark:shadow-[0_0_50px_rgba(0,0,0,0.3)]"
                     >
                         <form onSubmit={handleTrack} className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">
+                                <label className="text-[10px] font-black text-slate-700 dark:text-slate-500 uppercase tracking-widest ml-1">
                                     Tracking ID
                                 </label>
                                 <div className="relative group">
-                                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500 group-focus-within:text-cyan-400 transition-colors">
+                                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500 group-focus-within:text-cyan-500 transition-colors">
                                         <Package size={18} />
                                     </div>
                                     <input
@@ -105,17 +111,17 @@ export default function TrackOrderPage() {
                                         placeholder="VK123456"
                                         value={orderId}
                                         onChange={(e) => setOrderId(e.target.value.toUpperCase())}
-                                        className="w-full pl-12 pr-4 py-4 bg-slate-950 border border-slate-800 rounded-2xl text-white font-bold focus:outline-none focus:border-cyan-500/50 focus:ring-4 focus:ring-cyan-500/10 transition-all placeholder:text-slate-700"
+                                        className="w-full pl-12 pr-4 py-4 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500/50 focus:ring-4 focus:ring-cyan-500/10 transition-all placeholder:text-slate-400"
                                     />
                                 </div>
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">
+                                <label className="text-[10px] font-black text-slate-700 dark:text-slate-500 uppercase tracking-widest ml-1">
                                     Registered Phone Number
                                 </label>
                                 <div className="relative group">
-                                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500 group-focus-within:text-cyan-400 transition-colors">
+                                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500 group-focus-within:text-cyan-500 transition-colors">
                                         <Search size={18} />
                                     </div>
                                     <input
@@ -124,11 +130,17 @@ export default function TrackOrderPage() {
                                         placeholder="10-digit Phone"
                                         value={contact}
                                         onChange={(e) => setContact(e.target.value)}
-                                        className="w-full pl-12 pr-4 py-4 bg-slate-950 border border-slate-800 rounded-2xl text-white font-bold focus:outline-none focus:border-cyan-500/50 focus:ring-4 focus:ring-cyan-500/10 transition-all placeholder:text-slate-700"
+                                        className="w-full pl-12 pr-4 py-4 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500/50 focus:ring-4 focus:ring-cyan-500/10 transition-all placeholder:text-slate-400"
                                     />
                                 </div>
                             </div>
 
+                            <div className="md:col-span-2 pt-2 pb-2">
+                                <ReCAPTCHA
+                                    sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "6LdoysQsAAAAANxd-LomWmg_T3xKruxTKeCSKL40"}
+                                    onChange={(token) => setCaptchaVerified(!!token)}
+                                />
+                            </div>
                             <div className="md:col-span-2 pt-2">
                                 <button
                                     type="submit"
@@ -151,7 +163,7 @@ export default function TrackOrderPage() {
                             <motion.div 
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                className="mt-6 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-center gap-3 text-red-400 text-sm font-bold"
+                                className="mt-6 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-center gap-3 text-red-500 dark:text-red-400 text-sm font-bold"
                             >
                                 <AlertCircle size={20} />
                                 {error}
@@ -169,11 +181,11 @@ export default function TrackOrderPage() {
                                 className="space-y-8"
                             >
                                 {/* Order Status Card */}
-                                <div className="bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden">
-                                    <div className="p-8 border-b border-slate-800 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                                <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl overflow-hidden">
+                                    <div className="p-8 border-b border-slate-200 dark:border-slate-800 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                                         <div>
-                                            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Order Summary</p>
-                                            <h2 className="text-2xl font-black text-white italic tracking-tight">{order.trackingId}</h2>
+                                            <p className="text-[10px] font-black text-slate-600 dark:text-slate-500 uppercase tracking-widest mb-1">Order Summary</p>
+                                            <h2 className="text-2xl font-black text-slate-900 dark:text-white italic tracking-tight">{order.trackingId}</h2>
                                         </div>
                                         <div className="flex items-center gap-4">
                                             <div className={`px-5 py-2 rounded-full ${STATUS_STEPS[currentStepIndex > -1 ? currentStepIndex : 0].bg} ${STATUS_STEPS[currentStepIndex > -1 ? currentStepIndex : 0].color} font-black text-xs uppercase tracking-widest border border-current/20`}>
@@ -183,10 +195,10 @@ export default function TrackOrderPage() {
                                     </div>
 
                                     {/* Timeline */}
-                                    <div className="p-8 bg-slate-950/40">
+                                    <div className="p-8 bg-white dark:bg-slate-950/40">
                                         <div className="relative">
                                             {/* Progress Bar Background */}
-                                            <div className="absolute top-5 left-6 right-6 h-0.5 bg-slate-800 hidden md:block" />
+                                            <div className="absolute top-5 left-6 right-6 h-0.5 bg-slate-100 dark:bg-slate-800 hidden md:block" />
                                             
                                             {/* Active Progress Bar */}
                                             {currentStepIndex > 0 && (
@@ -207,19 +219,19 @@ export default function TrackOrderPage() {
                                                         <div key={idx} className="flex md:flex-col items-center gap-4 md:gap-3 flex-1">
                                                             <div className={`relative z-10 w-12 h-12 rounded-full flex items-center justify-center transition-all duration-500 ${
                                                                 isCurrent ? "bg-cyan-500 shadow-[0_0_20px_rgba(6,182,212,0.4)] scale-110" : 
-                                                                isActive ? "bg-cyan-500/20 text-cyan-400" : "bg-slate-900 text-slate-600 border border-slate-800"
+                                                                isActive ? "bg-cyan-500/20 text-cyan-600 dark:text-cyan-400" : "bg-slate-50 dark:bg-slate-900 text-slate-600 border border-slate-200 dark:border-slate-800"
                                                             }`}>
                                                                 <Icon size={isCurrent ? 24 : 20} className={isCurrent ? "text-slate-950" : ""} />
                                                             </div>
                                                             <div className="flex flex-col md:items-center">
-                                                                <span className={`text-[10px] font-black uppercase tracking-widest ${isActive ? "text-white" : "text-slate-600"}`}>
+                                                                <span className={`text-[10px] font-black uppercase tracking-widest ${isActive ? "text-slate-900 dark:text-white" : "text-slate-600"}`}>
                                                                     {step.label}
                                                                 </span>
                                                                 {isActive && idx < currentStepIndex && (
-                                                                    <span className="text-[10px] text-cyan-500 font-bold uppercase mt-1">Completed</span>
+                                                                    <span className="text-[10px] text-cyan-600 dark:text-cyan-500 font-bold uppercase mt-1">Completed</span>
                                                                 )}
                                                                 {isCurrent && (
-                                                                    <span className="text-[10px] text-cyan-400 font-bold uppercase mt-1">Current Status</span>
+                                                                    <span className="text-[10px] text-cyan-600 dark:text-cyan-400 font-bold uppercase mt-1">Current Status</span>
                                                                 )}
                                                             </div>
                                                         </div>
@@ -232,41 +244,41 @@ export default function TrackOrderPage() {
                                     {/* Order Details Grid */}
                                     <div className="p-8 grid grid-cols-1 md:grid-cols-3 gap-8">
                                         <div className="space-y-4">
-                                            <div className="flex items-center gap-3 text-slate-500">
+                                            <div className="flex items-center gap-3 text-slate-600 dark:text-slate-500">
                                                 <Calendar size={18} />
                                                 <span className="text-[10px] font-black uppercase tracking-widest">Expected Delivery</span>
                                             </div>
-                                            <p className="text-white font-bold ml-7">{order.estimatedDelivery}</p>
+                                            <p className="text-slate-900 dark:text-white font-bold ml-7">{order.estimatedDelivery}</p>
                                         </div>
                                         <div className="space-y-4">
-                                            <div className="flex items-center gap-3 text-slate-500">
+                                            <div className="flex items-center gap-3 text-slate-600 dark:text-slate-500">
                                                 <CreditCard size={18} />
                                                 <span className="text-[10px] font-black uppercase tracking-widest">Total Amount</span>
                                             </div>
-                                            <p className="text-cyan-400 font-black text-xl ml-7">{order.totalAmount}</p>
+                                            <p className="text-cyan-600 dark:text-cyan-400 font-black text-xl ml-7">{order.totalAmount}</p>
                                         </div>
                                         <div className="space-y-4">
-                                            <div className="flex items-center gap-3 text-slate-500">
+                                            <div className="flex items-center gap-3 text-slate-600 dark:text-slate-500">
                                                 <MapPin size={18} />
                                                 <span className="text-[10px] font-black uppercase tracking-widest">Customer</span>
                                             </div>
-                                            <p className="text-white font-bold ml-7">{order.customerName}</p>
+                                            <p className="text-slate-900 dark:text-white font-bold ml-7">{order.customerName}</p>
                                         </div>
                                     </div>
 
                                     {/* Items List */}
-                                    <div className="p-8 border-t border-slate-800">
+                                    <div className="p-8 border-t border-slate-200 dark:border-slate-800">
                                         <h3 className="text-xs font-black text-slate-500 uppercase tracking-[0.2em] mb-6">Ordered Items</h3>
                                         <div className="space-y-4">
                                             {order.items?.map((item: any, idx: number) => (
-                                                <div key={idx} className="flex justify-between items-center p-4 bg-slate-950/40 border border-slate-800/50 rounded-2xl">
+                                                <div key={idx} className="flex justify-between items-center p-4 bg-white dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800/50 rounded-2xl">
                                                     <div className="flex items-center gap-4">
-                                                        <div className="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center text-cyan-400 border border-slate-800">
+                                                        <div className="w-10 h-10 bg-slate-50 dark:bg-slate-900 rounded-xl flex items-center justify-center text-cyan-600 dark:text-cyan-400 border border-slate-200 dark:border-slate-800">
                                                             <Package size={20} />
                                                         </div>
                                                         <div>
-                                                            <p className="text-white font-bold text-sm">{item.name}</p>
-                                                            <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest mt-0.5">Quantity: {item.quantity}</p>
+                                                            <p className="text-slate-900 dark:text-white font-bold text-sm">{item.name}</p>
+                                                            <p className="text-[10px] text-slate-600 dark:text-slate-500 font-black uppercase tracking-widest mt-0.5">Quantity: {item.quantity}</p>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -276,23 +288,23 @@ export default function TrackOrderPage() {
                                 </div>
 
                                 {/* Support Info */}
-                                <div className="bg-slate-900/50 backdrop-blur-sm p-8 rounded-3xl border border-slate-800/50 text-center">
-                                    <p className="text-slate-400 text-sm font-medium mb-6">
-                                        You will receive real-time notifications to your <span className="text-white font-bold">Email ID</span> for every status update.
+                                <div className="bg-slate-50 dark:bg-slate-900/50 backdrop-blur-sm p-8 rounded-3xl border border-slate-200 dark:border-slate-800/50 text-center">
+                                    <p className="text-slate-600 dark:text-slate-400 text-sm font-medium mb-6">
+                                        You will receive real-time notifications to your <span className="text-slate-900 dark:text-white font-bold">Email ID</span> for every status update.
                                     </p>
                                     <div className="flex flex-col md:flex-row items-center justify-center gap-6">
                                         <a 
                                             href="https://wa.me/919876543210" 
                                             target="_blank" 
                                             rel="noreferrer"
-                                            className="group flex items-center gap-3 px-6 py-3 bg-green-500/10 border border-green-500/20 rounded-2xl text-green-400 font-bold hover:bg-green-500/20 transition-all uppercase tracking-widest text-[10px]"
+                                            className="group flex items-center gap-3 px-6 py-3 bg-green-500/10 border border-green-500/20 rounded-2xl text-green-600 dark:text-green-400 font-bold hover:bg-green-500/20 transition-all uppercase tracking-widest text-[10px]"
                                         >
                                             <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
                                             WhatsApp Support
                                         </a>
                                         <a 
                                             href="mailto:support@vaelinsa.com" 
-                                            className="group flex items-center gap-3 px-6 py-3 bg-cyan-500/10 border border-cyan-500/20 rounded-2xl text-cyan-400 font-bold hover:bg-cyan-500/20 transition-all uppercase tracking-widest text-[10px]"
+                                            className="group flex items-center gap-3 px-6 py-3 bg-cyan-500/10 border border-cyan-500/20 rounded-2xl text-cyan-600 dark:text-cyan-400 font-bold hover:bg-cyan-500/20 transition-all uppercase tracking-widest text-[10px]"
                                         >
                                             <span className="w-2 h-2 rounded-full bg-cyan-500 animate-pulse" />
                                             Email Support

@@ -85,12 +85,12 @@ export default function CatalogGrid({ products }: CatalogGridProps) {
     return (
         <>
             {/* Filters Toolbar */}
-            <div className="max-w-7xl mx-auto mb-12 space-y-4">
-                <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-xl">
+            <div className="w-full mb-12 space-y-4">
+                <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-6 shadow-xl">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         {/* Search */}
                         <div className="space-y-2">
-                            <label className="text-sm font-medium text-slate-300">Search</label>
+                            <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Search</label>
                             <div className="relative">
                                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
                                 <input
@@ -98,7 +98,7 @@ export default function CatalogGrid({ products }: CatalogGridProps) {
                                     placeholder="Search products..."
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
-                                    className="w-full pl-9 pr-4 py-2 bg-slate-950 border border-slate-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                                    className="w-full pl-9 pr-4 py-2 bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                                 />
                             </div>
                         </div>
@@ -129,7 +129,7 @@ export default function CatalogGrid({ products }: CatalogGridProps) {
 
                         {/* Price Range */}
                         <div className="space-y-2">
-                            <label className="text-sm font-medium text-slate-300">Max Price: ₹{priceRange.max}</label>
+                            <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Max Price: ₹{priceRange.max}</label>
                             <input
                                 type="range"
                                 min="0"
@@ -137,7 +137,7 @@ export default function CatalogGrid({ products }: CatalogGridProps) {
                                 step="1000"
                                 value={priceRange.max}
                                 onChange={(e) => setPriceRange(prev => ({ ...prev, max: Number(e.target.value) }))}
-                                className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
+                                className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
                             />
                         </div>
                     </div>
@@ -146,9 +146,9 @@ export default function CatalogGrid({ products }: CatalogGridProps) {
 
             {/* Products Grid */}
             {filteredProducts.length === 0 ? (
-                <div className="text-center py-12 bg-slate-900 rounded-lg border border-slate-800">
+                <div className="text-center py-12 bg-slate-50 dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800">
                     <Package className="h-12 w-12 text-slate-600 mx-auto mb-4" />
-                    <p className="text-slate-400">
+                    <p className="text-slate-600 dark:text-slate-400">
                         {selectedCategory === "All"
                             ? "No products available."
                             : `No products found in category "${selectedCategory}".`}
@@ -175,10 +175,10 @@ export default function CatalogGrid({ products }: CatalogGridProps) {
                                 initial={{ opacity: 0, scale: 0.9 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 transition={{ duration: 0.3, delay: index * 0.05 }}
-                                className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-blue-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-blue-900/20 group cursor-pointer"
+                                className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden hover:border-blue-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-blue-900/20 group cursor-pointer"
                                 onClick={() => setSelectedQuickView(product)}
                             >
-                                <div className="relative h-64 w-full bg-slate-800">
+                                <div className="relative h-64 w-full bg-slate-100 dark:bg-slate-800">
                                     <Image
                                         src={product.image}
                                         alt={product.name}
@@ -194,14 +194,14 @@ export default function CatalogGrid({ products }: CatalogGridProps) {
                                         >
                                             {product.inStock ? "In Stock" : "Out of Stock"}
                                         </span>
-                                        <span className="px-2 py-1 rounded text-xs font-semibold bg-slate-900/80 text-blue-400">
+                                        <span className="px-2 py-1 rounded text-xs font-semibold bg-slate-50 dark:bg-slate-900/80 text-blue-400">
                                             {product.category}
                                         </span>
                                     </div>
                                 </div>
                                 <div className="p-4">
-                                    <h3 className="text-white font-semibold text-lg mb-2 group-hover:text-blue-400 transition-colors">{product.name}</h3>
-                                    <p className="text-slate-400 text-sm mb-4 line-clamp-2">{product.description}</p>
+                                     <h3 className="text-slate-900 dark:text-white font-semibold text-lg mb-2 group-hover:text-blue-400 transition-colors">{product.name}</h3>
+                                    <p className="text-slate-600 dark:text-slate-400 text-sm mb-4 line-clamp-2">{product.description}</p>
                                     <div className="flex items-center justify-between mb-4">
                                         <span className="text-blue-400 font-bold text-xl">
                                             {typeof product.price === 'number'

@@ -45,8 +45,8 @@ export default function WhyChooseUs({ content }: WhyChooseUsProps) {
     // }, []);
 
     return (
-        <section className="py-24 bg-slate-900">
-            <div className="container mx-auto px-4">
+        <section className="py-20 md:py-28 bg-slate-50 dark:bg-slate-900">
+            <div className="dynamic-container">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                     <div>
                         {isLoading ? (
@@ -70,11 +70,11 @@ export default function WhyChooseUs({ content }: WhyChooseUsProps) {
                         ) : (
                             <>
                                 <h2 className="text-blue-500 font-medium tracking-wide mb-2 uppercase text-sm">{content?.header?.badge || "Why Choose Us"}</h2>
-                                <h3 className="text-3xl md:text-5xl font-bold text-white mb-6">
+                                <h3 className="text-3xl md:text-5xl font-bold text-slate-900 dark:text-white mb-6">
                                     {content?.header?.title || "Excellence in"} <br />
-                                    <span className="text-slate-400">{content?.header?.titleSuffix || "Engineering"}</span>
+                                    <span className="text-slate-700 dark:text-slate-400">{content?.header?.titleSuffix || "Engineering"}</span>
                                 </h3>
-                                <p className="text-slate-400 text-lg mb-8 leading-relaxed">
+                                <p className="text-slate-700 dark:text-slate-400 text-lg mb-8 leading-relaxed">
                                     {content?.header?.description || "Providing high-precision engineering and 3D printing solutions with unmatched speed and quality."}
                                 </p>
 
@@ -88,8 +88,8 @@ export default function WhyChooseUs({ content }: WhyChooseUsProps) {
                                                 })()}
                                             </div>
                                             <div>
-                                                <h4 className="text-white font-semibold mb-1">{feature?.title || "Product"}</h4>
-                                                <p className="text-slate-500 text-sm leading-relaxed">{feature?.description || "Details about this specialized engineering service."}</p>
+                                                <h4 className="text-slate-900 dark:text-white font-semibold mb-1">{feature?.title || "Product"}</h4>
+                                                <p className="text-slate-600 text-sm leading-relaxed">{feature?.description || "Details about this specialized engineering service."}</p>
                                             </div>
                                         </div>
                                     ))}
@@ -127,7 +127,7 @@ export default function WhyChooseUs({ content }: WhyChooseUsProps) {
                                             whileInView={{ opacity: 1, scale: 1 }}
                                             viewport={{ once: true }}
                                             transition={{ duration: 0.5, delay: 0.3 }}
-                                            className="relative h-48 w-full overflow-hidden rounded-2xl border border-slate-700/50"
+                                            className="relative h-48 w-full overflow-hidden rounded-2xl border border-slate-300 dark:border-slate-700/50"
                                         >
                                             <Image
                                                 src={content?.images?.[0]?.src || "/images/bento-1-precision.png"}
@@ -143,7 +143,7 @@ export default function WhyChooseUs({ content }: WhyChooseUsProps) {
                                             whileInView={{ opacity: 1, scale: 1 }}
                                             viewport={{ once: true }}
                                             transition={{ duration: 0.5, delay: 0.5 }}
-                                            className="relative h-48 w-full overflow-hidden rounded-2xl border border-slate-700/50"
+                                            className="relative h-48 w-full overflow-hidden rounded-2xl border border-slate-300 dark:border-slate-700/50"
                                         >
                                             <Image
                                                 src={content?.images?.[1]?.src || "/images/bento-4-mechanical.png"}
@@ -161,7 +161,7 @@ export default function WhyChooseUs({ content }: WhyChooseUsProps) {
                                             whileInView={{ opacity: 1, scale: 1 }}
                                             viewport={{ once: true }}
                                             transition={{ duration: 0.5, delay: 0.4 }}
-                                            className="relative h-64 w-full overflow-hidden rounded-2xl border border-slate-700/50"
+                                            className="relative h-64 w-full overflow-hidden rounded-2xl border border-slate-300 dark:border-slate-700/50"
                                         >
                                             <Image
                                                 src={content?.images?.[2]?.src || "/images/bento-2-industrial.png"}
@@ -177,7 +177,7 @@ export default function WhyChooseUs({ content }: WhyChooseUsProps) {
                                             whileInView={{ opacity: 1, scale: 1 }}
                                             viewport={{ once: true }}
                                             transition={{ duration: 0.5, delay: 0.6 }}
-                                            className="relative h-32 w-full overflow-hidden rounded-2xl border border-slate-700/50"
+                                            className="relative h-32 w-full overflow-hidden rounded-2xl border border-slate-300 dark:border-slate-700/50"
                                         >
                                             <Image
                                                 src={content?.images?.[3]?.src || "/images/bento-3-shipping.png"}

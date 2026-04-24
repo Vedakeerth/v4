@@ -50,7 +50,7 @@ export default function CommentSection({ blogId, initialComments }: CommentSecti
             </div>
 
             {/* Comment Form */}
-            <form onSubmit={handleSubmit} className="bg-slate-900/50 border border-slate-800 rounded-3xl p-8 mb-16">
+            <form onSubmit={handleSubmit} className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 mb-16">
                 <h3 className="text-white font-bold mb-6">Leave a comment</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                     <div className="relative">
@@ -61,7 +61,7 @@ export default function CommentSection({ blogId, initialComments }: CommentSecti
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                             required
-                            className="w-full bg-slate-950 border border-slate-800 rounded-2xl pl-12 pr-4 py-4 text-white focus:border-cyan-500/50 outline-none transition-all"
+                            className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl pl-12 pr-4 py-4 text-white focus:border-cyan-500/50 outline-none transition-all"
                         />
                     </div>
                 </div>
@@ -71,7 +71,7 @@ export default function CommentSection({ blogId, initialComments }: CommentSecti
                         value={comment}
                         onChange={(e) => setComment(e.target.value)}
                         required
-                        className="w-full bg-slate-950 border border-slate-800 rounded-2xl px-4 py-4 text-white h-32 focus:border-cyan-500/50 outline-none transition-all resize-none"
+                        className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl px-4 py-4 text-white h-32 focus:border-cyan-500/50 outline-none transition-all resize-none"
                     />
                 </div>
                 <button
@@ -87,14 +87,14 @@ export default function CommentSection({ blogId, initialComments }: CommentSecti
             {/* Comment List */}
             <div className="space-y-8">
                 {comments.length === 0 ? (
-                    <div className="text-center py-10 bg-slate-900/30 rounded-3xl border border-dashed border-slate-800">
+                    <div className="text-center py-10 bg-slate-50 dark:bg-slate-900/30 rounded-3xl border border-dashed border-slate-200 dark:border-slate-800">
                         <p className="text-slate-500 font-medium">No comments yet. Be the first to start the conversation!</p>
                     </div>
                 ) : (
                     comments.map((c) => (
                         <div key={c.id} className="flex gap-6 group">
                             <div className="flex-shrink-0">
-                                <div className="w-12 h-12 rounded-2xl bg-slate-800 flex items-center justify-center text-cyan-500 font-black text-xl border border-slate-700">
+                                <div className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-cyan-500 font-black text-xl border border-slate-300 dark:border-slate-700">
                                     {c.author.charAt(0).toUpperCase()}
                                 </div>
                             </div>
@@ -105,7 +105,7 @@ export default function CommentSection({ blogId, initialComments }: CommentSecti
                                         {new Date(c.date).toLocaleDateString()}
                                     </span>
                                 </div>
-                                <p className="text-slate-400 leading-relaxed text-sm whitespace-pre-wrap">{c.text}</p>
+                                <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-sm whitespace-pre-wrap">{c.text}</p>
                             </div>
                         </div>
                     ))

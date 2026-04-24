@@ -66,17 +66,17 @@ export default function ProductShowcase({ header, categories, products: initialP
     if (!isVisible) return null;
 
     return (
-        <section className="py-24 bg-slate-950 border-t border-slate-900 relative overflow-hidden">
+        <section className="py-20 md:py-28 bg-white dark:bg-slate-950 border-t border-slate-900 relative overflow-hidden">
             {/* Background Grid Pattern */}
             <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
 
-            <div className="container mx-auto px-4 relative z-10">
+            <div className="dynamic-container relative z-10">
                 <div className="text-center mb-16">
                     <motion.h2
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        className="text-3xl md:text-5xl font-bold text-white mb-6"
+                        className="text-3xl md:text-5xl font-bold text-slate-900 dark:text-white mb-6"
                     >
                         {header?.title || "Explore Our"} <span className="text-cyan-500">{header?.titleHighlight || "Precision"}</span> {header?.suffix || "Catalog"}
                     </motion.h2>
@@ -85,7 +85,7 @@ export default function ProductShowcase({ header, categories, products: initialP
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ delay: 0.1 }}
-                        className="text-slate-400 text-lg max-w-2xl mx-auto"
+                        className="text-slate-600 dark:text-slate-400 text-lg max-w-2xl mx-auto"
                     >
                         {header?.description || "Browse our specialized range of engineering parts and 3D printing solutions."}
                     </motion.p>
@@ -101,7 +101,7 @@ export default function ProductShowcase({ header, categories, products: initialP
                                 onClick={() => setActiveCategory(cat?.id || "")}
                                 className={`group relative flex items-center gap-3 px-8 py-4 rounded-2xl font-bold transition-all duration-300 border ${activeCategory === cat?.id
                                     ? "bg-cyan-500 text-slate-950 border-cyan-400 shadow-[0_0_20px_rgba(6,182,212,0.3)]"
-                                    : "bg-slate-900 text-slate-400 border-slate-800 hover:border-slate-700 hover:text-white"
+                                    : "bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:border-slate-700 hover:text-slate-900 dark:text-white"
                                     }`}
                             >
                                 <Icon size={20} className={activeCategory === cat?.id ? "text-slate-950" : "text-cyan-500"} />
@@ -138,9 +138,9 @@ export default function ProductShowcase({ header, categories, products: initialP
                                     <div
                                         key={product?.id || index}
                                         onClick={() => setSelectedQuickView(product)}
-                                        className="group flex flex-col md:flex-row bg-slate-900/50 border border-slate-800 rounded-3xl overflow-hidden hover:border-cyan-500/30 transition-all duration-500 cursor-pointer"
+                                        className="group flex flex-col md:flex-row bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-3xl overflow-hidden hover:border-cyan-500/30 transition-all duration-500 cursor-pointer"
                                     >
-                                        <div className="relative w-full md:w-2/5 aspect-square md:aspect-auto h-64 md:h-auto overflow-hidden bg-slate-950">
+                                        <div className="relative w-full md:w-2/5 aspect-square md:aspect-auto h-64 md:h-auto overflow-hidden bg-white dark:bg-slate-950">
                                             <Image
                                                 src={product?.image || "/placeholder-product.png"}
                                                 alt={product?.name || "Product"}
@@ -151,10 +151,10 @@ export default function ProductShowcase({ header, categories, products: initialP
                                         <div className="flex-1 p-8 flex flex-col justify-between">
                                             <div>
                                                 <div className="flex items-center justify-between mb-4">
-                                                    <span className="px-3 py-1 rounded-full bg-slate-800 text-cyan-400 text-[10px] font-bold uppercase tracking-widest border border-slate-700">
+                                                    <span className="px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-cyan-400 text-[10px] font-bold uppercase tracking-widest border border-slate-300 dark:border-slate-700">
                                                         {product?.inStock ? "Ready to Ship" : "Backorder"}
                                                     </span>
-                                                    <span className="text-xl font-bold text-white">
+                                                    <span className="text-xl font-bold text-slate-900 dark:text-white">
                                                         {product?.price
                                                             ? (typeof product.price === 'number'
                                                                 ? `₹${product.price.toLocaleString('en-IN')}`
@@ -162,10 +162,10 @@ export default function ProductShowcase({ header, categories, products: initialP
                                                             : "₹0"}
                                                     </span>
                                                 </div>
-                                                <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-cyan-400 transition-colors">
+                                                <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-3 group-hover:text-cyan-400 transition-colors">
                                                     {product?.name || "Engineering Component"}
                                                 </h3>
-                                                <p className="text-slate-400 text-sm mb-6 leading-relaxed">
+                                                <p className="text-slate-600 dark:text-slate-400 text-sm mb-6 leading-relaxed">
                                                     {product?.description || "High-precision component designed for advanced industrial applications."}
                                                 </p>
                                             </div>
@@ -191,7 +191,7 @@ export default function ProductShowcase({ header, categories, products: initialP
                                                             window.location.href = `/gallery/${createSeoSlug(product.name, product.id)}`;
                                                         }
                                                     }}
-                                                    className="p-3 rounded-xl bg-slate-800 border border-slate-700 text-white hover:bg-slate-700 transition-all duration-300"
+                                                    className="p-3 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white hover:bg-slate-200 dark:bg-slate-700 transition-all duration-300"
                                                 >
                                                     <Info size={18} />
                                                 </button>
@@ -212,7 +212,7 @@ export default function ProductShowcase({ header, categories, products: initialP
 
                 <div className="mt-16 text-center">
                     <Link href={header?.ctaLink || "/products"}>
-                        <button className="px-10 py-4 rounded-full border border-slate-800 text-white font-bold hover:bg-slate-900 transition-all duration-300 flex items-center gap-3 mx-auto">
+                        <button className="px-10 py-4 rounded-full border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white font-bold hover:bg-slate-50 dark:bg-slate-900 transition-all duration-300 flex items-center gap-3 mx-auto">
                             {header?.ctaText || "View Catalog"}
                             <ArrowRight size={20} />
                         </button>

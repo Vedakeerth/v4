@@ -60,26 +60,26 @@ export default function ProductQuickView({ product, onClose }: ProductQuickViewP
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 onClick={onClose}
-                className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-md cursor-pointer"
+                className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-white dark:bg-slate-950/90 backdrop-blur-md cursor-pointer"
             >
                 <motion.div
                     initial={{ scale: 0.9, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     exit={{ scale: 0.9, opacity: 0 }}
                     onClick={(e) => e.stopPropagation()}
-                    className="bg-slate-900 border border-slate-800 w-full max-w-[85vw] lg:max-w-[75vw] rounded-[2rem] overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.5)] relative cursor-default"
+                    className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-full max-w-[85vw] lg:max-w-[75vw] rounded-[2rem] overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.5)] relative cursor-default"
                 >
 
-                    <button
+                     <button
                         onClick={onClose}
-                        className="absolute top-6 right-6 z-[200] p-3 bg-slate-950/80 hover:bg-slate-800 text-white rounded-full backdrop-blur-md transition-all border border-slate-800/50 shadow-xl"
+                        className="absolute top-6 right-6 z-[200] p-3 bg-white dark:bg-slate-950/80 hover:bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white rounded-full backdrop-blur-md transition-all border border-slate-200 dark:border-slate-800/50 shadow-xl"
                     >
                         <X size={20} />
                     </button>
 
                     <div className="flex flex-col lg:flex-row h-full max-h-[90vh] lg:max-h-[85vh] overflow-hidden">
                         {/* Image Section */}
-                        <div className="w-full lg:w-3/5 h-[40vh] lg:h-auto relative bg-slate-950 group">
+                        <div className="w-full lg:w-3/5 h-[40vh] lg:h-auto relative bg-white dark:bg-slate-950 group">
                             <AnimatePresence mode="wait">
                                 <motion.div
                                     key={activeImageIndex}
@@ -106,13 +106,13 @@ export default function ProductQuickView({ product, onClose }: ProductQuickViewP
                                 <>
                                     <button
                                         onClick={handlePrev}
-                                        className="absolute left-4 top-1/2 -translate-y-1/2 p-3 bg-slate-950/40 hover:bg-slate-950/80 text-white rounded-full backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all border border-white/10"
+                                        className="absolute left-4 top-1/2 -translate-y-1/2 p-3 bg-white dark:bg-slate-950/40 hover:bg-white dark:bg-slate-950/80 text-white rounded-full backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all border border-white/10"
                                     >
                                         <ChevronLeft size={24} />
                                     </button>
                                     <button
                                         onClick={handleNext}
-                                        className="absolute right-4 top-1/2 -translate-y-1/2 p-3 bg-slate-950/40 hover:bg-slate-950/80 text-white rounded-full backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all border border-white/10"
+                                        className="absolute right-4 top-1/2 -translate-y-1/2 p-3 bg-white dark:bg-slate-950/40 hover:bg-white dark:bg-slate-950/80 text-white rounded-full backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all border border-white/10"
                                     >
                                         <ChevronRight size={24} />
                                     </button>
@@ -146,13 +146,13 @@ export default function ProductQuickView({ product, onClose }: ProductQuickViewP
                         </div>
 
                         {/* Content Section */}
-                        <div className="w-full lg:w-2/5 p-8 lg:p-14 flex flex-col bg-slate-900 overflow-y-auto custom-scrollbar">
+                        <div className="w-full lg:w-2/5 p-8 lg:p-14 flex flex-col bg-slate-50 dark:bg-slate-900 overflow-y-auto custom-scrollbar">
                             <div className="mb-4">
                                 <span className="text-xs font-black text-cyan-400 uppercase tracking-[0.3em] bg-cyan-500/5 px-3 py-1 rounded-md border border-cyan-500/10">
                                     {product.category}
                                 </span>
                             </div>
-                            <h2 className="text-3xl lg:text-4xl font-bold text-white mb-4 leading-tight tracking-tight">
+                            <h2 className="text-3xl lg:text-4xl font-bold text-slate-900 dark:text-white mb-4 leading-tight tracking-tight">
                                 {product.name}
                             </h2>
                             <div className="flex items-center justify-between mb-6">
@@ -170,9 +170,9 @@ export default function ProductQuickView({ product, onClose }: ProductQuickViewP
                                 </div>
                             </div>
 
-                            <div className="bg-slate-950/30 border border-slate-800/50 rounded-2xl p-6 mb-8">
+                            <div className="bg-white dark:bg-slate-950/30 border border-slate-200 dark:border-slate-800/50 rounded-2xl p-6 mb-8">
                                 <label className="text-[10px] font-black text-slate-600 uppercase tracking-widest mb-3 block">Engineering description</label>
-                                <p className="text-slate-400 text-sm leading-relaxed italic">
+                                <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed italic">
                                     "{product.description}"
                                 </p>
                             </div>
@@ -191,7 +191,7 @@ export default function ProductQuickView({ product, onClose }: ProductQuickViewP
                                                         "w-8 h-8 rounded-lg border-2 transition-all duration-300 relative group",
                                                         selectedColor === color
                                                             ? "border-cyan-500 scale-110 shadow-[0_0_15px_rgba(6,182,212,0.4)]"
-                                                            : "border-slate-800 hover:border-slate-600"
+                                                            : "border-slate-200 dark:border-slate-800 hover:border-slate-400 dark:border-slate-600"
                                                     )}
                                                     style={{ backgroundColor: color }}
                                                     title={color}
@@ -210,17 +210,17 @@ export default function ProductQuickView({ product, onClose }: ProductQuickViewP
                                 {/* Quantity Selector */}
                                 <div>
                                     <label className="text-xs font-black text-slate-500 uppercase tracking-widest mb-4 block">Quantity</label>
-                                    <div className="flex items-center gap-1 bg-slate-950 border border-slate-800 rounded-xl p-1.5 w-fit">
+                                    <div className="flex items-center gap-1 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-1.5 w-fit">
                                         <button
                                             onClick={() => setQuantity(q => Math.max(1, q - 1))}
-                                            className="p-2 hover:bg-slate-800 rounded-lg text-slate-400 hover:text-white transition-all"
+                                            className="p-2 hover:bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-600 dark:text-slate-400 hover:text-white transition-all"
                                         >
                                             <Minus size={16} />
                                         </button>
-                                        <span className="w-10 text-center font-bold text-white">{quantity}</span>
+                                        <span className="w-10 text-center font-bold text-slate-900 dark:text-white">{quantity}</span>
                                         <button
                                             onClick={() => setQuantity(q => q + 1)}
-                                            className="p-2 hover:bg-slate-800 rounded-lg text-slate-400 hover:text-white transition-all"
+                                            className="p-2 hover:bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-600 dark:text-slate-400 hover:text-white transition-all"
                                         >
                                             <Plus size={16} />
                                         </button>
@@ -228,7 +228,7 @@ export default function ProductQuickView({ product, onClose }: ProductQuickViewP
                                 </div>
                             </div>
 
-                            <div className="mt-auto pt-8 border-t border-slate-800/50 space-y-3">
+                            <div className="mt-auto pt-8 border-t border-slate-200 dark:border-slate-800/50 space-y-3">
                                 {/* Instant Buy Now */}
                                 <button
                                     onClick={() => setShowBuyNow(true)}
@@ -245,7 +245,7 @@ export default function ProductQuickView({ product, onClose }: ProductQuickViewP
                                         addToCart(product, selectedColor || undefined, quantity);
                                         onClose();
                                     }}
-                                    className="w-full py-4 bg-slate-800 hover:bg-slate-700 text-white font-black rounded-2xl transition-all border border-slate-700 flex items-center justify-center gap-3 group"
+                                    className="w-full py-4 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:bg-slate-700 text-white font-black rounded-2xl transition-all border border-slate-300 dark:border-slate-700 flex items-center justify-center gap-3 group"
                                 >
                                     <ShoppingCart size={18} className="group-hover:scale-110 transition-transform" />
                                     Add to Cart
@@ -257,12 +257,12 @@ export default function ProductQuickView({ product, onClose }: ProductQuickViewP
                                         onClick={onClose}
                                         className="flex-1"
                                     >
-                                        <button className="w-full py-4 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl transition-all border border-slate-700 flex items-center justify-center gap-2">
+                                        <button className="w-full py-4 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:bg-slate-700 text-white font-bold rounded-xl transition-all border border-slate-300 dark:border-slate-700 flex items-center justify-center gap-2">
                                             <Info size={18} />
                                             Full Details
                                         </button>
                                     </Link>
-                                    <button className="p-4 bg-slate-800 hover:bg-slate-700 text-white rounded-xl transition-all border border-slate-700">
+                                    <button className="p-4 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:bg-slate-700 text-white rounded-xl transition-all border border-slate-300 dark:border-slate-700">
                                         <Heart size={20} />
                                     </button>
                                 </div>

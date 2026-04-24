@@ -52,7 +52,7 @@ export default function ProductDetailClient({ product, similarProducts, pageData
     };
 
     return (
-        <div className="container mx-auto px-4 py-8">
+        <div className="dynamic-container py-8 md:py-12">
             <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -60,21 +60,21 @@ export default function ProductDetailClient({ product, similarProducts, pageData
             >
                 <Link
                     href="/gallery"
-                    className="inline-flex items-center text-slate-400 hover:text-white mb-8 transition-colors group"
+                    className="inline-flex items-center text-slate-600 dark:text-slate-400 hover:text-white mb-8 transition-colors group"
                 >
                     <ArrowLeft className="mr-2 h-5 w-5 transform group-hover:-translate-x-1 transition-transform" />
                     {pageData?.backButton || "Back to Gallery"}
                 </Link>
             </motion.div>
 
-            <div className="grid lg:grid-cols-2 gap-12 max-w-7xl mx-auto mb-20">
+            <div className="grid lg:grid-cols-2 gap-12 mb-20">
                 <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.6 }}
                     className="space-y-6"
                 >
-                    <div className="relative aspect-square rounded-2xl overflow-hidden bg-slate-900 border border-slate-800 shadow-2xl group">
+                    <div className="relative aspect-square rounded-2xl overflow-hidden bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl group">
                         {images.length > 1 && (
                             <>
                                 <button
@@ -101,7 +101,7 @@ export default function ProductDetailClient({ product, similarProducts, pageData
 
                         {/* Tags */}
                         <div className="absolute top-6 left-6 flex gap-2">
-                            <span className="px-4 py-1.5 rounded-full text-sm font-semibold bg-slate-950/80 text-cyan-400 border border-cyan-500/30 backdrop-blur-md">
+                            <span className="px-4 py-1.5 rounded-full text-sm font-semibold bg-white dark:bg-slate-950/80 text-cyan-400 border border-cyan-500/30 backdrop-blur-md">
                                 {product.category}
                             </span>
                         </div>
@@ -118,7 +118,7 @@ export default function ProductDetailClient({ product, similarProducts, pageData
                                         "relative flex-shrink-0 w-24 h-24 rounded-lg overflow-hidden border-2 transition-all",
                                         idx === currentImageIndex
                                             ? "border-cyan-500 shadow-[0_0_15px_rgba(6,182,212,0.4)] ring-2 ring-cyan-500/20"
-                                            : "border-slate-800 opacity-60 hover:opacity-100 hover:border-slate-600"
+                                            : "border-slate-200 dark:border-slate-800 opacity-60 hover:opacity-100 hover:border-slate-400 dark:border-slate-600"
                                     )}
                                 >
                                     <Image src={img} alt="" fill className="object-cover" />
@@ -136,7 +136,7 @@ export default function ProductDetailClient({ product, similarProducts, pageData
                 >
                     <div>
                         <div className="flex justify-between items-start">
-                            <h1 className="text-3xl md:text-4xl font-bold text-white mb-4 leading-tight">
+                            <h1 className="text-3xl md:text-5xl font-extrabold text-slate-900 dark:text-white mb-6 leading-tight tracking-tight uppercase">
                                 {product.name}
                             </h1>
                             <button
@@ -145,7 +145,7 @@ export default function ProductDetailClient({ product, similarProducts, pageData
                                     "p-3 rounded-full transition-all border",
                                     isLiked
                                         ? "bg-red-500/20 text-red-400 border-red-500/30"
-                                        : "bg-slate-800 text-slate-400 border-slate-700 hover:bg-slate-700"
+                                        : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-300 dark:border-slate-700 hover:bg-slate-200 dark:bg-slate-700"
                                 )}
                             >
                                 <Heart className={cn("w-6 h-6", isLiked && "fill-current")} />
@@ -175,17 +175,17 @@ export default function ProductDetailClient({ product, similarProducts, pageData
                                 )}
                             </div>
                         </div>
-                        <p className="text-slate-300 text-lg leading-relaxed">
+                        <p className="text-slate-700 dark:text-slate-300 text-lg leading-relaxed">
                             {product.description}
                         </p>
 
                     </div>
 
                     {/* Configuration */}
-                    <div className="bg-slate-900/50 p-6 rounded-2xl border border-slate-800 space-y-6">
+                    <div className="bg-slate-50 dark:bg-slate-900/50 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-6">
                         {/* Color */}
                         <div>
-                            <label className="text-sm font-bold text-slate-200 uppercase tracking-wider mb-4 block">
+                            <label className="text-sm font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider mb-4 block">
                                 {pageData?.finishLabel || "Select Finish / Color"}
                             </label>
                             <div className="flex gap-4 flex-wrap">
@@ -197,44 +197,44 @@ export default function ProductDetailClient({ product, similarProducts, pageData
                                             "w-12 h-12 rounded-full border-2 transition-transform hover:scale-110 shadow-lg",
                                             selectedColor === color
                                                 ? "border-white scale-110 ring-4 ring-cyan-500/30"
-                                                : "border-slate-600"
+                                                : "border-slate-400 dark:border-slate-600"
                                         )}
                                         style={{ backgroundColor: color }}
                                         title={getColorName(color)}
                                     />
                                 ))}
                             </div>
-                            <p className="mt-3 text-sm text-slate-400">
-                                Selected: <span className="text-white font-medium">{getColorName(selectedColor)}</span>
+                            <p className="mt-3 text-sm text-slate-600 dark:text-slate-400">
+                                Selected: <span className="text-slate-900 dark:text-white font-medium">{getColorName(selectedColor)}</span>
                             </p>
                         </div>
 
-                        <div className="h-px bg-slate-800" />
+                        <div className="h-px bg-slate-100 dark:bg-slate-800" />
 
                         {/* Quantity */}
                         <div>
-                            <label className="text-sm font-bold text-slate-200 uppercase tracking-wider mb-4 block">
+                            <label className="text-sm font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider mb-4 block">
                                 {pageData?.quantityLabel || "Quantity"}
                             </label>
                             <div className="flex items-center gap-6">
-                                <div className="flex items-center bg-slate-950 rounded-lg p-1.5 border border-slate-800">
+                                <div className="flex items-center bg-white dark:bg-slate-950 rounded-lg p-1.5 border border-slate-200 dark:border-slate-800">
                                     <button
                                         onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                                        className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 rounded-md transition-colors"
+                                        className="w-10 h-10 flex items-center justify-center text-slate-600 dark:text-slate-400 hover:text-white hover:bg-slate-100 dark:bg-slate-800 rounded-md transition-colors"
                                     >
                                         <span className="text-xl">-</span>
                                     </button>
-                                    <span className="w-16 text-center font-bold text-white text-lg">
+                                    <span className="w-16 text-center font-bold text-slate-900 dark:text-white text-lg">
                                         {quantity}
                                     </span>
                                     <button
                                         onClick={() => setQuantity(quantity + 1)}
-                                        className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 rounded-md transition-colors"
+                                        className="w-10 h-10 flex items-center justify-center text-slate-600 dark:text-slate-400 hover:text-white hover:bg-slate-100 dark:bg-slate-800 rounded-md transition-colors"
                                     >
                                         <span className="text-xl">+</span>
                                     </button>
                                 </div>
-                                <div className="text-slate-400">
+                                <div className="text-slate-600 dark:text-slate-400">
                                     {pageData?.totalLabel || "Total"}: <span className="text-cyan-400 font-bold text-xl ml-2">
                                         ₹{(parsePrice(product.price) * quantity).toFixed(2)}
                                     </span>
@@ -252,13 +252,13 @@ export default function ProductDetailClient({ product, similarProducts, pageData
                                 "flex-1 py-4 px-8 rounded-full font-bold text-lg flex items-center justify-center gap-3 transition-all shadow-xl",
                                 product.inStock
                                     ? "bg-cyan-500 hover:bg-cyan-400 text-slate-950 shadow-cyan-900/30 hover:shadow-cyan-900/50 hover:scale-[1.02]"
-                                    : "bg-slate-800 text-slate-500 cursor-not-allowed"
+                                    : "bg-slate-100 dark:bg-slate-800 text-slate-500 cursor-not-allowed"
                             )}
                         >
                             <ShoppingCart className="w-6 h-6" />
                             {product.inStock ? (pageData?.addToCartButton || "Add to Cart") : (pageData?.outOfStockButton || "Out of Stock")}
                         </button>
-                        <button className="w-14 h-14 flex items-center justify-center rounded-full border border-slate-700 bg-slate-800/50 text-slate-300 hover:bg-slate-800 hover:text-white transition-colors">
+                        <button className="w-14 h-14 flex items-center justify-center rounded-full border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800/50 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:bg-slate-800 hover:text-white transition-colors">
                             <Share2 className="w-6 h-6" />
                         </button>
                     </div>
@@ -272,9 +272,9 @@ export default function ProductDetailClient({ product, similarProducts, pageData
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.6 }}
-                    className="border-t border-slate-800 pt-16"
+                    className="border-t border-slate-200 dark:border-slate-800 pt-16"
                 >
-                    <h2 className="text-2xl font-bold text-white mb-8 flex items-center gap-3">
+                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-8 flex items-center gap-3">
                         <span className="w-1 h-8 bg-cyan-500 rounded-full" />
                         {pageData?.similarProductsTitle || "Similar Products"}
                     </h2>
@@ -289,9 +289,9 @@ export default function ProductDetailClient({ product, similarProducts, pageData
                             >
                                 <Link
                                     href={`/gallery/${require("@/lib/seo-utils").createSeoSlug(item.name, item.id)}`}
-                                    className="block bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-cyan-500/50 hover:shadow-lg hover:shadow-cyan-900/20 transition-all group"
+                                    className="block bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden hover:border-cyan-500/50 hover:shadow-lg hover:shadow-cyan-900/20 transition-all group"
                                 >
-                                    <div className="relative h-48 w-full bg-slate-800">
+                                    <div className="relative h-48 w-full bg-slate-100 dark:bg-slate-800">
                                         <Image
                                             src={item.image}
                                             alt={item.name}
@@ -311,10 +311,10 @@ export default function ProductDetailClient({ product, similarProducts, pageData
                                         <div className="mb-2 text-xs font-medium text-cyan-400 uppercase tracking-widest">
                                             {item.category}
                                         </div>
-                                        <h3 className="text-white font-semibold mb-2 truncate group-hover:text-cyan-400 transition-colors">
+                                        <h3 className="text-slate-900 dark:text-white font-semibold mb-2 truncate group-hover:text-cyan-400 transition-colors">
                                             {item.name}
                                         </h3>
-                                        <div className="text-slate-300 font-bold">
+                                        <div className="text-slate-700 dark:text-slate-300 font-bold">
                                             {item.price}
                                         </div>
                                     </div>

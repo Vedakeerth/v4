@@ -59,14 +59,15 @@ export default function NewsTicker({ initialItems }: { initialItems?: { text: st
 
     // Visibility logic based on settings
     const isHomePage = pathname === "/" || pathname === "/index.html" || pathname === "";
-    const isVisible = settings.showOnPages === "home" ? isHomePage : (
+    const isVisible = settings.showOnPages === "all" || (settings.showOnPages === "home" ? isHomePage : (
         isHomePage ||
         pathname === "/gallery" ||
         pathname === "/services" ||
         pathname === "/products" ||
         pathname === "/blog" ||
-        pathname === "/contact"
-    );
+        pathname === "/contact" ||
+        pathname === "/quote"
+    ));
 
     if (!isVisible || news.length === 0) return null;
 

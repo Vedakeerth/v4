@@ -20,7 +20,7 @@ export default async function IndustriesPage() {
   const industriesContent = await getPageContent('industries');
 
   return (
-    <main className="min-h-screen bg-slate-950 pt-24">
+    <main className="min-h-screen bg-white dark:bg-slate-950 pt-24">
       <Industries content={industriesContent} />
       <Footer />
     </main>

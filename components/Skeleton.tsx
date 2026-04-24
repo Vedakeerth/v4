@@ -17,7 +17,7 @@ export function Skeleton({
     animation = 'pulse'
 }: SkeletonProps) {
     const baseClasses = cn(
-        animation === 'pulse' ? "bg-slate-800 animate-pulse" : "animate-shimmer",
+        animation === 'pulse' ? "bg-slate-100 dark:bg-slate-800 animate-pulse" : "animate-shimmer",
         variant === 'text' && "rounded h-4",
         variant === 'circular' && "rounded-full",
         variant === 'rectangular' && "rounded",
@@ -35,7 +35,7 @@ export function Skeleton({
 // Pre-built skeleton components
 export function ProductCardSkeleton() {
     return (
-        <div className="bg-slate-900/40 border border-slate-800 rounded-xl overflow-hidden">
+        <div className="bg-slate-50 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden">
             <Skeleton variant="rectangular" height={256} className="w-full" />
             <div className="p-6 space-y-4">
                 <Skeleton variant="text" width="80%" height={20} />

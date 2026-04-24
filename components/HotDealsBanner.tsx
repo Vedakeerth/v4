@@ -44,7 +44,7 @@ export default function HotDealsBanner() {
                     <div className="h-px flex-1 bg-gradient-to-r from-slate-800 to-transparent ml-4" />
                 </div>
 
-                <div className="relative h-[400px] md:h-[350px] w-full bg-slate-900 rounded-[2.5rem] overflow-hidden border border-slate-800 group shadow-2xl">
+                <div className="relative h-[400px] md:h-[350px] w-full bg-slate-50 dark:bg-slate-900 rounded-[2.5rem] overflow-hidden border border-slate-200 dark:border-slate-800 group shadow-2xl">
                     <AnimatePresence mode="wait">
                         <motion.div
                             key={currentDeal}
@@ -67,7 +67,7 @@ export default function HotDealsBanner() {
                                 <h3 className="text-4xl md:text-5xl font-black text-white mb-4 leading-tight tracking-tight">
                                     {deals[currentDeal].title}
                                 </h3>
-                                <p className="text-slate-400 text-lg mb-8 line-clamp-2 italic">
+                                <p className="text-slate-600 dark:text-slate-400 text-lg mb-8 line-clamp-2 italic">
                                     {deals[currentDeal].description}
                                 </p>
                                 <div className="flex items-center gap-6">
@@ -85,7 +85,7 @@ export default function HotDealsBanner() {
                             </div>
 
                             {/* Image side */}
-                            <div className="hidden md:block w-1/2 relative bg-slate-950">
+                            <div className="hidden md:block w-1/2 relative bg-white dark:bg-slate-950">
                                 <Image
                                     src={deals[currentDeal].image}
                                     alt={deals[currentDeal].title}
@@ -106,7 +106,7 @@ export default function HotDealsBanner() {
                     <div className="absolute bottom-10 left-10 md:left-16 flex items-center gap-4 z-20">
                         <button
                             onClick={prevDeal}
-                            className="p-3 bg-slate-950/50 hover:bg-slate-800 text-white rounded-xl border border-slate-800/50 transition-all backdrop-blur-md"
+                            className="p-3 bg-white dark:bg-slate-950/50 hover:bg-slate-100 dark:bg-slate-800 text-white rounded-xl border border-slate-200 dark:border-slate-800/50 transition-all backdrop-blur-md"
                         >
                             <ChevronLeft size={20} />
                         </button>
@@ -115,13 +115,13 @@ export default function HotDealsBanner() {
                                 <button
                                     key={i}
                                     onClick={() => setCurrentDeal(i)}
-                                    className={`w-2 h-2 rounded-full transition-all duration-300 ${currentDeal === i ? "bg-cyan-500 w-8" : "bg-slate-700 hover:bg-slate-600"}`}
+                                    className={`w-2 h-2 rounded-full transition-all duration-300 ${currentDeal === i ? "bg-cyan-500 w-8" : "bg-slate-200 dark:bg-slate-700 hover:bg-slate-600"}`}
                                 />
                             ))}
                         </div>
                         <button
                             onClick={nextDeal}
-                            className="p-3 bg-slate-950/50 hover:bg-slate-800 text-white rounded-xl border border-slate-800/50 transition-all backdrop-blur-md"
+                            className="p-3 bg-white dark:bg-slate-950/50 hover:bg-slate-100 dark:bg-slate-800 text-white rounded-xl border border-slate-200 dark:border-slate-800/50 transition-all backdrop-blur-md"
                         >
                             <ChevronRight size={20} />
                         </button>

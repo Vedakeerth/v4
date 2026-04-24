@@ -157,8 +157,8 @@ export default function ProjectsTab() {
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {projects.map((project) => (
-                        <div key={project.id} className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden group hover:border-cyan-500/30 transition-all">
-                            <div className="relative h-48 bg-slate-800">
+                        <div key={project.id} className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden group hover:border-cyan-500/30 transition-all">
+                            <div className="relative h-48 bg-slate-100 dark:bg-slate-800">
                                 <Image
                                     src={project.image || "/placeholder.png"}
                                     alt={project.title}
@@ -174,17 +174,17 @@ export default function ProjectsTab() {
                             </div>
                             <div className="p-5">
                                 <h3 className="text-white font-bold text-lg mb-1">{project.title}</h3>
-                                <p className="text-slate-400 text-xs mb-4 line-clamp-2">{project.description}</p>
+                                <p className="text-slate-600 dark:text-slate-400 text-xs mb-4 line-clamp-2">{project.description}</p>
                                 <div className="flex gap-2">
                                     <button
                                         onClick={() => openModal(project)}
-                                        className="flex-1 py-2 bg-slate-800 hover:bg-cyan-500/10 hover:text-cyan-400 rounded-lg text-xs font-bold transition-all border border-slate-700"
+                                        className="flex-1 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-cyan-500/10 hover:text-cyan-400 rounded-lg text-xs font-bold transition-all border border-slate-300 dark:border-slate-700"
                                     >
                                         Edit
                                     </button>
                                     <button
                                         onClick={() => handleDelete(project.id)}
-                                        className="flex-1 py-2 bg-slate-800 hover:bg-red-500/10 hover:text-red-400 rounded-lg text-xs font-bold transition-all border border-slate-700"
+                                        className="flex-1 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-red-500/10 hover:text-red-400 rounded-lg text-xs font-bold transition-all border border-slate-300 dark:border-slate-700"
                                     >
                                         Delete
                                     </button>
@@ -196,8 +196,8 @@ export default function ProjectsTab() {
             )}
 
             {showModal && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-md">
-                    <div className="bg-slate-900 border border-slate-800 w-full max-w-2xl rounded-3xl p-8 shadow-2xl max-h-[90vh] overflow-y-auto custom-scrollbar">
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-white dark:bg-slate-950/90 backdrop-blur-md">
+                    <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-full max-w-2xl rounded-3xl p-8 shadow-2xl max-h-[90vh] overflow-y-auto custom-scrollbar">
                         <div className="flex justify-between items-center mb-8">
                             <h2 className="text-2xl font-bold text-white">
                                 {editingProject ? "Edit Project" : "Add Project"}
@@ -213,7 +213,7 @@ export default function ProjectsTab() {
                                 <input
                                     value={formData.title}
                                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white focus:border-cyan-500/50 outline-none"
+                                    className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-white focus:border-cyan-500/50 outline-none"
                                 />
                             </div>
                             <div className="grid grid-cols-2 gap-4">
@@ -222,7 +222,7 @@ export default function ProjectsTab() {
                                     <input
                                         value={formData.category}
                                         onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                                        className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white focus:border-cyan-500/50 outline-none"
+                                        className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-white focus:border-cyan-500/50 outline-none"
                                     />
                                 </div>
                                 <div>
@@ -230,7 +230,7 @@ export default function ProjectsTab() {
                                     <select
                                         value={formData.status}
                                         onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
-                                        className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white focus:border-cyan-500/50 outline-none"
+                                        className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-white focus:border-cyan-500/50 outline-none"
                                     >
                                         <option value="Ongoing">Ongoing</option>
                                         <option value="Completed">Completed</option>
@@ -244,10 +244,10 @@ export default function ProjectsTab() {
                                     <input
                                         value={formData.image}
                                         onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                                        className="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white focus:border-cyan-500/50 outline-none"
+                                        className="flex-1 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-white focus:border-cyan-500/50 outline-none"
                                         placeholder="Image URL"
                                     />
-                                    <label className="cursor-pointer bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded-xl flex items-center justify-center transition-all">
+                                    <label className="cursor-pointer bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:bg-slate-700 px-4 py-2 rounded-xl flex items-center justify-center transition-all">
                                         <Upload size={18} className={isUploading ? "animate-bounce text-cyan-400" : "text-white"} />
                                         <input type="file" className="hidden" onChange={handleFileUpload} />
                                     </label>
@@ -258,7 +258,7 @@ export default function ProjectsTab() {
                                 <textarea
                                     value={formData.description}
                                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white h-24 focus:border-cyan-500/50 outline-none"
+                                    className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-white h-24 focus:border-cyan-500/50 outline-none"
                                 />
                             </div>
                             <button

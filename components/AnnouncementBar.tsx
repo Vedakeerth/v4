@@ -60,7 +60,7 @@ export default function AnnouncementBar() {
             ) : (
                 <div className="flex items-center gap-3 shrink-0">
                     <Megaphone size={14} className="text-cyan-500 shrink-0" />
-                    <p className="text-xs font-bold text-slate-200 uppercase tracking-[0.2em] italic group-hover/ann:text-cyan-400 transition-colors">
+                    <p className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-[0.2em] italic group-hover/ann:text-cyan-400 transition-colors">
                         {ann.text}
                     </p>
                 </div>
@@ -76,13 +76,13 @@ export default function AnnouncementBar() {
 
     return (
         <div
-            className="fixed top-0 left-0 right-0 bg-slate-950/90 backdrop-blur-md border-b border-cyan-500/10 h-10 w-full overflow-hidden z-[51] flex items-center group/ann"
+            className="fixed top-0 left-0 right-0 bg-cyan-50/50 dark:bg-slate-950/90 backdrop-blur-md border-b border-cyan-500/10 h-10 w-full overflow-hidden z-[51] flex items-center group/ann"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
             {/* Fade edges */}
-            <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-slate-950 to-transparent z-10 pointer-events-none" />
-            <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-slate-950 to-transparent z-10 pointer-events-none" />
+            <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-slate-50 dark:from-slate-950 to-transparent z-10 pointer-events-none" />
+            <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-slate-50 dark:from-slate-950 to-transparent z-10 pointer-events-none" />
 
             <div className="flex h-full items-center overflow-hidden">
                 <motion.div

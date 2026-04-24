@@ -11,6 +11,7 @@ import { cn, validatePhone } from "@/lib/utils";
 import { redirectToCashfree } from "@/lib/cashfree";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, Suspense } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
 
 function CheckoutContent() {
     const { items, cartTotal, clearCart, appliedCoupon, discountAmount, finalTotal } = useCart();
@@ -35,6 +36,7 @@ function CheckoutContent() {
     const [paymentMethod, setPaymentMethod] = useState<'card' | 'upi' | 'netbanking' | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isIndia, setIsIndia] = useState(true);
+    const [captchaVerified, setCaptchaVerified] = useState(false);
 
     useEffect(() => {
         const tracking_id = searchParams?.get('tracking_id');
@@ -89,6 +91,10 @@ function CheckoutContent() {
     };
 
     const handlePaymentSubmit = async () => {
+        if (!captchaVerified) {
+            alert("Please verify that you are not a robot.");
+            return;
+        }
         setCheckoutStep('processing');
 
         try {
@@ -131,25 +137,25 @@ function CheckoutContent() {
 
     if (checkoutStep === 'success') {
         return (
-            <main className="min-h-screen bg-slate-950 pt-24 pb-0 flex items-center justify-center">
+            <main className="min-h-screen bg-white dark:bg-slate-950 pt-24 pb-0 flex items-center justify-center">
                 <div className="container mx-auto px-4 max-w-6xl pb-32 text-center">
                     <motion.div
                         initial={{ scale: 0.9, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
-                        className="bg-slate-900 border border-slate-800 rounded-3xl p-12 max-w-lg mx-auto shadow-2xl relative overflow-hidden"
+                        className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-12 max-w-lg mx-auto shadow-2xl relative overflow-hidden"
                     >
                         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 to-blue-500" />
                         <div className="w-20 h-20 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-6 border border-green-500/20">
                             <CheckCircle className="w-10 h-10 text-green-500" />
                         </div>
                         <h1 className="text-3xl font-bold text-white mb-4 uppercase italic">Order Confirmed!</h1>
-                        <p className="text-slate-400 mb-6 font-medium">
+                        <p className="text-slate-600 dark:text-slate-400 mb-6 font-medium">
                             Thank you for your order. You will receive real-time notifications via email.
                             <br/><br/>
                             For any support, contact us through <span className="text-cyan-400 font-bold underline">Mail</span> or <span className="text-green-500 font-bold underline">WhatsApp</span>.
                             <br/><br/>
                             <span className="text-xs font-bold text-slate-500 uppercase tracking-widest block mb-2">Tracking ID</span>
-                            <span className="inline-block px-6 py-2 bg-slate-950 border border-slate-800 text-cyan-400 font-semibold text-2xl tracking-[0.2em] rounded-xl">
+                            <span className="inline-block px-6 py-2 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-cyan-400 font-semibold text-2xl tracking-[0.2em] rounded-xl">
                                 {orderInfo?.trackingId || 'LOADING...'}
                             </span>
                         </p>
@@ -167,7 +173,7 @@ function CheckoutContent() {
 
     if (checkoutStep === 'processing') {
         return (
-            <main className="min-h-screen bg-slate-950 pt-24 pb-0 flex items-center justify-center">
+            <main className="min-h-screen bg-white dark:bg-slate-950 pt-24 pb-0 flex items-center justify-center">
                 <div className="text-center space-y-6 pb-32">
                     <div className="relative w-24 h-24 mx-auto">
                         <div className="absolute inset-0 border-4 border-cyan-500/20 rounded-full" />
@@ -184,10 +190,10 @@ function CheckoutContent() {
 
     if (items.length === 0) {
         return (
-            <main className="min-h-screen bg-slate-950 pt-24 pb-0">
+            <main className="min-h-screen bg-white dark:bg-slate-950 pt-24 pb-0">
                 <div className="container mx-auto px-4 text-center py-20 pb-32">
                     <h1 className="text-3xl font-bold text-white mb-4 uppercase">Your Cart is Empty</h1>
-                    <p className="text-slate-400 mb-8">Add some products to your cart to checkout.</p>
+                    <p className="text-slate-600 dark:text-slate-400 mb-8">Add some products to your cart to checkout.</p>
                     <Link
                         href="/catalog"
                         className="inline-block px-8 py-3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-lg transition-colors"
@@ -200,7 +206,7 @@ function CheckoutContent() {
     }
 
     return (
-        <main className="min-h-screen bg-slate-950 pt-24 pb-0">
+        <main className="min-h-screen bg-white dark:bg-slate-950 pt-24 pb-0">
             <div className="container mx-auto px-4 max-w-6xl pb-32">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
                     <div>
@@ -225,7 +231,7 @@ function CheckoutContent() {
                                         "w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold border transition-all",
                                         checkoutStep === s.step
                                             ? "bg-cyan-500 border-cyan-400 text-slate-950 shadow-lg shadow-cyan-500/20"
-                                            : "bg-slate-900 border-slate-800 text-slate-500"
+                                            : "bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-500"
                                     )}>
                                         {idx + 1}
                                     </div>
@@ -236,7 +242,7 @@ function CheckoutContent() {
                                         {s.label}
                                     </span>
                                 </div>
-                                {idx < arr.length - 1 && <div className="w-6 h-[2px] bg-slate-800" />}
+                                {idx < arr.length - 1 && <div className="w-6 h-[2px] bg-slate-100 dark:bg-slate-800" />}
                             </React.Fragment>
                         ))}
                     </div>
@@ -254,8 +260,8 @@ function CheckoutContent() {
                                 transition={{ duration: 0.3 }}
                                 className="space-y-8"
                             >
-                                <div className="bg-slate-900/50 border border-slate-800 rounded-3xl p-8 shadow-xl">
-                                    <div className="flex items-center justify-between mb-8 border-b border-slate-800 pb-4">
+                                <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 shadow-xl">
+                                    <div className="flex items-center justify-between mb-8 border-b border-slate-200 dark:border-slate-800 pb-4">
                                         <h2 className="text-xl font-bold text-white uppercase tracking-tight flex items-center gap-3 italic">
                                             <div className="w-2 h-6 bg-cyan-500" />
                                             Review Details
@@ -268,7 +274,7 @@ function CheckoutContent() {
                                         </button>
                                     </div>
 
-                                    <div className="space-y-6 bg-slate-950/40 p-6 rounded-2xl border border-slate-800/50">
+                                    <div className="space-y-6 bg-white dark:bg-slate-950/40 p-6 rounded-2xl border border-slate-200 dark:border-slate-800/50">
                                         <div className="grid grid-cols-2 gap-6">
                                             <div>
                                                 <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-1">Customer Name</span>
@@ -285,7 +291,7 @@ function CheckoutContent() {
                                         </div>
                                     </div>
 
-                                    <div className="space-y-6 bg-slate-950/40 p-6 rounded-2xl border border-slate-800/50 mt-6 mb-8">
+                                    <div className="space-y-6 bg-white dark:bg-slate-950/40 p-6 rounded-2xl border border-slate-200 dark:border-slate-800/50 mt-6 mb-8">
                                         <div className="grid grid-cols-1 gap-6">
                                             <div>
                                                 <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-1">Shipping Address</span>
@@ -297,6 +303,13 @@ function CheckoutContent() {
                                                 </span>
                                             </div>
                                         </div>
+                                    </div>
+                                    
+                                    <div className="flex justify-center mb-6">
+                                        <ReCAPTCHA
+                                            sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "6LdoysQsAAAAANxd-LomWmg_T3xKruxTKeCSKL40"}
+                                            onChange={(token) => setCaptchaVerified(!!token)}
+                                        />
                                     </div>
                                     
                                     <button
@@ -317,8 +330,8 @@ function CheckoutContent() {
                                 transition={{ duration: 0.3 }}
                                 className="space-y-8"
                             >
-                                <div className="bg-slate-900/50 border border-slate-800 rounded-3xl p-8 shadow-xl">
-                                    <h2 className="text-xl font-bold text-white mb-8 border-b border-slate-800 pb-4 uppercase tracking-tight flex items-center gap-3 italic">
+                                <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 shadow-xl">
+                                    <h2 className="text-xl font-bold text-white mb-8 border-b border-slate-200 dark:border-slate-800 pb-4 uppercase tracking-tight flex items-center gap-3 italic">
                                         <div className="w-2 h-6 bg-cyan-500" />
                                         Contact Information
                                     </h2>
@@ -332,7 +345,7 @@ function CheckoutContent() {
                                                 placeholder="Enter full name"
                                                 value={formData.customerName}
                                                 onChange={handleInputChange}
-                                                className="w-full px-5 py-3.5 bg-slate-950/50 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500/50 transition-all font-semibold text-sm placeholder:text-slate-600/50 caret-cyan-500"
+                                                className="w-full px-5 py-3.5 bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500/50 transition-all font-semibold text-sm placeholder:text-slate-600/50 caret-cyan-500"
                                             />
                                         </div>
                                         <div className="space-y-2">
@@ -346,7 +359,7 @@ function CheckoutContent() {
                                                     onChange={handleInputChange}
                                                     disabled={isIndia}
                                                     className={cn(
-                                                        "w-20 px-3 py-3.5 bg-slate-950/50 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500/50 transition-all font-semibold text-sm text-center caret-cyan-500",
+                                                        "w-20 px-3 py-3.5 bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500/50 transition-all font-semibold text-sm text-center caret-cyan-500",
                                                         isIndia ? "opacity-50 cursor-not-allowed" : "opacity-100"
                                                     )}
                                                 />
@@ -357,7 +370,7 @@ function CheckoutContent() {
                                                     placeholder="XXXXX XXXXX"
                                                     value={formData.phone}
                                                     onChange={handleInputChange}
-                                                    className="flex-1 px-5 py-3.5 bg-slate-950/50 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500/50 transition-all font-semibold text-sm placeholder:text-slate-600/50 caret-cyan-500"
+                                                    className="flex-1 px-5 py-3.5 bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500/50 transition-all font-semibold text-sm placeholder:text-slate-600/50 caret-cyan-500"
                                                 />
                                             </div>
                                             <div className="flex items-start gap-4 px-1 pt-2">
@@ -371,7 +384,7 @@ function CheckoutContent() {
                                                         }}
                                                         className="peer sr-only"
                                                     />
-                                                    <div className="w-5 h-5 rounded border-2 border-slate-800 bg-slate-950 peer-checked:bg-cyan-500 peer-checked:border-cyan-400 transition-all flex items-center justify-center">
+                                                    <div className="w-5 h-5 rounded border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 peer-checked:bg-cyan-500 peer-checked:border-cyan-400 transition-all flex items-center justify-center">
                                                         <AnimatePresence>
                                                             {isIndia && (
                                                                 <motion.div
@@ -408,7 +421,7 @@ function CheckoutContent() {
                                                 placeholder="email@example.com"
                                                 value={formData.email}
                                                 onChange={handleInputChange}
-                                                className="w-full px-5 py-3.5 bg-slate-950/50 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500/50 transition-all font-semibold text-sm placeholder:text-slate-600/50 caret-cyan-500"
+                                                className="w-full px-5 py-3.5 bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500/50 transition-all font-semibold text-sm placeholder:text-slate-600/50 caret-cyan-500"
                                             />
                                         </div>
                                         <div className="grid grid-cols-2 gap-4">
@@ -421,7 +434,7 @@ function CheckoutContent() {
                                                     placeholder="House / Flat No"
                                                     value={formData.doorNo}
                                                     onChange={handleInputChange}
-                                                    className="w-full px-5 py-3.5 bg-slate-950/50 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500/50 transition-all font-semibold text-sm placeholder:text-slate-600/50 caret-cyan-500"
+                                                    className="w-full px-5 py-3.5 bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500/50 transition-all font-semibold text-sm placeholder:text-slate-600/50 caret-cyan-500"
                                                 />
                                             </div>
                                             <div className="space-y-2">
@@ -433,7 +446,7 @@ function CheckoutContent() {
                                                     placeholder="Street name / Colony"
                                                     value={formData.street}
                                                     onChange={handleInputChange}
-                                                    className="w-full px-5 py-3.5 bg-slate-950/50 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500/50 transition-all font-semibold text-sm placeholder:text-slate-600/50 caret-cyan-500"
+                                                    className="w-full px-5 py-3.5 bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500/50 transition-all font-semibold text-sm placeholder:text-slate-600/50 caret-cyan-500"
                                                 />
                                             </div>
                                         </div>
@@ -448,7 +461,7 @@ function CheckoutContent() {
                                                     placeholder="000 000"
                                                     value={formData.pincode}
                                                     onChange={handleInputChange}
-                                                    className="w-full px-5 py-3.5 bg-slate-950/50 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500/50 transition-all font-semibold text-sm placeholder:text-slate-600/50 caret-cyan-500"
+                                                    className="w-full px-5 py-3.5 bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500/50 transition-all font-semibold text-sm placeholder:text-slate-600/50 caret-cyan-500"
                                                 />
                                             </div>
                                             <div className="space-y-2 lg:col-span-1">
@@ -460,7 +473,7 @@ function CheckoutContent() {
                                                     placeholder="Enter city"
                                                     value={formData.city}
                                                     onChange={handleInputChange}
-                                                    className="w-full px-5 py-3.5 bg-slate-950/50 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500/50 transition-all font-semibold text-sm placeholder:text-slate-600/50 caret-cyan-500"
+                                                    className="w-full px-5 py-3.5 bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500/50 transition-all font-semibold text-sm placeholder:text-slate-600/50 caret-cyan-500"
                                                 />
                                             </div>
                                             <div className="space-y-2 lg:col-span-1">
@@ -472,7 +485,7 @@ function CheckoutContent() {
                                                     placeholder="Enter state"
                                                     value={formData.state}
                                                     onChange={handleInputChange}
-                                                    className="w-full px-5 py-3.5 bg-slate-950/50 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500/50 transition-all font-semibold text-sm placeholder:text-slate-600/50 caret-cyan-500"
+                                                    className="w-full px-5 py-3.5 bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500/50 transition-all font-semibold text-sm placeholder:text-slate-600/50 caret-cyan-500"
                                                 />
                                             </div>
                                         </div>
@@ -484,7 +497,7 @@ function CheckoutContent() {
                                                 placeholder="Any special instructions for delivery..."
                                                 value={formData.message}
                                                 onChange={handleInputChange}
-                                                className="w-full px-5 py-3.5 bg-slate-950/50 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500/50 transition-all font-semibold text-sm placeholder:text-slate-600/50 caret-cyan-500"
+                                                className="w-full px-5 py-3.5 bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500/50 transition-all font-semibold text-sm placeholder:text-slate-600/50 caret-cyan-500"
                                             />
                                         </div>
 
@@ -503,15 +516,15 @@ function CheckoutContent() {
 
                     {/* Right Column: Order Summary */}
                     <div className="sticky top-24 space-y-6">
-                        <div className="bg-slate-900/50 border border-slate-800 rounded-3xl p-8 shadow-xl">
-                            <h2 className="text-xl font-bold text-white mb-8 border-b border-slate-800 pb-4 uppercase tracking-tight flex items-center gap-3 italic">
+                        <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 shadow-xl">
+                            <h2 className="text-xl font-bold text-white mb-8 border-b border-slate-200 dark:border-slate-800 pb-4 uppercase tracking-tight flex items-center gap-3 italic">
                                 <div className="w-2 h-6 bg-cyan-500" />
                                 Order Summary
                             </h2>
                             <div className="space-y-6 mb-8 max-h-[350px] overflow-y-auto pr-4 custom-scrollbar">
                                 {items.map((item: CartItem) => (
                                     <div key={item.cartId} className="flex gap-4 group">
-                                        <div className="relative w-20 h-20 bg-slate-950 rounded-2xl overflow-hidden flex-shrink-0 border border-slate-800 group-hover:border-cyan-500/30 transition-colors shadow-inner">
+                                        <div className="relative w-20 h-20 bg-white dark:bg-slate-950 rounded-2xl overflow-hidden flex-shrink-0 border border-slate-200 dark:border-slate-800 group-hover:border-cyan-500/30 transition-colors shadow-inner">
                                             <Image
                                                 src={item.image}
                                                 alt={item.name}
@@ -528,7 +541,7 @@ function CheckoutContent() {
                                 ))}
                             </div>
 
-                            <div className="border-t-2 border-slate-800 pt-6 space-y-3">
+                            <div className="border-t-2 border-slate-200 dark:border-slate-800 pt-6 space-y-3">
                                 <div className="flex justify-between text-xs font-bold uppercase tracking-widest">
                                     <span className="text-slate-500">Subtotal</span>
                                     <span className="text-white">Rs {cartTotal.toFixed(2)}</span>
@@ -543,8 +556,8 @@ function CheckoutContent() {
                                     <span className="text-slate-500">Shipping</span>
                                     <span className="text-emerald-500">Free</span>
                                 </div>
-                                <div className="flex justify-between items-end pt-4 border-t border-slate-800/50">
-                                    <span className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1 italic">Total Payable</span>
+                                <div className="flex justify-between items-end pt-4 border-t border-slate-200 dark:border-slate-800/50">
+                                    <span className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest mb-1 italic">Total Payable</span>
                                     <span className="text-3xl font-bold text-cyan-400 leading-none">Rs {finalTotal.toFixed(2)}</span>
                                 </div>
                             </div>
@@ -552,15 +565,15 @@ function CheckoutContent() {
 
                         {/* Trust Badges */}
                         <div className="grid grid-cols-2 gap-4">
-                            <div className="bg-slate-900/30 border border-slate-800 p-4 rounded-2xl flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-full bg-slate-950 flex items-center justify-center text-cyan-500 border border-slate-800 text-xl shadow-inner">🔒</div>
+                            <div className="bg-slate-50 dark:bg-slate-900/30 border border-slate-200 dark:border-slate-800 p-4 rounded-2xl flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-full bg-white dark:bg-slate-950 flex items-center justify-center text-cyan-500 border border-slate-200 dark:border-slate-800 text-xl shadow-inner">🔒</div>
                                 <div>
                                     <p className="text-[10px] font-bold text-white uppercase tracking-widest">Protected</p>
                                     <p className="text-[8px] font-semibold text-slate-500 uppercase tracking-tighter">Secure Checkout</p>
                                 </div>
                             </div>
-                            <div className="bg-slate-900/30 border border-slate-800 p-4 rounded-2xl flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-full bg-slate-950 flex items-center justify-center text-emerald-500 border border-slate-800 text-xl shadow-inner">🚚</div>
+                            <div className="bg-slate-50 dark:bg-slate-900/30 border border-slate-200 dark:border-slate-800 p-4 rounded-2xl flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-full bg-white dark:bg-slate-950 flex items-center justify-center text-emerald-500 border border-slate-200 dark:border-slate-800 text-xl shadow-inner">🚚</div>
                                 <div>
                                     <p className="text-[10px] font-bold text-white uppercase tracking-widest">Fast Track</p>
                                     <p className="text-[8px] font-semibold text-slate-500 uppercase tracking-tighter">Priority Delivery</p>
@@ -578,7 +591,7 @@ function CheckoutContent() {
 export default function CheckoutPage() {
     return (
         <Suspense fallback={
-            <main className="min-h-screen bg-slate-950 pt-24 pb-0 flex items-center justify-center">
+            <main className="min-h-screen bg-white dark:bg-slate-950 pt-24 pb-0 flex items-center justify-center">
                 <div className="relative w-12 h-12 mx-auto">
                     <div className="absolute inset-0 border-4 border-cyan-500/20 rounded-full" />
                     <div className="absolute inset-0 border-4 border-cyan-500 rounded-full border-t-transparent animate-spin" />

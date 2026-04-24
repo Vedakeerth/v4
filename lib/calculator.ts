@@ -31,6 +31,12 @@ export const PRINTER_CONSTANTS = {
     }
 };
 
+export interface ColorSetting {
+    name: string;
+    multiplier: number;
+    isAvailable: boolean;
+}
+
 export interface QuoteSettings {
     labourCost: number;
     materials: {
@@ -40,8 +46,8 @@ export interface QuoteSettings {
             multiplier: number;
         }
     };
-    colorMultipliers?: {
-        [hex: string]: number;
+    colors?: {
+        [hex: string]: ColorSetting;
     };
     infillPatternMultipliers?: {
         [pattern: string]: number;
@@ -186,7 +192,7 @@ export function calculatePrice(
     const activeSettings = settings || {
         labourCost: 25,
         materials: PRINTER_CONSTANTS.material,
-        colorMultipliers: {} as Record<string, number>,
+        colors: {} as Record<string, ColorSetting>,
         infillPatternMultipliers: {
             'Line': 1.0,
             'Grid': 1.1,
@@ -250,7 +256,7 @@ export function calculatePrice(
 
     // 6. Final Simplified Pricing
     // Final Price = (Unified Filament Cost * Color Multiplier * Infill Multiplier) + Labour
-    const colorMult = color && activeSettings.colorMultipliers ? (activeSettings.colorMultipliers[color] || 1.0) : 1.0;
+    const colorMult = color && activeSettings.colors ? (activeSettings.colors[color]?.multiplier || 1.0) : 1.0;
     const infillMult = activeSettings.infillPatternMultipliers ? (activeSettings.infillPatternMultipliers[infillPattern] || 1.0) : 1.0;
 
     const unifiedFilamentCost = (weightGrams / 1000) * matData.costPerKg * matData.multiplier * colorMult * infillMult;

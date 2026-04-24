@@ -106,7 +106,7 @@ export default function CouponsTab() {
             <div className="flex justify-between items-center mb-8">
                 <div>
                     <h2 className="text-2xl font-bold text-white">Coupons Management</h2>
-                    <p className="text-slate-400 text-sm mt-1">Create and manage discount codes for your customers</p>
+                    <p className="text-slate-600 dark:text-slate-400 text-sm mt-1">Create and manage discount codes for your customers</p>
                 </div>
                 <button
                     onClick={() => setShowAddModal(true)}
@@ -128,26 +128,26 @@ export default function CouponsTab() {
                             key={coupon.id}
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 group hover:border-cyan-500/30 transition-all relative overflow-hidden"
+                            className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 group hover:border-cyan-500/30 transition-all relative overflow-hidden"
                         >
                             <div className="absolute top-4 right-4 flex gap-2">
                                 <button
                                     onClick={() => handleEditCoupon(coupon)}
-                                    className="p-2 text-slate-400 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all border border-transparent hover:border-cyan-500/20 shadow-sm"
+                                    className="p-2 text-slate-600 dark:text-slate-400 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all border border-transparent hover:border-cyan-500/20 shadow-sm"
                                     title="Edit Coupon"
                                 >
                                     <Pencil size={18} />
                                 </button>
                                 <button
                                     onClick={() => handleDuplicateCoupon(coupon)}
-                                    className="p-2 text-slate-400 hover:text-green-400 hover:bg-green-400/10 rounded-lg transition-all border border-transparent hover:border-green-500/20 shadow-sm"
+                                    className="p-2 text-slate-600 dark:text-slate-400 hover:text-green-400 hover:bg-green-400/10 rounded-lg transition-all border border-transparent hover:border-green-500/20 shadow-sm"
                                     title="Duplicate Coupon"
                                 >
                                     <Copy size={18} />
                                 </button>
                                 <button
                                     onClick={() => handleDeleteCoupon(coupon.id)}
-                                    className="p-2 text-slate-400 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-all border border-transparent hover:border-red-500/20 shadow-sm"
+                                    className="p-2 text-slate-600 dark:text-slate-400 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-all border border-transparent hover:border-red-500/20 shadow-sm"
                                     title="Delete Coupon"
                                 >
                                     <Trash2 size={18} />
@@ -176,14 +176,14 @@ export default function CouponsTab() {
                             </div>
 
                             <div className="space-y-4">
-                                <div className="flex items-center justify-between p-3 bg-slate-950/50 rounded-xl border border-slate-800">
+                                <div className="flex items-center justify-between p-3 bg-white dark:bg-slate-950/50 rounded-xl border border-slate-200 dark:border-slate-800">
                                     <span className="text-xs font-bold text-slate-500 uppercase">Discount</span>
                                     <span className="text-lg font-black text-white">
                                         {coupon.type === 'percentage' ? `${coupon.value}%` : `₹${coupon.value}`}
                                     </span>
                                 </div>
 
-                                <div className="flex items-center gap-2 text-xs text-slate-400">
+                                <div className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400">
                                     <Calendar size={14} className="text-slate-600" />
                                     <span>Expires: {new Date(coupon.expiryDate).toLocaleDateString()}</span>
                                 </div>
@@ -192,7 +192,7 @@ export default function CouponsTab() {
                     ))}
 
                     {coupons.length === 0 && (
-                        <div className="col-span-full py-12 text-center bg-slate-900/30 border border-slate-800 border-dashed rounded-3xl">
+                        <div className="col-span-full py-12 text-center bg-slate-50 dark:bg-slate-900/30 border border-slate-200 dark:border-slate-800 border-dashed rounded-3xl">
                             <Ticket className="mx-auto text-slate-700 mb-4" size={48} />
                             <p className="text-slate-500 font-medium">No coupons found. Create your first one!</p>
                         </div>
@@ -209,17 +209,17 @@ export default function CouponsTab() {
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             onClick={() => setShowAddModal(false)}
-                            className="absolute inset-0 bg-slate-950/90 backdrop-blur-md"
+                            className="absolute inset-0 bg-white dark:bg-slate-950/90 backdrop-blur-md"
                         />
                         <motion.div
                             initial={{ opacity: 0, scale: 0.95, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                            className="bg-slate-900 border border-slate-800 w-full max-w-md rounded-3xl p-8 shadow-2xl relative z-10"
+                            className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-full max-w-md rounded-3xl p-8 shadow-2xl relative z-10"
                         >
                             <div className="flex justify-between items-center mb-8">
                                 <h2 className="text-2xl font-bold text-white">{editingCoupon ? "Edit Coupon" : "New Coupon"}</h2>
-                                <button onClick={() => { setShowAddModal(false); setEditingCoupon(null); }} className="p-2 hover:bg-slate-800 rounded-full text-slate-400"><X size={24} /></button>
+                                <button onClick={() => { setShowAddModal(false); setEditingCoupon(null); }} className="p-2 hover:bg-slate-100 dark:bg-slate-800 rounded-full text-slate-600 dark:text-slate-400"><X size={24} /></button>
                             </div>
 
                             <div className="space-y-6">
@@ -230,7 +230,7 @@ export default function CouponsTab() {
                                         placeholder="SUMMER20"
                                         value={formData.code}
                                         onChange={e => setFormData({ ...formData, code: e.target.value.toUpperCase() })}
-                                        className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-500 uppercase font-black tracking-widest"
+                                        className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-500 uppercase font-black tracking-widest"
                                     />
                                 </div>
 
@@ -240,7 +240,7 @@ export default function CouponsTab() {
                                         <select
                                             value={formData.type}
                                             onChange={e => setFormData({ ...formData, type: e.target.value as any })}
-                                            className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-500"
+                                            className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-500"
                                         >
                                             <option value="percentage">Percentage (%)</option>
                                             <option value="fixed">Fixed (₹)</option>
@@ -258,7 +258,7 @@ export default function CouponsTab() {
                                                 type="number"
                                                 value={formData.value}
                                                 onChange={e => setFormData({ ...formData, value: e.target.value })}
-                                                className="w-full bg-slate-800 border border-slate-700 rounded-xl pl-10 pr-4 py-3 text-white focus:outline-none focus:border-cyan-500"
+                                                className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl pl-10 pr-4 py-3 text-white focus:outline-none focus:border-cyan-500"
                                                 placeholder="10"
                                             />
                                         </div>
@@ -271,7 +271,7 @@ export default function CouponsTab() {
                                         type="date"
                                         value={formData.expiryDate}
                                         onChange={e => setFormData({ ...formData, expiryDate: e.target.value })}
-                                        className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-500"
+                                        className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-500"
                                     />
                                 </div>
 

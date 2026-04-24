@@ -53,7 +53,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
     if (!project) notFound();
 
     return (
-        <main className="min-h-screen bg-slate-950 text-white">
+        <main className="min-h-screen bg-white dark:bg-slate-950 text-white">
             <Navbar />
             
             {/* Hero Section */}
@@ -68,34 +68,34 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
                 
                 <div className="absolute inset-0 flex items-end">
-                    <div className="container mx-auto px-4 pb-12">
-                        <Link href="/projects" className="inline-flex items-center gap-2 text-cyan-400 font-bold mb-6 hover:text-cyan-300 transition-colors group">
+                    <div className="dynamic-container pb-12">
+                        <Link href="/projects" className="inline-flex items-center gap-2 text-cyan-400 font-extrabold mb-6 hover:text-cyan-300 transition-colors group uppercase tracking-widest text-xs">
                             <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
                             Back to Projects
                         </Link>
                         
                         <div className="flex flex-wrap gap-3 mb-6">
-                            <span className="px-3 py-1 rounded-full bg-cyan-500/20 border border-cyan-500/30 text-cyan-400 text-[10px] font-black uppercase tracking-widest">
+                            <span className="px-3 py-1.5 rounded-lg bg-cyan-500/20 border border-cyan-500/30 text-cyan-400 text-[10px] font-black uppercase tracking-widest">
                                 {project.category}
                             </span>
-                            <span className={`px-3 py-1 rounded-full border text-[10px] font-bold uppercase tracking-widest ${
+                            <span className={`px-3 py-1.5 rounded-lg border text-[10px] font-black uppercase tracking-widest ${
                                 project.status === "Completed" ? "bg-green-500/20 border-green-500/30 text-green-400" : "bg-yellow-500/20 border-yellow-500/30 text-yellow-400"
                             }`}>
                                 {project.status}
                             </span>
                         </div>
 
-                        <h1 className="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter mb-6">
+                        <h1 className="text-4xl md:text-7xl font-extrabold text-white uppercase tracking-tight mb-8">
                             {project.title}
                         </h1>
 
-                        <div className="flex flex-wrap items-center gap-6 text-slate-400">
-                            <div className="flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-slate-500">
-                                <Calendar size={16} className="text-cyan-500" />
+                        <div className="flex flex-wrap items-center gap-8 text-slate-600 dark:text-slate-400">
+                            <div className="flex items-center gap-3 text-sm font-black uppercase tracking-widest text-slate-500">
+                                <Calendar size={18} className="text-cyan-500" />
                                 {project.date}
                             </div>
-                            <div className="flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-slate-500">
-                                <User size={16} className="text-cyan-500" />
+                            <div className="flex items-center gap-3 text-sm font-black uppercase tracking-widest text-slate-500">
+                                <User size={18} className="text-cyan-500" />
                                 Client: {project.client || "Confidential"}
                             </div>
                         </div>
@@ -103,7 +103,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                 </div>
             </header>
 
-            <div className="container mx-auto px-4 py-20">
+            <div className="dynamic-container py-20">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
                     {/* Main Content */}
                     <div className="lg:col-span-2">
@@ -111,7 +111,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                             <Layout className="text-cyan-500" size={24} />
                             Project Overview
                         </h2>
-                        <div className="prose prose-invert max-w-none text-slate-300 leading-relaxed text-lg">
+                        <div className="prose prose-invert max-w-none text-slate-700 dark:text-slate-300 leading-relaxed text-lg">
                             {project.description}
                         </div>
                         
@@ -123,7 +123,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                                 </h2>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     {project.images.map((img, i) => (
-                                        <div key={i} className="relative h-64 rounded-2xl overflow-hidden border border-slate-800">
+                                        <div key={i} className="relative h-64 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800">
                                             <Image
                                                 src={img}
                                                 alt={`${project.title} screenshot ${i + 1}`}
@@ -139,7 +139,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
 
                     {/* Sidebar / Stats */}
                     <div className="lg:col-span-1">
-                        <div className="bg-slate-900/50 border border-slate-800 rounded-3xl p-8 sticky top-32">
+                        <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 sticky top-32">
                             <h3 className="text-xl font-bold text-white mb-6 uppercase tracking-tight">Project Details</h3>
                             <div className="space-y-6">
                                 <div>
@@ -162,7 +162,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                                 </div>
                             </div>
 
-                            <div className="mt-10 pt-8 border-t border-slate-800">
+                            <div className="mt-10 pt-8 border-t border-slate-200 dark:border-slate-800">
                                 <button className="w-full py-4 bg-cyan-500 hover:bg-cyan-400 text-slate-950 rounded-2xl font-black uppercase tracking-widest transition-all shadow-[0_0_20px_rgba(6,182,212,0.3)] hover:shadow-[0_0_30px_rgba(6,182,212,0.5)] flex items-center justify-center gap-2">
                                     Enquire about this
                                     <ExternalLink size={18} />

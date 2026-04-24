@@ -23,18 +23,18 @@ export default function BulkQuotePage() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-950 py-24 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-5xl mx-auto">
+        <div className="min-h-screen bg-white dark:bg-slate-950 py-24 px-4 sm:px-6 lg:px-8">
+            <div className="dynamic-container">
                 {/* Header Actions */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12 no-print">
-                    <Link href="/gallery" className="flex items-center gap-2 text-slate-400 hover:text-cyan-400 transition-colors group">
+                    <Link href="/gallery" className="flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-cyan-400 transition-colors group">
                         <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
                         <span className="font-bold uppercase tracking-widest text-xs">Back to Gallery</span>
                     </Link>
                     <div className="flex gap-3">
                         <button
                             onClick={handlePrint}
-                            className="flex items-center gap-2 bg-slate-900 border border-slate-800 text-white px-6 py-3 rounded-xl hover:bg-slate-800 transition-all font-bold text-sm"
+                            className="flex items-center gap-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-white px-6 py-3 rounded-xl hover:bg-slate-100 dark:bg-slate-800 transition-all font-bold text-sm"
                         >
                             <Printer size={18} />
                             Print Quote
@@ -53,7 +53,7 @@ export default function BulkQuotePage() {
                     className="bg-white rounded-[2rem] overflow-hidden shadow-2xl print:shadow-none print:m-0"
                 >
                     {/* Doc Header */}
-                    <div className="bg-slate-900 text-white p-12 flex flex-col md:flex-row justify-between gap-12 border-b-8 border-cyan-500">
+                    <div className="bg-slate-50 dark:bg-slate-900 text-white p-12 flex flex-col md:flex-row justify-between gap-12 border-b-8 border-cyan-500">
                         <div className="space-y-6">
                             <div className="flex items-center gap-3">
                                 <div className="w-12 h-12 bg-cyan-500 rounded-xl flex items-center justify-center">
@@ -61,7 +61,7 @@ export default function BulkQuotePage() {
                                 </div>
                                 <h1 className="text-3xl font-black uppercase tracking-tighter">VEDA 3D</h1>
                             </div>
-                            <div className="space-y-1 text-slate-400 text-sm">
+                            <div className="space-y-1 text-slate-600 dark:text-slate-400 text-sm">
                                 <p>Nandhini Store, TNP Nagar, Thudiliyar</p>
                                 <p>Coimbatore, Tamil Nadu 641032</p>
                                 <p>Email: sales@vaelinsa.com</p>
@@ -71,9 +71,9 @@ export default function BulkQuotePage() {
                         <div className="text-left md:text-right space-y-2">
                             <h2 className="text-5xl font-black text-cyan-500 uppercase tracking-tighter mb-4">Quotation</h2>
                             <div className="space-y-1 text-sm">
-                                <p className="text-slate-400 font-bold uppercase tracking-widest">Quote ID: <span className="text-white">{quoteId}</span></p>
-                                <p className="text-slate-400 font-bold uppercase tracking-widest">Date: <span className="text-white">{(Array.from(date)[0] as string) || new Date().toLocaleDateString('en-IN')}</span></p>
-                                <p className="text-slate-400 font-bold uppercase tracking-widest">Valid Until: <span className="text-white">30 Days from Issue</span></p>
+                                <p className="text-slate-600 dark:text-slate-400 font-bold uppercase tracking-widest">Quote ID: <span className="text-white">{quoteId}</span></p>
+                                <p className="text-slate-600 dark:text-slate-400 font-bold uppercase tracking-widest">Date: <span className="text-white">{(Array.from(date)[0] as string) || new Date().toLocaleDateString('en-IN')}</span></p>
+                                <p className="text-slate-600 dark:text-slate-400 font-bold uppercase tracking-widest">Valid Until: <span className="text-white">30 Days from Issue</span></p>
                             </div>
                         </div>
                     </div>
@@ -84,10 +84,10 @@ export default function BulkQuotePage() {
                             <table className="w-full text-left">
                                 <thead>
                                     <tr className="border-b-2 border-slate-100 italic">
-                                        <th className="py-6 px-4 font-black uppercase tracking-widest text-[10px] text-slate-400">Description</th>
-                                        <th className="py-6 px-4 font-black uppercase tracking-widest text-[10px] text-slate-400 text-center">Qty</th>
-                                        <th className="py-6 px-4 font-black uppercase tracking-widest text-[10px] text-slate-400 text-right">Unit Price</th>
-                                        <th className="py-6 px-4 font-black uppercase tracking-widest text-[10px] text-slate-400 text-right">Amount</th>
+                                        <th className="py-6 px-4 font-black uppercase tracking-widest text-[10px] text-slate-600 dark:text-slate-400">Description</th>
+                                        <th className="py-6 px-4 font-black uppercase tracking-widest text-[10px] text-slate-600 dark:text-slate-400 text-center">Qty</th>
+                                        <th className="py-6 px-4 font-black uppercase tracking-widest text-[10px] text-slate-600 dark:text-slate-400 text-right">Unit Price</th>
+                                        <th className="py-6 px-4 font-black uppercase tracking-widest text-[10px] text-slate-600 dark:text-slate-400 text-right">Amount</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-50">
@@ -103,7 +103,7 @@ export default function BulkQuotePage() {
                                                         </div>
                                                         <div>
                                                             <p className="font-bold text-slate-900">{item.name}</p>
-                                                            <p className="text-xs text-slate-400 font-medium">
+                                                            <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">
                                                                 {item.category} {item.selectedColor && `• Color: ${item.selectedColor}`}
                                                             </p>
                                                         </div>
@@ -123,7 +123,7 @@ export default function BulkQuotePage() {
                         <div className="mt-12 pt-12 border-t-2 border-slate-100 flex flex-col md:flex-row justify-between gap-12">
                             <div className="max-w-md space-y-4">
                                 <h4 className="font-black uppercase tracking-widest text-xs text-slate-900 border-b border-slate-200 pb-2">Notes & Terms</h4>
-                                <ul className="text-[11px] text-slate-400 space-y-2 leading-relaxed">
+                                <ul className="text-[11px] text-slate-600 dark:text-slate-400 space-y-2 leading-relaxed">
                                     <li>• Standard delivery lead time is 5-7 business days from order confirmation.</li>
                                     <li>• Quote includes basic packaging. Custom crating for machine orders is extra.</li>
                                     <li>• 100% advance payment required for custom fabrication orders.</li>
@@ -154,16 +154,16 @@ export default function BulkQuotePage() {
                         <div className="mt-20 pt-20 border-t border-slate-100 flex justify-between items-center text-center">
                             <div className="space-y-4">
                                 <div className="w-48 border-b-2 border-slate-900 pb-2 mx-auto" />
-                                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Authorized Signature</p>
+                                <p className="text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Authorized Signature</p>
                             </div>
                             <div className="hidden md:block">
                                 <ShoppingBag className="text-slate-100 h-24 w-24" />
                             </div>
                             <div className="space-y-4">
-                                <div className="w-48 h-8 flex items-center justify-center font-black italic text-slate-200 text-2xl uppercase tracking-tighter">
+                                <div className="w-48 h-8 flex items-center justify-center font-black italic text-slate-800 dark:text-slate-200 text-2xl uppercase tracking-tighter">
                                     VQ-{quoteId.split('-')[1]}
                                 </div>
-                                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Digital Verification Hash</p>
+                                <p className="text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Digital Verification Hash</p>
                             </div>
                         </div>
                     </div>

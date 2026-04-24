@@ -48,8 +48,8 @@ export default function SettingsTab() {
     if (!settings) return <div className="text-red-400">Failed to load settings</div>;
 
     const Toggle = ({ check, onChange, label }: { check: boolean, onChange: () => void, label: string }) => (
-        <div className="flex items-center justify-between p-4 bg-slate-900 rounded-xl border border-slate-800">
-            <span className="text-slate-300 font-bold">{label}</span>
+        <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800">
+            <span className="text-slate-700 dark:text-slate-300 font-bold">{label}</span>
             <button
                 onClick={onChange}
                 className={`transition-colors ${check ? "text-cyan-400" : "text-slate-600"}`}
@@ -118,14 +118,14 @@ export default function SettingsTab() {
 
                 <div className="space-y-4">
                     <h3 className="text-slate-500 text-xs font-black uppercase tracking-widest mb-4">Machinery Section Settings</h3>
-                    <div className="space-y-4 bg-slate-900 p-6 rounded-2xl border border-slate-800">
+                    <div className="space-y-4 bg-slate-50 dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
                         <div>
                             <label className="block text-slate-500 text-[10px] font-bold uppercase mb-1.5 ml-1">Display Delay (seconds)</label>
                             <input
                                 type="number"
                                 value={settings.machineryDelay}
                                 onChange={(e) => setSettings({ ...settings, machineryDelay: parseInt(e.target.value) || 0 })}
-                                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none"
+                                className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none"
                                 min="0"
                             />
                             <p className="mt-2 text-[10px] text-slate-500 uppercase tracking-wider ml-1">Wait this many seconds before showing the section on homepage</p>
@@ -135,13 +135,13 @@ export default function SettingsTab() {
 
                 <div className="space-y-4">
                     <h3 className="text-slate-500 text-xs font-black uppercase tracking-widest mb-4">Hero Section Content</h3>
-                    <div className="space-y-4 bg-slate-900 p-6 rounded-2xl border border-slate-800">
+                    <div className="space-y-4 bg-slate-50 dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
                         <div>
                             <label className="block text-slate-500 text-[10px] font-bold uppercase mb-1.5 ml-1">Hero Title</label>
                             <input
                                 value={settings.heroTitle}
                                 onChange={(e) => setSettings({ ...settings, heroTitle: e.target.value })}
-                                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none"
+                                className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none"
                             />
                         </div>
                         <div>
@@ -149,7 +149,7 @@ export default function SettingsTab() {
                             <input
                                 value={settings.heroSubtitle}
                                 onChange={(e) => setSettings({ ...settings, heroSubtitle: e.target.value })}
-                                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none"
+                                className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none"
                             />
                         </div>
                     </div>

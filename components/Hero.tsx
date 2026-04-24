@@ -132,7 +132,7 @@ export default function Hero({ content }: HeroProps) {
                 }}
             />
 
-            <div className="relative z-10 container mx-auto px-4 text-center">
+            <div className="relative z-10 dynamic-container text-center">
                 {isLoading ? (
                     <div className="space-y-6">
                         <Skeleton variant="text" width="60%" height={16} className="mx-auto" />
@@ -150,7 +150,7 @@ export default function Hero({ content }: HeroProps) {
                         transition={{ duration: 0.8 }}
                     >
                         <h2 className="text-blue-500 font-medium tracking-wide mb-4 uppercase text-sm">{content?.subtitle || "Vaelinsa"}</h2>
-                        <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-white mb-2">
+                        <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-slate-900 dark:text-white mb-2">
                             {content?.titleMain || "Future of Technology"} <br />
                             <span
                                 ref={textRef}
@@ -169,7 +169,7 @@ export default function Hero({ content }: HeroProps) {
                                 </span>
                             </span>
                         </h1>
-                        <p className="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
+                        <p className="text-slate-700 dark:text-slate-400 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
                             {content?.description || "Providing cutting edge engineering solutions for the next generation."}
                         </p>
 
@@ -183,7 +183,7 @@ export default function Hero({ content }: HeroProps) {
                             </Link>
 
                             <Link href={content?.secondaryCta?.link || "/contact"}>
-                                <button className="inline-flex h-12 items-center justify-center rounded-md border border-slate-700 bg-transparent px-8 font-medium text-slate-300 transition-colors hover:bg-slate-800 hover:text-white focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-900">
+                                <button className="inline-flex h-12 items-center justify-center rounded-md border border-slate-300 dark:border-slate-700 bg-transparent px-8 font-medium text-slate-700 dark:text-slate-300 transition-colors hover:bg-slate-200 dark:bg-slate-800 hover:text-slate-900 dark:hover:text-white focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-900">
                                     {content?.secondaryCta?.text || "Contact Us"}
                                 </button>
                             </Link>

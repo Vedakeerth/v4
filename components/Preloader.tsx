@@ -99,7 +99,7 @@ export default function Preloader() {
 
     return (
         <div
-            className={`fixed inset-0 bg-slate-950 flex items-center justify-center transition-opacity duration-300 ${isFading ? 'opacity-0 pointer-events-none' : 'opacity-100'
+            className={`fixed inset-0 bg-white dark:bg-slate-950 flex items-center justify-center transition-opacity duration-300 ${isFading ? 'opacity-0 pointer-events-none' : 'opacity-100'
                 }`}
             style={{
                 position: 'fixed',

@@ -52,7 +52,7 @@ export default async function OrderDetailPage({ params }: PageProps) {
     const currentStepIndex = STATUS_STEPS.findIndex(s => s.label === order.status);
 
     return (
-        <main className="min-h-screen bg-slate-950 text-white pt-24 pb-20">
+        <main className="min-h-screen bg-white dark:bg-slate-950 text-white pt-24 pb-20">
             <Navbar />
             <div className="container mx-auto px-4 py-12">
                 <div className="max-w-4xl mx-auto">
@@ -61,8 +61,8 @@ export default async function OrderDetailPage({ params }: PageProps) {
                         Back to Shop
                     </Link>
 
-                    <div className="bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden shadow-2xl">
-                        <div className="p-8 border-b border-slate-800 flex flex-col md:row justify-between items-start md:items-center gap-6 bg-slate-900/50">
+                    <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl overflow-hidden shadow-2xl">
+                        <div className="p-8 border-b border-slate-200 dark:border-slate-800 flex flex-col md:row justify-between items-start md:items-center gap-6 bg-slate-50 dark:bg-slate-900/50">
                             <div>
                                 <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Order Summary</p>
                                 <h1 className="text-3xl font-black text-white italic tracking-tighter uppercase">{order.trackingId || order.id}</h1>
@@ -73,7 +73,7 @@ export default async function OrderDetailPage({ params }: PageProps) {
                         </div>
 
                         {/* Timeline */}
-                        <div className="p-8 bg-slate-950/20">
+                        <div className="p-8 bg-white dark:bg-slate-950/20">
                             <div className="flex flex-col md:flex-row justify-between relative gap-8 md:gap-0">
                                 {STATUS_STEPS.map((step, idx) => {
                                     const isActive = idx <= currentStepIndex;
@@ -83,7 +83,7 @@ export default async function OrderDetailPage({ params }: PageProps) {
                                         <div key={idx} className="flex md:flex-col items-center gap-4 md:gap-3 flex-1 relative">
                                             <div className={`relative z-10 w-12 h-12 rounded-full flex items-center justify-center transition-all duration-500 ${
                                                 isCurrent ? "bg-cyan-500 shadow-[0_0_20px_rgba(6,182,212,0.4)] scale-110" : 
-                                                isActive ? "bg-cyan-500/20 text-cyan-400" : "bg-slate-900 text-slate-600 border border-slate-800"
+                                                isActive ? "bg-cyan-500/20 text-cyan-400" : "bg-slate-50 dark:bg-slate-900 text-slate-600 border border-slate-200 dark:border-slate-800"
                                             }`}>
                                                 <Icon size={isCurrent ? 24 : 20} className={isCurrent ? "text-slate-950" : ""} />
                                             </div>
@@ -99,7 +99,7 @@ export default async function OrderDetailPage({ params }: PageProps) {
                         </div>
 
                         {/* Details */}
-                        <div className="p-8 grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-slate-800">
+                        <div className="p-8 grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-slate-200 dark:border-slate-800">
                             <div className="space-y-2">
                                 <div className="flex items-center gap-2 text-slate-500">
                                     <Calendar size={16} />
@@ -124,13 +124,13 @@ export default async function OrderDetailPage({ params }: PageProps) {
                         </div>
 
                         {/* Items */}
-                        <div className="p-8 border-t border-slate-800 bg-slate-950/20">
+                        <div className="p-8 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950/20">
                             <h3 className="text-xs font-black text-slate-500 uppercase tracking-[0.2em] mb-6">Ordered Items</h3>
                             <div className="space-y-4">
                                 {order.items?.map((item: any, idx: number) => (
-                                    <div key={idx} className="flex justify-between items-center p-4 bg-slate-900 border border-slate-800/50 rounded-2xl transition-all hover:border-cyan-500/30">
+                                    <div key={idx} className="flex justify-between items-center p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800/50 rounded-2xl transition-all hover:border-cyan-500/30">
                                         <div className="flex items-center gap-4">
-                                            <div className="w-10 h-10 bg-slate-950 rounded-xl flex items-center justify-center text-cyan-400 border border-slate-800">
+                                            <div className="w-10 h-10 bg-white dark:bg-slate-950 rounded-xl flex items-center justify-center text-cyan-400 border border-slate-200 dark:border-slate-800">
                                                 <Package size={20} />
                                             </div>
                                             <div>

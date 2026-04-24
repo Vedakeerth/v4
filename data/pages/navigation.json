@@ -1,7 +1,7 @@
 {
     "navLinks": [
         {
-            "name": "Services",
+            "name": "Service",
             "href": "/services"
         },
         {
@@ -9,7 +9,7 @@
             "href": "/products"
         },
         {
-            "name": "Blog",
+            "name": "Blogs",
             "href": "/blog"
         },
         {
@@ -19,6 +19,10 @@
         {
             "name": "Contact",
             "href": "/contact"
+        },
+        {
+            "name": "Tracking Product",
+            "href": "/track-order"
         }
     ],
     "cta": {

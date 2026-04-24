@@ -41,14 +41,14 @@ export default function SEOTab() {
     if (isLoading) return <div className="text-white">Loading SEO settings...</div>;
 
     return (
-        <div className="bg-slate-900/50 border border-slate-800 rounded-3xl p-8 max-w-4xl">
+        <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 max-w-4xl">
             <div className="flex items-center gap-3 mb-8">
                 <Globe className="text-cyan-400" size={24} />
                 <h2 className="text-xl font-bold text-white">Search Engine Optimization</h2>
             </div>
             <div className="space-y-10">
                 {Object.entries(seoData).map(([page, data]) => (
-                    <div key={page} className="space-y-4 p-6 bg-slate-950/50 rounded-2xl border border-slate-800">
+                    <div key={page} className="space-y-4 p-6 bg-white dark:bg-slate-950/50 rounded-2xl border border-slate-200 dark:border-slate-800">
                         <h3 className="text-sm font-black text-cyan-500 uppercase tracking-widest">{page} Page</h3>
                         <div className="grid gap-4">
                             <div>
@@ -59,7 +59,7 @@ export default function SEOTab() {
                                         const next = { ...seoData, [page]: { ...data, title: e.target.value } };
                                         setSeoData(next);
                                     }}
-                                    className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-white text-sm focus:border-cyan-500/50 transition-all outline-none"
+                                    className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-white text-sm focus:border-cyan-500/50 transition-all outline-none"
                                 />
                             </div>
                             <div>
@@ -70,7 +70,7 @@ export default function SEOTab() {
                                         const next = { ...seoData, [page]: { ...data, keywords: e.target.value } };
                                         setSeoData(next);
                                     }}
-                                    className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-white text-sm focus:border-cyan-500/50 transition-all outline-none"
+                                    className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-white text-sm focus:border-cyan-500/50 transition-all outline-none"
                                 />
                             </div>
                             <div>
@@ -81,7 +81,7 @@ export default function SEOTab() {
                                         const next = { ...seoData, [page]: { ...data, description: e.target.value } };
                                         setSeoData(next);
                                     }}
-                                    className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-white text-sm focus:border-cyan-500/50 transition-all outline-none h-20 resize-none"
+                                    className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-white text-sm focus:border-cyan-500/50 transition-all outline-none h-20 resize-none"
                                 />
                             </div>
                         </div>

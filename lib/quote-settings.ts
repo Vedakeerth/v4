@@ -1,6 +1,12 @@
 import { db } from './firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 
+export interface ColorSetting {
+    name: string;
+    multiplier: number;
+    isAvailable: boolean;
+}
+
 export interface QuoteSettings {
     labourCost: number;
     materials: {
@@ -10,8 +16,8 @@ export interface QuoteSettings {
             multiplier: number;
         }
     };
-    colorMultipliers: {
-        [hex: string]: number;
+    colors: {
+        [hex: string]: ColorSetting;
     };
     infillPatternMultipliers: {
         [pattern: string]: number;
@@ -26,13 +32,13 @@ export const DEFAULT_QUOTE_SETTINGS: QuoteSettings = {
         'PETG': { density: 1.27, costPerKg: 1900, multiplier: 1.1 },
         'TPU': { density: 1.21, costPerKg: 3000, multiplier: 1.5 },
     },
-    colorMultipliers: {
-        '#2563eb': 1.0, // Blue
-        '#ef4444': 1.0, // Red
-        '#22c55e': 1.0, // Green
-        '#eab308': 1.0, // Yellow
-        '#ffffff': 1.0, // White
-        '#000000': 1.0, // Black
+    colors: {
+        '#2563eb': { name: 'Blue', multiplier: 1.0, isAvailable: true },
+        '#ef4444': { name: 'Red', multiplier: 1.0, isAvailable: true },
+        '#22c55e': { name: 'Green', multiplier: 1.0, isAvailable: true },
+        '#eab308': { name: 'Yellow', multiplier: 1.0, isAvailable: true },
+        '#ffffff': { name: 'White', multiplier: 1.0, isAvailable: true },
+        '#000000': { name: 'Black', multiplier: 1.0, isAvailable: true },
     },
     infillPatternMultipliers: {
         'Line': 1.0,

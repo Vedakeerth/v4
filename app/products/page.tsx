@@ -30,7 +30,7 @@ export default async function ProductsPage() {
   const settings = await getSettings();
 
   return (
-    <main className="min-h-screen bg-slate-950 pt-20">
+    <main className="min-h-screen bg-white dark:bg-slate-950 pt-20">
       <WhyChooseUs content={whyChooseUsContent} />
 
       {settings.showProjectsOnProducts && (

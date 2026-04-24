@@ -145,9 +145,9 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
     return (
         <div className="space-y-12">
             {/* Top Search Bar - Sticky */}
-            <div className="sticky top-20 z-40 py-4 bg-slate-950/80 backdrop-blur-xl -mx-4 px-4 border-b border-slate-900/50">
+            <div className="sticky top-20 z-40 py-4 bg-white dark:bg-slate-950/80 backdrop-blur-xl -mx-4 px-4 border-b border-slate-900/50">
                 <div className="relative w-full max-w-4xl mx-auto group">
-                    <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500 group-focus-within:text-cyan-400 transition-colors" />
+                    <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-700 group-focus-within:text-cyan-400 transition-colors" />
                     <input
                         type="text"
                         placeholder="Search precision parts, components..."
@@ -156,7 +156,7 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                             setSearchQuery(e.target.value);
                             setCurrentPage(1);
                         }}
-                        className="w-full bg-slate-900/60 border-2 border-slate-800 rounded-3xl py-5 pl-16 pr-16 text-white text-lg placeholder:text-slate-500 focus:outline-none focus:ring-4 focus:ring-cyan-500/10 focus:border-cyan-500/50 transition-all shadow-2xl"
+                        className="w-full bg-slate-50 dark:bg-slate-900/60 border-2 border-slate-200 dark:border-slate-800 rounded-3xl py-5 pl-16 pr-16 text-slate-900 dark:text-white text-lg placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-cyan-500/10 focus:border-cyan-500/50 transition-all shadow-2xl"
                     />
                     {searchQuery && (
                         <button
@@ -164,7 +164,7 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                                 setSearchQuery("");
                                 setCurrentPage(1);
                             }}
-                            className="absolute right-6 top-1/2 -translate-y-1/2 p-2 bg-slate-800 rounded-full text-slate-400 hover:text-white hover:bg-slate-700 transition-all"
+                            className="absolute right-6 top-1/2 -translate-y-1/2 p-2 bg-slate-100 dark:bg-slate-800 rounded-full text-slate-600 dark:text-slate-400 hover:text-white hover:bg-slate-200 dark:bg-slate-700 transition-all"
                         >
                             <X className="h-5 w-5" />
                         </button>
@@ -174,8 +174,8 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
 
             <div className="flex flex-col lg:flex-row gap-8 items-start">
                 <aside className="w-full lg:w-80 shrink-0 sticky top-48 space-y-6 z-30">
-                    <div className="bg-slate-900/40 border border-slate-800 rounded-2xl p-6 backdrop-blur-md">
-                        <div className="flex items-center gap-2 text-white font-bold mb-6 text-lg uppercase tracking-wider">
+                    <div className="bg-slate-50 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 backdrop-blur-md">
+                        <div className="flex items-center gap-2 text-slate-900 dark:text-white font-bold mb-6 text-lg uppercase tracking-wider">
                             <Filter className="h-5 w-5 text-cyan-500" />
                             Filters
                         </div>
@@ -208,7 +208,7 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                                             "w-full text-left px-4 py-2.5 rounded-lg text-sm transition-all flex items-center justify-between group",
                                             selectedCategory === category
                                                 ? "bg-cyan-500/10 text-cyan-400 font-bold border border-cyan-500/20 shadow-[0_4px_12px_rgba(6,182,212,0.1)]"
-                                                : "text-slate-400 hover:bg-slate-800/50 hover:text-slate-200 border border-transparent"
+                                                : "text-slate-700 dark:text-slate-400 hover:bg-slate-100 dark:bg-slate-800/50 hover:text-slate-900 dark:text-slate-200 border border-transparent"
                                         )}
                                     >
                                         {category}
@@ -230,7 +230,7 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                                             setMinPrice(e.target.value);
                                             setCurrentPage(1);
                                         }}
-                                        className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-3 text-xs text-white placeholder:text-slate-600 focus:ring-2 focus:ring-cyan-500/50 outline-none transition-all"
+                                        className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-3 text-xs text-slate-900 dark:text-white placeholder:text-slate-600 focus:ring-2 focus:ring-cyan-500/50 outline-none transition-all"
                                     />
                                 </div>
                                 <div className="text-slate-700 font-bold">—</div>
@@ -243,7 +243,7 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                                             setMaxPrice(e.target.value);
                                             setCurrentPage(1);
                                         }}
-                                        className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-3 text-xs text-white placeholder:text-slate-600 focus:ring-2 focus:ring-cyan-500/50 outline-none transition-all"
+                                        className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-3 text-xs text-slate-900 dark:text-white placeholder:text-slate-600 focus:ring-2 focus:ring-cyan-500/50 outline-none transition-all"
                                     />
                                 </div>
                             </div>
@@ -263,7 +263,7 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                                             "flex-1 py-2 text-xs font-bold rounded-lg border transition-all",
                                             itemsPerPage === num
                                                 ? "bg-cyan-500 border-cyan-400 text-slate-950"
-                                                : "bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700"
+                                                : "bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:border-slate-700"
                                         )}
                                     >
                                         {num}
@@ -287,14 +287,14 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                                     />
                                     <div className={cn(
                                         "w-10 h-6 rounded-full transition-colors",
-                                        onlyInStock ? "bg-cyan-500" : "bg-slate-800"
+                                        onlyInStock ? "bg-cyan-500" : "bg-slate-100 dark:bg-slate-800"
                                     )} />
                                     <div className={cn(
                                         "absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform shadow-md",
                                         onlyInStock ? "translate-x-4" : "translate-x-0"
                                     )} />
                                 </div>
-                                <span className="text-sm font-medium text-slate-300 group-hover:text-white transition-colors">Only In Stock</span>
+                                <span className="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-white transition-colors">Only In Stock</span>
                             </label>
                         </div>
 
@@ -310,7 +310,7 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                                     setMaxPrice("");
                                     setCurrentPage(1);
                                 }}
-                                className="w-full mt-8 py-3 text-xs font-bold text-slate-500 hover:text-cyan-400 border border-slate-800 rounded-xl hover:border-cyan-500/30 transition-all flex items-center justify-center gap-2 bg-slate-950/50"
+                                className="w-full mt-8 py-3 text-xs font-bold text-slate-500 hover:text-cyan-400 border border-slate-200 dark:border-slate-800 rounded-xl hover:border-cyan-500/30 transition-all flex items-center justify-center gap-2 bg-white dark:bg-slate-950/50"
                             >
                                 <X className="h-3 w-3" />
                                 Reset All Filters
@@ -334,12 +334,12 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
 
                 <div className="flex-1 w-full">
                     <div className="flex items-center justify-between mb-8 pb-4 border-b border-slate-900">
-                        <div className="text-slate-400 text-sm">
-                            Showing <span className="text-white font-bold">{filteredAndSortedParts.length}</span> results
+                        <div className="text-slate-600 dark:text-slate-400 text-sm">
+                            Showing <span className="text-slate-900 dark:text-white font-bold">{filteredAndSortedParts.length}</span> results
                             {selectedCategory !== "All" && <span> for <span className="text-cyan-400 font-semibold">{selectedCategory}</span></span>}
                         </div>
                         <div className="flex items-center gap-4">
-                            <div className="flex items-center bg-slate-900/60 p-1 rounded-xl border border-slate-800">
+                            <div className="flex items-center bg-slate-50 dark:bg-slate-900/60 p-1 rounded-xl border border-slate-200 dark:border-slate-800">
                                 <button
                                     onClick={() => setViewMode("grid")}
                                     className={cn(
@@ -365,11 +365,11 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                     </div>
 
                     {filteredAndSortedParts.length === 0 ? (
-                        <div className="text-center py-24 bg-slate-900/20 border border-slate-900 rounded-3xl border-dashed">
-                            <div className="bg-slate-800/50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <div className="text-center py-24 bg-slate-50 dark:bg-slate-900/20 border border-slate-900 rounded-3xl border-dashed">
+                            <div className="bg-slate-100 dark:bg-slate-800/50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
                                 <Search className="h-8 w-8 text-slate-600" />
                             </div>
-                            <h3 className="text-white text-xl font-bold mb-2">Query matched no parts</h3>
+                            <h3 className="text-slate-900 dark:text-white text-xl font-bold mb-2">Query matched no parts</h3>
                             <p className="text-slate-500 max-w-xs mx-auto text-sm leading-relaxed">
                                 Refine your search or categories to explore our precision-engineered collection.
                             </p>
@@ -380,7 +380,7 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                                     setSortBy("default");
                                     setOnlyInStock(false);
                                 }}
-                                className="mt-8 px-6 py-2 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-lg transition-all border border-slate-700 hover:border-cyan-500/50"
+                                className="mt-8 px-6 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:bg-slate-700 text-white font-bold rounded-lg transition-all border border-slate-300 dark:border-slate-700 hover:border-cyan-500/50"
                             >
                                 Clear all filters
                             </button>
@@ -401,7 +401,7 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                                             exit={{ opacity: 0, scale: 0.9 }}
                                             transition={{ duration: 0.5, delay: index * 0.05 }}
                                             className={cn(
-                                                "group relative bg-slate-900/40 border border-slate-800 rounded-2xl overflow-hidden hover:border-cyan-500/40 transition-all duration-500 hover:shadow-2xl hover:shadow-cyan-500/10 cursor-pointer flex",
+                                                "group relative bg-slate-50 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden hover:border-cyan-500/40 transition-all duration-500 hover:shadow-2xl hover:shadow-cyan-500/10 cursor-pointer flex",
                                                 viewMode === "grid" ? "flex-col h-full" : "flex-row h-48"
                                             )}
                                             onMouseEnter={() => setHoveredId(part.id)}
@@ -409,7 +409,7 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                                             onClick={() => setSelectedQuickView(part)}
                                         >
                                             <div className={cn(
-                                                "relative overflow-hidden bg-slate-950 shrink-0",
+                                                "relative overflow-hidden bg-white dark:bg-slate-950 shrink-0",
                                                 viewMode === "grid" ? "h-60 w-full" : "h-full w-64"
                                             )}>
                                                 <Image
@@ -421,7 +421,7 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                                                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent opacity-60 group-hover:opacity-100 transition-opacity" />
 
                                                 <div className="absolute top-4 left-4 z-20 pointer-events-none">
-                                                    <span className="px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest bg-slate-950/80 text-cyan-400 border border-cyan-500/20 backdrop-blur-md">
+                                                    <span className="px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest bg-white dark:bg-slate-950/80 text-cyan-400 border border-cyan-500/20 backdrop-blur-md">
                                                         {part.category}
                                                     </span>
                                                 </div>
@@ -444,7 +444,7 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                                                             "p-2.5 rounded-full transition-all shadow-xl hover:scale-110 border backdrop-blur-md",
                                                             likedProducts.has(part.id)
                                                                 ? "bg-red-500 text-white border-red-400 shadow-red-500/20"
-                                                                : "bg-slate-900/60 text-white border-slate-700 hover:bg-slate-800"
+                                                                : "bg-slate-50 dark:bg-slate-900/60 text-white border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:bg-slate-800"
                                                         )}
                                                         title="Add to Wishlist"
                                                     >
@@ -452,7 +452,7 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                                                     </button>
                                                     <button
                                                         onClick={(e) => { e.stopPropagation(); handleShare(part); }}
-                                                        className="p-2.5 rounded-full transition-all shadow-xl hover:scale-110 bg-slate-900/60 text-white border border-slate-700 hover:bg-slate-800 backdrop-blur-md"
+                                                        className="p-2.5 rounded-full transition-all shadow-xl hover:scale-110 bg-slate-50 dark:bg-slate-900/60 text-white border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:bg-slate-800 backdrop-blur-md"
                                                         title="Share Part"
                                                     >
                                                         <Share2 size={16} />
@@ -460,17 +460,17 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                                                 </div>
                                             </div>
 
-                                            <div className="p-5 flex flex-col flex-1 bg-slate-900/20 backdrop-blur-sm">
+                                            <div className="p-5 flex flex-col flex-1 bg-slate-50 dark:bg-slate-900/20 backdrop-blur-sm">
                                                 <div className="flex-1">
-                                                    <h3 className="text-white font-bold text-lg mb-1 leading-tight group-hover:text-cyan-400 transition-colors line-clamp-1">
+                                                    <h3 className="text-slate-900 dark:text-white font-bold text-lg mb-1 leading-tight group-hover:text-cyan-400 transition-colors line-clamp-1">
                                                         {part.name}
                                                     </h3>
-                                                    <p className="text-slate-500 text-xs mb-4 line-clamp-2 leading-relaxed">
+                                                    <p className="text-slate-700 text-xs mb-4 line-clamp-2 leading-relaxed">
                                                         {part.description}
                                                     </p>
                                                 </div>
 
-                                                <div className="mt-auto pt-4 border-t border-slate-800/50 flex items-center justify-between">
+                                                <div className="mt-auto pt-4 border-t border-slate-200 dark:border-slate-800/50 flex items-center justify-between">
                                                     <div className="flex flex-col">
                                                         <div className="flex items-center gap-2 mb-0.5">
                                                             <span className="text-[10px] text-slate-500 uppercase font-black tracking-widest">Component Price</span>
@@ -479,8 +479,12 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                                                                 {likes[part.id] || 0}
                                                             </div>
                                                         </div>
-                                                        <span className="text-xl font-bold text-white tracking-tight">
-                                                            {part.price}
+                                                        <span className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">
+                                                            {part.price
+                                                                ? (typeof part.price === 'number'
+                                                                    ? `₹${part.price.toLocaleString('en-IN')}`
+                                                                    : part.price.startsWith('₹') ? part.price : `₹${part.price}`)
+                                                                : "₹0"}
                                                         </span>
                                                     </div>
                                                     <button
@@ -506,7 +510,7 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                                     <button
                                         onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                                         disabled={currentPage === 1}
-                                        className="p-3 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                                        className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-all"
                                     >
                                         <ChevronDown className="h-5 w-5 rotate-90" />
                                     </button>
@@ -520,7 +524,7 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                                                     "w-10 h-10 rounded-xl font-bold text-sm transition-all",
                                                     currentPage === i + 1
                                                         ? "bg-cyan-500 text-slate-950 shadow-lg shadow-cyan-500/20"
-                                                        : "bg-slate-900 border border-slate-800 text-slate-400 hover:border-slate-700 hover:text-white"
+                                                        : "bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:border-slate-700 hover:text-slate-900 dark:text-white"
                                                 )}
                                             >
                                                 {i + 1}
@@ -531,7 +535,7 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                                     <button
                                         onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
                                         disabled={currentPage === totalPages}
-                                        className="p-3 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                                        className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-all"
                                     >
                                         <ChevronDown className="h-5 w-5 -rotate-90" />
                                     </button>

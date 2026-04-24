@@ -16,13 +16,14 @@ export default async function ProjectsPage() {
     const projects = await getProjects();
 
     return (
-        <main className="min-h-screen bg-slate-950 pt-32 pb-24">
-            <div className="container mx-auto px-4">
+        <main className="min-h-screen bg-white dark:bg-slate-950 pt-32 pb-24">
+            <div className="dynamic-container py-12">
                 <div className="text-center mb-16">
-                    <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">Our Projects</h1>
-                    <p className="text-slate-400 max-w-2xl mx-auto text-lg">
+                    <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-6 uppercase tracking-tight">Our Projects</h1>
+                    <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto text-lg md:text-xl leading-relaxed">
                         Showcasing innovation and precision in every layer.
                     </p>
+                    <div className="h-1.5 w-20 bg-cyan-500 mx-auto mt-8 rounded-full shadow-[0_0_15px_rgba(6,182,212,0.5)]" />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -30,7 +31,7 @@ export default async function ProjectsPage() {
                         <Link
                             key={project.id}
                             href={`/projects/${createSeoSlug(project.title, project.id)}`}
-                            className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden hover:border-cyan-500/30 transition-all group"
+                            className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden hover:border-cyan-500/30 transition-all group"
                         >
                             <div className="relative h-72 w-full overflow-hidden">
                                 <Image
@@ -40,7 +41,7 @@ export default async function ProjectsPage() {
                                     className="object-cover group-hover:scale-105 transition-transform duration-700"
                                 />
                                 <div className="absolute top-4 left-4">
-                                    <span className="bg-slate-950/80 backdrop-blur border border-white/10 text-white text-xs font-bold px-3 py-1.5 rounded-lg uppercase tracking-wider">
+                                    <span className="bg-white dark:bg-slate-950/80 backdrop-blur border border-white/10 text-white text-xs font-bold px-3 py-1.5 rounded-lg uppercase tracking-wider">
                                         {project.category}
                                     </span>
                                 </div>
@@ -49,7 +50,7 @@ export default async function ProjectsPage() {
                                 <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-cyan-400 transition-colors">
                                     {project.title}
                                 </h3>
-                                <p className="text-slate-400 mb-6 line-clamp-3 text-sm">
+                                <p className="text-slate-600 dark:text-slate-400 mb-6 line-clamp-3 text-sm">
                                     {project.description}
                                 </p>
                                 <div className="flex justify-between items-center text-sm">

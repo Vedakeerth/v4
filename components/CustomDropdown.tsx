@@ -56,10 +56,10 @@ export default function CustomDropdown({
                 type="button"
                 onClick={() => setIsOpen(!isOpen)}
                 className={cn(
-                    "w-full bg-slate-950 border rounded-xl py-2.5 px-4 text-sm text-white flex items-center justify-between transition-all font-medium group",
+                    "w-full bg-white dark:bg-slate-950 border rounded-xl py-2.5 px-4 text-sm text-slate-900 dark:text-white flex items-center justify-between transition-all font-medium group",
                     isOpen
                         ? "border-cyan-500 shadow-[0_0_15px_rgba(6,182,212,0.2)]"
-                        : "border-slate-800 hover:border-slate-700 hover:bg-slate-900/50"
+                        : "border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:bg-slate-900/50"
                 )}
             >
                 <div className="flex items-center gap-3 truncate">
@@ -81,7 +81,7 @@ export default function CustomDropdown({
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
                         transition={{ duration: 0.15, ease: "easeOut" }}
-                        className="absolute top-full left-0 right-0 mt-2 p-1.5 bg-slate-900/95 backdrop-blur-xl border border-slate-800 rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] z-[100] max-h-64 overflow-y-auto custom-scrollbar"
+                        className="absolute top-full left-0 right-0 mt-2 p-1.5 bg-slate-50 dark:bg-slate-900/95 backdrop-blur-xl border border-slate-200 dark:border-slate-800 rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] z-[100] max-h-64 overflow-y-auto custom-scrollbar"
                     >
                         {options.map((option) => (
                             <button
@@ -95,14 +95,14 @@ export default function CustomDropdown({
                                     "w-full text-left px-3.5 py-2.5 rounded-lg text-sm transition-all flex items-center justify-between group/item",
                                     value === option.value
                                         ? "bg-cyan-500 text-slate-950 font-bold shadow-[0_4px_12px_rgba(6,182,212,0.3)]"
-                                        : "text-slate-400 hover:bg-slate-800 hover:text-white"
+                                        : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
                                 )}
                             >
                                 <span className="truncate">{option.label}</span>
                                 {value === option.value && (
                                     <motion.div
                                         layoutId="active-indicator"
-                                        className="w-1.5 h-1.5 rounded-full bg-slate-950"
+                                        className="w-1.5 h-1.5 rounded-full bg-white dark:bg-slate-950"
                                     />
                                 )}
                             </button>

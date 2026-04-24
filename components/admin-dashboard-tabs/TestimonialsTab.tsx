@@ -106,7 +106,7 @@ export default function TestimonialsTab() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {testimonials.map((t) => (
-                    <div key={t.id} className="bg-slate-900 border border-slate-800 rounded-2xl p-6 hover:border-cyan-500/30 transition-all flex flex-col justify-between">
+                    <div key={t.id} className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 hover:border-cyan-500/30 transition-all flex flex-col justify-between">
                         <div>
                             <div className="flex justify-between items-start mb-4">
                                 <div>
@@ -119,18 +119,18 @@ export default function TestimonialsTab() {
                                     ))}
                                 </div>
                             </div>
-                            <p className="text-slate-400 text-sm mb-6 italic">"{t.text}"</p>
+                            <p className="text-slate-600 dark:text-slate-400 text-sm mb-6 italic">"{t.text}"</p>
                         </div>
                         <div className="flex gap-2">
                             <button
                                 onClick={() => openModal(t)}
-                                className="flex-1 py-2 bg-slate-800 hover:bg-cyan-500/10 hover:text-cyan-400 rounded-lg text-xs font-bold transition-all border border-slate-700"
+                                className="flex-1 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-cyan-500/10 hover:text-cyan-400 rounded-lg text-xs font-bold transition-all border border-slate-300 dark:border-slate-700"
                             >
                                 Edit
                             </button>
                             <button
                                 onClick={() => handleDelete(t.id)}
-                                className="flex-1 py-2 bg-slate-800 hover:bg-red-500/10 hover:text-red-400 rounded-lg text-xs font-bold transition-all border border-slate-700"
+                                className="flex-1 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-red-500/10 hover:text-red-400 rounded-lg text-xs font-bold transition-all border border-slate-300 dark:border-slate-700"
                             >
                                 Delete
                             </button>
@@ -140,8 +140,8 @@ export default function TestimonialsTab() {
             </div>
 
             {showModal && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-md">
-                    <div className="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-3xl p-8 shadow-2xl">
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-white dark:bg-slate-950/90 backdrop-blur-md">
+                    <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-full max-w-lg rounded-3xl p-8 shadow-2xl">
                         <div className="flex justify-between items-center mb-6">
                             <h2 className="text-2xl font-bold text-white">
                                 {editingTestimonial ? "Edit" : "New"} Testimonial
@@ -155,20 +155,20 @@ export default function TestimonialsTab() {
                                 placeholder="Name"
                                 value={formData.name}
                                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none"
+                                className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none"
                             />
                             <div className="grid grid-cols-2 gap-4">
                                 <input
                                     placeholder="Role"
                                     value={formData.role}
                                     onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none"
+                                    className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none"
                                 />
                                 <input
                                     placeholder="Company"
                                     value={formData.company}
                                     onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none"
+                                    className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none"
                                 />
                             </div>
                             <div>
@@ -189,7 +189,7 @@ export default function TestimonialsTab() {
                                 placeholder="Testimonial text..."
                                 value={formData.text}
                                 onChange={(e) => setFormData({ ...formData, text: e.target.value })}
-                                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white h-32 focus:border-cyan-500/50 outline-none resize-none"
+                                className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-white h-32 focus:border-cyan-500/50 outline-none resize-none"
                             />
                             <button
                                 onClick={handleSave}

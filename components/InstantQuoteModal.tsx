@@ -57,13 +57,13 @@ export default function InstantQuoteModal({ product, onClose }: InstantQuoteModa
     };
 
     return (
-        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-sm">
-            <div className="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl p-6 shadow-2xl">
+        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-white dark:bg-slate-950/90 backdrop-blur-sm">
+            <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-full max-w-lg rounded-2xl p-6 shadow-2xl">
                 <div className="flex justify-between items-center mb-6">
                     <h2 className="text-xl font-bold text-white flex items-center gap-2">
                         <FileText className="text-cyan-400" /> AI Quotation
                     </h2>
-                    <button onClick={onClose} className="p-2 hover:bg-slate-800 rounded-full text-slate-400 transition-colors">
+                    <button onClick={onClose} className="p-2 hover:bg-slate-100 dark:bg-slate-800 rounded-full text-slate-600 dark:text-slate-400 transition-colors">
                         <X size={20} />
                     </button>
                 </div>
@@ -73,7 +73,7 @@ export default function InstantQuoteModal({ product, onClose }: InstantQuoteModa
                         <User className="absolute left-3 top-3.5 h-4 w-4 text-slate-500" />
                         <input
                             placeholder="Your Name"
-                            className="w-full bg-slate-800 border border-slate-700 rounded-lg pl-10 pr-4 py-3 text-white focus:border-cyan-500 outline-none"
+                            className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg pl-10 pr-4 py-3 text-white focus:border-cyan-500 outline-none"
                             value={userDetails.name}
                             onChange={e => setUserDetails({ ...userDetails, name: e.target.value })}
                         />
@@ -82,7 +82,7 @@ export default function InstantQuoteModal({ product, onClose }: InstantQuoteModa
                         <Mail className="absolute left-3 top-3.5 h-4 w-4 text-slate-500" />
                         <input
                             placeholder="Email Address"
-                            className="w-full bg-slate-800 border border-slate-700 rounded-lg pl-10 pr-4 py-3 text-white focus:border-cyan-500 outline-none"
+                            className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg pl-10 pr-4 py-3 text-white focus:border-cyan-500 outline-none"
                             value={userDetails.email}
                             onChange={e => setUserDetails({ ...userDetails, email: e.target.value })}
                         />
@@ -92,7 +92,7 @@ export default function InstantQuoteModal({ product, onClose }: InstantQuoteModa
                             <Phone className="absolute left-3 top-3.5 h-4 w-4 text-slate-500" />
                             <input
                                 placeholder="Phone"
-                                className="w-full bg-slate-800 border border-slate-700 rounded-lg pl-10 pr-4 py-3 text-white focus:border-cyan-500 outline-none"
+                                className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg pl-10 pr-4 py-3 text-white focus:border-cyan-500 outline-none"
                                 value={userDetails.phone}
                                 onChange={e => setUserDetails({ ...userDetails, phone: e.target.value })}
                             />
@@ -101,7 +101,7 @@ export default function InstantQuoteModal({ product, onClose }: InstantQuoteModa
                             <Building className="absolute left-3 top-3.5 h-4 w-4 text-slate-500" />
                             <input
                                 placeholder="Company"
-                                className="w-full bg-slate-800 border border-slate-700 rounded-lg pl-10 pr-4 py-3 text-white focus:border-cyan-500 outline-none"
+                                className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg pl-10 pr-4 py-3 text-white focus:border-cyan-500 outline-none"
                                 value={userDetails.company}
                                 onChange={e => setUserDetails({ ...userDetails, company: e.target.value })}
                             />
@@ -145,14 +145,14 @@ export default function InstantQuoteModal({ product, onClose }: InstantQuoteModa
 
                         <div className="grid grid-cols-2 gap-12 mb-12">
                             <div>
-                                <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Quotation For</h3>
+                                <h3 className="text-[10px] font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest mb-3">Quotation For</h3>
                                 <p className="font-bold text-lg">{userDetails.name || "Customer"}</p>
                                 <p className="text-slate-600">{userDetails.company}</p>
                                 <p className="text-slate-600">{userDetails.email}</p>
                                 <p className="text-slate-600">{userDetails.phone}</p>
                             </div>
                             <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100">
-                                <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Product Summary</h3>
+                                <h3 className="text-[10px] font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest mb-3">Product Summary</h3>
                                 <div className="flex gap-4 items-center">
                                     <div className="relative w-16 h-16 rounded-xl overflow-hidden border border-slate-200">
                                         <img src={product.image} className="object-cover w-full h-full" alt="" />
@@ -168,10 +168,10 @@ export default function InstantQuoteModal({ product, onClose }: InstantQuoteModa
                         <table className="w-full mb-12 border-collapse">
                             <thead>
                                 <tr className="border-b-2 border-slate-100">
-                                    <th className="py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Item Description</th>
-                                    <th className="py-4 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">Quantity</th>
-                                    <th className="py-4 text-right text-[10px] font-black text-slate-400 uppercase tracking-widest">Unit Price</th>
-                                    <th className="py-4 text-right text-[10px] font-black text-slate-400 uppercase tracking-widest">Total</th>
+                                    <th className="py-4 text-left text-[10px] font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest">Item Description</th>
+                                    <th className="py-4 text-center text-[10px] font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest">Quantity</th>
+                                    <th className="py-4 text-right text-[10px] font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest">Unit Price</th>
+                                    <th className="py-4 text-right text-[10px] font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest">Total</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -198,7 +198,7 @@ export default function InstantQuoteModal({ product, onClose }: InstantQuoteModa
                                     <span className="font-bold">Calculated at Checkout</span>
                                 </div>
                                 <div className="h-px bg-slate-100 my-2" />
-                                <div className="flex justify-between items-center bg-slate-900 text-white p-4 rounded-xl">
+                                <div className="flex justify-between items-center bg-slate-50 dark:bg-slate-900 text-white p-4 rounded-xl">
                                     <span className="text-xs font-black uppercase tracking-widest opacity-60">Grand Total</span>
                                     <span className="text-xl font-black">{product.price}</span>
                                 </div>
@@ -206,7 +206,7 @@ export default function InstantQuoteModal({ product, onClose }: InstantQuoteModa
                         </div>
 
                         <div className="bg-slate-50 rounded-2xl p-8 border border-slate-100">
-                            <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Terms & Conditions</h4>
+                            <h4 className="text-[10px] font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest mb-4">Terms & Conditions</h4>
                             <ul className="text-[11px] text-slate-500 space-y-2 list-disc pl-4 font-medium">
                                 <li>Quotation is valid for 15 days from the date of issue.</li>
                                 <li>Production lead time depends on machine availability and complexity.</li>
@@ -216,7 +216,7 @@ export default function InstantQuoteModal({ product, onClose }: InstantQuoteModa
                         </div>
 
                         <div className="mt-12 text-center">
-                            <p className="text-[10px] font-black text-slate-300 uppercase tracking-[0.3em]">Thank you for choosing Vaelinsa</p>
+                            <p className="text-[10px] font-black text-slate-700 dark:text-slate-300 uppercase tracking-[0.3em]">Thank you for choosing Vaelinsa</p>
                         </div>
                     </div>
                 </div>
