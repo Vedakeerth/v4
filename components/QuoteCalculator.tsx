@@ -1253,6 +1253,7 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                                     countryCode: '+91',
                                     doorNo: '',
                                     street: '',
+                                    area: '',
                                     city: '',
                                     district: '',
                                     state: '',
