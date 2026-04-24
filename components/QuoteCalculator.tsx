@@ -1141,6 +1141,13 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                                             return;
                                         }
 
+                                        const totalSize = uploadedFiles.reduce((acc, f) => acc + f.file.size, 0);
+                                        const MAX_TOTAL_SIZE = 25 * 1024 * 1024; // 25MB
+                                        if (totalSize > MAX_TOTAL_SIZE) {
+                                            alert(`Total file size (${(totalSize / 1024 / 1024).toFixed(2)}MB) exceeds the 25MB limit. Please upload smaller files.`);
+                                            return;
+                                        }
+
                                         setIsSending(true);
                                         setUploadProgress(10);
                                         setUploadStatus('Preparing files...');
@@ -1159,8 +1166,21 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                                             uploadedFiles.forEach((fileData, index) => uploadFormData.append(`file${index}`, fileData.file));
 
                                             const uploadRes = await fetch('/api/upload-to-drive', { method: 'POST', body: uploadFormData });
-                                            const uploadData = await uploadRes.json();
-                                            if (!uploadRes.ok) throw new Error(uploadData.error || "Upload failed");
+                                            
+                                            let uploadData;
+                                            const contentType = uploadRes.headers.get("content-type");
+                                            if (contentType && contentType.includes("application/json")) {
+                                                uploadData = await uploadRes.json();
+                                            } else {
+                                                // Handle non-JSON responses (like 413 Request Entity Too Large)
+                                                if (uploadRes.status === 413) {
+                                                    throw new Error("Total upload size too large. Please upload smaller files or fewer files at once.");
+                                                }
+                                                const errorText = await uploadRes.text();
+                                                throw new Error(errorText || `Server error (${uploadRes.status})`);
+                                            }
+
+                                            if (!uploadRes.ok) throw new Error(uploadData?.error || "Upload failed");
 
                                             const driveFiles = uploadData.data?.files || [];
                                             setUploadProgress(60);
