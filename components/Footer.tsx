@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Mail, Instagram, Facebook, Linkedin, Twitter, Youtube, Share2 } from "lucide-react";
+import { Mail, Phone, Instagram, Facebook, Linkedin, Twitter, Youtube, Share2 } from "lucide-react";
 import { getSocials } from "@/lib/socials";
 import { useTheme } from "next-themes";
 
