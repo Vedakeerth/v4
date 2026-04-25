@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Save, RefreshCcw, Info, Settings2, Thermometer, Palette, Grid3x3 } from "lucide-react";
+import { Save, RefreshCcw, Info, Settings2, Thermometer, Palette, Grid3x3, Plus, Trash2, CheckCircle2 } from "lucide-react";
 import { getQuoteSettings, saveQuoteSettings, type QuoteSettings, DEFAULT_QUOTE_SETTINGS } from "@/lib/quote-settings";
 
 export default function QuoteSettingsTab() {
@@ -9,6 +9,14 @@ export default function QuoteSettingsTab() {
     const [isSaving, setIsSaving] = useState(false);
     const [isResetting, setIsResetting] = useState(false);
     const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+    const [editingKeys, setEditingKeys] = useState<Set<string>>(new Set());
+
+    const toggleEditing = (hex: string) => {
+        const next = new Set(editingKeys);
+        if (next.has(hex)) next.delete(hex);
+        else next.add(hex);
+        setEditingKeys(next);
+    };
 
     useEffect(() => {
         fetchSettings();
@@ -53,13 +61,13 @@ export default function QuoteSettingsTab() {
         }
     };
 
-    if (!settings) return <div className="text-white p-8">Loading pricing configuration...</div>;
+    if (!settings) return <div className="text-slate-900 dark:text-white p-8">Loading pricing configuration...</div>;
 
     return (
-        <div className="max-w-4xl mx-auto py-6">
+        <div className="max-w-7xl mx-auto py-6">
             <div className="flex justify-between items-center mb-8 bg-slate-50 dark:bg-slate-900/50 p-6 rounded-3xl border border-white/5">
                 <div>
-                    <h2 className="text-2xl font-bold text-white mb-2 flex items-center gap-2">
+                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
                         <Settings2 className="text-cyan-400" /> Quote Pricing Engine
                     </h2>
                     <p className="text-slate-600 dark:text-slate-400 text-sm">Configure base costs, material properties, and variable multipliers.</p>
@@ -100,7 +108,7 @@ export default function QuoteSettingsTab() {
                             type="number"
                             value={settings.labourCost}
                             onChange={(e) => setSettings({ ...settings, labourCost: parseFloat(e.target.value) || 0 })}
-                            className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-500 font-mono"
+                            className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500 font-mono"
                         />
                         <p className="text-[10px] text-slate-500 mt-2">Fixed cost added to every order for handling and post-processing.</p>
                     </div>
@@ -127,7 +135,7 @@ export default function QuoteSettingsTab() {
                                                 [pattern]: parseFloat(e.target.value) || 1.0
                                             }
                                         })}
-                                        className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-cyan-500 font-mono text-sm"
+                                        className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500 font-mono text-sm"
                                     />
                                     <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-slate-500 font-bold">x</span>
                                 </div>
@@ -156,7 +164,7 @@ export default function QuoteSettingsTab() {
                                                 newMaterials[mat] = { ...data, costPerKg: parseFloat(e.target.value) || 0 };
                                                 setSettings({ ...settings, materials: newMaterials });
                                             }}
-                                            className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-500 font-mono text-xs"
+                                            className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500 font-mono text-xs"
                                         />
                                     </div>
                                     <div>
@@ -170,7 +178,7 @@ export default function QuoteSettingsTab() {
                                                 newMaterials[mat] = { ...data, density: parseFloat(e.target.value) || 0 };
                                                 setSettings({ ...settings, materials: newMaterials });
                                             }}
-                                            className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-500 font-mono text-xs"
+                                            className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500 font-mono text-xs"
                                         />
                                     </div>
                                     <div>
@@ -184,7 +192,7 @@ export default function QuoteSettingsTab() {
                                                 newMaterials[mat] = { ...data, multiplier: parseFloat(e.target.value) || 1.0 };
                                                 setSettings({ ...settings, materials: newMaterials });
                                             }}
-                                            className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-500 font-mono text-xs"
+                                            className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500 font-mono text-xs"
                                         />
                                     </div>
                                 </div>
@@ -195,56 +203,181 @@ export default function QuoteSettingsTab() {
 
                 {/* Color Multipliers & Availability */}
                 <section className="col-span-1 md:col-span-2 bg-slate-50 dark:bg-slate-900/40 p-6 rounded-3xl border border-white/5">
-                    <h3 className="text-xs font-black text-slate-500 uppercase tracking-widest flex items-center gap-2 mb-6">
-                        <Palette size={14} className="text-cyan-500" /> Color Specific Surcharges & Availability
-                    </h3>
+                    <div className="flex justify-between items-center mb-6">
+                        <h3 className="text-xs font-black text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                            <Palette size={14} className="text-cyan-500" /> Color Specific Surcharges & Availability
+                        </h3>
+                        <button
+                            onClick={() => {
+                                const hex = "#cccccc";
+                                setSettings({
+                                    ...settings,
+                                    colors: {
+                                        ...settings.colors,
+                                        [hex]: { name: "New Color", multiplier: 1.0, isAvailable: true, useCustomPrice: true, customPrice: 2000 }
+                                    }
+                                });
+                            }}
+                            className="text-[10px] font-black text-cyan-500 uppercase hover:text-cyan-400 flex items-center gap-1 transition-all"
+                        >
+                            <Plus size={14} /> Add Color
+                        </button>
+                    </div>
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
                         {Object.entries(settings.colors).map(([hex, data]) => {
+                            const isEditing = editingKeys.has(hex);
                             return (
-                                <div key={hex} className={`bg-white dark:bg-slate-950/30 p-4 rounded-2xl border transition-all ${data.isAvailable ? 'border-white/5' : 'border-red-500/20 opacity-60'} flex flex-col items-center gap-3`}>
-                                    <div className="w-8 h-8 rounded-full border border-white/10 shadow-lg relative" style={{ backgroundColor: hex }}>
-                                        {!data.isAvailable && (
-                                            <div className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-full">
-                                                <div className="w-full h-0.5 bg-red-500 rotate-45 shadow-sm" />
-                                            </div>
-                                        )}
+                                <div key={hex} className={`bg-white dark:bg-slate-950/30 p-4 rounded-2xl border transition-all ${data.isAvailable ? 'border-white/5' : 'border-red-500/20 opacity-60'} flex flex-col items-center gap-3 relative group`}>
+                                    <button
+                                        onClick={() => {
+                                            const next = { ...settings.colors };
+                                            delete next[hex];
+                                            setSettings({ ...settings, colors: next });
+                                        }}
+                                        className="absolute top-2 right-2 p-1 text-slate-500 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all"
+                                    >
+                                        <Trash2 size={12} />
+                                    </button>
+
+                                    <div className="relative group/picker">
+                                        <div 
+                                            className="w-12 h-12 rounded-full border border-white/20 shadow-inner mb-1 flex items-center justify-center cursor-default transition-transform" 
+                                            style={{ backgroundColor: hex }}
+                                        >
+                                            {!data.isAvailable && (
+                                                <div className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-full pointer-events-none">
+                                                    <div className="w-full h-0.5 bg-red-500 rotate-45 shadow-sm" />
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
-                                    <div className="text-center w-full">
-                                        <p className="text-[10px] font-bold text-slate-600 dark:text-slate-400 mb-2">{data.name}</p>
-                                        
-                                        <div className="space-y-3">
-                                            <div className="flex flex-col gap-1">
-                                                <label className="text-[8px] font-black text-slate-500 uppercase tracking-tighter text-left">Multiplier</label>
-                                                <div className="relative">
+                                    
+                                    <div className="text-center w-full space-y-2">
+                                        {!isEditing ? (
+                                            <>
+                                                <div className="space-y-0.5">
+                                                    <h4 className="text-[10px] font-black text-slate-900 dark:text-white uppercase tracking-wider">{data.name}</h4>
+                                                    <p className="text-[8px] font-mono text-slate-500">{hex}</p>
+                                                </div>
+                                                <div className="bg-slate-100/50 dark:bg-slate-800/30 rounded-lg py-1 px-2 mb-2">
+                                                    <p className="text-[8px] font-black text-slate-500 uppercase tracking-tighter">
+                                                        {data.useCustomPrice ? `₹${data.customPrice}/Kg` : `${data.multiplier}x Multiplier`}
+                                                    </p>
+                                                </div>
+                                                <button
+                                                    onClick={() => toggleEditing(hex)}
+                                                    className="w-full py-1.5 bg-cyan-500/10 text-cyan-500 border border-cyan-500/20 rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-cyan-500/20 transition-all"
+                                                >
+                                                    Edit Color
+                                                </button>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <div className="space-y-1">
+                                                    <label className="text-[7px] font-black text-slate-500 uppercase tracking-widest text-left block ml-1">Color Name</label>
                                                     <input
-                                                        type="number"
-                                                        step="0.01"
-                                                        value={data.multiplier}
+                                                        value={data.name}
                                                         onChange={(e) => {
-                                                            const newColors = { ...settings.colors };
-                                                            newColors[hex] = { ...data, multiplier: parseFloat(e.target.value) || 1.0 };
-                                                            setSettings({ ...settings, colors: newColors });
+                                                            const next = { ...settings.colors };
+                                                            next[hex] = { ...data, name: e.target.value };
+                                                            setSettings({ ...settings, colors: next });
                                                         }}
-                                                        className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-2 py-1.5 text-white focus:outline-none focus:border-cyan-500 font-mono text-xs text-center"
+                                                        className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-300 dark:border-slate-700 rounded-lg px-2 py-1.5 text-slate-900 dark:text-white text-xs font-bold outline-none focus:border-cyan-500/50"
+                                                        placeholder="Color Name"
                                                     />
                                                 </div>
-                                            </div>
 
-                                            <button
-                                                onClick={() => {
-                                                    const newColors = { ...settings.colors };
-                                                    newColors[hex] = { ...data, isAvailable: !data.isAvailable };
-                                                    setSettings({ ...settings, colors: newColors });
-                                                }}
-                                                className={`w-full py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${
-                                                    data.isAvailable 
-                                                    ? 'bg-cyan-500/10 text-cyan-500 border border-cyan-500/20 hover:bg-cyan-500/20' 
-                                                    : 'bg-red-500/10 text-red-500 border border-red-500/20 hover:bg-red-500/20'
-                                                }`}
-                                            >
-                                                {data.isAvailable ? 'Available' : 'Unavailable'}
-                                            </button>
-                                        </div>
+                                                <div className="space-y-1">
+                                                    <label className="text-[7px] font-black text-slate-500 uppercase tracking-widest text-left block ml-1">Hex Code</label>
+                                                    <input
+                                                        type="text"
+                                                        value={hex}
+                                                        onChange={(e) => {
+                                                            const newHex = e.target.value;
+                                                            if (newHex.startsWith('#') && newHex.length <= 7) {
+                                                                const next = { ...settings.colors };
+                                                                next[newHex] = data;
+                                                                if (newHex !== hex && newHex.length === 7) {
+                                                                    delete next[hex];
+                                                                    // Update editing key to follow the change
+                                                                    const nextEditing = new Set(editingKeys);
+                                                                    nextEditing.delete(hex);
+                                                                    nextEditing.add(newHex);
+                                                                    setEditingKeys(nextEditing);
+                                                                }
+                                                                setSettings({ ...settings, colors: next });
+                                                            }
+                                                        }}
+                                                        className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-300 dark:border-slate-700 rounded-lg px-2 py-1.5 text-slate-900 dark:text-white font-mono text-[10px] outline-none focus:border-cyan-500/50"
+                                                    />
+                                                </div>
+                                                
+                                                <div className="space-y-2 pt-1 border-t border-slate-200 dark:border-white/5 mt-2">
+                                                    <div className="flex items-center justify-between">
+                                                        <label className="text-[7px] font-black text-slate-500 uppercase tracking-widest">Type</label>
+                                                        <button
+                                                            onClick={() => {
+                                                                const next = { ...settings.colors };
+                                                                next[hex] = { ...data, useCustomPrice: !data.useCustomPrice };
+                                                                setSettings({ ...settings, colors: next });
+                                                            }}
+                                                            className={`text-[7px] font-black px-1.5 py-0.5 rounded transition-all ${data.useCustomPrice ? 'bg-purple-500/20 text-purple-400' : 'bg-blue-500/20 text-blue-400'}`}
+                                                        >
+                                                            {data.useCustomPrice ? 'CUSTOM' : 'MULTIPLIER'}
+                                                        </button>
+                                                    </div>
+
+                                                    {data.useCustomPrice ? (
+                                                        <input
+                                                            type="number"
+                                                            value={data.customPrice || 0}
+                                                            onChange={(e) => {
+                                                                const next = { ...settings.colors };
+                                                                next[hex] = { ...data, customPrice: parseFloat(e.target.value) || 0 };
+                                                                setSettings({ ...settings, colors: next });
+                                                            }}
+                                                            className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-300 dark:border-slate-700 rounded-lg px-2 py-1.5 text-slate-900 dark:text-white font-mono text-xs text-center font-bold"
+                                                        />
+                                                    ) : (
+                                                        <input
+                                                            type="number"
+                                                            step="0.01"
+                                                            value={data.multiplier}
+                                                            onChange={(e) => {
+                                                                const next = { ...settings.colors };
+                                                                next[hex] = { ...data, multiplier: parseFloat(e.target.value) || 1.0 };
+                                                                setSettings({ ...settings, colors: next });
+                                                            }}
+                                                            className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-300 dark:border-slate-700 rounded-lg px-2 py-1.5 text-slate-900 dark:text-white font-mono text-xs text-center font-bold"
+                                                        />
+                                                    )}
+
+                                                    <button
+                                                        onClick={() => toggleEditing(hex)}
+                                                        className="w-full py-1.5 bg-green-500/10 text-green-500 border border-green-500/20 rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-green-500/20 transition-all flex items-center justify-center gap-1 mt-1"
+                                                    >
+                                                        <CheckCircle2 size={12} /> OK
+                                                    </button>
+                                                </div>
+                                            </>
+                                        )}
+
+                                            {!isEditing && (
+                                                <button
+                                                    onClick={() => {
+                                                        const next = { ...settings.colors };
+                                                        next[hex] = { ...data, isAvailable: !data.isAvailable };
+                                                        setSettings({ ...settings, colors: next });
+                                                    }}
+                                                    className={`w-full py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${
+                                                        data.isAvailable 
+                                                        ? 'bg-cyan-500/10 text-cyan-500 border border-cyan-500/20 hover:bg-cyan-500/20' 
+                                                        : 'bg-red-500/10 text-red-500 border border-red-500/20 hover:bg-red-500/20'
+                                                    }`}
+                                                >
+                                                    {data.isAvailable ? 'Available' : 'Unavailable'}
+                                                </button>
+                                            )}
                                     </div>
                                 </div>
                             );

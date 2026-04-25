@@ -7,6 +7,7 @@ export default function FeaturesTab() {
     const [content, setContent] = useState<any>(null);
     const [settings, setSettings] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [isSaving, setIsSaving] = useState(false);
 
     const AVAILABLE_ICONS = ["Gauge", "Zap", "CheckCircle2", "Scaling", "Activity", "Factory", "Rocket", "Library"];
 
@@ -36,6 +37,7 @@ export default function FeaturesTab() {
     };
 
     const handleSave = async () => {
+        setIsSaving(true);
         try {
             await Promise.all([
                 fetch("/api/pages/why-choose-us", {
@@ -49,9 +51,11 @@ export default function FeaturesTab() {
                     body: JSON.stringify(settings),
                 })
             ]);
-            alert("Products page and settings saved!");
+            alert("✓ Assets and configurations synchronized!");
         } catch (error) {
-            alert("Failed to save changes");
+            alert("× Error: Synchronization failure.");
+        } finally {
+            setIsSaving(false);
         }
     };
 
@@ -61,18 +65,24 @@ export default function FeaturesTab() {
         setContent({ ...content, features: newFeat });
     };
 
-    if (isLoading) return <div className="text-white">Loading data...</div>;
-    if (!content || !settings) return <div className="text-white">Error loading data.</div>;
+    if (isLoading) return <div className="text-slate-900 dark:text-white p-8">Loading data...</div>;
+    if (!content || !settings) return <div className="text-slate-900 dark:text-white p-8">Error loading data.</div>;
 
     return (
-        <div className="space-y-10 max-w-5xl">
+        <div className="space-y-10 max-w-7xl mx-auto">
             <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-bold text-white">Why Choose Us (Products) Management</h2>
+                <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Why Choose Us (Products) Management</h2>
                 <button
                     onClick={handleSave}
-                    className="px-6 py-3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-xl flex items-center gap-2 shadow-lg shadow-cyan-500/20 transition-all"
+                    disabled={isSaving}
+                    className="px-6 py-3 bg-cyan-500 hover:bg-cyan-400 disabled:opacity-50 disabled:cursor-not-allowed text-slate-950 font-black uppercase tracking-widest text-[10px] rounded-xl flex items-center gap-2 shadow-lg shadow-cyan-500/20 transition-all active:scale-95"
                 >
-                    <Save size={20} /> Save Changes
+                    {isSaving ? (
+                        <div className="h-4 w-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                        <Save size={16} />
+                    )}
+                    {isSaving ? "Syncing..." : "Commit Changes"}
                 </button>
             </div>
 
@@ -80,7 +90,7 @@ export default function FeaturesTab() {
             <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8">
                 <div className="flex items-center gap-3 mb-6 border-b border-slate-200 dark:border-slate-800 pb-4">
                     <LayoutDashboard className="text-cyan-400" />
-                    <h3 className="text-lg font-bold text-white">Page Layout & Sections</h3>
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-white">Page Layout & Sections</h3>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="flex items-center justify-between p-4 bg-white dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-800">
@@ -119,7 +129,7 @@ export default function FeaturesTab() {
 
             {/* Content Edit Section */}
             <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-3xl p-8">
-                <h3 className="text-lg font-bold text-white mb-6 border-b border-slate-200 dark:border-slate-800 pb-2">"Why Choose Us" Content</h3>
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-6 border-b border-slate-200 dark:border-slate-800 pb-2">"Why Choose Us" Content</h3>
 
                 {/* Header Editors */}
                 <div className="grid grid-cols-1 gap-4 mb-8">
@@ -129,13 +139,13 @@ export default function FeaturesTab() {
                             <input
                                 value={content.header?.title || ""}
                                 onChange={(e) => setContent({ ...content, header: { ...content.header, title: e.target.value } })}
-                                className="flex-1 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none"
+                                className="flex-1 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:border-cyan-500/50 outline-none"
                                 placeholder="Prefix"
                             />
                             <input
                                 value={content.header?.titleSuffix || ""}
                                 onChange={(e) => setContent({ ...content, header: { ...content.header, titleSuffix: e.target.value } })}
-                                className="flex-1 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none"
+                                className="flex-1 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:border-cyan-500/50 outline-none"
                                 placeholder="Suffix (Color)"
                             />
                         </div>
@@ -145,13 +155,13 @@ export default function FeaturesTab() {
                         <textarea
                             value={content.header?.description || ""}
                             onChange={(e) => setContent({ ...content, header: { ...content.header, description: e.target.value } })}
-                            className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none h-24 resize-none"
+                            className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:border-cyan-500/50 outline-none h-24 resize-none"
                         />
                     </div>
                 </div>
 
                 {/* Features List */}
-                <h4 className="text-md font-bold text-white mb-4">Feature Blocks</h4>
+                <h4 className="text-md font-bold text-slate-900 dark:text-slate-900 dark:text-white mb-4">Feature Blocks</h4>
                 <div className="grid grid-cols-1 gap-6">
                     {content.features?.map((feat: any, i: number) => (
                         <div key={i} className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl p-6">
@@ -161,7 +171,7 @@ export default function FeaturesTab() {
                                     <select
                                         value={feat.icon}
                                         onChange={(e) => updateFeature(i, "icon", e.target.value)}
-                                        className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-3 text-white focus:border-cyan-500/50 outline-none text-sm"
+                                        className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-3 text-slate-900 dark:text-white focus:border-cyan-500/50 outline-none text-sm"
                                     >
                                         {AVAILABLE_ICONS.map(icon => <option key={icon} value={icon}>{icon}</option>)}
                                     </select>
@@ -171,7 +181,7 @@ export default function FeaturesTab() {
                                     <input
                                         value={feat.title}
                                         onChange={(e) => updateFeature(i, "title", e.target.value)}
-                                        className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none font-bold"
+                                        className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:border-cyan-500/50 outline-none font-bold"
                                     />
                                 </div>
                                 <div className="md:col-span-6">
@@ -179,7 +189,7 @@ export default function FeaturesTab() {
                                     <textarea
                                         value={feat.description}
                                         onChange={(e) => updateFeature(i, "description", e.target.value)}
-                                        className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none resize-none h-20"
+                                        className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:border-cyan-500/50 outline-none resize-none h-20"
                                     />
                                 </div>
                             </div>

@@ -169,14 +169,14 @@ export default function AnnouncementsTab() {
     }
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 max-w-7xl mx-auto">
             <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
                 {/* News Ticker Preview */}
                 <div className="w-full xl:max-w-xl">
                     <NewsTicker initialItems={(announcements || []).map(a => ({ text: a.text, link: "#" }))} />
                 </div>
                 <div className="w-full xl:flex-1">
-                    <h2 className="text-2xl font-bold text-white mb-1">Announcement Bar</h2>
+                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-1">Announcement Bar</h2>
                     <p className="text-slate-600 dark:text-slate-400 text-sm">Manage the top scrolling news and festival offers.</p>
                 </div>
                 {!isAdding && (
@@ -190,7 +190,7 @@ export default function AnnouncementsTab() {
             </div>
 
             <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 mb-8">
-                <h3 className="text-lg font-bold text-white mb-4">Ticker Configuration</h3>
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4">Ticker Configuration</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="space-y-1">
                         <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Speed</label>
@@ -198,7 +198,7 @@ export default function AnnouncementsTab() {
                             type="number"
                             value={tickerSettings.speed}
                             onChange={(e) => setTickerSettings({ ...tickerSettings, speed: parseInt(e.target.value) || 50 })}
-                            className="w-full px-5 py-3 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500 transition-all font-bold text-sm"
+                            className="w-full px-5 py-3 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500 transition-all font-bold text-sm"
                         />
                     </div>
                     <div className="space-y-1">
@@ -207,7 +207,7 @@ export default function AnnouncementsTab() {
                             type="number"
                             value={tickerSettings.spacing}
                             onChange={(e) => setTickerSettings({ ...tickerSettings, spacing: parseInt(e.target.value) || 200 })}
-                            className="w-full px-5 py-3 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500 transition-all font-bold text-sm"
+                            className="w-full px-5 py-3 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500 transition-all font-bold text-sm"
                         />
                     </div>
                     <div className="space-y-1">
@@ -215,7 +215,7 @@ export default function AnnouncementsTab() {
                         <select
                             value={tickerSettings.showOnPages}
                             onChange={(e) => setTickerSettings({ ...tickerSettings, showOnPages: e.target.value })}
-                            className="w-full px-5 py-3 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500 transition-all font-bold text-sm"
+                            className="w-full px-5 py-3 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500 transition-all font-bold text-sm"
                         >
                             <option value="all">Show on All Pages (Except Admin/Login)</option>
                             <option value="home">Show on Home Page Only</option>
@@ -226,7 +226,7 @@ export default function AnnouncementsTab() {
                     <button
                         onClick={handleSaveSettings}
                         disabled={isSavingSettings}
-                        className="flex w-full items-center justify-center gap-2 rounded-xl bg-slate-100 dark:bg-slate-800 px-6 py-2.5 text-xs font-black uppercase tracking-widest text-white transition-all hover:bg-slate-200 dark:bg-slate-700 sm:w-auto"
+                        className="flex w-full items-center justify-center gap-2 rounded-xl bg-slate-100 dark:bg-slate-800 px-6 py-2.5 text-xs font-black uppercase tracking-widest text-slate-900 dark:text-white transition-all hover:bg-slate-200 dark:bg-slate-700 sm:w-auto"
                     >
                         {isSavingSettings ? <Loader2 className="w-4 h-4 animate-spin" /> : "Save Settings"}
                     </button>
@@ -243,7 +243,7 @@ export default function AnnouncementsTab() {
                                     required
                                     value={formData.text}
                                     onChange={(e) => setFormData({ ...formData, text: e.target.value })}
-                                    className="w-full px-5 py-4 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500 transition-all font-bold text-sm"
+                                    className="w-full px-5 py-4 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500 transition-all font-bold text-sm"
                                     placeholder="e.g. MEGA DIWALI SALE - UP TO 50% OFF!"
                                 />
                             </div>
@@ -324,7 +324,7 @@ export default function AnnouncementsTab() {
                             </div>
                             <div className="flex-1 min-w-0 flex flex-col justify-between">
                                 <div>
-                                    <p className="text-white font-bold text-sm line-clamp-2 italic uppercase tracking-wider">{item.text}</p>
+                                    <p className="text-slate-900 dark:text-white font-bold text-sm line-clamp-2 italic uppercase tracking-wider">{item.text}</p>
                                     <div className="mt-2 flex items-center gap-2">
                                         <button
                                             onClick={() => toggleStatus(item.id, item.active)}

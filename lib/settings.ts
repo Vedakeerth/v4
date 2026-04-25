@@ -11,6 +11,15 @@ export interface SiteSettings {
     // Products Page Settings
     showProjectsOnProducts: boolean;
     showProductsOnProducts: boolean;
+    // Contact Info
+    contactEmail: string;
+    contactPhone: string;
+    contactAddress: string;
+    footerAboutText: string;
+    // Navbar & Footer Links
+    navbarLinks: { name: string; href: string }[];
+    footerLinks: { name: string; href: string }[];
+    footerServiceLinks: { name: string; href: string }[];
 }
 
 const defaultSettings: SiteSettings = {
@@ -23,7 +32,32 @@ const defaultSettings: SiteSettings = {
     heroTitle: "Future of 3D Printing",
     heroSubtitle: "Innovating the world one layer at a time.",
     showProjectsOnProducts: false,
-    showProductsOnProducts: true
+    showProductsOnProducts: true,
+    contactEmail: "support@vaelinsa.com",
+    contactPhone: "+91 XXXXXXXXXX",
+    contactAddress: "Your Address Here",
+    footerAboutText: "Premium additive manufacturing and design services for the modern engineer.",
+    navbarLinks: [
+        { name: "Service", href: "/services" },
+        { name: "Products", href: "/products" },
+        { name: "Blogs", href: "/blog" },
+        { name: "Gallery", href: "/gallery" },
+        { name: "Contact", href: "/contact" },
+        { name: "Tracking Product", href: "/track-order" },
+    ],
+    footerLinks: [
+        { name: "Product Catalog", href: "/catalog" },
+        { name: "Track Your Order", href: "/track-order" },
+        { name: "Blog & Updates", href: "/blog" },
+        { name: "Privacy Policy", href: "/privacy" },
+        { name: "Return & Refund Policy", href: "/refunds" },
+    ],
+    footerServiceLinks: [
+        { name: "FDM Printing", href: "/services#fdm" },
+        { name: "SLA Resin", href: "/services#sla" },
+        { name: "Product Design", href: "/services#design" },
+        { name: "Rapid Prototyping", href: "/services#prototyping" },
+    ]
 };
 
 export async function getSettings(): Promise<SiteSettings> {

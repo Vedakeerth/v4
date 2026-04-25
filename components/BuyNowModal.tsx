@@ -143,7 +143,7 @@ export default function BuyNowModal({ product, quantity = 1, selectedColor, onCl
                                 <div className="absolute inset-0 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin" />
                                 <Zap className="absolute inset-0 m-auto text-cyan-400" size={28} />
                             </div>
-                            <h3 className="text-xl font-black text-white uppercase italic tracking-tight mb-2">
+                            <h3 className="text-xl font-black text-slate-900 dark:text-white uppercase italic tracking-tight mb-2">
                                 Connecting to Payment
                             </h3>
                             <p className="text-slate-500 text-xs font-bold uppercase tracking-widest">
@@ -164,7 +164,7 @@ export default function BuyNowModal({ product, quantity = 1, selectedColor, onCl
                                     />
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <p className="text-white font-bold text-sm truncate">{product.name}</p>
+                                    <p className="text-slate-900 dark:text-white font-bold text-sm truncate">{product.name}</p>
                                     {selectedColor && (
                                         <div className="flex items-center gap-1.5 mt-1">
                                             <div className="w-3 h-3 rounded-full border border-white/20" style={{ backgroundColor: selectedColor }} />
@@ -183,7 +183,7 @@ export default function BuyNowModal({ product, quantity = 1, selectedColor, onCl
                                 </div>
                             </div>
 
-                            <h2 className="text-lg font-black text-white uppercase italic tracking-tight mb-1 flex items-center gap-2">
+                            <h2 className="text-lg font-black text-slate-900 dark:text-white uppercase italic tracking-tight mb-1 flex items-center gap-2">
                                 <Zap size={18} className="text-cyan-400" />
                                 Instant Checkout
                             </h2>

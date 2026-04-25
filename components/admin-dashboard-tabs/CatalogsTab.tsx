@@ -86,9 +86,9 @@ export default function CatalogsTab() {
     };
 
     return (
-        <div>
+        <div className="max-w-7xl mx-auto">
             <div className="flex justify-between items-center mb-8">
-                <h2 className="text-2xl font-bold text-white">Product Catalogs</h2>
+                <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Product Catalogs</h2>
                 <button
                     onClick={() => openModal()}
                     className="px-6 py-3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-xl flex items-center gap-2 shadow-lg shadow-cyan-500/20 transition-all"
@@ -108,7 +108,7 @@ export default function CatalogsTab() {
                                 {c.isActive ? "Active" : "Inactive"}
                             </div>
                         </div>
-                        <h3 className="text-white font-bold text-lg mb-2">{c.name}</h3>
+                        <h3 className="text-slate-900 dark:text-white font-bold text-lg mb-2">{c.name}</h3>
                         <p className="text-slate-600 dark:text-slate-400 text-sm mb-6 h-10 line-clamp-2">{c.description}</p>
                         <div className="flex gap-2">
                             <button
@@ -129,10 +129,10 @@ export default function CatalogsTab() {
             </div>
 
             {showModal && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-white dark:bg-slate-950/90 backdrop-blur-md">
-                    <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-full max-w-lg rounded-3xl p-8 shadow-2xl">
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 dark:bg-slate-950/60 backdrop-blur-2xl transition-all duration-500">
+                    <div className="bg-white/70 dark:bg-slate-900/70 border border-white/20 dark:border-white/5 w-full max-w-lg rounded-3xl p-8 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] backdrop-blur-3xl">
                         <div className="flex justify-between items-center mb-6">
-                            <h2 className="text-2xl font-bold text-white">
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
                                 {editingCatalog ? "Edit" : "New"} Catalog
                             </h2>
                             <button onClick={() => setShowModal(false)} className="text-slate-500 hover:text-white">
@@ -144,13 +144,13 @@ export default function CatalogsTab() {
                                 placeholder="Catalog Name"
                                 value={formData.name}
                                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none"
+                                className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:border-cyan-500/50 outline-none"
                             />
                             <textarea
                                 placeholder="Description..."
                                 value={formData.description}
                                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                                className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-white h-32 focus:border-cyan-500/50 outline-none resize-none"
+                                className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white h-32 focus:border-cyan-500/50 outline-none resize-none"
                             />
 
                             <div className="flex items-center gap-3 p-4 bg-white dark:bg-slate-950/50 rounded-xl border border-slate-200 dark:border-slate-800">

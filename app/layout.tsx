@@ -64,7 +64,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
-      <body className={cn(inter.variable, "font-sans bg-background text-foreground min-h-screen")}>
+      <body suppressHydrationWarning className={cn(inter.variable, "font-sans bg-background text-foreground min-h-screen")}>
         <Providers>
           <CartProvider>
             <FaviconSwitcher />

@@ -249,7 +249,7 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
         if (rejectedFiles.length > 0) {
             const reasons = rejectedFiles.map(({ file, errors }) => {
                 if (errors.some((e: any) => e.code === 'file-too-large')) {
-                    return `${file.name}: File exceeds 25MB limit`;
+                    return `${file.name}: File exceeds 50MB limit`;
                 }
                 if (errors.some((e: any) => e.code === 'file-invalid-type')) {
                     return `${file.name}: Invalid file type`;
@@ -480,7 +480,7 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
             'application/octet-stream': ['.stl']
         },
         maxFiles: 5,
-        maxSize: 25 * 1024 * 1024, // 25MB
+        maxSize: 50 * 1024 * 1024, // 50MB
         noClick: true,
     });
 
@@ -526,7 +526,7 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                                     </div>
                                     <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-200">Click to Upload STL Files</h3>
                                     <p className="text-sm text-slate-600 mt-2">or drag and drop below</p>
-                                    <p className="text-xs text-slate-700 mt-4">Max size: 25MB per file • Max files: 5</p>
+                                    <p className="text-xs text-slate-700 mt-4">Max size: 50MB per file • Max files: 5</p>
                                     <p className="text-xs text-slate-700 mt-1">Format: STL files only</p>
                                     <div className="mt-8 px-6 py-2 bg-slate-100 dark:bg-slate-800/50 rounded-full border border-slate-300 dark:border-slate-700/50">
                                         <span className="text-xs font-bold text-slate-700 dark:text-slate-400 uppercase tracking-widest">
@@ -822,7 +822,7 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                                             }
                                         }}
                                         options={[
-                                            ...[5, 10, 20, 50, 70, 100].map(val => ({ value: String(val), label: `${val}%` })),
+                                            ...[5, 10, 15, 20, 50, 70, 100].map(val => ({ value: String(val), label: `${val}%` })),
                                             { value: 'custom', label: 'Custom' }
                                         ]}
                                         className="flex-1"
@@ -1141,6 +1141,13 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                                             return;
                                         }
 
+                                        const totalSize = uploadedFiles.reduce((acc, f) => acc + f.file.size, 0);
+                                        const MAX_TOTAL_SIZE = 50 * 1024 * 1024; // 50MB
+                                        if (totalSize > MAX_TOTAL_SIZE) {
+                                            alert(`Total file size (${(totalSize / 1024 / 1024).toFixed(2)}MB) exceeds the 50MB limit. Please upload smaller files.`);
+                                            return;
+                                        }
+
                                         setIsSending(true);
                                         setUploadProgress(10);
                                         setUploadStatus('Preparing files...');
@@ -1159,8 +1166,21 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                                             uploadedFiles.forEach((fileData, index) => uploadFormData.append(`file${index}`, fileData.file));
 
                                             const uploadRes = await fetch('/api/upload-to-drive', { method: 'POST', body: uploadFormData });
-                                            const uploadData = await uploadRes.json();
-                                            if (!uploadRes.ok) throw new Error(uploadData.error || "Upload failed");
+                                            
+                                            let uploadData;
+                                            const contentType = uploadRes.headers.get("content-type");
+                                            if (contentType && contentType.includes("application/json")) {
+                                                uploadData = await uploadRes.json();
+                                            } else {
+                                                // Handle non-JSON responses (like 413 Request Entity Too Large)
+                                                if (uploadRes.status === 413) {
+                                                    throw new Error("Total upload size too large. Please upload smaller files or fewer files at once.");
+                                                }
+                                                const errorText = await uploadRes.text();
+                                                throw new Error(errorText || `Server error (${uploadRes.status})`);
+                                            }
+
+                                            if (!uploadRes.ok) throw new Error(uploadData?.error || "Upload failed");
 
                                             const driveFiles = uploadData.data?.files || [];
                                             setUploadProgress(60);
@@ -1253,6 +1273,7 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                                     countryCode: '+91',
                                     doorNo: '',
                                     street: '',
+                                    area: '',
                                     city: '',
                                     district: '',
                                     state: '',

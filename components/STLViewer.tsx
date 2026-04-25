@@ -551,7 +551,7 @@ export default function STLViewer({
                 </div>
                 <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-200">Click to Upload STL Files</h3>
                 <p className="text-sm text-slate-500 mt-2">or drag and drop below</p>
-                <p className="text-xs text-slate-600 mt-4">Max size: 25MB per file • Max files: 5</p>
+                <p className="text-xs text-slate-600 mt-4">Max size: 50MB per file • Max files: 5</p>
                 <p className="text-xs text-slate-600 mt-1">Format: STL files only</p>
                 <div className="mt-8 px-6 py-2 bg-slate-100 dark:bg-slate-800/50 rounded-full border border-slate-300 dark:border-slate-700/50">
                     <span className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">

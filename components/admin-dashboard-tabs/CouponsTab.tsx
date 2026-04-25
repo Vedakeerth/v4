@@ -102,10 +102,10 @@ export default function CouponsTab() {
     };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 max-w-7xl mx-auto">
             <div className="flex justify-between items-center mb-8">
                 <div>
-                    <h2 className="text-2xl font-bold text-white">Coupons Management</h2>
+                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Coupons Management</h2>
                     <p className="text-slate-600 dark:text-slate-400 text-sm mt-1">Create and manage discount codes for your customers</p>
                 </div>
                 <button
@@ -117,7 +117,7 @@ export default function CouponsTab() {
             </div>
 
             {isLoading ? (
-                <div className="text-white opacity-50 flex items-center gap-3">
+                <div className="text-slate-900 dark:text-white opacity-50 flex items-center gap-3">
                     <div className="w-5 h-5 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin" />
                     Loading coupons...
                 </div>
@@ -159,7 +159,7 @@ export default function CouponsTab() {
                                     <Ticket size={24} />
                                 </div>
                                 <div>
-                                    <h3 className="text-white font-black text-xl tracking-wider leading-none">{coupon.code}</h3>
+                                    <h3 className="text-slate-900 dark:text-white font-black text-xl tracking-wider leading-none">{coupon.code}</h3>
                                     <div className="flex items-center gap-2 mt-1">
                                         <span className={`text-[10px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded ${coupon.type === 'percentage' ? 'bg-purple-500/20 text-purple-400' : 'bg-green-500/20 text-green-400'}`}>
                                             {coupon.type}
@@ -178,7 +178,7 @@ export default function CouponsTab() {
                             <div className="space-y-4">
                                 <div className="flex items-center justify-between p-3 bg-white dark:bg-slate-950/50 rounded-xl border border-slate-200 dark:border-slate-800">
                                     <span className="text-xs font-bold text-slate-500 uppercase">Discount</span>
-                                    <span className="text-lg font-black text-white">
+                                    <span className="text-lg font-black text-slate-900 dark:text-white">
                                         {coupon.type === 'percentage' ? `${coupon.value}%` : `₹${coupon.value}`}
                                     </span>
                                 </div>
@@ -209,45 +209,45 @@ export default function CouponsTab() {
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             onClick={() => setShowAddModal(false)}
-                            className="absolute inset-0 bg-white dark:bg-slate-950/90 backdrop-blur-md"
+                            className="absolute inset-0 bg-black/40 dark:bg-slate-950/60 backdrop-blur-2xl transition-all duration-500"
                         />
                         <motion.div
                             initial={{ opacity: 0, scale: 0.95, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                            className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-full max-w-md rounded-3xl p-8 shadow-2xl relative z-10"
+                            className="bg-white/90 dark:bg-slate-900/90 border border-white/30 dark:border-white/10 w-full max-w-md rounded-3xl p-8 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] backdrop-blur-3xl relative z-10"
                         >
                             <div className="flex justify-between items-center mb-8">
-                                <h2 className="text-2xl font-bold text-white">{editingCoupon ? "Edit Coupon" : "New Coupon"}</h2>
+                                <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{editingCoupon ? "Edit Coupon" : "New Coupon"}</h2>
                                 <button onClick={() => { setShowAddModal(false); setEditingCoupon(null); }} className="p-2 hover:bg-slate-100 dark:bg-slate-800 rounded-full text-slate-600 dark:text-slate-400"><X size={24} /></button>
                             </div>
 
                             <div className="space-y-6">
                                 <div>
-                                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-2">Coupon Code</label>
+                                    <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">Coupon Code</label>
                                     <input
                                         type="text"
                                         placeholder="SUMMER20"
                                         value={formData.code}
                                         onChange={e => setFormData({ ...formData, code: e.target.value.toUpperCase() })}
-                                        className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-500 uppercase font-black tracking-widest"
+                                        className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500 uppercase font-black tracking-widest transition-all"
                                     />
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-2">Type</label>
+                                        <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">Type</label>
                                         <select
                                             value={formData.type}
                                             onChange={e => setFormData({ ...formData, type: e.target.value as any })}
-                                            className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-500"
+                                            className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500 transition-all"
                                         >
                                             <option value="percentage">Percentage (%)</option>
                                             <option value="fixed">Fixed (₹)</option>
                                         </select>
                                     </div>
                                     <div>
-                                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-2">Value</label>
+                                        <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">Value</label>
                                         <div className="relative">
                                             {formData.type === 'percentage' ? (
                                                 <Percent className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={16} />
@@ -258,7 +258,7 @@ export default function CouponsTab() {
                                                 type="number"
                                                 value={formData.value}
                                                 onChange={e => setFormData({ ...formData, value: e.target.value })}
-                                                className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl pl-10 pr-4 py-3 text-white focus:outline-none focus:border-cyan-500"
+                                                className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl pl-10 pr-4 py-3 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500 transition-all"
                                                 placeholder="10"
                                             />
                                         </div>
@@ -266,12 +266,12 @@ export default function CouponsTab() {
                                 </div>
 
                                 <div>
-                                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-2">Expiry Date</label>
+                                    <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">Expiry Date</label>
                                     <input
                                         type="date"
                                         value={formData.expiryDate}
                                         onChange={e => setFormData({ ...formData, expiryDate: e.target.value })}
-                                        className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-500"
+                                        className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500 transition-all"
                                     />
                                 </div>
 

@@ -38,13 +38,13 @@ export default function SocialsTab() {
         }
     };
 
-    if (isLoading) return <div className="text-white">Loading social links...</div>;
+    if (isLoading) return <div className="text-slate-900 dark:text-white p-8">Loading social links...</div>;
 
     return (
-        <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 max-w-4xl">
+        <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 w-full">
             <div className="flex items-center gap-3 mb-8">
                 <Share2 className="text-cyan-400" size={24} />
-                <h2 className="text-xl font-bold text-white">Social Media Profiles</h2>
+                <h2 className="text-xl font-bold text-slate-900 dark:text-white">Social Media Profiles</h2>
             </div>
             <div className="space-y-4">
                 {socials.map((link, idx) => (
@@ -56,7 +56,7 @@ export default function SocialsTab() {
                             <input
                                 value={link.name}
                                 readOnly
-                                className="bg-transparent border-none text-white font-bold text-sm outline-none"
+                                className="bg-transparent border-none text-slate-900 dark:text-white font-bold text-sm outline-none"
                             />
                             <input
                                 value={link.url}
@@ -66,7 +66,7 @@ export default function SocialsTab() {
                                     setSocials(next);
                                 }}
                                 placeholder="https://..."
-                                className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 text-white text-sm focus:border-cyan-500/50 outline-none"
+                                className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 text-slate-900 dark:text-white text-sm focus:border-cyan-500/50 outline-none"
                             />
                         </div>
                     </div>

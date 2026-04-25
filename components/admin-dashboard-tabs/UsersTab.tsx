@@ -149,7 +149,7 @@ export default function UsersTab() {
         <div className="space-y-6">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                    <h2 className="text-2xl font-bold text-white mb-1">User Management</h2>
+                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-1">User Management</h2>
                     <p className="text-slate-600 dark:text-slate-400 text-sm">Manage dashboard users and their access levels (Max 5 users).</p>
                 </div>
                 {!isAdding && (
@@ -173,7 +173,7 @@ export default function UsersTab() {
                 <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 mb-8 animate-in fade-in slide-in-from-top-4">
                     <div className="flex items-center gap-3 mb-6 border-b border-slate-200 dark:border-slate-800 pb-4">
                         <UserPlus className="text-cyan-400" size={20} />
-                        <h3 className="text-lg font-bold text-white uppercase italic">{editingUser ? "Edit User Account" : "Create New User"}</h3>
+                        <h3 className="text-lg font-bold text-slate-900 dark:text-white uppercase italic">{editingUser ? "Edit User Account" : "Create New User"}</h3>
                     </div>
                     <form onSubmit={handleAddUser} className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-1">
@@ -183,7 +183,7 @@ export default function UsersTab() {
                                 name="name"
                                 value={formData.name}
                                 onChange={handleInput}
-                                className="w-full px-5 py-4 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500 transition-all font-bold text-sm"
+                                className="w-full px-5 py-4 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500 transition-all font-bold text-sm"
                                 placeholder="John Doe"
                             />
                         </div>
@@ -195,7 +195,7 @@ export default function UsersTab() {
                                 type="email"
                                 value={formData.email}
                                 onChange={handleInput}
-                                className="w-full px-5 py-4 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500 transition-all font-bold text-sm"
+                                className="w-full px-5 py-4 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500 transition-all font-bold text-sm"
                                 placeholder="john@vaelinsa.com"
                             />
                         </div>
@@ -210,7 +210,7 @@ export default function UsersTab() {
                                     type={showCreatePassword ? "text" : "password"}
                                     value={formData.password}
                                     onChange={handleInput}
-                                    className="w-full px-5 py-4 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500 transition-all font-bold text-sm"
+                                    className="w-full px-5 py-4 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500 transition-all font-bold text-sm"
                                     placeholder={editingUser ? "Leave blank to keep current" : "••••••••"}
                                 />
                                 <button
@@ -228,7 +228,7 @@ export default function UsersTab() {
                                 name="role"
                                 value={formData.role}
                                 onChange={handleInput}
-                                className="w-full px-5 py-4 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500 transition-all font-bold text-sm appearance-none"
+                                className="w-full px-5 py-4 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500 transition-all font-bold text-sm appearance-none"
                             >
                                 <option value="USER">Standard User (Limited Access)</option>
                                 <option value="SUPER_ADMIN">Super Admin (Full Access)</option>
@@ -238,7 +238,7 @@ export default function UsersTab() {
                             <button
                                 type="button"
                                 onClick={handleCancel}
-                                className="px-6 py-3 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-white hover:bg-slate-100 dark:bg-slate-800 rounded-xl font-bold transition-all uppercase tracking-widest text-xs"
+                                className="px-6 py-3 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:text-white hover:bg-slate-100 dark:bg-slate-800 rounded-xl font-bold transition-all uppercase tracking-widest text-xs"
                             >
                                 Cancel
                             </button>
@@ -258,7 +258,7 @@ export default function UsersTab() {
                 <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 mb-8 animate-in fade-in slide-in-from-top-4">
                     <div className="flex items-center gap-3 mb-6 border-b border-slate-200 dark:border-slate-800 pb-4">
                         <Shield className="text-cyan-400" size={20} />
-                        <h3 className="text-lg font-bold text-white uppercase italic">Change Password: {isChangingPassword.name}</h3>
+                        <h3 className="text-lg font-bold text-slate-900 dark:text-white uppercase italic">Change Password: {isChangingPassword.name}</h3>
                     </div>
                     <form onSubmit={handleChangePassword} className="flex flex-col gap-4 md:flex-row md:items-end">
                         <div className="flex-1 space-y-1">
@@ -269,7 +269,7 @@ export default function UsersTab() {
                                     type={showChangePassword ? "text" : "password"}
                                     value={newPassword}
                                     onChange={(e) => setNewPassword(e.target.value)}
-                                    className="w-full px-5 py-4 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500 transition-all font-bold text-sm"
+                                    className="w-full px-5 py-4 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500 transition-all font-bold text-sm"
                                     placeholder="••••••••"
                                 />
                                 <button
@@ -285,7 +285,7 @@ export default function UsersTab() {
                             <button
                                 type="button"
                                 onClick={() => setIsChangingPassword(null)}
-                                className="px-6 py-4 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-white hover:bg-slate-100 dark:bg-slate-800 rounded-xl font-bold transition-all uppercase tracking-widest text-[10px]"
+                                className="px-6 py-4 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:text-white hover:bg-slate-100 dark:bg-slate-800 rounded-xl font-bold transition-all uppercase tracking-widest text-[10px]"
                             >
                                 Cancel
                             </button>
@@ -314,13 +314,13 @@ export default function UsersTab() {
                         </thead>
                         <tbody className="divide-y divide-slate-800/50">
                             {users.map((user) => (
-                                <tr key={user.id} className="hover:bg-slate-100 dark:bg-slate-800/30 transition-colors group">
+                                <tr key={user.id} className="hover:bg-slate-100 dark:hover:bg-slate-800/30 transition-colors group">
                                     <td className="px-6 py-5">
                                         <div className="flex items-center gap-3">
                                             <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center border border-slate-300 dark:border-slate-700">
                                                 <UserIcon size={18} className="text-slate-600 dark:text-slate-400" />
                                             </div>
-                                            <span className="font-bold text-white">{user.name}</span>
+                                            <span className="font-bold text-slate-900 dark:text-white">{user.name}</span>
                                         </div>
                                     </td>
                                     <td className="px-6 py-5 text-slate-600 dark:text-slate-400 font-medium text-sm">{user.email}</td>

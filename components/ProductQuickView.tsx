@@ -106,13 +106,13 @@ export default function ProductQuickView({ product, onClose }: ProductQuickViewP
                                 <>
                                     <button
                                         onClick={handlePrev}
-                                        className="absolute left-4 top-1/2 -translate-y-1/2 p-3 bg-white dark:bg-slate-950/40 hover:bg-white dark:bg-slate-950/80 text-white rounded-full backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all border border-white/10"
+                                        className="absolute left-4 top-1/2 -translate-y-1/2 p-3 bg-white/10 dark:bg-slate-950/40 hover:bg-white dark:hover:bg-slate-950/80 text-slate-900 dark:text-white rounded-full backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all border border-white/10"
                                     >
                                         <ChevronLeft size={24} />
                                     </button>
                                     <button
                                         onClick={handleNext}
-                                        className="absolute right-4 top-1/2 -translate-y-1/2 p-3 bg-white dark:bg-slate-950/40 hover:bg-white dark:bg-slate-950/80 text-white rounded-full backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all border border-white/10"
+                                        className="absolute right-4 top-1/2 -translate-y-1/2 p-3 bg-white/10 dark:bg-slate-950/40 hover:bg-white dark:hover:bg-slate-950/80 text-slate-900 dark:text-white rounded-full backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all border border-white/10"
                                     >
                                         <ChevronRight size={24} />
                                     </button>
@@ -156,7 +156,7 @@ export default function ProductQuickView({ product, onClose }: ProductQuickViewP
                                 {product.name}
                             </h2>
                             <div className="flex items-center justify-between mb-6">
-                                <div className="text-3xl font-black text-cyan-500 flex items-baseline gap-2">
+                                <div className="text-3xl font-black text-cyan-600 dark:text-cyan-400 flex items-baseline gap-2">
                                     {product?.price
                                         ? (typeof product.price === 'number'
                                             ? `₹${product.price.toLocaleString('en-IN')}`
@@ -164,14 +164,14 @@ export default function ProductQuickView({ product, onClose }: ProductQuickViewP
                                         : "₹0"}
                                     <span className="text-xs text-slate-500 font-bold uppercase tracking-widest">per unit</span>
                                 </div>
-                                <div className="flex items-center gap-2 text-red-400 bg-red-400/10 px-3 py-1.5 rounded-xl border border-red-400/20 shadow-lg shadow-red-500/5">
+                                <div className="flex items-center gap-2 text-red-600 dark:text-red-400 bg-red-500/10 px-3 py-1.5 rounded-xl border border-red-500/20">
                                     <Heart size={18} fill="currentColor" />
                                     <span className="text-lg font-black">{product?.likes || 0}</span>
                                 </div>
                             </div>
 
-                            <div className="bg-white dark:bg-slate-950/30 border border-slate-200 dark:border-slate-800/50 rounded-2xl p-6 mb-8">
-                                <label className="text-[10px] font-black text-slate-600 uppercase tracking-widest mb-3 block">Engineering description</label>
+                            <div className="bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 mb-8">
+                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3 block">Engineering description</label>
                                 <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed italic">
                                     "{product.description}"
                                 </p>
@@ -191,7 +191,7 @@ export default function ProductQuickView({ product, onClose }: ProductQuickViewP
                                                         "w-8 h-8 rounded-lg border-2 transition-all duration-300 relative group",
                                                         selectedColor === color
                                                             ? "border-cyan-500 scale-110 shadow-[0_0_15px_rgba(6,182,212,0.4)]"
-                                                            : "border-slate-200 dark:border-slate-800 hover:border-slate-400 dark:border-slate-600"
+                                                            : "border-slate-200 dark:border-slate-700 hover:border-slate-400"
                                                     )}
                                                     style={{ backgroundColor: color }}
                                                     title={color}
@@ -213,14 +213,14 @@ export default function ProductQuickView({ product, onClose }: ProductQuickViewP
                                     <div className="flex items-center gap-1 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-1.5 w-fit">
                                         <button
                                             onClick={() => setQuantity(q => Math.max(1, q - 1))}
-                                            className="p-2 hover:bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-600 dark:text-slate-400 hover:text-white transition-all"
+                                            className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-slate-900 dark:text-white transition-all"
                                         >
                                             <Minus size={16} />
                                         </button>
                                         <span className="w-10 text-center font-bold text-slate-900 dark:text-white">{quantity}</span>
                                         <button
                                             onClick={() => setQuantity(q => q + 1)}
-                                            className="p-2 hover:bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-600 dark:text-slate-400 hover:text-white transition-all"
+                                            className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-slate-900 dark:text-white transition-all"
                                         >
                                             <Plus size={16} />
                                         </button>
@@ -228,12 +228,12 @@ export default function ProductQuickView({ product, onClose }: ProductQuickViewP
                                 </div>
                             </div>
 
-                            <div className="mt-auto pt-8 border-t border-slate-200 dark:border-slate-800/50 space-y-3">
+                            <div className="mt-auto pt-8 border-t border-slate-200 dark:border-slate-800 space-y-3">
                                 {/* Instant Buy Now */}
                                 <button
                                     onClick={() => setShowBuyNow(true)}
                                     disabled={!product.inStock}
-                                    className="w-full py-5 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-slate-950 font-black rounded-2xl transition-all shadow-xl shadow-cyan-500/30 flex items-center justify-center gap-3 text-lg group disabled:opacity-40 disabled:cursor-not-allowed"
+                                    className="w-full py-5 bg-cyan-600 hover:bg-cyan-700 text-white font-black rounded-2xl transition-all shadow-lg shadow-cyan-600/20 flex items-center justify-center gap-3 text-lg group disabled:opacity-40 disabled:cursor-not-allowed"
                                 >
                                     <Zap size={20} className="group-hover:scale-110 transition-transform" fill="currentColor" />
                                     Buy Now — ₹{(parsePrice(product.price) * quantity).toLocaleString('en-IN')}
@@ -245,7 +245,7 @@ export default function ProductQuickView({ product, onClose }: ProductQuickViewP
                                         addToCart(product, selectedColor || undefined, quantity);
                                         onClose();
                                     }}
-                                    className="w-full py-4 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:bg-slate-700 text-white font-black rounded-2xl transition-all border border-slate-300 dark:border-slate-700 flex items-center justify-center gap-3 group"
+                                    className="w-full py-4 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-900 dark:text-white font-black rounded-2xl transition-all border border-slate-300 dark:border-slate-700 flex items-center justify-center gap-3 group"
                                 >
                                     <ShoppingCart size={18} className="group-hover:scale-110 transition-transform" />
                                     Add to Cart
@@ -257,12 +257,12 @@ export default function ProductQuickView({ product, onClose }: ProductQuickViewP
                                         onClick={onClose}
                                         className="flex-1"
                                     >
-                                        <button className="w-full py-4 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:bg-slate-700 text-white font-bold rounded-xl transition-all border border-slate-300 dark:border-slate-700 flex items-center justify-center gap-2">
+                                        <button className="w-full py-4 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white font-bold rounded-xl transition-all border border-slate-300 dark:border-slate-700 flex items-center justify-center gap-2">
                                             <Info size={18} />
                                             Full Details
                                         </button>
                                     </Link>
-                                    <button className="p-4 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:bg-slate-700 text-white rounded-xl transition-all border border-slate-300 dark:border-slate-700">
+                                    <button className="p-4 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white rounded-xl transition-all border border-slate-300 dark:border-slate-700">
                                         <Heart size={20} />
                                     </button>
                                 </div>

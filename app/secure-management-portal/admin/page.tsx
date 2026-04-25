@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { LogOut, LayoutGrid, Package, MessageSquare, BookOpen, Globe, Share2, Settings, Briefcase, FileText, Ticket, ShoppingBag, Megaphone, ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
+import { LogOut, LayoutGrid, Package, MessageSquare, BookOpen, Globe, Share2, Settings, Briefcase, FileText, Ticket, ShoppingBag, Megaphone, ChevronLeft, ChevronRight, ChevronDown, Home } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { auth } from "@/lib/firebase";
 import { onAuthStateChanged, signOut as firebaseSignOut } from "firebase/auth";
@@ -24,6 +24,7 @@ import UsersTab from "@/components/admin-dashboard-tabs/UsersTab";
 import AnnouncementsTab from "@/components/admin-dashboard-tabs/AnnouncementsTab";
 import CategoriesTab from "@/components/admin-dashboard-tabs/CategoriesTab";
 import QuoteSettingsTab from "@/components/admin-dashboard-tabs/QuoteSettingsTab";
+import HomeTab from "@/components/admin-dashboard-tabs/HomeTab";
 
 import { getAdminEmails } from "@/lib/adminConfig";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -34,9 +35,9 @@ export default function SecureAdminPage() {
     const [loading, setLoading] = useState(true);
 
     // Valid tabs type
-    type TabType = "products" | "projects" | "testimonials" | "catalogs" | "blogs" | "seo" | "socials" | "settings" | "features" | "industries" | "coupons" | "orders" | "users" | "announcements" | "categories" | "quote-settings";
+    type TabType = "home" | "products" | "projects" | "testimonials" | "catalogs" | "blogs" | "seo" | "socials" | "settings" | "features" | "industries" | "coupons" | "orders" | "users" | "announcements" | "categories" | "quote-settings";
 
-    const [activeTab, setActiveTab] = useState<TabType>("orders");
+    const [activeTab, setActiveTab] = useState<TabType>("home");
     const tabsContainerRef = React.useRef<HTMLDivElement>(null);
 
     const scrollTabs = (direction: "left" | "right") => {
@@ -81,7 +82,7 @@ export default function SecureAdminPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center text-white gap-4">
+            <div className="min-h-screen bg-white dark:bg-slate-950 flex flex-col items-center justify-center text-slate-900 dark:text-white gap-4">
                 <div className="h-12 w-12 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin" />
                 <p className="font-bold tracking-widest text-xs uppercase animate-pulse">Verifying Admin Access...</p>
             </div>
@@ -89,6 +90,7 @@ export default function SecureAdminPage() {
     }
 
     const tabs = [
+        { id: "home", label: "Home", icon: Home },
         { id: "orders", label: "Orders", icon: ShoppingBag },
         { id: "categories", label: "Categories", icon: LayoutGrid },
         { id: "products", label: "Catalog", icon: Package },
@@ -108,12 +110,12 @@ export default function SecureAdminPage() {
     ];
 
     return (
-        <main className="min-h-screen bg-slate-950 px-0 pt-4 pb-8 sm:pt-8 sm:pb-12">
-            <div className="container mx-auto px-3 sm:px-4">
+        <main className="min-h-screen bg-slate-50 dark:bg-slate-950 px-0 pt-4 pb-8 sm:pt-8 sm:pb-12 transition-colors duration-500">
+            <div className="max-w-7xl mx-auto px-3 sm:px-4">
                 <div className="mb-6 flex flex-col gap-4 sm:mb-8 md:flex-row md:items-center md:justify-between">
                     <div>
-                        <h1 className="mb-2 text-2xl font-bold tracking-tight text-white underline decoration-cyan-500 decoration-4 underline-offset-8 sm:text-4xl">Admin Portal</h1>
-                        <p className="mt-4 break-all text-[10px] font-black uppercase tracking-widest text-slate-500 sm:text-sm">Sequence Authorized: <span className="text-white italic">{user.email}</span></p>
+                        <h1 className="mb-2 text-2xl font-bold tracking-tight text-slate-900 dark:text-white underline decoration-cyan-500 decoration-4 underline-offset-8 sm:text-4xl">Admin Portal</h1>
+                        <p className="mt-4 break-all text-[10px] font-black uppercase tracking-widest text-slate-500 sm:text-sm">Sequence Authorized: <span className="text-slate-900 dark:text-white italic">{user.email}</span></p>
                     </div>
                     <div className="flex items-center gap-4">
                         <ThemeToggle />
@@ -123,10 +125,10 @@ export default function SecureAdminPage() {
                     </div>
                 </div>
 
-                <div className="hidden lg:flex items-center gap-2 mb-8 border-b border-white/5 pb-1 relative group bg-slate-900/40 p-1 rounded-t-2xl">
+                <div className="hidden lg:flex items-center gap-2 mb-8 border-b border-slate-200 dark:border-white/5 pb-1 relative group bg-slate-50 dark:bg-slate-900/40 p-1 rounded-t-2xl">
                     <button
                         onClick={() => scrollTabs("left")}
-                        className="absolute -left-6 z-10 p-2 bg-slate-950 border border-slate-800 rounded-full text-cyan-500 hover:text-cyan-400 hover:scale-110 transition-all shadow-xl flex items-center justify-center"
+                        className="absolute -left-6 z-10 p-2 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-full text-cyan-500 hover:text-cyan-400 hover:scale-110 transition-all shadow-xl flex items-center justify-center"
                     >
                         <ChevronLeft size={20} className="stroke-[3px]" />
                     </button>
@@ -140,9 +142,9 @@ export default function SecureAdminPage() {
                             <button
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id as TabType)}
-                                className={`px-6 py-4 font-bold capitalize transition-all relative whitespace-nowrap flex items-center gap-2 rounded-t-xl hover:bg-slate-800/50 ${activeTab === tab.id
-                                    ? "text-cyan-400 bg-slate-950/50 border-b-2 border-cyan-400 shadow-[inset_0_-10px_20px_-10px_rgba(34,211,238,0.1)]"
-                                    : "text-slate-500 hover:text-slate-300"
+                                className={`px-6 py-4 font-bold capitalize transition-all relative whitespace-nowrap flex items-center gap-2 rounded-t-xl hover:bg-slate-100 dark:hover:bg-slate-800/50 ${activeTab === tab.id
+                                    ? "text-cyan-500 dark:text-cyan-400 bg-white dark:bg-slate-950/50 border-b-2 border-cyan-500 dark:border-cyan-400 shadow-[inset_0_-10px_20px_-10px_rgba(34,211,238,0.1)]"
+                                    : "text-slate-500 hover:text-slate-900 dark:hover:text-slate-300"
                                     }`}
                             >
                                 <tab.icon size={18} />
@@ -153,7 +155,7 @@ export default function SecureAdminPage() {
 
                     <button
                         onClick={() => scrollTabs("right")}
-                        className="absolute -right-6 z-10 p-2 bg-slate-950 border border-slate-800 rounded-full text-cyan-500 hover:text-cyan-400 hover:scale-110 transition-all shadow-xl flex items-center justify-center"
+                        className="absolute -right-6 z-10 p-2 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-full text-cyan-500 hover:text-cyan-400 hover:scale-110 transition-all shadow-xl flex items-center justify-center"
                     >
                         <ChevronRight size={20} className="stroke-[3px]" />
                     </button>
@@ -164,10 +166,10 @@ export default function SecureAdminPage() {
                     <select
                         value={activeTab}
                         onChange={(e) => setActiveTab(e.target.value as TabType)}
-                        className="w-full appearance-none rounded-2xl border-2 border-slate-800 bg-slate-900/50 px-6 py-4 text-[11px] sm:text-[13px] font-black uppercase tracking-[0.2em] text-white shadow-xl focus:border-cyan-500/50 focus:outline-none focus:ring-8 focus:ring-cyan-500/5 transition-all cursor-pointer backdrop-blur-md"
+                        className="w-full appearance-none rounded-2xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 px-6 py-4 text-[11px] sm:text-[13px] font-black uppercase tracking-[0.2em] text-slate-900 dark:text-white shadow-xl focus:border-cyan-500/50 focus:outline-none focus:ring-8 focus:ring-cyan-500/5 transition-all cursor-pointer backdrop-blur-md"
                     >
                         {tabs.map(tab => (
-                            <option key={tab.id} value={tab.id} className="bg-slate-950 text-white font-black py-4">
+                            <option key={tab.id} value={tab.id} className="bg-white dark:bg-slate-950 text-slate-900 dark:text-white font-black py-4">
                                 {tab.label.toUpperCase()}
                             </option>
                         ))}
@@ -176,23 +178,26 @@ export default function SecureAdminPage() {
                 </div>
 
                 {/* Content Area */}
-                <div className="animate-in slide-in-from-bottom-4 fade-in zoom-in-95 rounded-2xl border border-white/5 bg-slate-900/20 p-3 duration-700 sm:p-4">
-                    {activeTab === "products" && <ProductsTab />}
-                    {activeTab === "projects" && <ProjectsTab />}
-                    {activeTab === "features" && <FeaturesTab />}
-                    {activeTab === "industries" && <IndustriesTab />}
-                    {activeTab === "testimonials" && <TestimonialsTab />}
-                    {activeTab === "catalogs" && <CatalogsTab />}
-                    {activeTab === "blogs" && <BlogsTab />}
-                    {activeTab === "seo" && <SEOTab />}
-                    {activeTab === "socials" && <SocialsTab />}
-                    {activeTab === "settings" && <SettingsTab />}
-                    {activeTab === "coupons" && <CouponsTab />}
-                    {activeTab === "orders" && <OrdersTab />}
-                    {activeTab === "announcements" && <AnnouncementsTab />}
-                    {activeTab === "categories" && <CategoriesTab />}
-                    {activeTab === "quote-settings" && <QuoteSettingsTab />}
-                    {activeTab === "users" && <UsersTab />}
+                <div className="animate-in slide-in-from-bottom-4 fade-in zoom-in-95 rounded-2xl border border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-slate-900/20 p-3 duration-700 sm:p-4 shadow-sm transition-colors">
+                    <div className="max-w-7xl mx-auto">
+                        {activeTab === "home" && <HomeTab />}
+                        {activeTab === "products" && <ProductsTab />}
+                        {activeTab === "projects" && <ProjectsTab />}
+                        {activeTab === "features" && <FeaturesTab />}
+                        {activeTab === "industries" && <IndustriesTab />}
+                        {activeTab === "testimonials" && <TestimonialsTab />}
+                        {activeTab === "catalogs" && <CatalogsTab />}
+                        {activeTab === "blogs" && <BlogsTab />}
+                        {activeTab === "seo" && <SEOTab />}
+                        {activeTab === "socials" && <SocialsTab />}
+                        {activeTab === "settings" && <SettingsTab />}
+                        {activeTab === "coupons" && <CouponsTab />}
+                        {activeTab === "orders" && <OrdersTab />}
+                        {activeTab === "announcements" && <AnnouncementsTab />}
+                        {activeTab === "categories" && <CategoriesTab />}
+                        {activeTab === "quote-settings" && <QuoteSettingsTab />}
+                        {activeTab === "users" && <UsersTab />}
+                    </div>
                 </div>
             </div>
         </main>

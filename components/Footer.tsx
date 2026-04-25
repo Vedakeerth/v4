@@ -7,6 +7,8 @@ import { Mail, Instagram, Facebook, Linkedin, Twitter, Youtube, Share2 } from "l
 import { getSocials } from "@/lib/socials";
 import { useTheme } from "next-themes";
 
+import { getSettings, type SiteSettings } from "@/lib/settings";
+
 const ICON_MAP: Record<string, any> = {
     Instagram,
     Facebook,
@@ -17,12 +19,30 @@ const ICON_MAP: Record<string, any> = {
 
 export default function Footer() {
     const [mounted, setMounted] = useState(false);
+    const [settings, setSettings] = useState<SiteSettings | null>(null);
     const { resolvedTheme } = useTheme();
     const socials = getSocials();
 
     useEffect(() => {
         setMounted(true);
+        getSettings().then(setSettings);
     }, []);
+
+    const aboutText = settings?.footerAboutText || "Premium additive manufacturing and design services for the modern engineer.";
+    const serviceLinks = settings?.footerServiceLinks || [
+        { name: "FDM Printing", href: "/services#fdm" },
+        { name: "SLA Resin", href: "/services#sla" },
+        { name: "Product Design", href: "/services#design" },
+        { name: "Rapid Prototyping", href: "/services#prototyping" },
+    ];
+    const quickLinks = settings?.footerLinks || [
+        { name: "Product Catalog", href: "/catalog" },
+        { name: "Track Your Order", href: "/track-order" },
+        { name: "Blog & Updates", href: "/blog" },
+        { name: "Privacy Policy", href: "/privacy" },
+        { name: "Return & Refund Policy", href: "/refunds" },
+    ];
+    const contactEmail = settings?.contactEmail || "support@vaelinsa.com";
 
     if (!mounted) {
         return (
@@ -40,7 +60,7 @@ export default function Footer() {
                                 />
                             </div>
                             <p className="text-slate-700 dark:text-slate-400 text-sm leading-relaxed">
-                                Premium additive manufacturing and design services for the modern engineer.
+                                {aboutText}
                             </p>
                         </div>
                         <div /> <div /> <div />
@@ -67,38 +87,29 @@ export default function Footer() {
                             />
                         </div>
                         <p className="text-slate-700 dark:text-slate-400 text-sm leading-relaxed">
-                            Premium additive manufacturing and design services for the modern engineer.
+                            {aboutText}
                         </p>
                     </div>
 
                     <div>
                         <h4 className="text-slate-900 dark:text-white font-semibold mb-4">Services</h4>
                         <ul className="space-y-2 text-sm text-slate-700 dark:text-slate-400">
-                            <li className="hover:text-cyan-400 cursor-pointer">FDM Printing</li>
-                            <li className="hover:text-cyan-400 cursor-pointer">SLA Resin</li>
-                            <li className="hover:text-cyan-400 cursor-pointer">Product Design</li>
-                            <li className="hover:text-cyan-400 cursor-pointer">Rapid Prototyping</li>
+                            {serviceLinks.map((link, idx) => (
+                                <li key={idx} className="hover:text-cyan-400 cursor-pointer">
+                                    <Link href={link.href}>{link.name}</Link>
+                                </li>
+                            ))}
                         </ul>
                     </div>
 
                     <div>
                         <h4 className="text-slate-900 dark:text-white font-semibold mb-4">Quick Links</h4>
                         <ul className="space-y-4 text-sm text-slate-700 dark:text-slate-400">
-                            <li className="hover:text-cyan-400 transition-colors">
-                                <Link href="/catalog">Product Catalog</Link>
-                            </li>
-                            <li className="hover:text-cyan-400 transition-colors">
-                                <Link href="/track-order">Track Your Order</Link>
-                            </li>
-                            <li className="hover:text-cyan-400 transition-colors">
-                                <Link href="/blog">Blog & Updates</Link>
-                            </li>
-                            <li className="hover:text-cyan-400 transition-colors">
-                                <Link href="/privacy">Privacy Policy</Link>
-                            </li>
-                            <li className="hover:text-cyan-400 transition-colors">
-                                <Link href="/refunds">Return & Refund Policy</Link>
-                            </li>
+                            {quickLinks.map((link, idx) => (
+                                <li key={idx} className="hover:text-cyan-400 transition-colors">
+                                    <Link href={link.href}>{link.name}</Link>
+                                </li>
+                            ))}
                         </ul>
                     </div>
 
@@ -107,8 +118,14 @@ export default function Footer() {
                         <ul className="space-y-4 text-sm text-slate-700 dark:text-slate-400">
                             <li className="flex items-center gap-2">
                                 <Mail className="h-4 w-4 text-cyan-500" />
-                                <a href="mailto:support@vaelinsa.com" className="text-slate-700 dark:text-slate-400 hover:text-cyan-400 transition-colors">support@vaelinsa.com</a>
+                                <a href={`mailto:${contactEmail}`} className="text-slate-700 dark:text-slate-400 hover:text-cyan-400 transition-colors">{contactEmail}</a>
                             </li>
+                            {settings?.contactPhone && (
+                                <li className="flex items-center gap-2">
+                                    <Phone className="h-4 w-4 text-cyan-500" />
+                                    <span className="text-slate-700 dark:text-slate-400">{settings.contactPhone}</span>
+                                </li>
+                            )}
                         </ul>
                     </div>
                 </div>

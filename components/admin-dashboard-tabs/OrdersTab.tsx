@@ -78,9 +78,14 @@ export default function OrdersTab() {
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
     const [modalStatus, setModalStatus] = useState<Order["status"]>("Waiting");
     const [activeActionMenu, setActiveActionMenu] = useState<string | null>(null);
+    const [isMounted, setIsMounted] = useState(false);
     
     // View mode for the lists: Active (Running), Completed (Fulfilled), Cancelled (Voided)
     const [viewMode, setViewMode] = useState<"Active" | "Completed" | "Cancelled">("Active");
+
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
 
     useEffect(() => {
         const handleClickOutside = () => setActiveActionMenu(null);
@@ -163,9 +168,9 @@ export default function OrdersTab() {
             case "Processing": return "bg-cyan-500/10 text-cyan-500 border-cyan-500/20";
             case "Ready to Delivery": return "bg-blue-500/10 text-blue-400 border-blue-500/20";
             case "Delivered":
-            case "Completed": return "bg-emerald-500/10 text-emerald-500 border-emerald-500/20";
-            case "Cancelled": return "bg-red-500/10 text-red-500 border-red-500/20";
-            default: return "bg-slate-500/10 text-slate-500 border-slate-500/20";
+            case "Completed": return "bg-emerald-500/10 text-emerald-600 dark:text-emerald-500 border-emerald-500/20";
+            case "Cancelled": return "bg-red-500/10 text-red-600 dark:text-red-500 border-red-500/20";
+            default: return "bg-slate-500/10 text-slate-600 dark:text-slate-500 border-slate-500/20";
         }
     };
 
@@ -214,7 +219,7 @@ export default function OrdersTab() {
                                 {isCustom ? <Zap size={20} /> : <ShoppingBag size={20} />}
                             </div>
                             <div>
-                                <h3 className="text-white font-black text-xl italic tracking-tighter leading-none mb-1.5">{getDisplayId(order)}</h3>
+                                <h3 className="text-slate-900 dark:text-white font-black text-xl italic tracking-tighter leading-none mb-1.5">{getDisplayId(order)}</h3>
                                 <div className="flex items-center gap-2">
                                     <span className={cn(
                                         "px-2.5 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-widest border flex items-center gap-1.5",
@@ -256,7 +261,7 @@ export default function OrdersTab() {
                         <p className="text-[8px] text-slate-500 font-black uppercase tracking-widest mb-1 flex items-center gap-1.5 justify-end">
                             <Calendar size={10}/> {safeDateStr(order)}
                         </p>
-                        <p className="font-black text-2xl sm:text-3xl italic tracking-tighter text-white">
+                        <p className="font-black text-2xl sm:text-3xl italic tracking-tighter text-slate-900 dark:text-white">
                             <span className="text-xs mr-1 opacity-50 not-italic uppercase">Rs</span>
                             {parseAmt(order.totalAmount).toLocaleString('en-IN')}
                         </p>
@@ -368,7 +373,7 @@ export default function OrdersTab() {
     }, [orders]);
 
     return (
-        <div className="space-y-6 sm:space-y-10">
+        <div className="w-full space-y-6 sm:space-y-10">
             {!isLoading && orders.length > 0 && (
                 <div className="bg-slate-50 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-xl sm:rounded-[2.5rem] lg:rounded-[3rem] p-4 sm:p-8 lg:p-10 shadow-inner relative overflow-hidden flex flex-col gap-6 sm:gap-10">
                     <div className="absolute -top-32 -right-32 w-80 h-80 bg-cyan-500/5 blur-3xl rounded-full pointer-events-none" />
@@ -379,7 +384,7 @@ export default function OrdersTab() {
                                 <BarChart3 size={16} />
                                 <h3 className="text-xs font-black uppercase tracking-[0.2em] italic">Total Growth Trajectory</h3>
                             </div>
-                            <p className="text-3xl sm:text-5xl font-black text-white italic tracking-tighter">
+                            <p className="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white italic tracking-tighter">
                                 <span className="text-cyan-500 mr-2">Rs</span>
                                 {globalTotalRevenue.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
                             </p>
@@ -404,7 +409,7 @@ export default function OrdersTab() {
                             ].map((t) => (
                                 <button key={t.id} onClick={() => setRevenueType(t.id as any)} 
                                     className={cn("flex items-center gap-2.5 px-3 sm:px-6 py-2 sm:py-2.5 rounded-xl sm:rounded-[1.1rem] text-[8px] sm:text-[9px] font-black uppercase tracking-widest transition-all whitespace-nowrap",
-                                        revenueType === t.id ? "bg-slate-100 dark:bg-slate-800 text-white shadow-xl ring-1 ring-slate-700/50" : "text-slate-500 hover:text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:bg-slate-900/30")}>
+                                        revenueType === t.id ? "bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white shadow-xl ring-1 ring-slate-700/50" : "text-slate-500 hover:text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:bg-slate-900/30")}>
                                     {t.icon} {t.label}
                                 </button>
                             ))}
@@ -412,18 +417,18 @@ export default function OrdersTab() {
                     </div>
 
                     <div className="w-full h-[250px] sm:h-[350px] z-10 mt-6 xl:-ml-6">
-                        {chartData.length === 0 ? (
-                            <div className="w-full h-full flex items-center justify-center text-slate-700 text-xs italic opacity-50 font-black uppercase tracking-[0.4em]">Zero Trajectory Detected</div>
+                        {!isMounted || chartData.length === 0 ? (
+                            <div className="w-full h-full flex items-center justify-center text-slate-700 text-xs italic opacity-50 font-black uppercase tracking-[0.4em]">{!isMounted ? "Calibrating..." : "Zero Trajectory Detected"}</div>
                         ) : (
                             <ResponsiveContainer width="100%" height="100%">
                                 <LineChart data={chartData} margin={{ top: 20, right: 30, left: 10, bottom: 0 }}>
-                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#1e293b" strokeOpacity={0.5} />
-                                    <XAxis dataKey="date" axisLine={{ stroke: '#334155' }} tickLine={false} tick={{ fill: '#475569', fontSize: 10, fontWeight: '900' }} dy={15} tickFormatter={(val) => val.slice(0, 5)} />
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="currentColor" strokeOpacity={0.1} />
+                                    <XAxis dataKey="date" axisLine={{ stroke: '#334155', strokeOpacity: 0.2 }} tickLine={false} tick={{ fill: 'currentColor', fontSize: 10, fontWeight: '900', opacity: 0.5 }} dy={15} tickFormatter={(val) => val.slice(0, 5)} />
                                     <YAxis 
                                         domain={[0, 'auto']}
                                         axisLine={false} 
                                         tickLine={false} 
-                                        tick={{ fill: '#475569', fontSize: 10, fontWeight: '900' }} 
+                                        tick={{ fill: 'currentColor', fontSize: 10, fontWeight: '900', opacity: 0.5 }} 
                                         tickFormatter={(val) => {
                                             if (val === 0) return "0";
                                             if (val < 1000) return `${val}`;
@@ -455,7 +460,7 @@ export default function OrdersTab() {
                                     placeholder="Trace ID, Client name..." 
                                     value={searchTerm} 
                                     onChange={(e) => setSearchTerm(e.target.value)} 
-                                    className="w-full h-12 sm:h-[64px] bg-white dark:bg-slate-950/50 border-2 border-slate-200 dark:border-slate-800/80 rounded-xl sm:rounded-[1.25rem] pl-12 sm:pl-20 pr-4 sm:pr-8 text-white focus:outline-none focus:border-cyan-500/50 focus:ring-8 focus:ring-cyan-500/5 transition-all text-[9px] sm:text-[12px] font-black uppercase tracking-[0.2em] placeholder:text-slate-600/50 shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] backdrop-blur-md caret-cyan-500" 
+                                    className="w-full h-12 sm:h-[64px] bg-white dark:bg-slate-950/50 border-2 border-slate-200 dark:border-slate-800/80 rounded-xl sm:rounded-[1.25rem] pl-12 sm:pl-20 pr-4 sm:pr-8 text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500/50 focus:ring-8 focus:ring-cyan-500/5 transition-all text-[9px] sm:text-[12px] font-black uppercase tracking-[0.2em] placeholder:text-slate-600/50 shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] backdrop-blur-md caret-cyan-500" 
                                 />
                             </div>
                             <button 
@@ -482,8 +487,8 @@ export default function OrdersTab() {
                                         className={cn(
                                             "flex items-center gap-2 sm:gap-3 px-3 sm:px-8 py-2 sm:py-3.5 rounded-lg sm:rounded-xl text-[8px] sm:text-[10px] font-black uppercase tracking-widest transition-all relative group whitespace-nowrap",
                                             viewMode === mode.id 
-                                                ? "bg-slate-100 dark:bg-slate-800 text-white shadow-xl ring-1 ring-slate-700/50" 
-                                                : "text-slate-600 hover:text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:bg-slate-900/50"
+                                                ? "bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white shadow-xl ring-1 ring-slate-700/50" 
+                                                : "text-slate-600 hover:text-slate-900 dark:text-slate-400 hover:bg-slate-50 dark:bg-slate-900/50"
                                         )}
                                     >
                                         {mode.icon}
@@ -500,8 +505,8 @@ export default function OrdersTab() {
             </div>
 
             {isLoading ? (
-                <div className="py-40 flex flex-col items-center justify-center gap-6 text-slate-800 font-black uppercase tracking-[0.5em] text-[10px] animate-pulse">
-                    <div className="w-16 h-16 border-[6px] border-slate-900 border-t-cyan-500 rounded-full animate-spin" />
+                <div className="py-40 flex flex-col items-center justify-center gap-6 text-slate-900 dark:text-slate-800 font-black uppercase tracking-[0.5em] text-[10px] animate-pulse">
+                    <div className="w-16 h-16 border-[6px] border-slate-200 dark:border-slate-900 border-t-cyan-500 rounded-full animate-spin" />
                     Initializing Data Flow...
                 </div>
             ) : (
@@ -536,15 +541,15 @@ export default function OrdersTab() {
 
                             <div className="mb-14 text-left border-b border-slate-200 dark:border-slate-800 pb-10">
                                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 mb-4">
-                                    <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-white tracking-tighter uppercase italic underline decoration-cyan-500 decoration-[8px] sm:decoration-[12px] underline-offset-[8px] sm:underline-offset-[12px]">Operational Detail</h2>
+                                    <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white tracking-tighter uppercase italic underline decoration-cyan-500 decoration-[8px] sm:decoration-[12px] underline-offset-[8px] sm:underline-offset-[12px]">Operational Detail</h2>
                                     {selectedOrder.notes && (
                                         <div className="relative group/note cursor-help">
                                             <div className="w-12 h-12 rounded-[1.25rem] bg-amber-500/10 text-amber-500 flex items-center justify-center animate-pulse border border-amber-500/30 shadow-xl shadow-amber-500/5">
                                                 <span className="font-black text-2xl">!</span>
                                             </div>
                                             <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-6 opacity-0 group-hover/note:opacity-100 transition-all bg-white dark:bg-slate-950 border border-amber-500/50 text-amber-100 text-[12px] font-black px-8 py-6 rounded-[2rem] pointer-events-none z-[200] w-80 shadow-[0_30px_60px_-12px_rgba(0,0,0,0.8)] translate-y-2 group-hover/note:translate-y-0">
-                                                <p className="border-b border-amber-500/30 pb-3 mb-4 text-[10px] font-black uppercase tracking-[0.2em] text-amber-500">Node Logic Memo</p>
-                                                <p className="italic leading-[1.6]">"{selectedOrder.notes}"</p>
+                                                <p className="border-b border-amber-500/30 pb-3 mb-4 text-[10px] font-black uppercase tracking-[0.2em] text-amber-600 dark:text-amber-500">Node Logic Memo</p>
+                                                <p className="italic leading-[1.6] text-slate-900 dark:text-amber-100">"{selectedOrder.notes}"</p>
                                                 <div className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 w-5 h-5 bg-white dark:bg-slate-950 border-r border-b border-amber-500/50 rotate-45" />
                                             </div>
                                         </div>
@@ -566,7 +571,7 @@ export default function OrdersTab() {
                                         <div className="absolute -right-8 -top-8 text-slate-900 opacity-30 group-hover/card:text-cyan-500/10 transition-colors"><User size={150} /></div>
                                         <h4 className="text-[11px] font-black text-slate-600 uppercase tracking-[0.3em] mb-8 italic relative z-10 border-b border-slate-900 pb-4">Client Identification</h4>
                                         <div className="space-y-6 relative z-10">
-                                            <p className="text-white font-black text-2xl italic tracking-tight uppercase">{selectedOrder.customerName}</p>
+                                            <p className="text-slate-900 dark:text-white font-black text-2xl italic tracking-tight uppercase">{selectedOrder.customerName}</p>
                                             <div className="space-y-3">
                                                 <p className="text-xs text-slate-600 dark:text-slate-400 flex items-center gap-4 font-black tracking-wider hover:text-cyan-400 transition-colors cursor-pointer"><Mail size={16} className="text-cyan-500" /> {selectedOrder.email}</p>
                                                 <p className="text-xs text-slate-600 dark:text-slate-400 flex items-center gap-4 font-black tracking-wider"><Phone size={16} className="text-cyan-500" /> {selectedOrder.phone}</p>
@@ -587,7 +592,7 @@ export default function OrdersTab() {
                                             <div key={idx} className="flex justify-between items-start py-6 border-b border-slate-900/50 last:border-0 group/item transition-colors hover:bg-slate-50 dark:bg-slate-900/20 px-4 rounded-2xl">
                                                 <div>
                                                     <div className="flex items-center gap-4">
-                                                        <p className="text-white text-base font-black italic tracking-tight">{item.name}</p>
+                                                        <p className="text-slate-900 dark:text-white text-base font-black italic tracking-tight">{item.name}</p>
                                                         {item.driveFileId && (
                                                             <a href={`https://drive.google.com/uc?id=${item.driveFileId}&export=download`} target="_blank" rel="noreferrer" className="p-2.5 bg-purple-500/10 hover:bg-purple-500 text-purple-400 hover:text-white rounded-xl transition-all border border-purple-500/20 shadow-lg" title="Capture Asset"><Eye size={14} /></a>
                                                         )}

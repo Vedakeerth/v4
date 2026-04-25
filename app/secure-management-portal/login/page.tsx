@@ -2,26 +2,21 @@
 
 import React, { useState, useEffect, Suspense } from "react";
 import { useRouter } from "next/navigation";
-import { AlertCircle, Eye, EyeOff } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 import Link from "next/link";
 import { signIn, signOut } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { auth } from "@/lib/firebase";
-import { GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut as firebaseSignOut, signInWithEmailAndPassword } from "firebase/auth";
+import { GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut as firebaseSignOut } from "firebase/auth";
 
 import { getAdminEmails } from "@/lib/adminConfig";
 
 function LoginContent() {
     const router = useRouter();
-    const [isLoading, setIsLoading] = useState(false);
     const [isGoogleLoading, setIsGoogleLoading] = useState(false);
-    const [showPassword, setShowPassword] = useState(false);
     const searchParams = useSearchParams();
     const error = searchParams.get("error");
 
-    // Form state
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
     const [formError, setFormError] = useState("");
 
     // Firebase Auth State Listener for persistence and auto-redirect
@@ -73,39 +68,7 @@ function LoginContent() {
         }
     };
 
-    const handleCredentialsSignIn = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setIsLoading(true);
-        setFormError("");
 
-        try {
-            // Firebase Sign In with Email/Password
-            const result = await signInWithEmailAndPassword(auth, email, password);
-            const user = result.user;
-            const adminEmails = getAdminEmails();
-
-            if (!user.email?.toLowerCase() || !adminEmails.includes(user.email.toLowerCase())) {
-                setFormError("Access Denied: Unauthorized account.");
-                await signOut({ redirect: false });
-                await firebaseSignOut(auth);
-                setIsLoading(false);
-                return;
-            }
-
-            // Sync with NextAuth
-            const idToken = await user.getIdToken();
-            await signIn("firebase", {
-                idToken,
-                redirect: false,
-                callbackUrl: "/secure-management-portal/admin"
-            });
-
-            window.location.href = "/secure-management-portal/admin";
-        } catch (err: any) {
-            setFormError(err.code === "auth/invalid-credential" ? "Invalid email or password" : err.message);
-            setIsLoading(false);
-        }
-    };
 
     return (
         <main className="min-h-screen bg-white dark:bg-slate-950 flex items-center justify-center px-4">
@@ -113,10 +76,10 @@ function LoginContent() {
                 <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 shadow-2xl">
                     <div className="text-center mb-10">
                         <Link href="/" className="inline-block mb-4">
-                            <h1 className="text-3xl font-bold text-white tracking-widest">VAELINSA</h1>
+                            <h1 className="text-3xl font-bold text-slate-900 dark:text-white tracking-widest">VAELINSA</h1>
                         </Link>
-                        <h2 className="text-2xl font-bold text-white mb-2">Admin Access</h2>
-                        <p className="text-slate-600 dark:text-slate-400 text-sm">Secure Management Portal</p>
+                        <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Admin Access</h2>
+                        <p className="text-slate-600 dark:text-slate-400 text-sm">Sign in with your authorized Google account</p>
                     </div>
 
                     {(error || formError) && (
@@ -129,7 +92,7 @@ function LoginContent() {
                                         ? "Unauthorized: This Google account does not have admin permissions."
                                         : "Authentication failed. Please check your credentials or try again later.")}
                                 </span>
-                                {(isGoogleLoading || isLoading) && (
+                                {isGoogleLoading && (
                                     <Link href="/secure-management-portal/dashboard" className="text-[10px] underline hover:text-white mt-1">
                                         Click here if not redirected automatically
                                     </Link>
@@ -138,56 +101,7 @@ function LoginContent() {
                         </div>
                     )}
 
-                    <form onSubmit={handleCredentialsSignIn} className="space-y-4 mb-8">
-                        <div className="space-y-1">
-                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Email Address</label>
-                            <input
-                                required
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                className="w-full px-5 py-3.5 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500 transition-all font-bold text-sm"
-                                placeholder="admin@vaelinsa.com"
-                            />
-                        </div>
-                        <div className="space-y-1">
-                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Password</label>
-                            <div className="relative">
-                                <input
-                                    required
-                                    type={showPassword ? "text" : "password"}
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    className="w-full px-5 py-3.5 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500 transition-all font-bold text-sm"
-                                    placeholder="••••••••"
-                                />
-                                <button
-                                    type="button"
-                                    onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-cyan-400 transition-colors"
-                                >
-                                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                                </button>
-                            </div>
-                        </div>
-                        <button
-                            type="submit"
-                            disabled={isLoading}
-                            className="w-full py-4 bg-cyan-500 hover:bg-cyan-400 disabled:opacity-50 disabled:cursor-not-allowed text-slate-950 font-black rounded-xl transition-all duration-200 flex items-center justify-center gap-3 shadow-lg uppercase tracking-widest text-xs mt-2"
-                        >
-                            {isLoading ? (
-                                <div className="h-5 w-5 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
-                            ) : (
-                                "Login with Password"
-                            )}
-                        </button>
-                    </form>
 
-                    <div className="relative flex items-center gap-4 mb-8">
-                        <div className="flex-1 border-t border-slate-200 dark:border-slate-800"></div>
-                        <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest bg-slate-50 dark:bg-slate-900 px-2 relative -top-[1px]">OR</span>
-                        <div className="flex-1 border-t border-slate-200 dark:border-slate-800"></div>
-                    </div>
 
                     <button
                         onClick={handleGoogleSignIn}

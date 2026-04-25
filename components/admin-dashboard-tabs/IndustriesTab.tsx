@@ -61,9 +61,9 @@ export default function IndustriesTab() {
     };
 
     return (
-        <div className="space-y-8 max-w-5xl">
+        <div className="space-y-8 max-w-7xl mx-auto">
             <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-bold text-white">Industries Page Content</h2>
+                <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Industries Page Content</h2>
                 <button
                     onClick={handleSave}
                     className="px-6 py-3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-xl flex items-center gap-2 shadow-lg shadow-cyan-500/20 transition-all"
@@ -73,15 +73,15 @@ export default function IndustriesTab() {
             </div>
 
             {/* Header Section */}
-            <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-3xl p-8">
-                <h3 className="text-lg font-bold text-white mb-6 border-b border-slate-200 dark:border-slate-800 pb-2">Page Header</h3>
+            <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 max-w-7xl mx-auto">
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-6 border-b border-slate-200 dark:border-slate-800 pb-2">Page Header</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label className="block text-slate-500 text-[10px] font-bold uppercase mb-1.5 ml-1">Title</label>
                         <input
                             value={content.header?.title || ""}
                             onChange={(e) => setContent({ ...content, header: { ...content.header, title: e.target.value } })}
-                            className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none"
+                            className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:border-cyan-500/50 outline-none"
                         />
                     </div>
                     <div>
@@ -89,7 +89,7 @@ export default function IndustriesTab() {
                         <input
                             value={content.header?.subtitle || ""}
                             onChange={(e) => setContent({ ...content, header: { ...content.header, subtitle: e.target.value } })}
-                            className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none"
+                            className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:border-cyan-500/50 outline-none"
                         />
                     </div>
                 </div>
@@ -98,7 +98,7 @@ export default function IndustriesTab() {
             {/* Industries List */}
             <div className="space-y-4">
                 <div className="flex justify-between items-center mb-2">
-                    <h3 className="text-lg font-bold text-white">Industry Blocks</h3>
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-white">Industry Blocks</h3>
                     <button onClick={addIndustry} className="text-cyan-400 hover:text-cyan-300 flex items-center gap-1 text-sm font-bold"><Plus size={16} /> Add Block</button>
                 </div>
 
@@ -118,7 +118,7 @@ export default function IndustriesTab() {
                                     <select
                                         value={ind.icon}
                                         onChange={(e) => updateIndustry(i, "icon", e.target.value)}
-                                        className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-3 text-white focus:border-cyan-500/50 outline-none text-sm"
+                                        className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-3 text-slate-900 dark:text-white focus:border-cyan-500/50 outline-none text-sm"
                                     >
                                         {AVAILABLE_ICONS.map(icon => <option key={icon} value={icon}>{icon}</option>)}
                                     </select>
@@ -128,7 +128,7 @@ export default function IndustriesTab() {
                                     <input
                                         value={ind.name}
                                         onChange={(e) => updateIndustry(i, "name", e.target.value)}
-                                        className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none font-bold"
+                                        className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:border-cyan-500/50 outline-none font-bold"
                                     />
                                 </div>
                                 <div className="md:col-span-6">
@@ -136,7 +136,7 @@ export default function IndustriesTab() {
                                     <textarea
                                         value={ind.description}
                                         onChange={(e) => updateIndustry(i, "description", e.target.value)}
-                                        className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none resize-none h-24"
+                                        className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:border-cyan-500/50 outline-none resize-none h-24"
                                     />
                                 </div>
                             </div>

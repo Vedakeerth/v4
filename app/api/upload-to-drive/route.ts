@@ -372,7 +372,7 @@ export async function POST(request: NextRequest) {
             // Check file size
             if (file.size > MAX_FILE_SIZE) {
                 return NextResponse.json(
-                    { success: false, error: `File "${file.name}" exceeds maximum size of 25MB` },
+                    { success: false, error: `File "${file.name}" exceeds maximum size of 50MB` },
                     {
                         status: 400,
                         headers: {
@@ -604,7 +604,7 @@ export async function POST(request: NextRequest) {
             throw new Error(`Failed to access Google Drive: ${errorMessage}\n\nPlease ensure:\n1. The folder is in a Shared Drive (not personal Drive)\n2. The service account has "Content Manager" or "Manager" access\n3. The folder ID is correct\n4. Google Drive API is enabled in your Google Cloud project`);
         }
 
-        const orderFolderName = `Order_${orderId}`;
+        const orderFolderName = `folder-${orderId}`;
         const orderFolderId = await getOrCreateFolder(drive, uploadsFolderId, orderFolderName, supportsAllDrives);
         const userFolderId = orderFolderId; // Using orderId folder as the final destination
 

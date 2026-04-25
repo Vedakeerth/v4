@@ -11,22 +11,10 @@ import { useCart } from "@/context/CartContext";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
-interface NavbarProps {
-    navLinks?: { name: string; href: string }[];
-    ctaData?: { text: string; href: string };
-}
+import { getSettings, type SiteSettings } from "@/lib/settings";
 
-export default function Navbar({
-    navLinks = [
-        { name: "Service", href: "/services" },
-        { name: "Products", href: "/products" },
-        { name: "Blogs", href: "/blog" },
-        { name: "Gallery", href: "/gallery" },
-        { name: "Contact", href: "/contact" },
-        { name: "Tracking Product", href: "/track-order" },
-    ],
-    ctaData = { text: "Get Quote", href: "/quote" }
-}: NavbarProps) {
+export default function Navbar() {
+    const [settings, setSettings] = useState<SiteSettings | null>(null);
     const pathname = usePathname();
     const isHomePage = pathname === '/' || pathname === '/index.html' || pathname === '';
     const [isVisible, setIsVisible] = useState(!isHomePage);
@@ -34,6 +22,22 @@ export default function Navbar({
     const [mounted, setMounted] = useState(false);
     const { resolvedTheme } = useTheme();
     const { setIsCartOpen, cartCount } = useCart();
+
+    useEffect(() => {
+        setMounted(true);
+        getSettings().then(setSettings);
+    }, []);
+
+    const navLinks = settings?.navbarLinks || [
+        { name: "Service", href: "/services" },
+        { name: "Products", href: "/products" },
+        { name: "Blogs", href: "/blog" },
+        { name: "Gallery", href: "/gallery" },
+        { name: "Contact", href: "/contact" },
+        { name: "Tracking Product", href: "/track-order" },
+    ];
+
+    const ctaData = { text: "Get Quote", href: "/quote" };
 
     useEffect(() => {
         setMounted(true);

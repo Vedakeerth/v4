@@ -28,6 +28,9 @@ export async function POST(
     const { page } = await params;
     try {
         const authenticated = await isAuthenticated();
+        if (!authenticated) {
+            return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+        }
         const body = await request.json();
 
         await adminDb.collection('pages').doc(page).set({

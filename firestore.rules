@@ -4,7 +4,8 @@ service cloud.firestore {
   match /databases/{database}/documents {
     // Admin check helper
     function isAdmin() {
-      return request.auth != null && request.auth.token.email == "vaelinsa@gmail.com";
+      return request.auth != null && 
+        (request.auth.token.email == "vaelinsa@gmail.com");
     }
 
     // Products: Public read, Admin write
@@ -13,13 +14,19 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
-    // Orders: Admin only (Public reads go through our secure API)
+    // Orders: Admin only
     match /orders/{orderId} {
       allow read, write: if isAdmin();
     }
 
     // Pages content: Public read, Admin write
     match /pages/{pageId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Settings (Quote Pricing, etc): Admin read/write
+    match /settings/{settingId} {
       allow read: if true;
       allow write: if isAdmin();
     }

@@ -317,13 +317,13 @@ export default function ProductsTab() {
                 <button onClick={handleAddProduct} className="flex w-full items-center justify-center gap-2 rounded-xl bg-cyan-500 px-6 py-2.5 sm:py-3 font-black text-[10px] sm:text-sm text-slate-950 shadow-lg shadow-cyan-500/20 transition-all hover:bg-cyan-400 sm:w-auto uppercase tracking-widest">
                     <Plus size={18} /> Add Product
                 </button>
-                <button onClick={() => setShowImportModal(true)} className="flex w-full items-center justify-center gap-2 rounded-xl bg-slate-100 dark:bg-slate-800 px-6 py-2.5 sm:py-3 font-black text-[10px] sm:text-sm text-white transition-all hover:bg-slate-200 dark:bg-slate-700 sm:w-auto uppercase tracking-widest border border-slate-300 dark:border-slate-700">
+                <button onClick={() => setShowImportModal(true)} className="flex w-full items-center justify-center gap-2 rounded-xl bg-slate-100 dark:bg-slate-800 px-6 py-2.5 sm:py-3 font-black text-[10px] sm:text-sm text-slate-900 dark:text-white transition-all hover:bg-slate-200 dark:bg-slate-700 sm:w-auto uppercase tracking-widest border border-slate-300 dark:border-slate-700">
                     <Upload size={18} /> Bulk Import
                 </button>
             </div>
 
             {isLoading ? (
-                <div className="text-white">Loading products...</div>
+                <div className="text-slate-900 dark:text-white">Loading products...</div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     {products.map(p => (
@@ -340,14 +340,14 @@ export default function ProductsTab() {
                                         </span>
                                     )}
                                     {p.stockCount !== undefined && (
-                                        <span className="bg-white dark:bg-slate-950/80 text-white px-2 py-1 rounded-lg text-[10px] font-black text-center">
+                                        <span className="bg-white dark:bg-slate-950/80 text-slate-900 dark:text-white px-2 py-1 rounded-lg text-[10px] font-black text-center border border-slate-200 dark:border-slate-800">
                                             QTY: {p.stockCount}
                                         </span>
                                     )}
                                 </div>
                             </div>
                             <div className="p-5">
-                                <h3 className="text-white font-bold text-lg mb-1 truncate">{p.name}</h3>
+                                <h3 className="text-slate-900 dark:text-white font-bold text-lg mb-1 truncate">{p.name}</h3>
                                 <p className="text-[9px] text-cyan-500/80 font-black uppercase tracking-widest mb-3 border-b border-slate-200 dark:border-slate-800 pb-2">ID: {p.id}</p>
                                 <p className="text-slate-600 dark:text-slate-400 text-xs line-clamp-2 h-8 mb-4">{p.description}</p>
                                 <div className="flex justify-between items-center mb-6">
@@ -370,22 +370,22 @@ export default function ProductsTab() {
 
             {/* Product Modal */}
             {showAddModal && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center bg-white dark:bg-slate-950/90 p-3 backdrop-blur-md sm:p-4">
-                    <div className="custom-scrollbar max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 p-4 shadow-2xl sm:p-6 lg:p-8">
+                <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 dark:bg-slate-950/60 p-3 backdrop-blur-2xl sm:p-4 transition-all duration-500">
+                    <div className="custom-scrollbar max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl border border-white/30 dark:border-white/10 bg-white/90 dark:bg-slate-900/90 p-4 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] backdrop-blur-3xl sm:p-6 lg:p-8">
                         <div className="mb-6 flex items-start justify-between gap-4 sm:mb-8 sm:items-center">
-                            <h2 className="text-2xl font-bold text-white">{editingProduct ? "Edit Product" : "Add New Product"}</h2>
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{editingProduct ? "Edit Product" : "Add New Product"}</h2>
                             <button onClick={() => setShowAddModal(false)} className="p-2 hover:bg-slate-100 dark:bg-slate-800 rounded-full text-slate-600 dark:text-slate-400 transition-colors"><X size={24} /></button>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-4">
                                 <div>
-                                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-2">Product Name</label>
-                                    <input value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-500" />
+                                    <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">Product Name</label>
+                                    <input value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500 transition-all" />
                                 </div>
                                 <div>
-                                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-2">Price (INR)</label>
-                                    <input value={formData.price} onChange={e => setFormData({ ...formData, price: e.target.value })} className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-500" placeholder="e.g. 2,499.00" />
+                                    <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">Price (INR)</label>
+                                    <input value={formData.price} onChange={e => setFormData({ ...formData, price: e.target.value })} className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500 transition-all" placeholder="e.g. 2,499.00" />
                                 </div>
                                 <CustomDropdown
                                     label="Category"
@@ -419,8 +419,8 @@ export default function ProductsTab() {
                             <div className="space-y-4">
                                 <div className="flex flex-col gap-4 sm:flex-row">
                                     <div className="flex-1">
-                                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-2">Stock Count</label>
-                                        <input type="number" value={formData.stockCount} onChange={e => setFormData({ ...formData, stockCount: parseInt(e.target.value) })} className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-500" />
+                                        <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">Stock Count</label>
+                                        <input type="number" value={formData.stockCount} onChange={e => setFormData({ ...formData, stockCount: parseInt(e.target.value) })} className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500 transition-all" />
                                     </div>
                                     <CustomDropdown
                                         label="Status"
@@ -434,8 +434,8 @@ export default function ProductsTab() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-2">Initial Likes</label>
-                                    <input type="number" value={formData.likes} onChange={e => setFormData({ ...formData, likes: parseInt(e.target.value) || 0 })} className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-500" />
+                                    <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">Initial Likes</label>
+                                    <input type="number" value={formData.likes} onChange={e => setFormData({ ...formData, likes: parseInt(e.target.value) || 0 })} className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500 transition-all" />
                                 </div>
                                 <div>
                                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-2">Image URL / Upload</label>
@@ -443,7 +443,7 @@ export default function ProductsTab() {
                                         <input
                                             value={formData.image}
                                             onChange={e => setFormData({ ...formData, image: e.target.value })}
-                                            className="flex-1 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-white text-xs focus:outline-none focus:border-cyan-500"
+                                            className="flex-1 bg-slate-50 dark:bg-slate-800/50 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white text-xs font-bold focus:outline-none focus:border-cyan-500 transition-all"
                                         />
                                         <label className="flex cursor-pointer items-center justify-center rounded-xl bg-slate-200 dark:bg-slate-700 px-4 py-3 transition-all hover:bg-slate-600">
                                             <Upload size={18} className={isUploading ? "animate-bounce" : ""} />
@@ -466,7 +466,7 @@ export default function ProductsTab() {
                                                     <Image src={img} alt={`Gallery ${idx}`} fill className="object-cover" />
                                                     <button
                                                         onClick={() => removeGalleryImage(idx)}
-                                                        className="absolute top-2 right-2 p-1.5 bg-red-500/80 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-all hover:bg-red-500"
+                                                        className="absolute top-2 right-2 p-1.5 bg-red-500/80 text-slate-900 dark:text-white rounded-lg opacity-0 group-hover:opacity-100 transition-all hover:bg-red-500"
                                                     >
                                                         <Trash2 size={12} />
                                                     </button>
@@ -487,11 +487,11 @@ export default function ProductsTab() {
 
                         <div className="mt-6">
                             <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-2">Description</label>
-                            <textarea value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} className="w-full h-24 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-500 resize-none" />
+                            <textarea value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} className="w-full h-24 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500 resize-none" />
                         </div>
 
                         <div className="mt-8 flex flex-col gap-3 border-t border-slate-200 dark:border-slate-800 pt-8 sm:flex-row sm:justify-end sm:gap-4">
-                            <button onClick={() => setShowAddModal(false)} className="rounded-xl bg-slate-100 dark:bg-slate-800 px-8 py-3 font-bold text-white transition-all hover:bg-slate-200 dark:bg-slate-700">Cancel</button>
+                            <button onClick={() => setShowAddModal(false)} className="rounded-xl bg-slate-100 dark:bg-slate-800 px-8 py-3 font-bold text-slate-900 dark:text-white transition-all hover:bg-slate-200 dark:bg-slate-700">Cancel</button>
                             <button onClick={handleSaveProduct} className="rounded-xl bg-cyan-500 px-8 py-3 font-bold text-slate-950 shadow-lg shadow-cyan-500/20 transition-all hover:bg-cyan-400">Save {editingProduct ? "Changes" : "Product"}</button>
                         </div>
                     </div>
@@ -503,8 +503,8 @@ export default function ProductsTab() {
                 <div className="fixed inset-0 z-[100] flex items-center justify-center bg-white dark:bg-slate-950/90 p-3 backdrop-blur-md sm:p-4">
                     <div className="w-full max-w-md rounded-3xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 p-4 shadow-2xl sm:p-8">
                         <div className="flex justify-between items-center mb-6">
-                            <h2 className="text-xl font-bold text-white">Bulk Import Products</h2>
-                            <button onClick={() => setShowImportModal(false)} className="text-slate-500 hover:text-white"><X size={24} /></button>
+                            <h2 className="text-xl font-bold text-slate-900 dark:text-white">Bulk Import Products</h2>
+                            <button onClick={() => setShowImportModal(false)} className="text-slate-500 hover:text-slate-900 dark:hover:text-white"><X size={24} /></button>
                         </div>
                         <div className="flex gap-2 mb-6 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl">
                             <button onClick={() => setImportMode("csv")} className={`flex-1 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${importMode === "csv" ? "bg-slate-200 dark:bg-slate-700 text-cyan-400" : "text-slate-600 dark:text-slate-400"}`}>CSV File</button>
@@ -515,7 +515,7 @@ export default function ProductsTab() {
                             <div className="space-y-4">
                                 <label className="flex flex-col items-center justify-center border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl p-10 hover:border-cyan-500/50 hover:bg-slate-100 dark:bg-slate-800/50 cursor-pointer transition-all">
                                     <Upload size={32} className="text-slate-500 mb-4" />
-                                    <span className="text-sm font-bold text-white mb-2">Upload CSV File</span>
+                                    <span className="text-sm font-bold text-slate-900 dark:text-white mb-2">Upload CSV File</span>
                                     <span className="text-[10px] text-slate-500 uppercase font-black">Click to select product file</span>
                                     <input type="file" accept=".csv" className="hidden" onChange={handleCsvImport} />
                                 </label>
@@ -527,9 +527,9 @@ export default function ProductsTab() {
                                 </button>
                             </div>
                         ) : importMode === "url" ? (
-                            <input value={catalogUrl} onChange={e => setCatalogUrl(e.target.value)} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none mb-4" placeholder="https://example.com/catalog.json" />
+                            <input value={catalogUrl} onChange={e => setCatalogUrl(e.target.value)} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:border-cyan-500/50 outline-none mb-4" placeholder="https://example.com/catalog.json" />
                         ) : (
-                            <textarea value={jsonData} onChange={e => setJsonData(e.target.value)} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none mb-4 h-32" placeholder='[{"name": "Product 1", ...}]' />
+                            <textarea value={jsonData} onChange={e => setJsonData(e.target.value)} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:border-cyan-500/50 outline-none mb-4 h-32" placeholder='[{"name": "Product 1", ...}]' />
                         )}
                         {importMode !== "csv" && (
                             <button onClick={handleImportCatalog} disabled={isImporting} className="w-full py-3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-xl shadow-lg shadow-cyan-500/20 transition-all">

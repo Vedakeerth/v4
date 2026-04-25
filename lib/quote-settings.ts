@@ -5,6 +5,8 @@ export interface ColorSetting {
     name: string;
     multiplier: number;
     isAvailable: boolean;
+    useCustomPrice?: boolean;
+    customPrice?: number;
 }
 
 export interface QuoteSettings {
@@ -33,12 +35,12 @@ export const DEFAULT_QUOTE_SETTINGS: QuoteSettings = {
         'TPU': { density: 1.21, costPerKg: 3000, multiplier: 1.5 },
     },
     colors: {
-        '#2563eb': { name: 'Blue', multiplier: 1.0, isAvailable: true },
-        '#ef4444': { name: 'Red', multiplier: 1.0, isAvailable: true },
-        '#22c55e': { name: 'Green', multiplier: 1.0, isAvailable: true },
-        '#eab308': { name: 'Yellow', multiplier: 1.0, isAvailable: true },
-        '#ffffff': { name: 'White', multiplier: 1.0, isAvailable: true },
-        '#000000': { name: 'Black', multiplier: 1.0, isAvailable: true },
+        '#2563eb': { name: 'Blue', multiplier: 1.0, isAvailable: true, useCustomPrice: true, customPrice: 2000 },
+        '#ef4444': { name: 'Red', multiplier: 1.0, isAvailable: true, useCustomPrice: true, customPrice: 2000 },
+        '#22c55e': { name: 'Green', multiplier: 1.0, isAvailable: true, useCustomPrice: true, customPrice: 2000 },
+        '#eab308': { name: 'Yellow', multiplier: 1.0, isAvailable: true, useCustomPrice: true, customPrice: 2000 },
+        '#ffffff': { name: 'White', multiplier: 1.0, isAvailable: true, useCustomPrice: true, customPrice: 2000 },
+        '#000000': { name: 'Black', multiplier: 1.0, isAvailable: true, useCustomPrice: true, customPrice: 2000 },
     },
     infillPatternMultipliers: {
         'Line': 1.0,

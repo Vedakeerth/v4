@@ -140,7 +140,7 @@ export default function BlogsTab() {
                         <button onClick={() => setIsEditing(false)} className="p-2 hover:bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-600 dark:text-slate-400 hover:text-white transition-colors">
                             <ArrowLeft size={24} />
                         </button>
-                        <h2 className="text-2xl font-bold text-white">{activeBlog ? "Edit Post" : "New Post"}</h2>
+                        <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{activeBlog ? "Edit Post" : "New Post"}</h2>
                     </div>
                     <button
                         onClick={handleSave}
@@ -155,16 +155,16 @@ export default function BlogsTab() {
                         <div className="space-y-4">
                             <div>
                                 <label className="block text-slate-500 text-[10px] font-bold uppercase mb-1.5 ml-1">Title</label>
-                                <input value={title} onChange={e => setTitle(e.target.value)} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none text-lg font-bold" placeholder="Post Title" />
+                                <input value={title} onChange={e => setTitle(e.target.value)} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:border-cyan-500/50 outline-none text-lg font-bold" placeholder="Post Title" />
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-slate-500 text-[10px] font-bold uppercase mb-1.5 ml-1">Category</label>
-                                    <input value={category} onChange={e => setCategory(e.target.value)} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none" placeholder="Tech" />
+                                    <input value={category} onChange={e => setCategory(e.target.value)} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:border-cyan-500/50 outline-none" placeholder="Tech" />
                                 </div>
                                 <div>
                                     <label className="block text-slate-500 text-[10px] font-bold uppercase mb-1.5 ml-1">Cover Image URL</label>
-                                    <input value={image} onChange={e => setImage(e.target.value)} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none" placeholder="https://..." />
+                                    <input value={image} onChange={e => setImage(e.target.value)} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:border-cyan-500/50 outline-none" placeholder="https://..." />
                                 </div>
                             </div>
 
@@ -173,23 +173,23 @@ export default function BlogsTab() {
                                 <h3 className="text-cyan-500 text-[10px] font-black uppercase tracking-widest border-b border-slate-200 dark:border-slate-800 pb-2">SEO & Metadata</h3>
                                 <div>
                                     <label className="block text-slate-500 text-[10px] font-bold uppercase mb-1.5 ml-1">Hashtags (comma separated)</label>
-                                    <input value={hashtags} onChange={e => setHashtags(e.target.value)} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none text-xs" placeholder="3DPrinting, Innovation, Robots" />
+                                    <input value={hashtags} onChange={e => setHashtags(e.target.value)} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:border-cyan-500/50 outline-none text-xs" placeholder="3DPrinting, Innovation, Robots" />
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
                                         <label className="block text-slate-500 text-[10px] font-bold uppercase mb-1.5 ml-1">Meta Title</label>
-                                        <input value={metaTitle} onChange={e => setMetaTitle(e.target.value)} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none text-xs" placeholder="Meta title for SEO" />
+                                        <input value={metaTitle} onChange={e => setMetaTitle(e.target.value)} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:border-cyan-500/50 outline-none text-xs" placeholder="Meta title for SEO" />
                                     </div>
                                     <div>
                                         <label className="block text-slate-500 text-[10px] font-bold uppercase mb-1.5 ml-1">Meta Description</label>
-                                        <textarea value={metaDescription} onChange={e => setMetaDescription(e.target.value)} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-white h-20 focus:border-cyan-500/50 outline-none text-xs resize-none" placeholder="Short description for search results" />
+                                        <textarea value={metaDescription} onChange={e => setMetaDescription(e.target.value)} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white h-20 focus:border-cyan-500/50 outline-none text-xs resize-none" placeholder="Short description for search results" />
                                     </div>
                                 </div>
                             </div>
 
                             <div>
                                 <label className="block text-slate-500 text-[10px] font-bold uppercase mb-1.5 ml-1">Excerpt</label>
-                                <textarea value={excerpt} onChange={e => setExcerpt(e.target.value)} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-white h-24 focus:border-cyan-500/50 outline-none resize-none" placeholder="Short description for the blog list..." />
+                                <textarea value={excerpt} onChange={e => setExcerpt(e.target.value)} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white h-24 focus:border-cyan-500/50 outline-none resize-none" placeholder="Short description for the blog list..." />
                             </div>
 
                             <div className="space-y-2">
@@ -213,7 +213,7 @@ export default function BlogsTab() {
                                     id="blog-content-area"
                                     value={content}
                                     onChange={e => setContent(e.target.value)}
-                                    className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-6 text-white h-[600px] font-mono text-sm focus:border-cyan-500/50 outline-none leading-relaxed"
+                                    className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-6 text-slate-900 dark:text-white h-[600px] font-mono text-sm focus:border-cyan-500/50 outline-none leading-relaxed"
                                     placeholder="# Write your post here..."
                                 />
                             </div>
@@ -238,9 +238,9 @@ export default function BlogsTab() {
     }
 
     return (
-        <div>
+        <div className="max-w-7xl mx-auto">
             <div className="flex justify-between items-center mb-8">
-                <h2 className="text-2xl font-bold text-white">Blog Posts</h2>
+                <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Blog Posts</h2>
                 <button
                     onClick={() => handleStartEdit()}
                     className="px-6 py-3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-xl flex items-center gap-2 shadow-lg shadow-cyan-500/20 transition-all"
@@ -254,12 +254,12 @@ export default function BlogsTab() {
                     <div key={blog.id} className="bg-slate-50 dark:bg-slate-900 shadow-xl border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden group hover:border-cyan-500/30 transition-all">
                         <div className="relative h-48 bg-slate-100 dark:bg-slate-800">
                             <Image src={blog.image || "/placeholder.png"} alt={blog.title} fill className="object-cover" />
-                            <div className="absolute top-3 right-3 bg-white dark:bg-slate-950/80 backdrop-blur px-3 py-1 rounded-lg text-[10px] font-bold text-white uppercase tracking-widest border border-white/10">
+                            <div className="absolute top-3 right-3 bg-white dark:bg-slate-950/80 backdrop-blur px-3 py-1 rounded-lg text-[10px] font-bold text-slate-900 dark:text-white uppercase tracking-widest border border-white/10">
                                 {blog.category}
                             </div>
                         </div>
                         <div className="p-5">
-                            <h3 className="text-white font-bold text-lg mb-2 line-clamp-1 group-hover:text-cyan-400 transition-colors">{blog.title}</h3>
+                            <h3 className="text-slate-900 dark:text-white font-bold text-lg mb-2 line-clamp-1 group-hover:text-cyan-400 transition-colors">{blog.title}</h3>
                             <p className="text-slate-500 text-sm mb-4 line-clamp-2 h-10">{blog.excerpt}</p>
                             <div className="flex gap-2 pt-2 border-t border-slate-200 dark:border-slate-800">
                                 <button

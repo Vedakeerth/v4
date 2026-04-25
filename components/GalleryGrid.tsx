@@ -145,7 +145,7 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
     return (
         <div className="space-y-12">
             {/* Top Search Bar - Sticky */}
-            <div className="sticky top-20 z-40 py-4 bg-white dark:bg-slate-950/80 backdrop-blur-xl -mx-4 px-4 border-b border-slate-900/50">
+            <div className="sticky top-20 z-40 py-4 bg-white dark:bg-slate-950/80 backdrop-blur-xl -mx-4 px-4 border-b border-slate-200 dark:border-slate-900/50">
                 <div className="relative w-full max-w-4xl mx-auto group">
                     <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-700 group-focus-within:text-cyan-400 transition-colors" />
                     <input
@@ -294,7 +294,7 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                                         onlyInStock ? "translate-x-4" : "translate-x-0"
                                     )} />
                                 </div>
-                                <span className="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-white transition-colors">Only In Stock</span>
+                                <span className="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-cyan-500 dark:group-hover:text-white transition-colors">Only In Stock</span>
                             </label>
                         </div>
 
@@ -380,7 +380,7 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                                     setSortBy("default");
                                     setOnlyInStock(false);
                                 }}
-                                className="mt-8 px-6 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:bg-slate-700 text-white font-bold rounded-lg transition-all border border-slate-300 dark:border-slate-700 hover:border-cyan-500/50"
+                                className="mt-8 px-6 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white font-bold rounded-lg transition-all border border-slate-300 dark:border-slate-700 hover:border-cyan-500/50"
                             >
                                 Clear all filters
                             </button>
@@ -444,7 +444,7 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                                                             "p-2.5 rounded-full transition-all shadow-xl hover:scale-110 border backdrop-blur-md",
                                                             likedProducts.has(part.id)
                                                                 ? "bg-red-500 text-white border-red-400 shadow-red-500/20"
-                                                                : "bg-slate-50 dark:bg-slate-900/60 text-white border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:bg-slate-800"
+                                                                : "bg-slate-50 dark:bg-slate-900/60 text-slate-600 dark:text-white border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:bg-slate-800"
                                                         )}
                                                         title="Add to Wishlist"
                                                     >
@@ -452,7 +452,7 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                                                     </button>
                                                     <button
                                                         onClick={(e) => { e.stopPropagation(); handleShare(part); }}
-                                                        className="p-2.5 rounded-full transition-all shadow-xl hover:scale-110 bg-slate-50 dark:bg-slate-900/60 text-white border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:bg-slate-800 backdrop-blur-md"
+                                                        className="p-2.5 rounded-full transition-all shadow-xl hover:scale-110 bg-slate-50 dark:bg-slate-900/60 text-slate-600 dark:text-white border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:bg-slate-800 backdrop-blur-md"
                                                         title="Share Part"
                                                     >
                                                         <Share2 size={16} />
@@ -465,7 +465,7 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                                                     <h3 className="text-slate-900 dark:text-white font-bold text-lg mb-1 leading-tight group-hover:text-cyan-400 transition-colors line-clamp-1">
                                                         {part.name}
                                                     </h3>
-                                                    <p className="text-slate-700 text-xs mb-4 line-clamp-2 leading-relaxed">
+                                                    <p className="text-slate-600 dark:text-slate-400 text-xs mb-4 line-clamp-2 leading-relaxed">
                                                         {part.description}
                                                     </p>
                                                 </div>
@@ -514,6 +514,7 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                                     >
                                         <ChevronDown className="h-5 w-5 rotate-90" />
                                     </button>
+
 
                                     <div className="flex items-center gap-1">
                                         {Array.from({ length: totalPages }).map((_, i) => (
