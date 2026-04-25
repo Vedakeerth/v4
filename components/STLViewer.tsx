@@ -310,6 +310,9 @@ function STLMesh({
         });
     }, [onStatsCalculated]);
 
+    // Keep a ref to the current geometry for cleanup without adding it to effect deps
+    const originalGeometryRef = useRef<THREE.BufferGeometry | null>(null);
+
     // Load Geometry
     useEffect(() => {
         if (!file) return;
@@ -329,42 +332,31 @@ function STLMesh({
                 box.getCenter(center);
 
                 // Auto-Orient: Lay Flat
-                // We want the smallest dimension to be the vertical (Y) axis
                 const initialSize = new THREE.Vector3();
                 box.getSize(initialSize);
 
                 if (initialSize.x < initialSize.y && initialSize.x < initialSize.z) {
-                    // X is smallest, rotate Z to bring X to Y
                     loadedGeometry.rotateZ(Math.PI / 2);
                 } else if (initialSize.z < initialSize.y && initialSize.z < initialSize.x) {
-                    // Z is smallest (typical Z-up model), rotate X to bring Z to Y
                     loadedGeometry.rotateX(-Math.PI / 2);
                 }
 
-                // Recompute BB after potential rotation
                 loadedGeometry.computeBoundingBox();
-
-                // Align to bottom (Y=0) and Center (X=0, Z=0)
-                loadedGeometry.center(); // Centers BB at 0,0,0
+                loadedGeometry.center();
                 loadedGeometry.computeBoundingBox();
                 const b = loadedGeometry.boundingBox!;
-                // Move up so the lowest point (min.y) lies on the Y=0 plane
                 loadedGeometry.translate(0, -b.min.y, 0);
-
-                // Recompute BB after move to be safe
                 loadedGeometry.computeBoundingBox();
 
-                // Get Base Dimensions (Scale 100%)
                 const size = new THREE.Vector3();
                 loadedGeometry.boundingBox!.getSize(size);
 
-                setOriginalGeometry(loadedGeometry); // Store original for scaling logic if needed
+                originalGeometryRef.current = loadedGeometry;
+                setOriginalGeometry(loadedGeometry);
                 onGeometryLoaded?.(loadedGeometry);
 
-                // Initial Calculations (Scale 1)
                 calculateMetrics(loadedGeometry, 1);
 
-                // Pass BASE dimensions
                 onDimensionsCalculated?.({
                     x: Math.round(size.x * 10) / 10,
                     y: Math.round(size.y * 10) / 10,
@@ -377,10 +369,11 @@ function STLMesh({
 
         return () => {
             URL.revokeObjectURL(url);
-            if (originalGeometry) originalGeometry.dispose();
+            originalGeometryRef.current?.dispose();
         };
 
-    }, [file, calculateMetrics, onDimensionsCalculated, onGeometryLoaded, originalGeometry]); // Removed originalGeometry from deps to avoid loop if it was there, though setOriginalGeometry is fine.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [file]); // Only re-run when file changes — callbacks are stable via refs below
 
     // Handle Scaling Changes
     useEffect(() => {
@@ -494,14 +487,20 @@ export default function STLViewer({
         setZoom(50);
     }, []);
 
+    // Use refs so callbacks don't change identity on every parent render
+    const onStatsCalculatedRef = useRef(onStatsCalculated);
+    const onDimensionsCalculatedRef = useRef(onDimensionsCalculated);
+    useEffect(() => { onStatsCalculatedRef.current = onStatsCalculated; }, [onStatsCalculated]);
+    useEffect(() => { onDimensionsCalculatedRef.current = onDimensionsCalculated; }, [onDimensionsCalculated]);
+
     const handleStatsCalculated = useCallback((stats: { volumeCm3: number; surfaceAreaMm2: number; heightMm: number }) => {
-        onStatsCalculated?.(stats);
-    }, [onStatsCalculated]);
+        onStatsCalculatedRef.current?.(stats);
+    }, []);
 
     const handleDimensionsCalculated = useCallback((dims: { x: number; y: number; z: number }) => {
         setDimensions(dims);
-        onDimensionsCalculated?.(dims);
-    }, [onDimensionsCalculated]);
+        onDimensionsCalculatedRef.current?.(dims);
+    }, []);
 
     // Reset view logic
     /* eslint-disable-next-line @typescript-eslint/no-unused-vars */

@@ -55,11 +55,11 @@ export default function TrackOrderPage() {
     const currentStepIndex = STATUS_STEPS.findIndex(s => s.label === order?.status);
 
     return (
-        <main className="min-h-screen bg-white dark:bg-slate-950 text-slate-900 dark:text-white selection:bg-cyan-500/30">
+        <main className="min-h-screen flex flex-col bg-white dark:bg-slate-950 text-slate-900 dark:text-white selection:bg-cyan-500/30">
             {/* Top accent */}
             <div className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 z-[100]" />
 
-            <div className="dynamic-container px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 pt-24 pb-20">
+            <div className="flex-1 dynamic-container px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 pt-36 pb-20">
                 <div className="w-full max-w-5xl mx-auto">
                     {/* Header */}
                     <div className="text-center mb-12">
