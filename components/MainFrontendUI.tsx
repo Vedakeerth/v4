@@ -32,7 +32,7 @@ export default function MainFrontendUI({ children, navLinks, ctaData }: MainFron
         <>
             <NewsTicker />
             <Preloader />
-            <Navbar navLinks={navLinks} ctaData={ctaData} />
+            <Navbar />
             <CartDrawer />
             <BackgroundGrid />
             <CustomCursor />
