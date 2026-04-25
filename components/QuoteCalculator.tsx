@@ -1142,15 +1142,9 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                                         }
 
                                         const totalSize = uploadedFiles.reduce((acc, f) => acc + f.file.size, 0);
-<<<<<<< HEAD
-                                        const MAX_TOTAL_SIZE = 50 * 1024 * 1024; // 50MB
-                                        if (totalSize > MAX_TOTAL_SIZE) {
-                                            alert(`Total file size (${(totalSize / 1024 / 1024).toFixed(2)}MB) exceeds the 50MB limit. Please upload smaller files.`);
-=======
                                         const MAX_TOTAL_SIZE = 25 * 1024 * 1024; // 25MB
                                         if (totalSize > MAX_TOTAL_SIZE) {
                                             alert(`Total file size (${(totalSize / 1024 / 1024).toFixed(2)}MB) exceeds the 25MB limit. Please upload smaller files.`);
->>>>>>> 1a875c841ac52e32865d27ad35b1cb131af68c29
                                             return;
                                         }
 
