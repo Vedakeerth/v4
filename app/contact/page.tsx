@@ -221,10 +221,17 @@ export default function ContactPage() {
 
                     <div className="flex justify-center py-2">
                         {/* IMPORTANT: Use reCAPTCHA v2 Checkbox keys for this component */}
-                        <ReCAPTCHA
-                            ref={captchaRef}
-                            sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ""}
-                        />
+                        {!process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ? (
+                            <div className="w-full max-w-sm p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl text-amber-700 dark:text-amber-400 text-[10px] font-black uppercase tracking-widest text-center leading-relaxed">
+                                ⚠️ reCAPTCHA Site Key Missing!
+                                <br/>Add NEXT_PUBLIC_RECAPTCHA_SITE_KEY (v2 Checkbox) to .env.local
+                            </div>
+                        ) : (
+                            <ReCAPTCHA
+                                ref={captchaRef}
+                                sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
+                            />
+                        )}
                     </div>
 
                     <button

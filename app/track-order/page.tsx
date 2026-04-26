@@ -153,10 +153,17 @@ export default function TrackOrderPage() {
 
                             <div className="md:col-span-2 pt-2 pb-2">
                                 {/* IMPORTANT: Use reCAPTCHA v2 Checkbox keys for this component */}
-                                <ReCAPTCHA
-                                    ref={captchaRef}
-                                    sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ""}
-                                />
+                                {!process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ? (
+                                    <div className="p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl text-amber-700 dark:text-amber-400 text-[10px] font-black uppercase tracking-widest leading-relaxed">
+                                        ⚠️ reCAPTCHA Site Key Missing!
+                                        <br/>Add NEXT_PUBLIC_RECAPTCHA_SITE_KEY (v2 Checkbox) to .env.local
+                                    </div>
+                                ) : (
+                                    <ReCAPTCHA
+                                        ref={captchaRef}
+                                        sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
+                                    />
+                                )}
                             </div>
 
                             <div className="md:col-span-2 pt-2">
