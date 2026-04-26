@@ -8,7 +8,7 @@ import Link from "next/link";
 import { Clock, User, Calendar, ArrowRight } from "lucide-react";
 
 export const metadata = {
-    title: 'Blog - VAELINSA | Insights into 3D Printing & Robotics',
+    title: 'Blog - VEALINSA | Insights into 3D Printing & Robotics',
     description: 'Expert insights, tutorials, and latest news from the world of 3D printing and advanced manufacturing.',
 };
 
@@ -23,7 +23,7 @@ export default async function BlogPage() {
             <div className="dynamic-container pt-12 pb-24">
                 <div className="text-center mb-20">
                     <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-slate-900 dark:text-white mb-6 uppercase tracking-tight leading-none">
-                        Vaelinsa <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Insights</span>
+                        Vealinsa <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Insights</span>
                     </h1>
                     <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto text-lg md:text-xl font-medium leading-relaxed">
                         Deep dives into the future of manufacturing, robotics kits, and precision engineering.
@@ -72,9 +72,9 @@ export default async function BlogPage() {
                                     <div className="mt-auto flex items-center justify-between">
                                         <div className="flex items-center gap-2">
                                             <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-cyan-500 font-extrabold text-xs">
-                                                {blog.author.charAt(0)}
+                                                V
                                             </div>
-                                            <span className="text-xs font-semibold text-slate-600 dark:text-slate-400">{blog.author}</span>
+                                            <span className="text-xs font-semibold text-slate-600 dark:text-slate-400">VAELINSA</span>
                                         </div>
                                         <div className="text-cyan-500/50 group-hover:text-cyan-500 group-hover:translate-x-1 transition-all duration-300">
                                             <ArrowRight size={18} />

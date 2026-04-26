@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const canonicalUrl = `${baseUrl}/blog/${slug}`;
 
     return {
-        title: blog.metaTitle || `${blog.title} | VAELINSA Insights`,
+        title: blog.metaTitle || `${blog.title} | VEALINSA Insights`,
         description: blog.metaDescription || blog.excerpt,
         keywords: blog.hashtags || [],
         alternates: {
@@ -100,11 +100,11 @@ export default async function BlogDetailPage({ params }: PageProps) {
                         <div className="flex flex-wrap items-center gap-6 text-slate-600 dark:text-slate-400">
                             <div className="flex items-center gap-3">
                                 <div className="w-12 h-12 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center justify-center text-cyan-500 font-black text-xl shadow-xl">
-                                    {blog.author.charAt(0)}
+                                    V
                                 </div>
                                 <div>
-                                    <span className="block font-black text-white text-sm uppercase tracking-tight">{blog.author}</span>
-                                    <span className="text-[10px] uppercase font-bold tracking-widest text-slate-600">Lead Engineer</span>
+                                    <span className="block font-black text-white text-sm uppercase tracking-tight">VAELINSA</span>
+                                    <span className="text-[10px] uppercase font-bold tracking-widest text-slate-600">Engineering Team</span>
                                 </div>
                             </div>
                             <div className="h-8 w-px bg-slate-100 dark:bg-slate-800 hidden sm:block" />

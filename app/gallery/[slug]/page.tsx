@@ -4,7 +4,7 @@ import { getPageContent } from "@/lib/content";
 import { getProducts, getProductBySeoSlug } from "@/lib/products";
 import ProductDetailClient from "@/components/ProductDetailClient";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, X } from "lucide-react";
 import type { Metadata } from "next";
 import { createSeoSlug } from "@/lib/seo-utils";
 
@@ -50,10 +50,16 @@ export default async function ProductDetailPage({ params }: PageProps) {
 
     if (!product) {
         return (
-            <main className="min-h-screen bg-white dark:bg-slate-950 pt-32 px-4 flex flex-col items-center">
-                <h1 className="text-2xl text-white mb-4 uppercase font-black">Part Not Found</h1>
-                <Link href="/gallery" className="text-cyan-400 hover:text-cyan-300 flex items-center gap-2 font-bold">
-                    <ArrowLeft size={20} /> Back to Gallery
+            <main className="min-h-screen bg-white dark:bg-slate-950 pt-32 px-4 flex flex-col items-center justify-center text-center">
+                <div className="w-24 h-24 bg-slate-100 dark:bg-slate-900 rounded-full flex items-center justify-center mb-8 border border-slate-200 dark:border-slate-800">
+                    <X className="w-12 h-12 text-red-500" />
+                </div>
+                <h1 className="text-3xl md:text-5xl font-black text-slate-900 dark:text-white mb-6 uppercase tracking-tight">Component Not Found</h1>
+                <p className="text-slate-600 dark:text-slate-400 max-w-md mb-10 text-lg">
+                    The engineering part you are looking for does not exist in our current catalogue or has been relocated.
+                </p>
+                <Link href="/gallery" className="inline-flex items-center gap-3 px-8 py-4 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-2xl transition-all shadow-xl shadow-cyan-900/20">
+                    <ArrowLeft size={20} /> Return to Gallery
                 </Link>
             </main>
         );

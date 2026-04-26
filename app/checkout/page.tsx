@@ -206,9 +206,9 @@ function CheckoutContent() {
             <div className="container mx-auto px-4 max-w-6xl pb-32">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
                     <div>
-                        <Link href="/catalog" className="inline-flex items-center text-slate-500 hover:text-slate-900 dark:text-white mb-4 transition-colors font-semibold text-xs uppercase tracking-widest">
+                        <Link href="/catalog" className="inline-flex items-center text-slate-500 hover:text-cyan-400 dark:text-slate-400 dark:hover:text-white mb-4 transition-colors font-semibold text-xs uppercase tracking-widest">
                             <ArrowLeft className="mr-2 h-3 w-3" />
-                            Back to Catalog
+                            Back to Catalogue
                         </Link>
                         <h1 className="text-4xl font-black text-slate-900 dark:text-white uppercase italic tracking-tighter underline decoration-cyan-500/50 decoration-4 underline-offset-8">
                             Checkout
@@ -301,20 +301,7 @@ function CheckoutContent() {
                                         </div>
                                     </div>
                                     
-                                    <div className="flex justify-center mb-6">
-                                        {/* IMPORTANT: Use reCAPTCHA v2 Checkbox keys for this component */}
-                                        {!process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ? (
-                                            <div className="w-full p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl text-amber-700 dark:text-amber-400 text-[10px] font-black uppercase tracking-widest text-center leading-relaxed">
-                                                ⚠️ reCAPTCHA Site Key Missing!
-                                                <br/>Add NEXT_PUBLIC_RECAPTCHA_SITE_KEY (v2 Checkbox) to .env.local
-                                            </div>
-                                        ) : (
-                                            <ReCAPTCHA
-                                                ref={captchaRef}
-                                                sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
-                                            />
-                                        )}
-                                    </div>
+
                                     
                                     <button
                                         onClick={handlePaymentSubmit}

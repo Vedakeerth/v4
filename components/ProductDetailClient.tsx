@@ -60,7 +60,7 @@ export default function ProductDetailClient({ product, similarProducts, pageData
             >
                 <Link
                     href="/gallery"
-                    className="inline-flex items-center text-slate-600 dark:text-slate-400 hover:text-white mb-8 transition-colors group"
+                    className="inline-flex items-center text-slate-600 dark:text-slate-400 hover:text-cyan-500 dark:hover:text-white mb-8 transition-colors group"
                 >
                     <ArrowLeft className="mr-2 h-5 w-5 transform group-hover:-translate-x-1 transition-transform" />
                     {pageData?.backButton || "Back to Gallery"}

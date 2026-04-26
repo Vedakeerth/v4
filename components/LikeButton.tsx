@@ -57,7 +57,7 @@ export default function LikeButton({ blogId, initialLikes }: LikeButtonProps) {
             disabled={isLoading}
             className={`flex items-center gap-2 px-6 py-3 rounded-2xl border transition-all duration-300 ${isLiked
                     ? "bg-red-500/10 border-red-500/50 text-red-500 shadow-[0_0_20px_rgba(239,68,68,0.2)]"
-                    : "bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:border-slate-700 hover:text-white"
+                    : "bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-400 dark:hover:border-slate-700 hover:text-slate-900 dark:hover:text-white"
                 }`}
         >
             <motion.div

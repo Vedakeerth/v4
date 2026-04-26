@@ -27,7 +27,7 @@ export const getBlogs = unstable_cache(
         }
     },
     ['blogs-list'],
-    { revalidate: 3600, tags: ['blogs'] }
+    { revalidate: false, tags: ['blogs'] }
 );
 
 export const getBlogBySeoSlug = (seoSlug: string) => unstable_cache(
@@ -60,7 +60,7 @@ export const getBlogBySeoSlug = (seoSlug: string) => unstable_cache(
         }
     },
     [`blog-seo-${seoSlug}`],
-    { revalidate: 3600, tags: [`blog-${seoSlug}`] }
+    { revalidate: false, tags: [`blog-${seoSlug}`] }
 )();
 
 export const getBlogBySlug = (slug: string) => getBlogBySeoSlug(slug);

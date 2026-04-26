@@ -80,21 +80,29 @@ export const getProductBySeoSlug = (seoSlug: string) => unstable_cache(
             const { getAdminDb } = await import('./firebaseAdmin');
             const adminDb = await getAdminDb();
             
-            // Search in 'products' by 'hash' field
+            // 1. Try finding by direct ID match (most reliable)
+            try {
+                const doc = await adminDb.collection('products').doc(hashId).get();
+                if (doc.exists) return { id: doc.id, ...doc.data() } as Product;
+            } catch (e) { /* ignore */ }
+
+            // 2. Try finding by 'hash' field match
             const snapshot = await adminDb.collection('products').where('hash', '==', hashId).limit(1).get();
-            if (snapshot.empty) {
-                // Fallback to searching by document ID if hashId matches length
-                if (hashId.length >= 20) {
-                    const doc = await adminDb.collection('products').doc(hashId).get();
-                    if (doc.exists) return { id: doc.id, ...doc.data() } as Product;
-                }
-                return undefined;
+            if (!snapshot.empty) {
+                const doc = snapshot.docs[0];
+                return { id: doc.id, ...doc.data() } as Product;
             }
-            const doc = snapshot.docs[0];
-            return { id: doc.id, ...doc.data() } as Product;
+
+            // 3. Last resort: Fetch all and find if ID ends with hashId
+            // This is for cases like "custom-fixture-6" where '6' is the suffix
+            const allSnapshot = await adminDb.collection('products').get();
+            const found = allSnapshot.docs.find((doc: any) => doc.id.endsWith(hashId));
+            if (found) return { id: found.id, ...found.data() } as Product;
+
+            return undefined;
         } else {
             const products = await getProducts();
-            return products.find(p => p.id.endsWith(hashId));
+            return products.find(p => p.id === hashId || p.id.endsWith(hashId));
         }
     },
     [`product-seo-${seoSlug}`],
