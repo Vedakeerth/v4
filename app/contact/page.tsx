@@ -3,7 +3,8 @@
 import React, { useState, useRef } from "react";
 import Footer from "@/components/Footer";
 import type { Metadata } from "next";
-import { Mail, Phone, MapPin, Clock, Send, Instagram, Facebook, Linkedin, Twitter, Youtube, Loader2, CheckCircle2 } from "lucide-react";
+import { Mail, Phone, MapPin, Clock, Send, Instagram, Facebook, Linkedin, Twitter, Youtube, Loader2, CheckCircle2, Share2 } from "lucide-react";
+import { getSocials, type SocialLink } from "@/lib/socials";
 import ReCAPTCHA from "react-google-recaptcha";
 
 export default function ContactPage() {
@@ -14,8 +15,29 @@ export default function ContactPage() {
     message: ""
   });
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [socials, setSocials] = useState<SocialLink[]>([]);
   const [errorMessage, setErrorMessage] = useState("");
   const captchaRef = useRef<ReCAPTCHA>(null);
+
+  React.useEffect(() => {
+    getSocials().then(setSocials);
+  }, []);
+
+  const ICON_MAP: Record<string, any> = {
+    Instagram,
+    Facebook,
+    Linkedin,
+    Twitter,
+    Youtube
+  };
+
+  const HOVER_MAP: Record<string, string> = {
+    Instagram: "hover:text-pink-500 hover:border-pink-500/50",
+    Facebook: "hover:text-blue-600 hover:border-blue-600/50",
+    Linkedin: "hover:text-blue-500 hover:border-blue-500/50",
+    Twitter: "hover:text-sky-500 hover:border-sky-500/50",
+    Youtube: "hover:text-red-500 hover:border-red-500/50"
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -258,23 +280,22 @@ export default function ContactPage() {
           <div className="mt-20 text-center">
             <h3 className="text-slate-500 font-semibold mb-8 uppercase tracking-[0.2em] text-xs">Stay Connected</h3>
             <div className="flex justify-center gap-4 md:gap-8">
-              {[
-                { icon: Instagram, url: "https://instagram.com/vaelinsa", label: "Instagram", hoverClass: "hover:text-pink-500 hover:border-pink-500/50" },
-                { icon: Facebook, url: "https://facebook.com/vaelinsa", label: "Facebook", hoverClass: "hover:text-blue-600 hover:border-blue-600/50" },
-                { icon: Linkedin, url: "https://linkedin.com/company/vaelinsa", label: "LinkedIn", hoverClass: "hover:text-blue-500 hover:border-blue-500/50" },
-                { icon: Twitter, url: "https://twitter.com/vaelinsa", label: "Twitter", hoverClass: "hover:text-sky-500 hover:border-sky-500/50" },
-              ].map((social, i) => (
-                <a
-                  key={i}
-                  href={social.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`p-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-2xl text-slate-600 dark:text-slate-400 transition-all hover:-translate-y-1 ${social.hoverClass}`}
-                  aria-label={social.label}
-                >
-                  <social.icon className="h-5 w-5" />
-                </a>
-              ))}
+              {socials.map((social, i) => {
+                const Icon = ICON_MAP[social.icon] || Share2;
+                const hoverClass = HOVER_MAP[social.icon] || "hover:text-cyan-500 hover:border-cyan-500/50";
+                return (
+                  <a
+                    key={i}
+                    href={social.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`p-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-2xl text-slate-600 dark:text-slate-400 transition-all hover:-translate-y-1 ${hoverClass}`}
+                    aria-label={social.name}
+                  >
+                    <Icon className="h-5 w-5" />
+                  </a>
+                );
+              })}
             </div>
           </div>
         </div>

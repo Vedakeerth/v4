@@ -22,7 +22,7 @@ export const getProducts = unstable_cache(
         return [];
     },
     ['products-list'],
-    { revalidate: 3600, tags: ['products'] }
+    { revalidate: 10, tags: ['products'] }
 );
 
 export const getPopularProducts = unstable_cache(
@@ -67,7 +67,7 @@ export const getPopularProducts = unstable_cache(
         return [];
     },
     ['popular-products-v2'],
-    { revalidate: 3600, tags: ['products', 'popular'] }
+    { revalidate: 10, tags: ['products', 'popular'] }
 );
 
 export const getProductBySeoSlug = (seoSlug: string) => unstable_cache(
@@ -98,7 +98,7 @@ export const getProductBySeoSlug = (seoSlug: string) => unstable_cache(
         }
     },
     [`product-seo-${seoSlug}`],
-    { revalidate: 3600, tags: [`product-${seoSlug}`] }
+    { revalidate: 10, tags: [`product-${seoSlug}`] }
 )();
 
 export const getProductById = (id: string) => getProductBySeoSlug(id);

@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Mail, Phone, Instagram, Facebook, Linkedin, Twitter, Youtube, Share2 } from "lucide-react";
-import { getSocials } from "@/lib/socials";
+import { getSocials, type SocialLink } from "@/lib/socials";
 import { useTheme } from "next-themes";
 
 import { getSettings, type SiteSettings } from "@/lib/settings";
@@ -20,12 +20,13 @@ const ICON_MAP: Record<string, any> = {
 export default function Footer() {
     const [mounted, setMounted] = useState(false);
     const [settings, setSettings] = useState<SiteSettings | null>(null);
+    const [socials, setSocials] = useState<SocialLink[]>([]);
     const { resolvedTheme } = useTheme();
-    const socials = getSocials();
 
     useEffect(() => {
         setMounted(true);
         getSettings().then(setSettings);
+        getSocials().then(setSocials);
     }, []);
 
     const aboutText = settings?.footerAboutText || "Premium additive manufacturing and design services for the modern engineer.";

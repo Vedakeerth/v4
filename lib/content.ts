@@ -19,5 +19,5 @@ export const getPageContent = (page: string) => unstable_cache(
         return null;
     },
     [`page-content-${page}`],
-    { revalidate: 3600, tags: [`content-${page}`] }
+    { revalidate: 10, tags: [`content-${page}`] }
 )(page);
