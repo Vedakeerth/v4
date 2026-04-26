@@ -122,7 +122,7 @@ export default function Hero({ content }: HeroProps) {
             className="relative min-h-screen w-full flex flex-col justify-center items-center overflow-hidden bg-background"
         >
             {/* Background Grid Pattern (Static) */}
-            <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]pointer-events-none" />
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none" />
 
             {/* Mouse Spotlight */}
             <div
@@ -154,7 +154,7 @@ export default function Hero({ content }: HeroProps) {
                             {content?.titleMain || "Future of Technology"} <br />
                             <span
                                 ref={textRef}
-                                className="inline-block text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-blue-500 to-indigo-500 min-w-[300px] mt-4 pb-4 relative animated-gradient-text"
+                                className="inline-block text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-blue-500 to-indigo-500 min-w-fit md:min-w-[400px] mt-4 pb-4 relative animated-gradient-text"
                                 style={{
                                     willChange: 'transform, opacity',
                                     transformOrigin: 'center center',

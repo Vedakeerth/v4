@@ -68,7 +68,7 @@ export default function PolicySidebar({ sections, currentSection }: PolicySideba
     };
 
     return (
-        <div className="sticky top-24 h-[calc(100vh-8rem)] overflow-y-auto custom-scrollbar">
+        <div className="sticky top-32 h-[calc(100vh-10rem)] overflow-y-auto custom-scrollbar">
             <nav className="space-y-2 pr-4">
                 {sections.map((section) => {
                     const isExpanded = expandedSections.has(section.id);

@@ -52,7 +52,7 @@ export default function TermsOfServicePage() {
                     <Link href="/" className="text-cyan-400 hover:text-cyan-300 text-xs font-black uppercase tracking-widest mb-6 inline-flex items-center gap-2 group">
                         <span className="group-hover:-translate-x-1 transition-transform">←</span> Back to Home
                     </Link>
-                    <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-6 uppercase tracking-tight">Terms of Service</h1>
+                    <h1 className="text-4xl md:text-6xl font-extrabold text-slate-900 dark:text-white mb-6 uppercase tracking-tight">Terms of Service</h1>
                     <p className="text-slate-500 font-bold uppercase tracking-widest text-[10px]">Last updated: {lastUpdated}</p>
                     <div className="h-1 w-20 bg-cyan-500 mt-8 rounded-full shadow-[0_0_15px_rgba(6,182,212,0.5)]" />
                 </div>
@@ -64,9 +64,9 @@ export default function TermsOfServicePage() {
                     </div>
 
                     {/* Main Content */}
-                    <div className="lg:col-span-3 prose prose-invert max-w-none space-y-8 text-slate-700 dark:text-slate-300">
+                    <div className="lg:col-span-3 prose dark:prose-invert max-w-none space-y-8 text-slate-700 dark:text-slate-300">
                         <section id="acceptance">
-                            <h2 className="text-2xl font-bold text-white mb-4">1. Acceptance of Terms</h2>
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">1. Acceptance of Terms</h2>
                             <p className="mb-4">
                                 By accessing and using VAELINSA&apos;s website and services, you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service.
                             </p>
@@ -76,7 +76,7 @@ export default function TermsOfServicePage() {
                         </section>
 
                         <section id="services">
-                            <h2 className="text-2xl font-bold text-white mb-4">2. Services Description</h2>
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">2. Services Description</h2>
                             <p className="mb-4">
                                 VAELINSA provides the following services:
                             </p>
@@ -94,14 +94,14 @@ export default function TermsOfServicePage() {
                         </section>
 
                         <section id="orders">
-                            <h2 className="text-2xl font-bold text-white mb-4">3. Orders and Quotes</h2>
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">3. Orders and Quotes</h2>
 
-                            <h3 id="quote-requests" className="text-xl font-semibold text-white mb-3">3.1 Quote Requests</h3>
+                            <h3 id="quote-requests" className="text-xl font-semibold text-slate-900 dark:text-white mb-3">3.1 Quote Requests</h3>
                             <p className="mb-4">
                                 Quotes provided by VAELINSA are estimates based on the information provided and are valid for 30 days from the date of issue. Final pricing may vary based on actual material usage, complexity, and production requirements.
                             </p>
 
-                            <h3 id="order-acceptance" className="text-xl font-semibold text-white mb-3 mt-6">3.2 Order Acceptance</h3>
+                            <h3 id="order-acceptance" className="text-xl font-semibold text-slate-900 dark:text-white mb-3 mt-6">3.2 Order Acceptance</h3>
                             <p className="mb-4">
                                 All orders are subject to acceptance by VAELINSA. We reserve the right to refuse or cancel any order for any reason, including but not limited to:
                             </p>
@@ -113,7 +113,7 @@ export default function TermsOfServicePage() {
                                 <li>Orders that may be used for illegal purposes</li>
                             </ul>
 
-                            <h3 id="design-files" className="text-xl font-semibold text-white mb-3 mt-6">3.3 Design Files</h3>
+                            <h3 id="design-files" className="text-xl font-semibold text-slate-900 dark:text-white mb-3 mt-6">3.3 Design Files</h3>
                             <p className="mb-4">
                                 You are responsible for ensuring that:
                             </p>
@@ -126,7 +126,7 @@ export default function TermsOfServicePage() {
                         </section>
 
                         <section id="pricing">
-                            <h2 className="text-2xl font-bold text-white mb-4">4. Pricing and Payment</h2>
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">4. Pricing and Payment</h2>
                             <p className="mb-4">
                                 All prices are quoted in Indian Rupees (INR) unless otherwise stated. Prices include applicable taxes unless specified otherwise.
                             </p>
@@ -142,9 +142,9 @@ export default function TermsOfServicePage() {
                         </section>
 
                         <section id="production">
-                            <h2 className="text-2xl font-bold text-white mb-4">5. Production and Delivery</h2>
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">5. Production and Delivery</h2>
 
-                            <h3 id="production-timeline" className="text-xl font-semibold text-white mb-3">5.1 Production Timeline</h3>
+                            <h3 id="production-timeline" className="text-xl font-semibold text-slate-900 dark:text-white mb-3">5.1 Production Timeline</h3>
                             <p className="mb-4">
                                 Estimated production times are provided as guidelines and are not guaranteed. Actual production times may vary based on:
                             </p>
@@ -155,7 +155,7 @@ export default function TermsOfServicePage() {
                                 <li>Design modifications or revisions</li>
                             </ul>
 
-                            <h3 id="shipping-delivery" className="text-xl font-semibold text-white mb-3 mt-6">5.2 Shipping and Delivery</h3>
+                            <h3 id="shipping-delivery" className="text-xl font-semibold text-slate-900 dark:text-white mb-3 mt-6">5.2 Shipping and Delivery</h3>
                             <p className="mb-4">
                                 Shipping costs are calculated based on weight, dimensions, and destination. We are not responsible for delays caused by shipping carriers or customs.
                             </p>
@@ -165,7 +165,7 @@ export default function TermsOfServicePage() {
                         </section>
 
                         <section id="quality">
-                            <h2 className="text-2xl font-bold text-white mb-4">6. Quality and Tolerances</h2>
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">6. Quality and Tolerances</h2>
                             <p className="mb-4">
                                 We strive to maintain high quality standards. However, 3D printing is an additive manufacturing process with inherent limitations:
                             </p>
@@ -181,7 +181,7 @@ export default function TermsOfServicePage() {
                         </section>
 
                         <section id="intellectual-property">
-                            <h2 className="text-2xl font-bold text-white mb-4">7. Intellectual Property</h2>
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">7. Intellectual Property</h2>
                             <p className="mb-4">
                                 You retain all intellectual property rights to your designs and files. By submitting files to us, you grant VAELINSA a limited, non-exclusive license to:
                             </p>
@@ -200,9 +200,9 @@ export default function TermsOfServicePage() {
                         </section>
 
                         <section id="warranty">
-                            <h2 className="text-2xl font-bold text-white mb-4">8. Warranty and Returns</h2>
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">8. Warranty and Returns</h2>
 
-                            <h3 id="warranty-terms" className="text-xl font-semibold text-white mb-3">8.1 Warranty</h3>
+                            <h3 id="warranty-terms" className="text-xl font-semibold text-slate-900 dark:text-white mb-3">8.1 Warranty</h3>
                             <p className="mb-4">
                                 We warrant that our products will be free from material defects in workmanship for 30 days from delivery. This warranty does not cover:
                             </p>
@@ -213,7 +213,7 @@ export default function TermsOfServicePage() {
                                 <li>Modifications made after delivery</li>
                             </ul>
 
-                            <h3 id="returns-refunds" className="text-xl font-semibold text-white mb-3 mt-6">8.2 Returns and Refunds</h3>
+                            <h3 id="returns-refunds" className="text-xl font-semibold text-slate-900 dark:text-white mb-3 mt-6">8.2 Returns and Refunds</h3>
                             <p className="mb-4">
                                 Due to the custom nature of our products, returns are generally not accepted. However, we will work with you to resolve any legitimate quality issues:
                             </p>
@@ -225,7 +225,7 @@ export default function TermsOfServicePage() {
                         </section>
 
                         <section id="liability">
-                            <h2 className="text-2xl font-bold text-white mb-4">9. Limitation of Liability</h2>
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">9. Limitation of Liability</h2>
                             <p className="mb-4">
                                 To the maximum extent permitted by law:
                             </p>
@@ -238,7 +238,7 @@ export default function TermsOfServicePage() {
                         </section>
 
                         <section id="prohibited">
-                            <h2 className="text-2xl font-bold text-white mb-4">10. Prohibited Uses</h2>
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">10. Prohibited Uses</h2>
                             <p className="mb-4">You agree not to use our services to:</p>
                             <ul className="list-disc pl-6 mb-4 space-y-2">
                                 <li>Create items that violate any laws or regulations</li>
@@ -254,7 +254,7 @@ export default function TermsOfServicePage() {
                         </section>
 
                         <section id="indemnification">
-                            <h2 className="text-2xl font-bold text-white mb-4">11. Indemnification</h2>
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">11. Indemnification</h2>
                             <p>
                                 You agree to indemnify and hold harmless VAELINSA, its employees, and affiliates from any claims, damages, losses, or expenses (including legal fees) arising from:
                             </p>
@@ -267,7 +267,7 @@ export default function TermsOfServicePage() {
                         </section>
 
                         <section id="modifications">
-                            <h2 className="text-2xl font-bold text-white mb-4">12. Modifications to Terms</h2>
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">12. Modifications to Terms</h2>
                             <p className="mb-4">
                                 We reserve the right to modify these Terms at any time. Changes will be effective immediately upon posting on our website. Your continued use of our services after changes are posted constitutes acceptance of the modified Terms.
                             </p>
@@ -277,19 +277,19 @@ export default function TermsOfServicePage() {
                         </section>
 
                         <section id="governing-law">
-                            <h2 className="text-2xl font-bold text-white mb-4">13. Governing Law</h2>
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">13. Governing Law</h2>
                             <p>
                                 These Terms shall be governed by and construed in accordance with the laws of India, without regard to its conflict of law provisions. Any disputes arising from these Terms or our services shall be subject to the exclusive jurisdiction of the courts in India.
                             </p>
                         </section>
 
                         <section id="contact">
-                            <h2 className="text-2xl font-bold text-white mb-4">14. Contact Information</h2>
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">14. Contact Information</h2>
                             <p className="mb-4">
                                 If you have any questions about these Terms of Service, please contact us:
                             </p>
                             <div className="bg-slate-50 dark:bg-slate-900/50 p-6 rounded-lg border border-slate-200 dark:border-slate-800">
-                                <p className="mb-2"><strong className="text-white">VAELINSA</strong></p>
+                                <p className="mb-2"><strong className="text-slate-900 dark:text-white">VAELINSA</strong></p>
                                 <p className="mb-2">Email: <a href="mailto:sales@vaelinsa.com" className="text-blue-400 hover:text-blue-300">sales@vaelinsa.com</a></p>
                                 <p>Website: <a href="https://vaelinsa.com" className="text-blue-400 hover:text-blue-300">www.vaelinsa.com</a></p>
                             </div>

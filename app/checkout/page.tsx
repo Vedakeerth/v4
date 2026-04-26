@@ -11,7 +11,7 @@ import { cn, validatePhone } from "@/lib/utils";
 import { redirectToCashfree } from "@/lib/cashfree";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, Suspense } from "react";
-import ReCAPTCHA from "react-google-recaptcha";
+
 
 function CheckoutContent() {
     const { items, cartTotal, clearCart, appliedCoupon, discountAmount, finalTotal } = useCart();
@@ -36,7 +36,7 @@ function CheckoutContent() {
     const [paymentMethod, setPaymentMethod] = useState<'card' | 'upi' | 'netbanking' | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isIndia, setIsIndia] = useState(true);
-    const captchaRef = useRef<ReCAPTCHA>(null);
+
 
     useEffect(() => {
         const tracking_id = searchParams?.get('tracking_id');
@@ -91,25 +91,9 @@ function CheckoutContent() {
     };
 
     const handlePaymentSubmit = async () => {
-        const token = captchaRef.current?.getValue();
-        if (!token) {
-            alert("Please verify that you are not a robot.");
-            return;
-        }
         setCheckoutStep('processing');
 
         try {
-            // Backend Captcha Verification
-            const verifyRes = await fetch("/api/verify-captcha", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ token }),
-            });
-            const verifyData = await verifyRes.json();
-
-            if (!verifyData.success) {
-                throw new Error("Captcha verification failed. Please try again.");
-            }
             // Step 1: Create Order in our system as "Pending"
             const fullAddress = `${formData.doorNo}, ${formData.street}, ${formData.city} - ${formData.pincode}, ${formData.state}`;
             const fullPhone = `${formData.countryCode}${formData.phone.replace(/\D/g, '')}`;
@@ -144,7 +128,6 @@ function CheckoutContent() {
             console.error("Payment Error:", error);
             alert(error.message || "An error occurred during payment. Please try again.");
             setCheckoutStep('payment');
-            captchaRef.current?.reset();
         }
     };
 
@@ -161,7 +144,7 @@ function CheckoutContent() {
                         <div className="w-20 h-20 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-6 border border-green-500/20">
                             <CheckCircle className="w-10 h-10 text-green-500" />
                         </div>
-                        <h1 className="text-3xl font-bold text-white mb-4 uppercase italic">Order Confirmed!</h1>
+                        <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-4 uppercase italic">Order Confirmed!</h1>
                         <p className="text-slate-600 dark:text-slate-400 mb-6 font-medium">
                             Thank you for your order. You will receive real-time notifications via email.
                             <br/><br/>
@@ -193,7 +176,7 @@ function CheckoutContent() {
                         <div className="absolute inset-0 border-4 border-cyan-500 rounded-full border-t-transparent animate-spin" />
                     </div>
                     <div>
-                        <h2 className="text-2xl font-bold text-white uppercase italic tracking-tight">Securing Payment...</h2>
+                        <h2 className="text-2xl font-bold text-slate-900 dark:text-white uppercase italic tracking-tight">Securing Payment...</h2>
                         <p className="text-slate-500 font-semibold text-xs uppercase tracking-widest mt-2 px-4">Connecting to gateway & verifying transaction</p>
                     </div>
                 </div>
@@ -205,7 +188,7 @@ function CheckoutContent() {
         return (
             <main className="min-h-screen bg-white dark:bg-slate-950 pt-24 pb-0">
                 <div className="container mx-auto px-4 text-center py-20 pb-32">
-                    <h1 className="text-3xl font-bold text-white mb-4 uppercase">Your Cart is Empty</h1>
+                    <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-4 uppercase">Your Cart is Empty</h1>
                     <p className="text-slate-600 dark:text-slate-400 mb-8">Add some products to your cart to checkout.</p>
                     <Link
                         href="/catalog"
@@ -223,11 +206,11 @@ function CheckoutContent() {
             <div className="container mx-auto px-4 max-w-6xl pb-32">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
                     <div>
-                        <Link href="/catalog" className="inline-flex items-center text-slate-500 hover:text-white mb-4 transition-colors font-semibold text-xs uppercase tracking-widest">
+                        <Link href="/catalog" className="inline-flex items-center text-slate-500 hover:text-slate-900 dark:text-white mb-4 transition-colors font-semibold text-xs uppercase tracking-widest">
                             <ArrowLeft className="mr-2 h-3 w-3" />
                             Back to Catalog
                         </Link>
-                        <h1 className="text-4xl font-black text-white uppercase italic tracking-tighter underline decoration-cyan-500/50 decoration-4 underline-offset-8">
+                        <h1 className="text-4xl font-black text-slate-900 dark:text-white uppercase italic tracking-tighter underline decoration-cyan-500/50 decoration-4 underline-offset-8">
                             Checkout
                         </h1>
                     </div>
@@ -250,7 +233,7 @@ function CheckoutContent() {
                                     </div>
                                     <span className={cn(
                                         "text-[10px] font-bold uppercase tracking-widest",
-                                        checkoutStep === s.step ? "text-white" : "text-slate-600"
+                                        checkoutStep === s.step ? "text-slate-900 dark:text-white" : "text-slate-600"
                                     )}>
                                         {s.label}
                                     </span>
@@ -275,7 +258,7 @@ function CheckoutContent() {
                             >
                                 <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 shadow-xl">
                                     <div className="flex items-center justify-between mb-8 border-b border-slate-200 dark:border-slate-800 pb-4">
-                                        <h2 className="text-xl font-bold text-white uppercase tracking-tight flex items-center gap-3 italic">
+                                        <h2 className="text-xl font-bold text-slate-900 dark:text-white uppercase tracking-tight flex items-center gap-3 italic">
                                             <div className="w-2 h-6 bg-cyan-500" />
                                             Review Details
                                         </h2>
@@ -291,15 +274,15 @@ function CheckoutContent() {
                                         <div className="grid grid-cols-2 gap-6">
                                             <div>
                                                 <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-1">Customer Name</span>
-                                                <span className="text-sm font-semibold text-white">{formData.customerName}</span>
+                                                <span className="text-sm font-semibold text-slate-900 dark:text-white">{formData.customerName}</span>
                                             </div>
                                             <div>
                                                 <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-1">Phone Number</span>
-                                                <span className="text-sm font-semibold text-white">{formData.countryCode} {formData.phone}</span>
+                                                <span className="text-sm font-semibold text-slate-900 dark:text-white">{formData.countryCode} {formData.phone}</span>
                                             </div>
                                             <div className="col-span-2">
                                                 <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-1">Email <span className="text-cyan-400">*Order details will be sent here*</span></span>
-                                                <span className="text-sm font-semibold text-white">{formData.email}</span>
+                                                <span className="text-sm font-semibold text-slate-900 dark:text-white">{formData.email}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -308,10 +291,10 @@ function CheckoutContent() {
                                         <div className="grid grid-cols-1 gap-6">
                                             <div>
                                                 <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-1">Shipping Address</span>
-                                                <span className="text-sm font-semibold text-white block">
+                                                <span className="text-sm font-semibold text-slate-900 dark:text-white block">
                                                     {formData.doorNo}, {formData.street}
                                                 </span>
-                                                <span className="text-sm font-semibold text-white block mt-0.5">
+                                                <span className="text-sm font-semibold text-slate-900 dark:text-white block mt-0.5">
                                                     {formData.city}, {formData.state} - {formData.pincode}
                                                 </span>
                                             </div>
@@ -352,7 +335,7 @@ function CheckoutContent() {
                                 className="space-y-8"
                             >
                                 <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 shadow-xl">
-                                    <h2 className="text-xl font-bold text-white mb-8 border-b border-slate-200 dark:border-slate-800 pb-4 uppercase tracking-tight flex items-center gap-3 italic">
+                                    <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-8 border-b border-slate-200 dark:border-slate-800 pb-4 uppercase tracking-tight flex items-center gap-3 italic">
                                         <div className="w-2 h-6 bg-cyan-500" />
                                         Contact Information
                                     </h2>
@@ -366,7 +349,7 @@ function CheckoutContent() {
                                                 placeholder="Enter full name"
                                                 value={formData.customerName}
                                                 onChange={handleInputChange}
-                                                className="w-full px-5 py-3.5 bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500/50 transition-all font-semibold text-sm placeholder:text-slate-600/50 caret-cyan-500"
+                                                className="w-full px-5 py-3.5 bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500/50 transition-all font-semibold text-sm placeholder:text-slate-600/50 caret-cyan-500"
                                             />
                                         </div>
                                         <div className="space-y-2">
@@ -380,7 +363,7 @@ function CheckoutContent() {
                                                     onChange={handleInputChange}
                                                     disabled={isIndia}
                                                     className={cn(
-                                                        "w-20 px-3 py-3.5 bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500/50 transition-all font-semibold text-sm text-center caret-cyan-500",
+                                                        "w-20 px-3 py-3.5 bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500/50 transition-all font-semibold text-sm text-center caret-cyan-500",
                                                         isIndia ? "opacity-50 cursor-not-allowed" : "opacity-100"
                                                     )}
                                                 />
@@ -391,7 +374,7 @@ function CheckoutContent() {
                                                     placeholder="XXXXX XXXXX"
                                                     value={formData.phone}
                                                     onChange={handleInputChange}
-                                                    className="flex-1 px-5 py-3.5 bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500/50 transition-all font-semibold text-sm placeholder:text-slate-600/50 caret-cyan-500"
+                                                    className="flex-1 px-5 py-3.5 bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500/50 transition-all font-semibold text-sm placeholder:text-slate-600/50 caret-cyan-500"
                                                 />
                                             </div>
                                             <div className="flex items-start gap-4 px-1 pt-2">
@@ -442,7 +425,7 @@ function CheckoutContent() {
                                                 placeholder="email@example.com"
                                                 value={formData.email}
                                                 onChange={handleInputChange}
-                                                className="w-full px-5 py-3.5 bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500/50 transition-all font-semibold text-sm placeholder:text-slate-600/50 caret-cyan-500"
+                                                className="w-full px-5 py-3.5 bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500/50 transition-all font-semibold text-sm placeholder:text-slate-600/50 caret-cyan-500"
                                             />
                                         </div>
                                         <div className="grid grid-cols-2 gap-4">
@@ -455,7 +438,7 @@ function CheckoutContent() {
                                                     placeholder="House / Flat No"
                                                     value={formData.doorNo}
                                                     onChange={handleInputChange}
-                                                    className="w-full px-5 py-3.5 bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500/50 transition-all font-semibold text-sm placeholder:text-slate-600/50 caret-cyan-500"
+                                                    className="w-full px-5 py-3.5 bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500/50 transition-all font-semibold text-sm placeholder:text-slate-600/50 caret-cyan-500"
                                                 />
                                             </div>
                                             <div className="space-y-2">
@@ -467,7 +450,7 @@ function CheckoutContent() {
                                                     placeholder="Street name / Colony"
                                                     value={formData.street}
                                                     onChange={handleInputChange}
-                                                    className="w-full px-5 py-3.5 bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500/50 transition-all font-semibold text-sm placeholder:text-slate-600/50 caret-cyan-500"
+                                                    className="w-full px-5 py-3.5 bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500/50 transition-all font-semibold text-sm placeholder:text-slate-600/50 caret-cyan-500"
                                                 />
                                             </div>
                                         </div>
@@ -482,7 +465,7 @@ function CheckoutContent() {
                                                     placeholder="000 000"
                                                     value={formData.pincode}
                                                     onChange={handleInputChange}
-                                                    className="w-full px-5 py-3.5 bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500/50 transition-all font-semibold text-sm placeholder:text-slate-600/50 caret-cyan-500"
+                                                    className="w-full px-5 py-3.5 bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500/50 transition-all font-semibold text-sm placeholder:text-slate-600/50 caret-cyan-500"
                                                 />
                                             </div>
                                             <div className="space-y-2 lg:col-span-1">
@@ -494,7 +477,7 @@ function CheckoutContent() {
                                                     placeholder="Enter city"
                                                     value={formData.city}
                                                     onChange={handleInputChange}
-                                                    className="w-full px-5 py-3.5 bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500/50 transition-all font-semibold text-sm placeholder:text-slate-600/50 caret-cyan-500"
+                                                    className="w-full px-5 py-3.5 bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500/50 transition-all font-semibold text-sm placeholder:text-slate-600/50 caret-cyan-500"
                                                 />
                                             </div>
                                             <div className="space-y-2 lg:col-span-1">
@@ -506,7 +489,7 @@ function CheckoutContent() {
                                                     placeholder="Enter state"
                                                     value={formData.state}
                                                     onChange={handleInputChange}
-                                                    className="w-full px-5 py-3.5 bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500/50 transition-all font-semibold text-sm placeholder:text-slate-600/50 caret-cyan-500"
+                                                    className="w-full px-5 py-3.5 bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500/50 transition-all font-semibold text-sm placeholder:text-slate-600/50 caret-cyan-500"
                                                 />
                                             </div>
                                         </div>
@@ -518,7 +501,7 @@ function CheckoutContent() {
                                                 placeholder="Any special instructions for delivery..."
                                                 value={formData.message}
                                                 onChange={handleInputChange}
-                                                className="w-full px-5 py-3.5 bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-500/50 transition-all font-semibold text-sm placeholder:text-slate-600/50 caret-cyan-500"
+                                                className="w-full px-5 py-3.5 bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500/50 transition-all font-semibold text-sm placeholder:text-slate-600/50 caret-cyan-500"
                                             />
                                         </div>
 
@@ -538,7 +521,7 @@ function CheckoutContent() {
                     {/* Right Column: Order Summary */}
                     <div className="sticky top-24 space-y-6">
                         <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 shadow-xl">
-                            <h2 className="text-xl font-bold text-white mb-8 border-b border-slate-200 dark:border-slate-800 pb-4 uppercase tracking-tight flex items-center gap-3 italic">
+                            <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-8 border-b border-slate-200 dark:border-slate-800 pb-4 uppercase tracking-tight flex items-center gap-3 italic">
                                 <div className="w-2 h-6 bg-cyan-500" />
                                 Order Summary
                             </h2>
@@ -554,7 +537,7 @@ function CheckoutContent() {
                                             />
                                         </div>
                                         <div className="flex-1 py-1">
-                                            <h3 className="text-white font-semibold text-sm mb-1">{item.name}</h3>
+                                            <h3 className="text-slate-900 dark:text-white font-semibold text-sm mb-1">{item.name}</h3>
                                             <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest">Quantity: {item.quantity}</p>
                                             <p className="text-cyan-400 text-sm font-bold mt-2 italic">{item.price}</p>
                                         </div>
@@ -565,7 +548,7 @@ function CheckoutContent() {
                             <div className="border-t-2 border-slate-200 dark:border-slate-800 pt-6 space-y-3">
                                 <div className="flex justify-between text-xs font-bold uppercase tracking-widest">
                                     <span className="text-slate-500">Subtotal</span>
-                                    <span className="text-white">Rs {cartTotal.toFixed(2)}</span>
+                                    <span className="text-slate-900 dark:text-white">Rs {cartTotal.toFixed(2)}</span>
                                 </div>
                                 {appliedCoupon && (
                                     <div className="flex justify-between text-xs font-bold uppercase tracking-widest text-emerald-500">
@@ -589,14 +572,14 @@ function CheckoutContent() {
                             <div className="bg-slate-50 dark:bg-slate-900/30 border border-slate-200 dark:border-slate-800 p-4 rounded-2xl flex items-center gap-3">
                                 <div className="w-10 h-10 rounded-full bg-white dark:bg-slate-950 flex items-center justify-center text-cyan-500 border border-slate-200 dark:border-slate-800 text-xl shadow-inner">🔒</div>
                                 <div>
-                                    <p className="text-[10px] font-bold text-white uppercase tracking-widest">Protected</p>
+                                    <p className="text-[10px] font-bold text-slate-900 dark:text-white uppercase tracking-widest">Protected</p>
                                     <p className="text-[8px] font-semibold text-slate-500 uppercase tracking-tighter">Secure Checkout</p>
                                 </div>
                             </div>
                             <div className="bg-slate-50 dark:bg-slate-900/30 border border-slate-200 dark:border-slate-800 p-4 rounded-2xl flex items-center gap-3">
                                 <div className="w-10 h-10 rounded-full bg-white dark:bg-slate-950 flex items-center justify-center text-emerald-500 border border-slate-200 dark:border-slate-800 text-xl shadow-inner">🚚</div>
                                 <div>
-                                    <p className="text-[10px] font-bold text-white uppercase tracking-widest">Fast Track</p>
+                                    <p className="text-[10px] font-bold text-slate-900 dark:text-white uppercase tracking-widest">Fast Track</p>
                                     <p className="text-[8px] font-semibold text-slate-500 uppercase tracking-tighter">Priority Delivery</p>
                                 </div>
                             </div>

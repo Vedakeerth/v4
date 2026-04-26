@@ -56,18 +56,19 @@ export default function ProductQuickView({ product, onClose }: ProductQuickViewP
     return (
         <AnimatePresence>
             <motion.div
+                key="modal-overlay"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 onClick={onClose}
-                className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-white dark:bg-slate-950/90 backdrop-blur-md cursor-pointer"
+                className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-white dark:bg-slate-950 backdrop-blur-xl cursor-pointer"
             >
                 <motion.div
                     initial={{ scale: 0.9, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     exit={{ scale: 0.9, opacity: 0 }}
                     onClick={(e) => e.stopPropagation()}
-                    className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-full max-w-[85vw] lg:max-w-[75vw] rounded-[2rem] overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.5)] relative cursor-default"
+                    className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-full max-w-[90vw] lg:max-w-[80vw] rounded-[2rem] overflow-hidden shadow-[0_0_100px_rgba(0,0,0,0.8)] relative cursor-default"
                 >
 
                      <button
@@ -77,9 +78,9 @@ export default function ProductQuickView({ product, onClose }: ProductQuickViewP
                         <X size={20} />
                     </button>
 
-                    <div className="flex flex-col lg:flex-row h-full max-h-[90vh] lg:max-h-[85vh] overflow-hidden">
+                    <div className="flex flex-col lg:flex-row h-full max-h-[92vh] lg:max-h-[88vh] overflow-hidden">
                         {/* Image Section */}
-                        <div className="w-full lg:w-3/5 h-[40vh] lg:h-auto relative bg-white dark:bg-slate-950 group">
+                        <div className="w-full lg:w-3/5 h-[30vh] lg:h-auto relative bg-white dark:bg-slate-950 group">
                             <AnimatePresence mode="wait">
                                 <motion.div
                                     key={activeImageIndex}
@@ -146,16 +147,16 @@ export default function ProductQuickView({ product, onClose }: ProductQuickViewP
                         </div>
 
                         {/* Content Section */}
-                        <div className="w-full lg:w-2/5 p-8 lg:p-14 flex flex-col bg-slate-50 dark:bg-slate-900 overflow-y-auto custom-scrollbar">
+                        <div className="w-full lg:w-2/5 p-6 lg:p-12 flex flex-col bg-slate-50 dark:bg-slate-900 overflow-y-auto custom-scrollbar">
                             <div className="mb-4">
                                 <span className="text-xs font-black text-cyan-400 uppercase tracking-[0.3em] bg-cyan-500/5 px-3 py-1 rounded-md border border-cyan-500/10">
                                     {product.category}
                                 </span>
                             </div>
-                            <h2 className="text-3xl lg:text-4xl font-bold text-slate-900 dark:text-white mb-4 leading-tight tracking-tight">
+                            <h2 className="text-2xl lg:text-4xl font-bold text-slate-900 dark:text-white mb-3 leading-tight tracking-tight">
                                 {product.name}
                             </h2>
-                            <div className="flex items-center justify-between mb-6">
+                            <div className="flex items-center justify-between mb-3">
                                 <div className="text-3xl font-black text-cyan-600 dark:text-cyan-400 flex items-baseline gap-2">
                                     {product?.price
                                         ? (typeof product.price === 'number'
@@ -170,18 +171,18 @@ export default function ProductQuickView({ product, onClose }: ProductQuickViewP
                                 </div>
                             </div>
 
-                            <div className="bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 mb-8">
-                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3 block">Engineering description</label>
+                            <div className="bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-2xl p-3 mb-3">
+                                <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1.5 block">Engineering description</label>
                                 <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed italic">
                                     "{product.description}"
                                 </p>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-8 mb-10">
+                            <div className="grid grid-cols-2 gap-3 mb-4">
                                 {/* Color Selection */}
                                 {product.colors && product.colors.length > 0 && (
                                     <div>
-                                        <label className="text-xs font-black text-slate-500 uppercase tracking-widest mb-4 block">Material Color</label>
+                                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 block">Material Color</label>
                                         <div className="flex flex-wrap gap-3">
                                             {product.colors.map((color) => (
                                                 <button
@@ -209,7 +210,7 @@ export default function ProductQuickView({ product, onClose }: ProductQuickViewP
 
                                 {/* Quantity Selector */}
                                 <div>
-                                    <label className="text-xs font-black text-slate-500 uppercase tracking-widest mb-4 block">Quantity</label>
+                                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 block">Quantity</label>
                                     <div className="flex items-center gap-1 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-1.5 w-fit">
                                         <button
                                             onClick={() => setQuantity(q => Math.max(1, q - 1))}
@@ -228,48 +229,45 @@ export default function ProductQuickView({ product, onClose }: ProductQuickViewP
                                 </div>
                             </div>
 
-                            <div className="mt-auto pt-8 border-t border-slate-200 dark:border-slate-800 space-y-3">
-                                {/* Instant Buy Now */}
+                            <div className="mt-auto pt-4 border-t border-slate-200 dark:border-slate-800 space-y-3">
+                                {/* Primary Action: Buy Now */}
                                 <button
                                     onClick={() => setShowBuyNow(true)}
                                     disabled={!product.inStock}
-                                    className="w-full py-5 bg-cyan-600 hover:bg-cyan-700 text-white font-black rounded-2xl transition-all shadow-lg shadow-cyan-600/20 flex items-center justify-center gap-3 text-lg group disabled:opacity-40 disabled:cursor-not-allowed"
+                                    className="w-full py-6 bg-cyan-400 hover:bg-cyan-500 text-slate-950 font-black rounded-2xl transition-all shadow-lg shadow-cyan-400/20 flex items-center justify-center gap-3 text-lg group disabled:opacity-40 disabled:cursor-not-allowed"
                                 >
-                                    <Zap size={20} className="group-hover:scale-110 transition-transform" fill="currentColor" />
-                                    Buy Now — ₹{(parsePrice(product.price) * quantity).toLocaleString('en-IN')}
+                                    <Zap size={24} className="group-hover:scale-110 transition-transform" fill="currentColor" />
+                                    Buy Now
                                 </button>
 
-                                {/* Add to Cart */}
-                                <button
-                                    onClick={() => {
-                                        addToCart(product, selectedColor || undefined, quantity);
-                                        onClose();
-                                    }}
-                                    className="w-full py-4 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-900 dark:text-white font-black rounded-2xl transition-all border border-slate-300 dark:border-slate-700 flex items-center justify-center gap-3 group"
-                                >
-                                    <ShoppingCart size={18} className="group-hover:scale-110 transition-transform" />
-                                    Add to Cart
-                                </button>
+                                <div className="grid grid-cols-2 gap-3">
+                                    {/* Add to Cart */}
+                                    <button
+                                        onClick={() => {
+                                            addToCart(product, selectedColor || undefined, quantity);
+                                            onClose();
+                                        }}
+                                        className="w-full py-3.5 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-900 dark:text-white font-black rounded-xl transition-all border border-slate-300 dark:border-slate-700 flex items-center justify-center gap-2 text-sm group"
+                                    >
+                                        <ShoppingCart size={18} className="group-hover:scale-110 transition-transform" />
+                                        Add to Cart
+                                    </button>
 
-                                <div className="flex gap-4">
                                     <Link
                                         href={`/gallery/${require("@/lib/seo-utils").createSeoSlug(product.name, product.id)}`}
                                         onClick={onClose}
-                                        className="flex-1"
+                                        className="w-full"
                                     >
-                                        <button className="w-full py-4 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white font-bold rounded-xl transition-all border border-slate-300 dark:border-slate-700 flex items-center justify-center gap-2">
+                                        <button className="w-full h-full py-3.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white font-bold rounded-xl transition-all border border-slate-300 dark:border-slate-700 flex items-center justify-center gap-2 text-sm">
                                             <Info size={18} />
-                                            Full Details
+                                            Details
                                         </button>
                                     </Link>
-                                    <button className="p-4 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white rounded-xl transition-all border border-slate-300 dark:border-slate-700">
-                                        <Heart size={20} />
-                                    </button>
                                 </div>
                             </div>
 
-                            <p className="text-[10px] text-slate-600 uppercase tracking-widest mt-8 text-center font-bold">
-                                Free premium delivery on all machine orders
+                            <p className="text-[9px] text-slate-500 uppercase tracking-widest mt-4 text-center font-bold">
+                                Free premium delivery on machines
                             </p>
                         </div>
                     </div>

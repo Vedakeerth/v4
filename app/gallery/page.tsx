@@ -20,8 +20,8 @@ export default async function GalleryPage() {
 
     return (
         <main className="min-h-screen bg-white dark:bg-slate-950 pt-20">
-            <section className="pt-8 pb-16 bg-white dark:bg-slate-950 relative overflow-hidden">
-                <div className="dynamic-container relative z-10">
+            <section className="pt-8 pb-16 bg-white dark:bg-slate-950 relative overflow-hidden z-40">
+                <div className="dynamic-container">
                     {/* Header */}
                     <div className="text-center mb-8">
                         <h1 className="text-2xl md:text-5xl font-extrabold text-slate-900 dark:text-white mb-4 uppercase tracking-tight">

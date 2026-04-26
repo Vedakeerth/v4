@@ -37,9 +37,10 @@ export default function Footer() {
         { name: "Rapid Prototyping", href: "/services#prototyping" },
     ];
     const quickLinks = settings?.footerLinks || [
-        { name: "Product Catalog", href: "/catalog" },
+        { name: "Gallery", href: "/gallery" },
         { name: "Track Your Order", href: "/track-order" },
         { name: "Blog & Updates", href: "/blog" },
+        { name: "Contact Us", href: "/contact" },
         { name: "Privacy Policy", href: "/privacy" },
         { name: "Return & Refund Policy", href: "/refunds" },
     ];

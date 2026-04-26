@@ -40,7 +40,7 @@ export default function HotDealsBanner() {
                     <div className="w-10 h-10 bg-cyan-500 rounded-xl flex items-center justify-center shadow-lg shadow-cyan-500/20">
                         <Sparkles className="text-slate-950" size={20} />
                     </div>
-                    <h2 className="text-2xl font-black text-white uppercase tracking-tighter">Hot Deals & Special Offers</h2>
+                    <h2 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tighter">Hot Deals & Special Offers</h2>
                     <div className="h-px flex-1 bg-gradient-to-r from-slate-800 to-transparent ml-4" />
                 </div>
 
@@ -64,7 +64,7 @@ export default function HotDealsBanner() {
                                         {deals[currentDeal].subtitle}
                                     </span>
                                 </div>
-                                <h3 className="text-4xl md:text-5xl font-black text-white mb-4 leading-tight tracking-tight">
+                                <h3 className="text-4xl md:text-5xl font-black text-slate-900 dark:text-white mb-4 leading-tight tracking-tight">
                                     {deals[currentDeal].title}
                                 </h3>
                                 <p className="text-slate-600 dark:text-slate-400 text-lg mb-8 line-clamp-2 italic">

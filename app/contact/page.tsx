@@ -5,7 +5,7 @@ import Footer from "@/components/Footer";
 import type { Metadata } from "next";
 import { Mail, Phone, MapPin, Clock, Send, Instagram, Facebook, Linkedin, Twitter, Youtube, Loader2, CheckCircle2, Share2 } from "lucide-react";
 import { getSocials, type SocialLink } from "@/lib/socials";
-import ReCAPTCHA from "react-google-recaptcha";
+
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -17,7 +17,7 @@ export default function ContactPage() {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [socials, setSocials] = useState<SocialLink[]>([]);
   const [errorMessage, setErrorMessage] = useState("");
-  const captchaRef = useRef<ReCAPTCHA>(null);
+
 
   React.useEffect(() => {
     getSocials().then(setSocials);
@@ -41,29 +41,10 @@ export default function ContactPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    const token = captchaRef.current?.getValue();
-    if (!token) {
-      setStatus('error');
-      setErrorMessage("Please verify that you are not a robot.");
-      return;
-    }
-
     setStatus('loading');
     setErrorMessage("");
 
     try {
-      // Backend Captcha Verification
-      const verifyRes = await fetch("/api/verify-captcha", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token }),
-      });
-      const verifyData = await verifyRes.json();
-
-      if (!verifyData.success) {
-        throw new Error("Captcha verification failed. Please try again.");
-      }
 
       const res = await fetch('/api/contact', {
         method: 'POST',
@@ -76,14 +57,11 @@ export default function ContactPage() {
         setStatus('success');
         setFormData({ name: "", email: "", phone: "", message: "" });
       } else {
-        setStatus('error');
         setErrorMessage(data.error || "Something went wrong. Please try again.");
-        captchaRef.current?.reset();
       }
     } catch (err: any) {
       setStatus('error');
       setErrorMessage(err.message || "Failed to send message. Please check your connection.");
-      captchaRef.current?.reset();
     }
   };
 
@@ -118,7 +96,7 @@ export default function ContactPage() {
                   Office
                 </h2>
                 <p className="text-slate-700 dark:text-slate-300 text-sm leading-relaxed">
-                  Thudilyuar, coimbatore - 641034.
+                  Thudiyalur, Coimbatore - 641034.
                 </p>
               </div>
 
@@ -241,20 +219,6 @@ export default function ContactPage() {
                       <p className="text-red-400 text-sm ml-1">{errorMessage}</p>
                     )}
 
-                    <div className="flex justify-center py-2">
-                        {/* IMPORTANT: Use reCAPTCHA v2 Checkbox keys for this component */}
-                        {!process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ? (
-                            <div className="w-full max-w-sm p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl text-amber-700 dark:text-amber-400 text-[10px] font-black uppercase tracking-widest text-center leading-relaxed">
-                                ⚠️ reCAPTCHA Site Key Missing!
-                                <br/>Add NEXT_PUBLIC_RECAPTCHA_SITE_KEY (v2 Checkbox) to .env.local
-                            </div>
-                        ) : (
-                            <ReCAPTCHA
-                                ref={captchaRef}
-                                sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
-                            />
-                        )}
-                    </div>
 
                     <button
                       type="submit"

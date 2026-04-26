@@ -8,6 +8,9 @@ import { useRouter } from "next/navigation";
 import { cn, parsePrice } from "@/lib/utils";
 import { Product } from "@/lib/products";
 import { createSeoSlug } from "@/lib/seo-utils";
+
+
+
 import InstantQuoteModal from "./InstantQuoteModal";
 import ProductQuickView from "./ProductQuickView";
 import { ShoppingBag } from "lucide-react";
@@ -173,7 +176,7 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
             </div>
 
             <div className="flex flex-col lg:flex-row gap-8 items-start">
-                <aside className="w-full lg:w-80 shrink-0 sticky top-48 space-y-6 z-30">
+                <aside className="w-full lg:w-80 shrink-0 sticky top-48 space-y-6 z-20">
                     <div className="bg-slate-50 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 backdrop-blur-md">
                         <div className="flex items-center gap-2 text-slate-900 dark:text-white font-bold mb-6 text-lg uppercase tracking-wider">
                             <Filter className="h-5 w-5 text-cyan-500" />
@@ -318,9 +321,9 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                         )}
                     </div>
 
-                    <div className="bg-gradient-to-br from-indigo-900/40 to-cyan-900/40 border border-cyan-500/20 rounded-2xl p-6 hidden lg:block shadow-lg">
-                        <h4 className="text-white font-bold mb-2">Custom Fabrication</h4>
-                        <p className="text-cyan-100/60 text-xs leading-relaxed mb-4">
+                    <div className="bg-gradient-to-br from-cyan-50 to-indigo-50 dark:from-indigo-900/40 dark:to-cyan-900/40 border border-cyan-200 dark:border-cyan-500/20 rounded-2xl p-6 hidden lg:block shadow-lg">
+                        <h4 className="text-slate-900 dark:text-white font-bold mb-2">Custom Fabrication</h4>
+                        <p className="text-slate-600 dark:text-cyan-100/60 text-xs leading-relaxed mb-4">
                             Don't see what you need? We specialize in one-off custom engineering solutions.
                         </p>
                         <button
@@ -552,7 +555,6 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                         onClose={() => setQuotingProduct(null)}
                     />
                 )}
-
                 {selectedQuickView && (
                     <ProductQuickView
                         product={selectedQuickView}

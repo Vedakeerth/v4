@@ -24,7 +24,7 @@ export default function RefundsPage() {
                     <Link href="/" className="text-cyan-400 hover:text-cyan-300 text-xs font-black uppercase tracking-widest mb-6 inline-flex items-center gap-2 group">
                         <span className="group-hover:-translate-x-1 transition-transform">←</span> Back to Home
                     </Link>
-                    <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-6 uppercase tracking-tight">Refunds & Cancellations</h1>
+                    <h1 className="text-4xl md:text-6xl font-extrabold text-slate-900 dark:text-white mb-6 uppercase tracking-tight">Refunds & Cancellations</h1>
                     <p className="text-slate-500 font-bold uppercase tracking-widest text-[10px]">Last updated: {lastUpdated}</p>
                     <div className="h-1 w-20 bg-cyan-500 mt-8 rounded-full shadow-[0_0_15px_rgba(6,182,212,0.5)]" />
                 </div>
@@ -36,28 +36,28 @@ export default function RefundsPage() {
                     </div>
 
                     {/* Main Content */}
-                    <div className="lg:col-span-3 prose prose-invert max-w-none space-y-8 text-slate-700 dark:text-slate-300">
+                    <div className="lg:col-span-3 prose dark:prose-invert max-w-none space-y-8 text-slate-700 dark:text-slate-300">
                         <section id="overview">
-                            <h2 className="text-2xl font-bold text-white mb-4 border-b border-slate-200 dark:border-slate-800 pb-2">1. Overview</h2>
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4 border-b border-slate-200 dark:border-slate-800 pb-2">1. Overview</h2>
                             <p className="mb-4">
                                 At VAELINSA, we strive to ensure complete satisfaction with our 3D printing and design services. However, due to the highly customized nature of our products, our refund and cancellation policy is structured to balance customer fairness with the specific costs involved in bespoke manufacturing.
                             </p>
                         </section>
 
                         <section id="cancellations">
-                            <h2 className="text-2xl font-bold text-white mb-4 border-b border-slate-200 dark:border-slate-800 pb-2">2. Order Cancellations</h2>
-                            <p className="mb-4">
-                                You can cancel your order under the following conditions:
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4 border-b border-slate-200 dark:border-slate-800 pb-2">2. Order Cancellations</h2>
+                            <p className="mb-4 text-slate-700 dark:text-slate-300">
+                                Order cancellations are governed by the following professional criteria to account for the bespoke nature of our engineering services:
                             </p>
                             <ul className="list-disc pl-6 mb-4 space-y-2">
-                                <li><strong>Before Production Starts:</strong> Full refund minus a 5% processing fee if cancelled before we have begun the 3D printing or manufacturing process.</li>
-                                <li><strong>After Production Starts:</strong> Once production has commenced (material is being used), cancellations are not accepted, and no refund will be issued.</li>
-                                <li><strong>Pre-order Items:</strong> Can be cancelled within 24 hours of placing the order for a full refund.</li>
+                                <li><strong className="text-slate-900 dark:text-white">Prior to Production:</strong> Orders cancelled before the commencement of 3D printing or manufacturing are eligible for a full refund, subject to a 5% administrative processing fee.</li>
+                                <li><strong className="text-slate-900 dark:text-white">Post-Production Commencement:</strong> Due to the resource-intensive nature of customized manufacturing, once production has initiated, cancellations are no longer permitted, and the order becomes non-refundable.</li>
+                                <li><strong className="text-slate-900 dark:text-white">Pre-order Policy:</strong> Standard pre-order items may be cancelled within a strict 24-hour window from the time of purchase for a complete refund.</li>
                             </ul>
                         </section>
 
                         <section id="refund-eligibility">
-                            <h2 className="text-2xl font-bold text-white mb-4 border-b border-slate-200 dark:border-slate-800 pb-2">3. Refund Eligibility</h2>
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4 border-b border-slate-200 dark:border-slate-800 pb-2">3. Refund Eligibility</h2>
                             <p className="mb-4">
                                 Refunds are only considered in the following circumstances:
                             </p>
@@ -69,7 +69,7 @@ export default function RefundsPage() {
                         </section>
 
                         <section id="custom-orders">
-                            <h2 className="text-2xl font-bold text-white mb-4 border-b border-slate-200 dark:border-slate-800 pb-2">4. Custom 3D Printing Orders</h2>
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4 border-b border-slate-200 dark:border-slate-800 pb-2">4. Custom 3D Printing Orders</h2>
                             <p className="mb-4">
                                 Please note that 3D printing is an additive process:
                             </p>
@@ -81,14 +81,14 @@ export default function RefundsPage() {
                         </section>
 
                         <section id="digital-services">
-                            <h2 className="text-2xl font-bold text-white mb-4 border-b border-slate-200 dark:border-slate-800 pb-2">5. Digital & Design Services</h2>
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4 border-b border-slate-200 dark:border-slate-800 pb-2">5. Digital & Design Services</h2>
                             <p className="mb-4">
                                 Fees for design consulting, CAD modeling, and engineering services are non-refundable once the work has been initiated, as these costs represent labor hours already expended.
                             </p>
                         </section>
 
                         <section id="process">
-                            <h2 className="text-2xl font-bold text-white mb-4 border-b border-slate-200 dark:border-slate-800 pb-2">6. Refund Process</h2>
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4 border-b border-slate-200 dark:border-slate-800 pb-2">6. Refund Process</h2>
                             <p className="mb-4">
                                 To request a refund:
                             </p>
@@ -100,16 +100,16 @@ export default function RefundsPage() {
                         </section>
 
                         <section id="shipping">
-                            <h2 className="text-2xl font-bold text-white mb-4 border-b border-slate-200 dark:border-slate-800 pb-2">7. Shipping Costs</h2>
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4 border-b border-slate-200 dark:border-slate-800 pb-2">7. Shipping Costs</h2>
                             <p className="mb-4">
                                 Shipping costs are non-refundable. If you receive a refund, the cost of initial shipping will be deducted from your refund amount.
                             </p>
                         </section>
 
                         <section id="contact">
-                            <h2 className="text-2xl font-bold text-white mb-4 border-b border-slate-200 dark:border-slate-800 pb-2">8. Contact Information</h2>
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4 border-b border-slate-200 dark:border-slate-800 pb-2">8. Contact Information</h2>
                             <div className="bg-slate-50 dark:bg-slate-900/50 p-6 rounded-lg border border-slate-200 dark:border-slate-800">
-                                <p className="mb-2"><strong className="text-white">VAELINSA Customer Support</strong></p>
+                                <p className="mb-2"><strong className="text-slate-900 dark:text-white">VAELINSA Customer Support</strong></p>
                                 <p className="mb-2 text-slate-700 dark:text-slate-300">Email: <a href="mailto:sales@vaelinsa.com" className="text-cyan-400 hover:text-cyan-300 transition-colors">sales@vaelinsa.com</a></p>
                                 <p className="text-slate-700 dark:text-slate-300 text-sm italic">We aim to respond to all concerns within 24-48 business hours.</p>
                             </div>

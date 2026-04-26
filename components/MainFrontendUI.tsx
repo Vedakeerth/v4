@@ -38,7 +38,7 @@ export default function MainFrontendUI({ children, navLinks, ctaData }: MainFron
             <CustomCursor />
             <div className={cn(
                 "transition-all duration-300",
-                isAdminPage ? "pt-0" : (isSpecialPage ? "pt-[30px] md:pt-[30px]" : "pt-0")
+                isAdminPage ? "pt-0" : "pt-[30px]"
             )}>
                 {children}
             </div>

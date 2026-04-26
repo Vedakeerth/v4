@@ -67,7 +67,7 @@ export default function PrivacyPolicyPage() {
                     <Link href="/" className="text-cyan-400 hover:text-cyan-300 text-xs font-black uppercase tracking-widest mb-6 inline-flex items-center gap-2 group">
                         <span className="group-hover:-translate-x-1 transition-transform">←</span> Back to Home
                     </Link>
-                    <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-6 uppercase tracking-tight">Privacy Policy</h1>
+                    <h1 className="text-4xl md:text-6xl font-extrabold text-slate-900 dark:text-white mb-6 uppercase tracking-tight">Privacy Policy</h1>
                     <p className="text-slate-500 font-bold uppercase tracking-widest text-[10px]">Last updated: {lastUpdated}</p>
                     <div className="h-1 w-20 bg-cyan-500 mt-8 rounded-full shadow-[0_0_15px_rgba(6,182,212,0.5)]" />
                 </div>
@@ -79,9 +79,9 @@ export default function PrivacyPolicyPage() {
                     </div>
 
                     {/* Main Content */}
-                    <div className="lg:col-span-3 prose prose-invert max-w-none space-y-8 text-slate-700 dark:text-slate-300">
+                    <div className="lg:col-span-3 prose dark:prose-invert max-w-none space-y-8 text-slate-700 dark:text-slate-300">
                         <section id="introduction">
-                            <h2 className="text-2xl font-bold text-white mb-4">1. Introduction</h2>
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">1. Introduction</h2>
                             <p className="mb-4">
                                 VAELINSA ("Company", "we", "our", or "us") is committed to protecting the privacy, confidentiality, and security of personal information entrusted to us. This Privacy Policy explains how we collect, use, store, process, disclose, and safeguard personal data when you access our website or use our 3D printing, prototyping, and product development services.
                             </p>
@@ -99,19 +99,19 @@ export default function PrivacyPolicyPage() {
                         </section>
 
                         <section id="definitions">
-                            <h2 className="text-2xl font-bold text-white mb-4">2. Definitions</h2>
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">2. Definitions</h2>
                             <ul className="list-disc pl-6 mb-4 space-y-2">
-                                <li><strong className="text-white">"Personal Data"</strong>: Any information capable of identifying an individual.</li>
-                                <li><strong className="text-white">"Sensitive Personal Data"</strong>: Financial or payment-related information as defined under applicable law.</li>
-                                <li><strong className="text-white">"Processing"</strong>: Any operation performed on personal data, including collection, storage, use, or deletion.</li>
-                                <li><strong className="text-white">"User" / "You"</strong>: Any individual or entity accessing our services.</li>
+                                <li><strong className="text-slate-900 dark:text-white">"Personal Data"</strong>: Any information capable of identifying an individual.</li>
+                                <li><strong className="text-slate-900 dark:text-white">"Sensitive Personal Data"</strong>: Financial or payment-related information as defined under applicable law.</li>
+                                <li><strong className="text-slate-900 dark:text-white">"Processing"</strong>: Any operation performed on personal data, including collection, storage, use, or deletion.</li>
+                                <li><strong className="text-slate-900 dark:text-white">"User" / "You"</strong>: Any individual or entity accessing our services.</li>
                             </ul>
                         </section>
 
                         <section id="information-collect">
-                            <h2 className="text-2xl font-bold text-white mb-4">3. Information We Collect</h2>
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">3. Information We Collect</h2>
 
-                            <h3 id="voluntary-info" className="text-xl font-semibold text-white mb-3">3.1 Information You Voluntarily Provide</h3>
+                            <h3 id="voluntary-info" className="text-xl font-semibold text-slate-900 dark:text-white mb-3">3.1 Information You Voluntarily Provide</h3>
                             <p className="mb-4">
                                 We collect personal information when you:
                             </p>
@@ -134,7 +134,7 @@ export default function PrivacyPolicyPage() {
                                 <li>Payment details (processed securely via third-party payment gateways)</li>
                             </ul>
 
-                            <h3 id="automatic-info" className="text-xl font-semibold text-white mb-3 mt-6">3.2 Automatically Collected Information</h3>
+                            <h3 id="automatic-info" className="text-xl font-semibold text-slate-900 dark:text-white mb-3 mt-6">3.2 Automatically Collected Information</h3>
                             <p className="mb-4">
                                 When you visit our website, we may automatically collect:
                             </p>
@@ -151,18 +151,18 @@ export default function PrivacyPolicyPage() {
                         </section>
 
                         <section id="legal-basis">
-                            <h2 className="text-2xl font-bold text-white mb-4">4. Legal Basis for Processing (GDPR)</h2>
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">4. Legal Basis for Processing (GDPR)</h2>
                             <p className="mb-4">We process personal data based on:</p>
                             <ul className="list-disc pl-6 mb-4 space-y-2">
-                                <li><strong className="text-white">Contractual necessity</strong> – to provide services and fulfill orders</li>
-                                <li><strong className="text-white">Consent</strong> – for marketing and optional communications</li>
-                                <li><strong className="text-white">Legal obligation</strong> – compliance with applicable laws</li>
-                                <li><strong className="text-white">Legitimate interests</strong> – security, fraud prevention, and service enhancement</li>
+                                <li><strong className="text-slate-900 dark:text-white">Contractual necessity</strong> – to provide services and fulfill orders</li>
+                                <li><strong className="text-slate-900 dark:text-white">Consent</strong> – for marketing and optional communications</li>
+                                <li><strong className="text-slate-900 dark:text-white">Legal obligation</strong> – compliance with applicable laws</li>
+                                <li><strong className="text-slate-900 dark:text-white">Legitimate interests</strong> – security, fraud prevention, and service enhancement</li>
                             </ul>
                         </section>
 
                         <section id="purpose">
-                            <h2 className="text-2xl font-bold text-white mb-4">5. Purpose of Data Processing</h2>
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">5. Purpose of Data Processing</h2>
                             <p className="mb-4">We use personal data to:</p>
                             <ul className="list-disc pl-6 mb-4 space-y-2">
                                 <li>Manufacture, process, and deliver 3D printed products</li>
@@ -176,7 +176,7 @@ export default function PrivacyPolicyPage() {
                         </section>
 
                         <section id="data-sharing">
-                            <h2 className="text-2xl font-bold text-white mb-4">6. Data Sharing and Disclosure</h2>
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">6. Data Sharing and Disclosure</h2>
                             <p className="mb-4">
                                 We do not sell or trade personal data.
                             </p>
@@ -184,7 +184,7 @@ export default function PrivacyPolicyPage() {
                                 Information may be shared only under the following conditions:
                             </p>
 
-                            <h3 id="service-providers" className="text-xl font-semibold text-white mb-3">6.1 Service Providers</h3>
+                            <h3 id="service-providers" className="text-xl font-semibold text-slate-900 dark:text-white mb-3">6.1 Service Providers</h3>
                             <p className="mb-4">
                                 With trusted third parties assisting in:
                             </p>
@@ -197,24 +197,24 @@ export default function PrivacyPolicyPage() {
                                 All providers are contractually bound to maintain confidentiality and data security.
                             </p>
 
-                            <h3 id="legal-compliance" className="text-xl font-semibold text-white mb-3 mt-6">6.2 Legal Compliance</h3>
+                            <h3 id="legal-compliance" className="text-xl font-semibold text-slate-900 dark:text-white mb-3 mt-6">6.2 Legal Compliance</h3>
                             <p className="mb-4">
                                 Where disclosure is required by law, regulation, or court order.
                             </p>
 
-                            <h3 id="business-transfers" className="text-xl font-semibold text-white mb-3 mt-6">6.3 Business Transfers</h3>
+                            <h3 id="business-transfers" className="text-xl font-semibold text-slate-900 dark:text-white mb-3 mt-6">6.3 Business Transfers</h3>
                             <p className="mb-4">
                                 In the event of a merger, acquisition, or asset sale, personal data may be transferred as part of the transaction.
                             </p>
 
-                            <h3 id="user-consent" className="text-xl font-semibold text-white mb-3 mt-6">6.4 With User Consent</h3>
+                            <h3 id="user-consent" className="text-xl font-semibold text-slate-900 dark:text-white mb-3 mt-6">6.4 With User Consent</h3>
                             <p>
                                 When explicit permission is provided by the user.
                             </p>
                         </section>
 
                         <section id="design-files">
-                            <h2 className="text-2xl font-bold text-white mb-4">7. Design Files, Uploaded Models & Intellectual Property</h2>
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">7. Design Files, Uploaded Models & Intellectual Property</h2>
                             <ul className="list-disc pl-6 mb-4 space-y-2">
                                 <li>All STL, CAD, or design files uploaded by users remain confidential</li>
                                 <li>VAELINSA does not claim ownership of user-submitted designs</li>
@@ -222,7 +222,7 @@ export default function PrivacyPolicyPage() {
                                 <li>Design files are not shared with third parties without explicit consent</li>
                             </ul>
 
-                            <h3 id="file-deletion" className="text-xl font-semibold text-white mb-3 mt-6">7.1 File Deletion Policy</h3>
+                            <h3 id="file-deletion" className="text-xl font-semibold text-slate-900 dark:text-white mb-3 mt-6">7.1 File Deletion Policy</h3>
                             <p className="mb-4">
                                 Uploaded design files and models are automatically deleted within 10 to 20 days after successful delivery of the printed part, unless:
                             </p>
@@ -233,12 +233,12 @@ export default function PrivacyPolicyPage() {
                         </section>
 
                         <section id="data-retention">
-                            <h2 className="text-2xl font-bold text-white mb-4">8. Data Retention Policy</h2>
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">8. Data Retention Policy</h2>
                             <p className="mb-4">We retain personal data only for as long as necessary:</p>
                             <ul className="list-disc pl-6 mb-4 space-y-2">
-                                <li><strong className="text-white">Order and transaction records:</strong> Up to 2 years</li>
-                                <li><strong className="text-white">Design files and uploaded models:</strong> 10–20 days after delivery</li>
-                                <li><strong className="text-white">Marketing data:</strong> Until consent is withdrawn</li>
+                                <li><strong className="text-slate-900 dark:text-white">Order and transaction records:</strong> Up to 2 years</li>
+                                <li><strong className="text-slate-900 dark:text-white">Design files and uploaded models:</strong> 10–20 days after delivery</li>
+                                <li><strong className="text-slate-900 dark:text-white">Marketing data:</strong> Until consent is withdrawn</li>
                             </ul>
                             <p>
                                 Retention periods may be extended if required by law.
@@ -246,7 +246,7 @@ export default function PrivacyPolicyPage() {
                         </section>
 
                         <section id="data-security">
-                            <h2 className="text-2xl font-bold text-white mb-4">9. Data Security Measures</h2>
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">9. Data Security Measures</h2>
                             <p className="mb-4">
                                 We implement reasonable and appropriate safeguards, including:
                             </p>
@@ -262,7 +262,7 @@ export default function PrivacyPolicyPage() {
                         </section>
 
                         <section id="shipping-disclaimer">
-                            <h2 className="text-2xl font-bold text-white mb-4">10. Shipping & Delivery Disclaimer</h2>
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">10. Shipping & Delivery Disclaimer</h2>
                             <p className="mb-4">
                                 VAELINSA ensures products are properly packed and dispatched through third-party logistics providers.
                             </p>
@@ -278,9 +278,9 @@ export default function PrivacyPolicyPage() {
                         </section>
 
                         <section id="your-rights">
-                            <h2 className="text-2xl font-bold text-white mb-4">11. Your Rights</h2>
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">11. Your Rights</h2>
 
-                            <h3 id="gdpr-rights" className="text-xl font-semibold text-white mb-3">11.1 GDPR Rights</h3>
+                            <h3 id="gdpr-rights" className="text-xl font-semibold text-slate-900 dark:text-white mb-3">11.1 GDPR Rights</h3>
                             <p className="mb-4">You have the right to:</p>
                             <ul className="list-disc pl-6 mb-4 space-y-2">
                                 <li>Access your personal data</li>
@@ -291,7 +291,7 @@ export default function PrivacyPolicyPage() {
                                 <li>Withdraw consent at any time</li>
                             </ul>
 
-                            <h3 id="indian-rights" className="text-xl font-semibold text-white mb-3 mt-6">11.2 Rights Under Indian Law</h3>
+                            <h3 id="indian-rights" className="text-xl font-semibold text-slate-900 dark:text-white mb-3 mt-6">11.2 Rights Under Indian Law</h3>
                             <p className="mb-4">You may:</p>
                             <ul className="list-disc pl-6 mb-4 space-y-2">
                                 <li>Review personal information provided</li>
@@ -304,7 +304,7 @@ export default function PrivacyPolicyPage() {
                         </section>
 
                         <section id="cookies">
-                            <h2 className="text-2xl font-bold text-white mb-4">12. Cookies and Tracking Technologies</h2>
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">12. Cookies and Tracking Technologies</h2>
                             <p className="mb-4">
                                 We use cookies for:
                             </p>
@@ -319,33 +319,33 @@ export default function PrivacyPolicyPage() {
                         </section>
 
                         <section id="children-privacy">
-                            <h2 className="text-2xl font-bold text-white mb-4">13. Children's Privacy</h2>
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">13. Children's Privacy</h2>
                             <p>
                                 Our services are not intended for individuals under 18 years of age. We do not knowingly collect data from minors.
                             </p>
                         </section>
 
                         <section id="international-transfers">
-                            <h2 className="text-2xl font-bold text-white mb-4">14. International Data Transfers</h2>
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">14. International Data Transfers</h2>
                             <p>
                                 Where applicable, data may be processed or stored outside India or the EU with appropriate legal safeguards in place.
                             </p>
                         </section>
 
                         <section id="policy-updates">
-                            <h2 className="text-2xl font-bold text-white mb-4">15. Policy Updates</h2>
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">15. Policy Updates</h2>
                             <p>
                                 This Privacy Policy may be updated periodically. Changes will be posted on this page with a revised "Last Updated" date.
                             </p>
                         </section>
 
                         <section id="contact">
-                            <h2 className="text-2xl font-bold text-white mb-4">16. Contact Information</h2>
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">16. Contact Information</h2>
                             <p className="mb-4">
                                 For privacy-related questions or requests:
                             </p>
                             <div className="bg-slate-50 dark:bg-slate-900/50 p-6 rounded-lg border border-slate-200 dark:border-slate-800">
-                                <p className="mb-2"><strong className="text-white">VAELINSA</strong></p>
+                                <p className="mb-2"><strong className="text-slate-900 dark:text-white">VAELINSA</strong></p>
                                 <p className="mb-2">📧 Email: <a href="mailto:sales@vaelinsa.com" className="text-blue-400 hover:text-blue-300">sales@vaelinsa.com</a></p>
                                 <p>🌐 Website: <a href="https://vaelinsa.com" className="text-blue-400 hover:text-blue-300">www.vaelinsa.com</a></p>
                             </div>

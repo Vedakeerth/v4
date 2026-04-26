@@ -7,7 +7,7 @@ import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Metadata } from "next";
-import ReCAPTCHA from "react-google-recaptcha";
+
 
 // Metadata moved to layout or parent for App Router compatibility in "use client" files
 
@@ -24,32 +24,14 @@ export default function TrackOrderPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [order, setOrder] = useState<any>(null);
     const [error, setError] = useState<string | null>(null);
-    const captchaRef = useRef<ReCAPTCHA>(null);
+
 
     const handleTrack = async (e: React.FormEvent) => {
         e.preventDefault();
-        
-        const token = captchaRef.current?.getValue();
-        if (!token) {
-            setError("Please verify that you are not a robot.");
-            return;
-        }
-
         setError(null);
         setIsLoading(true);
 
         try {
-            // Verify captcha token on the backend first
-            const verifyRes = await fetch("/api/verify-captcha", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ token }),
-            });
-            const verifyData = await verifyRes.json();
-
-            if (!verifyData.success) {
-                throw new Error("Captcha verification failed. Please try again.");
-            }
 
             const res = await fetch(`/api/orders/track?trackingId=${orderId}&phone=${encodeURIComponent(contact)}`);
             const data = await res.json();
@@ -62,7 +44,6 @@ export default function TrackOrderPage() {
         } catch (err: any) {
             setError(err.message);
             setOrder(null);
-            captchaRef.current?.reset(); // Reset on error
         } finally {
             setIsLoading(false);
         }
@@ -151,20 +132,6 @@ export default function TrackOrderPage() {
                                 </div>
                             </div>
 
-                            <div className="md:col-span-2 pt-2 pb-2">
-                                {/* IMPORTANT: Use reCAPTCHA v2 Checkbox keys for this component */}
-                                {!process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ? (
-                                    <div className="p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl text-amber-700 dark:text-amber-400 text-[10px] font-black uppercase tracking-widest leading-relaxed">
-                                        ⚠️ reCAPTCHA Site Key Missing!
-                                        <br/>Add NEXT_PUBLIC_RECAPTCHA_SITE_KEY (v2 Checkbox) to .env.local
-                                    </div>
-                                ) : (
-                                    <ReCAPTCHA
-                                        ref={captchaRef}
-                                        sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
-                                    />
-                                )}
-                            </div>
 
                             <div className="md:col-span-2 pt-2">
                                 <button

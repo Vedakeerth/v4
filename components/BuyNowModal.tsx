@@ -46,59 +46,39 @@ export default function BuyNowModal({ product, quantity = 1, selectedColor, onCl
         setStep("processing");
 
         try {
-            // Step 1: Create order in Firestore as Pending
-            const orderId = `BUY-${Math.floor(1000 + Math.random() * 9000)}-${Date.now().toString().slice(-4)}`;
-
-            const orderRes = await fetch('/api/checkout', {
+            // Step 1: Create Order using the robust create-order API
+            const fullPhone = form.phone.startsWith('+91') ? form.phone : `+91${form.phone.replace(/\D/g, '').slice(-10)}`;
+            
+            const orderRes = await fetch('/api/create-order', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    user: {
-                        firstName: form.name.split(' ')[0] || form.name,
-                        lastName: form.name.split(' ').slice(1).join(' ') || '',
-                        email: form.email,
-                        phone: form.phone,
-                        address: 'To be confirmed',
-                        city: '',
-                        zip: ''
-                    },
+                    customerName: form.name,
+                    email: form.email,
+                    phone: fullPhone,
+                    address: "Buy Now - Direct Checkout",
+                    message: `Color: ${selectedColor || 'None'}`,
                     items: [{
+                        id: product.id,
                         name: product.name,
                         quantity,
-                        price: typeof product.price === 'number'
-                            ? `₹${product.price}`
-                            : product.price,
-                        selectedColor: selectedColor || null,
-                        image: product.image
+                        price: price,
+                        image: product.image,
+                        selectedColor: selectedColor || null
                     }],
-                    total: totalAmount,
-                    paymentMethod: 'cashfree'
+                    totalAmount: totalAmount
                 })
             });
 
             const orderData = await orderRes.json();
-            if (!orderData.success) throw new Error("Failed to create order.");
+            if (!orderData.success) throw new Error(orderData.error || "Failed to create order.");
 
-            // Step 2: Create Cashfree payment session
-            const cfRes = await fetch('/api/cashfree/create-order', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    amount: totalAmount,
-                    customerName: form.name,
-                    email: form.email,
-                    phone: form.phone,
-                    orderId: orderData.orderId
-                })
-            });
-
-            const cfData = await cfRes.json();
-            if (!cfData.payment_session_id) {
-                throw new Error(cfData.error || "Failed to initialize payment. Please try again.");
+            // Step 2: Redirect to Cashfree using the session ID from create-order
+            if (!orderData.payment_session_id) {
+                throw new Error("Payment initialization failed.");
             }
 
-            // Step 3: Redirect directly to Cashfree (same window)
-            redirectToCashfree(cfData.payment_session_id);
+            redirectToCashfree(orderData.payment_session_id);
 
         } catch (err: any) {
             console.error("Buy Now error:", err);
@@ -203,7 +183,7 @@ export default function BuyNowModal({ product, quantity = 1, selectedColor, onCl
                                         placeholder="John Doe"
                                         value={form.name}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-3.5 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-white text-sm font-medium placeholder:text-slate-600 focus:outline-none focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/10 transition-all"
+                                        className="w-full px-4 py-3.5 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white text-sm font-medium placeholder:text-slate-600 focus:outline-none focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/10 transition-all"
                                     />
                                 </div>
 
@@ -218,7 +198,7 @@ export default function BuyNowModal({ product, quantity = 1, selectedColor, onCl
                                         placeholder="+91 98765 43210"
                                         value={form.phone}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-3.5 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-white text-sm font-medium placeholder:text-slate-600 focus:outline-none focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/10 transition-all"
+                                        className="w-full px-4 py-3.5 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white text-sm font-medium placeholder:text-slate-600 focus:outline-none focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/10 transition-all"
                                     />
                                 </div>
 
@@ -233,7 +213,7 @@ export default function BuyNowModal({ product, quantity = 1, selectedColor, onCl
                                         placeholder="john@example.com"
                                         value={form.email}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-3.5 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-white text-sm font-medium placeholder:text-slate-600 focus:outline-none focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/10 transition-all"
+                                        className="w-full px-4 py-3.5 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white text-sm font-medium placeholder:text-slate-600 focus:outline-none focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/10 transition-all"
                                     />
                                 </div>
 

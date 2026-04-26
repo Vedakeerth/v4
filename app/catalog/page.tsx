@@ -26,11 +26,11 @@ export default async function CatalogPage() {
             <div className="dynamic-container py-12">
                 {/* Header */}
                 <div className="text-center mb-12">
-                    <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-6 uppercase tracking-tight">
-                        {pageData?.header.title}
+                    <h1 className="text-4xl md:text-6xl font-extrabold text-slate-900 dark:text-white mb-6 uppercase tracking-tight">
+                        Engineering <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Catalogue</span>
                     </h1>
                     <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto mb-10 text-lg">
-                        {pageData?.header.description}
+                        Browse our complete collection of precision-engineered 3D printed components.
                     </p>
                     <div className="h-1.5 w-20 bg-cyan-500 mx-auto rounded-full shadow-[0_0_15px_rgba(6,182,212,0.5)]" />
                 </div>

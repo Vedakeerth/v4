@@ -29,12 +29,12 @@ export default function Navbar() {
     }, []);
 
     const navLinks = settings?.navbarLinks || [
-        { name: "Service", href: "/services" },
-        { name: "Products", href: "/products" },
-        { name: "Blogs", href: "/blog" },
+        { name: "Services", href: "/services" },
+        { name: "Catalogue", href: "/catalog" },
+        { name: "Blog", href: "/blog" },
         { name: "Gallery", href: "/gallery" },
         { name: "Contact", href: "/contact" },
-        { name: "Tracking Product", href: "/track-order" },
+        { name: "Track Order", href: "/track-order" },
     ];
 
     const ctaData = { text: "Get Quote", href: "/quote" };

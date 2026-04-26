@@ -18,12 +18,12 @@ export default async function BlogPage() {
     const blogs = await getBlogs();
 
     return (
-        <main className="min-h-screen bg-white dark:bg-slate-950 pt-20 text-white">
+        <main className="min-h-screen bg-white dark:bg-slate-950 pt-20 text-slate-900 dark:text-white">
 
             <div className="dynamic-container pt-12 pb-24">
                 <div className="text-center mb-20">
-                    <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white mb-6 uppercase tracking-tight leading-none">
-                        Vaelinsa <span className="text-cyan-400 drop-shadow-[0_0_20px_rgba(34,211,238,0.4)]">Insights</span>
+                    <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-slate-900 dark:text-white mb-6 uppercase tracking-tight leading-none">
+                        Vaelinsa <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Insights</span>
                     </h1>
                     <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto text-lg md:text-xl font-medium leading-relaxed">
                         Deep dives into the future of manufacturing, robotics kits, and precision engineering.
@@ -61,7 +61,7 @@ export default async function BlogPage() {
                                         </div>
                                     </div>
 
-                                    <h2 className="text-xl md:text-2xl font-bold text-white mb-4 group-hover:text-cyan-400 transition-colors leading-tight tracking-tight">
+                                    <h2 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white mb-4 group-hover:text-cyan-400 transition-colors leading-tight tracking-tight">
                                         {blog.title}
                                     </h2>
 
