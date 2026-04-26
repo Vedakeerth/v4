@@ -21,6 +21,7 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { Skeleton } from './Skeleton';
 import CustomDropdown from './CustomDropdown';
+import Recaptcha from "@/components/Recaptcha";
 
 // Icon mapping for Infill Patterns
 const PATTERN_ICONS = {
@@ -93,6 +94,7 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
     const [showPaymentInfo, setShowPaymentInfo] = useState(false);
     const [showTermsInfo, setShowTermsInfo] = useState(false);
     const [showContactForm, setShowContactForm] = useState(false);
+    const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
 
     const [isCalculating, setIsCalculating] = useState(false);
     const [useCoupon, setUseCoupon] = useState(false);
@@ -1210,6 +1212,7 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                                                 headers: { 'Content-Type': 'application/json' },
                                                 body: JSON.stringify({
                                                     user: { ...userDetails, address: fullAddress },
+                                                    recaptchaToken,
                                                     order: {
                                                         id: quoteDetails.id,
                                                         models: uploadedFiles.map((f, i) => ({
@@ -1415,6 +1418,11 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                                 alert('Please enter a valid 10-digit phone number');
                                 return;
                             }
+                            
+                            if (!recaptchaToken) {
+                                alert('Please complete the reCAPTCHA verification');
+                                return;
+                            }
 
                             // Generate Quote ID: VQ{MMYY}-{0000}
                             const now = new Date();
@@ -1582,6 +1590,10 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                                     />
                                 </div>
                             </div>
+                            
+                            <div className="flex justify-center mt-6">
+                                <Recaptcha onChange={setRecaptchaToken} />
+                            </div>
 
                             <div className="flex gap-3 mt-6">
                                 <button
@@ -1593,9 +1605,10 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                                 </button>
                                 <button
                                     type="submit"
-                                    className="flex-1 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-3 rounded-lg transition-colors shadow-lg shadow-cyan-500/20"
+                                    disabled={!recaptchaToken}
+                                    className="flex-[2] bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black py-3 rounded-xl transition-all shadow-lg hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed"
                                 >
-                                    Generate Quotation
+                                    {recaptchaToken ? 'Generate Quotation' : 'Loading Verification...'}
                                 </button>
                             </div>
                         </form>

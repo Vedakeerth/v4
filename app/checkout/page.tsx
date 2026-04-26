@@ -11,6 +11,7 @@ import { cn, validatePhone } from "@/lib/utils";
 import { redirectToCashfree } from "@/lib/cashfree";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, Suspense } from "react";
+import Recaptcha from "@/components/Recaptcha";
 
 
 function CheckoutContent() {
@@ -21,6 +22,7 @@ function CheckoutContent() {
     const [orderInfo, setOrderInfo] = useState<{orderId: string, trackingId: string} | null>(null);
     const [verificationStatus, setVerificationStatus] = useState<'verifying' | 'success' | 'failed' | 'idle'>('idle');
     const [isOrderPlaced, setIsOrderPlaced] = useState(false);
+    const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
     const [formData, setFormData] = useState({
         customerName: "",
         email: "",
@@ -118,6 +120,11 @@ function CheckoutContent() {
     };
 
     const handlePaymentSubmit = async () => {
+        if (!recaptchaToken) {
+            alert("Please complete the reCAPTCHA verification to proceed.");
+            return;
+        }
+        
         setCheckoutStep('processing');
 
         try {
@@ -136,6 +143,7 @@ function CheckoutContent() {
                     message: formData.message,
                     items,
                     totalAmount: finalTotal,
+                    recaptchaToken,
                 })
             });
             const orderData = await orderRes.json();
@@ -328,7 +336,9 @@ function CheckoutContent() {
                                         </div>
                                     </div>
                                     
-
+                                    <div className="mb-6 flex justify-center">
+                                        <Recaptcha onChange={setRecaptchaToken} />
+                                    </div>
                                     
                                     <button
                                         onClick={handlePaymentSubmit}

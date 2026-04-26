@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
 
+// Trigger restart (corrected keys)
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   images: {

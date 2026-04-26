@@ -52,14 +52,14 @@ export const DEFAULT_QUOTE_SETTINGS: QuoteSettings = {
 
 export async function getQuoteSettings(): Promise<QuoteSettings> {
     try {
-        const docRef = doc(db, 'settings', 'quote');
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-            return { ...DEFAULT_QUOTE_SETTINGS, ...docSnap.data() } as QuoteSettings;
+        const response = await fetch('/api/settings/quote');
+        const json = await response.json();
+        if (json.success && json.data) {
+            return { ...DEFAULT_QUOTE_SETTINGS, ...json.data } as QuoteSettings;
         }
         return DEFAULT_QUOTE_SETTINGS;
     } catch (error) {
-        console.error('Error fetching quote settings:', error);
+        console.error('Error fetching quote settings via API:', error);
         return DEFAULT_QUOTE_SETTINGS;
     }
 }

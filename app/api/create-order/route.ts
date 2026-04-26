@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { adminDb } from "@/lib/firebaseAdmin";
 import { FieldValue, Transaction } from "firebase-admin/firestore";
+import { verifyRecaptchaEnterprise } from "@/lib/recaptcha";
 
 const CASHFREE_APP_ID = process.env.CASHFREE_APP_ID;
 const CASHFREE_SECRET_KEY = process.env.CASHFREE_SECRET_KEY;
@@ -55,10 +56,15 @@ async function generateQuotationNo() {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { customerName, email, phone, address, items, totalAmount, message } = body;
+    const { customerName, email, phone, address, items, totalAmount, message, recaptchaToken } = body;
 
-    if (!customerName || !phone || !address || !items || !totalAmount) {
-      return NextResponse.json({ success: false, error: "Missing required fields" }, { status: 400 });
+    if (!customerName || !phone || !address || !items || !totalAmount || !recaptchaToken) {
+      return NextResponse.json({ success: false, error: "Missing required fields or reCAPTCHA token" }, { status: 400 });
+    }
+
+    const isValidRecaptcha = await verifyRecaptchaEnterprise(recaptchaToken, 'SUBMIT');
+    if (!isValidRecaptcha) {
+      return NextResponse.json({ success: false, error: "reCAPTCHA verification failed. Please try again." }, { status: 400 });
     }
 
     const trackingId = await generateQuotationNo();

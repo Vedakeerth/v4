@@ -1,14 +1,21 @@
 import { NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebaseAdmin';
+import { verifyRecaptchaEnterprise } from '@/lib/recaptcha';
 
 export async function GET(req: Request) {
     try {
         const { searchParams } = new URL(req.url);
         const trackingId = searchParams.get('trackingId');
         const phone = searchParams.get('phone');
+        const token = searchParams.get('token');
 
-        if (!trackingId || !phone) {
-            return NextResponse.json({ error: 'Tracking ID and phone number are required' }, { status: 400 });
+        if (!trackingId || !phone || !token) {
+            return NextResponse.json({ error: 'Tracking ID, phone number, and reCAPTCHA token are required' }, { status: 400 });
+        }
+
+        const isValidRecaptcha = await verifyRecaptchaEnterprise(token, 'SUBMIT');
+        if (!isValidRecaptcha) {
+            return NextResponse.json({ error: "reCAPTCHA verification failed. Please try again." }, { status: 400 });
         }
 
         // Search for order by trackingId

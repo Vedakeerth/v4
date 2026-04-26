@@ -7,7 +7,7 @@ import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Metadata } from "next";
-
+import Recaptcha from "@/components/Recaptcha";
 
 // Metadata moved to layout or parent for App Router compatibility in "use client" files
 
@@ -24,16 +24,23 @@ export default function TrackOrderPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [order, setOrder] = useState<any>(null);
     const [error, setError] = useState<string | null>(null);
+    const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
 
 
     const handleTrack = async (e: React.FormEvent) => {
         e.preventDefault();
+        
+        if (!recaptchaToken) {
+            setError("Please complete the reCAPTCHA verification.");
+            return;
+        }
+        
         setError(null);
         setIsLoading(true);
 
         try {
 
-            const res = await fetch(`/api/orders/track?trackingId=${orderId}&phone=${encodeURIComponent(contact)}`);
+            const res = await fetch(`/api/orders/track?trackingId=${orderId}&phone=${encodeURIComponent(contact)}&token=${recaptchaToken}`);
             const data = await res.json();
 
             if (!res.ok) {
@@ -133,14 +140,20 @@ export default function TrackOrderPage() {
                             </div>
 
 
+                            <div className="md:col-span-2 flex justify-center mt-4 mb-2">
+                                <Recaptcha onChange={setRecaptchaToken} />
+                            </div>
+
                             <div className="md:col-span-2 pt-2">
                                 <button
                                     type="submit"
-                                    disabled={isLoading}
+                                    disabled={isLoading || !recaptchaToken}
                                     className="w-full py-4 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black rounded-2xl transition-all shadow-xl shadow-cyan-500/20 hover:shadow-cyan-500/40 uppercase tracking-widest text-sm flex items-center justify-center gap-3 disabled:opacity-50 group"
                                 >
                                     {isLoading ? (
                                         <div className="w-5 h-5 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
+                                    ) : !recaptchaToken ? (
+                                        "Loading Verification..."
                                     ) : (
                                         <>
                                             Track Order
