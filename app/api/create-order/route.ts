@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { adminDb } from "@/lib/firebaseAdmin";
-import { FieldValue } from "firebase-admin/firestore";
+import { FieldValue, Transaction } from "firebase-admin/firestore";
 
 const CASHFREE_APP_ID = process.env.CASHFREE_APP_ID;
 const CASHFREE_SECRET_KEY = process.env.CASHFREE_SECRET_KEY;
@@ -13,35 +13,40 @@ const CASHFREE_URL = CASHFREE_ENV === "production"
 /**
  * Generate a sequential Quotation Number: VQ[MMDD]-[SERIAL]
  * e.g., VQ0426-4102
+ * Uses IST (India Standard Time) to ensure the date matches the local user.
  */
 async function generateQuotationNo() {
+  // Convert to IST (UTC+5:30)
   const now = new Date();
-  const mm = String(now.getMonth() + 1).padStart(2, '0');
-  const dd = String(now.getDate()).padStart(2, '0');
+  const istOffset = 5.5 * 60 * 60 * 1000;
+  const istDate = new Date(now.getTime() + istOffset);
+  
+  const mm = String(istDate.getUTCMonth() + 1).padStart(2, '0');
+  const dd = String(istDate.getUTCDate()).padStart(2, '0');
   const datePrefix = `${mm}${dd}`;
 
   try {
     const counterRef = adminDb.collection("counters").doc("quotations");
     
     // Use a transaction to ensure atomic increment and sequential numbering
-    const newSerial = await adminDb.runTransaction(async (transaction) => {
+    const newSerial = await adminDb.runTransaction(async (transaction: any) => {
       const counterDoc = await transaction.get(counterRef);
       
-      let nextSerial = 1001; // Start from 1001 or any base you prefer
+      let nextSerial = 4101; // Start from 4101 as per user's sequence example
       
       if (counterDoc.exists) {
-        const currentSerial = counterDoc.data()?.lastSerial || 1000;
+        const data = counterDoc.data();
+        const currentSerial = data?.lastSerial || 4100;
         nextSerial = currentSerial + 1;
       }
       
       transaction.set(counterRef, { lastSerial: nextSerial }, { merge: true });
       return nextSerial;
-    });
+    }) as number;
 
     return `VQ${datePrefix}-${newSerial}`;
   } catch (error) {
     console.error("Error generating sequential number:", error);
-    // Fallback to random if transaction fails
     const randomNum = Math.floor(1000 + Math.random() * 9000);
     return `VQ${datePrefix}-${randomNum}`;
   }
@@ -84,7 +89,7 @@ export async function POST(req: Request) {
         "x-api-version": "2023-08-01",
       },
       body: JSON.stringify({
-        order_id: docRef.id,
+        order_id: trackingId,
         order_amount: Number(totalAmount).toFixed(2),
         order_currency: "INR",
         customer_details: {
