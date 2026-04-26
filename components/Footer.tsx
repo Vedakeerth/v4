@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Mail, Phone, Instagram, Facebook, Linkedin, Twitter, Youtube, Share2 } from "lucide-react";
+import { Mail, Phone, Instagram, Facebook, Linkedin, Twitter, Youtube, Share2, Headset } from "lucide-react";
 import { getSocials, type SocialLink } from "@/lib/socials";
 import { useTheme } from "next-themes";
 
@@ -107,7 +107,7 @@ export default function Footer() {
                     <div>
                         <h4 className="text-slate-900 dark:text-white font-semibold mb-4">Quick Links</h4>
                         <ul className="space-y-4 text-sm text-slate-700 dark:text-slate-400">
-                            {quickLinks.map((link, idx) => (
+                            {quickLinks.filter(l => l.name !== "Contact Us").map((link, idx) => (
                                 <li key={idx} className="hover:text-cyan-400 transition-colors">
                                     <Link href={link.href}>{link.name}</Link>
                                 </li>
@@ -121,6 +121,12 @@ export default function Footer() {
                             <li className="flex items-center gap-2">
                                 <Mail className="h-4 w-4 text-cyan-500" />
                                 <a href={`mailto:${contactEmail}`} className="text-slate-700 dark:text-slate-400 hover:text-cyan-400 transition-colors">{contactEmail}</a>
+                            </li>
+                            <li className="flex items-center gap-2">
+                                <Link href="/contact" className="text-slate-700 dark:text-slate-400 hover:text-cyan-400 transition-colors flex items-center gap-2">
+                                    <Headset className="h-4 w-4 text-cyan-500" />
+                                    Contact Us
+                                </Link>
                             </li>
                             {settings?.contactPhone && (
                                 <li className="flex items-center gap-2">
