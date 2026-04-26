@@ -333,7 +333,7 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                 </aside>
 
                 <div className="flex-1 w-full">
-                    <div className="flex items-center justify-between mb-8 pb-4 border-b border-slate-900">
+                    <div className="flex items-center justify-between mb-8 pb-4 border-b border-slate-200 dark:border-slate-800">
                         <div className="text-slate-600 dark:text-slate-400 text-sm">
                             Showing <span className="text-slate-900 dark:text-white font-bold">{filteredAndSortedParts.length}</span> results
                             {selectedCategory !== "All" && <span> for <span className="text-cyan-400 font-semibold">{selectedCategory}</span></span>}
@@ -365,7 +365,7 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                     </div>
 
                     {filteredAndSortedParts.length === 0 ? (
-                        <div className="text-center py-24 bg-slate-50 dark:bg-slate-900/20 border border-slate-900 rounded-3xl border-dashed">
+                        <div className="text-center py-24 bg-slate-50 dark:bg-slate-900/20 border border-slate-200 dark:border-slate-800 rounded-3xl border-dashed">
                             <div className="bg-slate-100 dark:bg-slate-800/50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
                                 <Search className="h-8 w-8 text-slate-600" />
                             </div>
@@ -506,7 +506,7 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                             </div>
 
                             {totalPages > 1 && (
-                                <div className="flex items-center justify-center gap-2 pt-8 border-t border-slate-900">
+                                <div className="flex items-center justify-center gap-2 pt-8 border-t border-slate-200 dark:border-slate-800">
                                     <button
                                         onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                                         disabled={currentPage === 1}

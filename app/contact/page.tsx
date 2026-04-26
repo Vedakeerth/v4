@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Footer from "@/components/Footer";
 import type { Metadata } from "next";
 import { Mail, Phone, MapPin, Clock, Send, Instagram, Facebook, Linkedin, Twitter, Youtube, Loader2, CheckCircle2 } from "lucide-react";
@@ -15,19 +15,34 @@ export default function ContactPage() {
   });
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState("");
-  const [captchaVerified, setCaptchaVerified] = useState(false);
+  const captchaRef = useRef<ReCAPTCHA>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!captchaVerified) {
+    
+    const token = captchaRef.current?.getValue();
+    if (!token) {
       setStatus('error');
       setErrorMessage("Please verify that you are not a robot.");
       return;
     }
+
     setStatus('loading');
     setErrorMessage("");
 
     try {
+      // Backend Captcha Verification
+      const verifyRes = await fetch("/api/verify-captcha", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token }),
+      });
+      const verifyData = await verifyRes.json();
+
+      if (!verifyData.success) {
+        throw new Error("Captcha verification failed. Please try again.");
+      }
+
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -41,10 +56,12 @@ export default function ContactPage() {
       } else {
         setStatus('error');
         setErrorMessage(data.error || "Something went wrong. Please try again.");
+        captchaRef.current?.reset();
       }
-    } catch (err) {
+    } catch (err: any) {
       setStatus('error');
-      setErrorMessage("Failed to send message. Please check your connection.");
+      setErrorMessage(err.message || "Failed to send message. Please check your connection.");
+      captchaRef.current?.reset();
     }
   };
 
@@ -203,9 +220,10 @@ export default function ContactPage() {
                     )}
 
                     <div className="flex justify-center py-2">
+                        {/* IMPORTANT: Use reCAPTCHA v2 Checkbox keys for this component */}
                         <ReCAPTCHA
-                            sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "6LdoysQsAAAAANxd-LomWmg_T3xKruxTKeCSKL40"}
-                            onChange={(token) => setCaptchaVerified(!!token)}
+                            ref={captchaRef}
+                            sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ""}
                         />
                     </div>
 

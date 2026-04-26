@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, Package, Truck, CheckCircle, Clock, AlertCircle, ArrowRight, MapPin, Calendar, CreditCard } from "lucide-react";
 import Image from "next/image";
@@ -24,18 +24,33 @@ export default function TrackOrderPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [order, setOrder] = useState<any>(null);
     const [error, setError] = useState<string | null>(null);
-    const [captchaVerified, setCaptchaVerified] = useState(false);
+    const captchaRef = useRef<ReCAPTCHA>(null);
 
     const handleTrack = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!captchaVerified) {
+        
+        const token = captchaRef.current?.getValue();
+        if (!token) {
             setError("Please verify that you are not a robot.");
             return;
         }
+
         setError(null);
         setIsLoading(true);
 
         try {
+            // Verify captcha token on the backend first
+            const verifyRes = await fetch("/api/verify-captcha", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ token }),
+            });
+            const verifyData = await verifyRes.json();
+
+            if (!verifyData.success) {
+                throw new Error("Captcha verification failed. Please try again.");
+            }
+
             const res = await fetch(`/api/orders/track?trackingId=${orderId}&phone=${encodeURIComponent(contact)}`);
             const data = await res.json();
 
@@ -47,6 +62,7 @@ export default function TrackOrderPage() {
         } catch (err: any) {
             setError(err.message);
             setOrder(null);
+            captchaRef.current?.reset(); // Reset on error
         } finally {
             setIsLoading(false);
         }
@@ -136,11 +152,13 @@ export default function TrackOrderPage() {
                             </div>
 
                             <div className="md:col-span-2 pt-2 pb-2">
+                                {/* IMPORTANT: Use reCAPTCHA v2 Checkbox keys for this component */}
                                 <ReCAPTCHA
-                                    sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "6LdoysQsAAAAANxd-LomWmg_T3xKruxTKeCSKL40"}
-                                    onChange={(token) => setCaptchaVerified(!!token)}
+                                    ref={captchaRef}
+                                    sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ""}
                                 />
                             </div>
+
                             <div className="md:col-span-2 pt-2">
                                 <button
                                     type="submit"

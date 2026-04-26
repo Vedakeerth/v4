@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
@@ -36,7 +36,7 @@ function CheckoutContent() {
     const [paymentMethod, setPaymentMethod] = useState<'card' | 'upi' | 'netbanking' | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isIndia, setIsIndia] = useState(true);
-    const [captchaVerified, setCaptchaVerified] = useState(false);
+    const captchaRef = useRef<ReCAPTCHA>(null);
 
     useEffect(() => {
         const tracking_id = searchParams?.get('tracking_id');
@@ -91,13 +91,25 @@ function CheckoutContent() {
     };
 
     const handlePaymentSubmit = async () => {
-        if (!captchaVerified) {
+        const token = captchaRef.current?.getValue();
+        if (!token) {
             alert("Please verify that you are not a robot.");
             return;
         }
         setCheckoutStep('processing');
 
         try {
+            // Backend Captcha Verification
+            const verifyRes = await fetch("/api/verify-captcha", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ token }),
+            });
+            const verifyData = await verifyRes.json();
+
+            if (!verifyData.success) {
+                throw new Error("Captcha verification failed. Please try again.");
+            }
             // Step 1: Create Order in our system as "Pending"
             const fullAddress = `${formData.doorNo}, ${formData.street}, ${formData.city} - ${formData.pincode}, ${formData.state}`;
             const fullPhone = `${formData.countryCode}${formData.phone.replace(/\D/g, '')}`;
@@ -132,6 +144,7 @@ function CheckoutContent() {
             console.error("Payment Error:", error);
             alert(error.message || "An error occurred during payment. Please try again.");
             setCheckoutStep('payment');
+            captchaRef.current?.reset();
         }
     };
 
@@ -306,9 +319,10 @@ function CheckoutContent() {
                                     </div>
                                     
                                     <div className="flex justify-center mb-6">
+                                        {/* IMPORTANT: Use reCAPTCHA v2 Checkbox keys for this component */}
                                         <ReCAPTCHA
-                                            sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "6LdoysQsAAAAANxd-LomWmg_T3xKruxTKeCSKL40"}
-                                            onChange={(token) => setCaptchaVerified(!!token)}
+                                            ref={captchaRef}
+                                            sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ""}
                                         />
                                     </div>
                                     
