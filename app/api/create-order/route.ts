@@ -11,11 +11,40 @@ const CASHFREE_URL = CASHFREE_ENV === "production"
   : "https://sandbox.cashfree.com/pg/orders";
 
 /**
- * Generate a random Tracking ID: VK + 6 digits
+ * Generate a sequential Quotation Number: VQ[MMDD]-[SERIAL]
+ * e.g., VQ0426-4102
  */
-function generateTrackingId() {
-  const randomNum = Math.floor(100000 + Math.random() * 900000);
-  return `V${randomNum}`;
+async function generateQuotationNo() {
+  const now = new Date();
+  const mm = String(now.getMonth() + 1).padStart(2, '0');
+  const dd = String(now.getDate()).padStart(2, '0');
+  const datePrefix = `${mm}${dd}`;
+
+  try {
+    const counterRef = adminDb.collection("counters").doc("quotations");
+    
+    // Use a transaction to ensure atomic increment and sequential numbering
+    const newSerial = await adminDb.runTransaction(async (transaction) => {
+      const counterDoc = await transaction.get(counterRef);
+      
+      let nextSerial = 1001; // Start from 1001 or any base you prefer
+      
+      if (counterDoc.exists) {
+        const currentSerial = counterDoc.data()?.lastSerial || 1000;
+        nextSerial = currentSerial + 1;
+      }
+      
+      transaction.set(counterRef, { lastSerial: nextSerial }, { merge: true });
+      return nextSerial;
+    });
+
+    return `VQ${datePrefix}-${newSerial}`;
+  } catch (error) {
+    console.error("Error generating sequential number:", error);
+    // Fallback to random if transaction fails
+    const randomNum = Math.floor(1000 + Math.random() * 9000);
+    return `VQ${datePrefix}-${randomNum}`;
+  }
 }
 
 export async function POST(req: Request) {
@@ -27,7 +56,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: "Missing required fields" }, { status: 400 });
     }
 
-    const trackingId = generateTrackingId();
+    const trackingId = await generateQuotationNo();
 
     const orderData = {
       trackingId,

@@ -85,7 +85,7 @@ export default function TrackOrderPage() {
                             className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-500 dark:text-cyan-400 text-[10px] font-black uppercase tracking-[0.2em] mb-4"
                         >
                             <Package size={12} />
-                            Order Tracking
+                            Quotation Tracking
                         </motion.div>
                         <motion.h1 
                             initial={{ opacity: 0, y: 20 }}
@@ -115,7 +115,7 @@ export default function TrackOrderPage() {
                         <form onSubmit={handleTrack} className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-2">
                                 <label className="text-[10px] font-black text-slate-700 dark:text-slate-500 uppercase tracking-widest ml-1">
-                                    Tracking ID
+                                    Quotation No.
                                 </label>
                                 <div className="relative group">
                                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500 group-focus-within:text-cyan-500 transition-colors">
@@ -124,7 +124,7 @@ export default function TrackOrderPage() {
                                     <input
                                         required
                                         type="text"
-                                        placeholder="VK123456"
+                                        placeholder="VQ0426-4102"
                                         value={orderId}
                                         onChange={(e) => setOrderId(e.target.value.toUpperCase())}
                                         className="w-full pl-12 pr-4 py-4 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500/50 focus:ring-4 focus:ring-cyan-500/10 transition-all placeholder:text-slate-400"
