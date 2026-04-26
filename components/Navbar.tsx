@@ -28,7 +28,7 @@ export default function Navbar() {
         getSettings().then(setSettings);
     }, []);
 
-    const navLinks = settings?.navbarLinks || [
+    const navLinks = (settings?.navbarLinks?.filter(l => l.isActive !== false)) || [
         { name: "Services", href: "/services" },
         { name: "Catalogue", href: "/catalog" },
         { name: "Blog", href: "/blog" },

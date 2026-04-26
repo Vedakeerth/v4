@@ -19,6 +19,7 @@ function CheckoutContent() {
     const router = useRouter();
     const [checkoutStep, setCheckoutStep] = useState<'shipping' | 'review' | 'payment' | 'processing' | 'success'>('shipping');
     const [orderInfo, setOrderInfo] = useState<{orderId: string, trackingId: string} | null>(null);
+    const [verificationStatus, setVerificationStatus] = useState<'verifying' | 'success' | 'failed' | 'idle'>('idle');
     const [isOrderPlaced, setIsOrderPlaced] = useState(false);
     const [formData, setFormData] = useState({
         customerName: "",
@@ -41,28 +42,54 @@ function CheckoutContent() {
     useEffect(() => {
         const tracking_id = searchParams?.get('tracking_id');
         const order_id = searchParams?.get('order_id');
-        if (tracking_id && order_id && checkoutStep !== 'success') {
-            setOrderInfo({ orderId: order_id, trackingId: tracking_id });
-            setCheckoutStep('success');
+        
+        if (tracking_id && order_id && verificationStatus === 'idle') {
+            const verifyPayment = async () => {
+                setVerificationStatus('verifying');
+                setCheckoutStep('processing'); // Reuse processing step for verification UI
+                
+                try {
+                    // Call our backend to verify with Cashfree
+                    const res = await fetch(`/api/verify-payment?orderId=${tracking_id}`);
+                    const data = await res.json();
+                    
+                    if (data.success && data.status === 'paid') {
+                        setOrderInfo({ orderId: order_id, trackingId: tracking_id });
+                        setVerificationStatus('success');
+                        setCheckoutStep('success');
+                        
+                        // Read from localStorage directly to bypass hydration delays
+                        const cartStr = localStorage.getItem('cart');
+                        const cartItems = cartStr ? JSON.parse(cartStr) : [];
+                        
+                        if (cartItems.length > 0) {
+                            const purchasedItems = cartItems.map((item: any) => ({...item, date: new Date().toISOString()}));
+                            const existing = localStorage.getItem('recentlyPurchased');
+                            const recent = existing ? JSON.parse(existing) : [];
+                            localStorage.setItem('recentlyPurchased', JSON.stringify([...recent, ...purchasedItems]));
+                        }
+                        
+                        // Clear cart
+                        clearCart();
+                        
+                        // Clean URL
+                        router.replace('/checkout', { scroll: false });
+                    } else {
+                        console.error("Payment verification failed:", data.message || data.error);
+                        setVerificationStatus('failed');
+                        setCheckoutStep('payment'); // Go back to payment step
+                        alert("Payment verification failed. If you have already paid, please contact support with your Tracking ID: " + tracking_id);
+                    }
+                } catch (error) {
+                    console.error("Verification Error:", error);
+                    setVerificationStatus('failed');
+                    setCheckoutStep('payment');
+                }
+            };
             
-            // Read from localStorage directly to bypass hydration delays
-            const cartStr = localStorage.getItem('cart');
-            const cartItems = cartStr ? JSON.parse(cartStr) : [];
-            
-            if (cartItems.length > 0) {
-                const purchasedItems = cartItems.map((item: any) => ({...item, date: new Date().toISOString()}));
-                const existing = localStorage.getItem('recentlyPurchased');
-                const recent = existing ? JSON.parse(existing) : [];
-                localStorage.setItem('recentlyPurchased', JSON.stringify([...recent, ...purchasedItems]));
-            }
-            
-            // Clear cart
-            clearCart();
-            
-            // Clean URL
-            router.replace('/checkout', { scroll: false });
+            verifyPayment();
         }
-    }, [searchParams, checkoutStep, clearCart, router]);
+    }, [searchParams, verificationStatus, clearCart, router]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;

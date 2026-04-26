@@ -28,6 +28,7 @@ import HomeTab from "@/components/admin-dashboard-tabs/HomeTab";
 
 import { getAdminEmails } from "@/lib/adminConfig";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import NavigationManager from "@/components/admin/NavigationManager";
 
 export default function SecureAdminPage() {
     const router = useRouter();
@@ -35,7 +36,7 @@ export default function SecureAdminPage() {
     const [loading, setLoading] = useState(true);
 
     // Valid tabs type
-    type TabType = "home" | "products" | "projects" | "testimonials" | "catalogs" | "blogs" | "seo" | "socials" | "settings" | "features" | "industries" | "coupons" | "orders" | "users" | "announcements" | "categories" | "quote-settings";
+    type TabType = "home" | "products" | "projects" | "testimonials" | "catalogs" | "blogs" | "seo" | "socials" | "settings" | "features" | "industries" | "coupons" | "orders" | "users" | "announcements" | "categories" | "quote-settings" | "navigation";
 
     const [activeTab, setActiveTab] = useState<TabType>("home");
     const tabsContainerRef = React.useRef<HTMLDivElement>(null);
@@ -106,6 +107,7 @@ export default function SecureAdminPage() {
         { id: "announcements", label: "News", icon: Megaphone },
         { id: "users", label: "User Management", icon: LayoutGrid },
         { id: "quote-settings", label: "Quote Pricing", icon: Settings },
+        { id: "navigation", label: "Navigation", icon: LayoutGrid },
         { id: "settings", label: "Settings", icon: Settings },
     ];
 
@@ -196,6 +198,7 @@ export default function SecureAdminPage() {
                         {activeTab === "announcements" && <AnnouncementsTab />}
                         {activeTab === "categories" && <CategoriesTab />}
                         {activeTab === "quote-settings" && <QuoteSettingsTab />}
+                        {activeTab === "navigation" && <NavigationManager />}
                         {activeTab === "users" && <UsersTab />}
                     </div>
                 </div>

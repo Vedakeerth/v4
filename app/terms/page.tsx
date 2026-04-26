@@ -2,17 +2,18 @@ import React from "react";
 import Footer from "@/components/Footer";
 import Link from "next/link";
 import PolicySidebar from "@/components/PolicySidebar";
+import { Check, Mail, Globe } from "lucide-react";
 
 const termsSections = [
     { id: "acceptance", title: "1. Acceptance of Terms" },
     { id: "services", title: "2. Services Description" },
     {
         id: "orders",
-        title: "3. Orders and Quotes",
+        title: "3. Orders and Quotations",
         subsections: [
-            { id: "quote-requests", title: "3.1 Quote Requests" },
+            { id: "quote-validity", title: "3.1 Quote Validity" },
             { id: "order-acceptance", title: "3.2 Order Acceptance" },
-            { id: "design-files", title: "3.3 Design Files" }
+            { id: "customer-responsibilities", title: "3.3 Customer Responsibilities" }
         ]
     },
     { id: "pricing", title: "4. Pricing and Payment" },
@@ -28,7 +29,7 @@ const termsSections = [
     { id: "intellectual-property", title: "7. Intellectual Property" },
     {
         id: "warranty",
-        title: "8. Warranty and Returns",
+        title: "8. Warranty and Returns (7-Day Policy)",
         subsections: [
             { id: "warranty-terms", title: "8.1 Warranty" },
             { id: "returns-refunds", title: "8.2 Returns and Refunds" }
@@ -43,7 +44,7 @@ const termsSections = [
 ];
 
 export default function TermsOfServicePage() {
-    const lastUpdated = "January 30, 2026";
+    const lastUpdated = "April 26, 2026";
 
     return (
         <main className="min-h-screen bg-white dark:bg-slate-950 pt-24">
@@ -54,7 +55,7 @@ export default function TermsOfServicePage() {
                     </Link>
                     <h1 className="text-4xl md:text-6xl font-extrabold text-slate-900 dark:text-white mb-6 uppercase tracking-tight">Terms of Service</h1>
                     <p className="text-slate-500 font-bold uppercase tracking-widest text-[10px]">Last updated: {lastUpdated}</p>
-                    <div className="h-1 w-20 bg-cyan-500 mt-8 rounded-full shadow-[0_0_15px_rgba(6,182,212,0.5)]" />
+                    <div className="h-1 w-20 bg-cyan-500 mt-8 rounded-full" />
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
@@ -64,14 +65,14 @@ export default function TermsOfServicePage() {
                     </div>
 
                     {/* Main Content */}
-                    <div className="lg:col-span-3 prose dark:prose-invert max-w-none space-y-8 text-slate-700 dark:text-slate-300">
+                    <div className="lg:col-span-3 prose dark:prose-invert max-w-none space-y-12 text-slate-700 dark:text-slate-300">
                         <section id="acceptance">
                             <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">1. Acceptance of Terms</h2>
                             <p className="mb-4">
-                                By accessing and using VAELINSA&apos;s website and services, you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service.
+                                By accessing and using VAELINSA’s website and services, you agree to be bound by these Terms and Conditions. If you do not agree, please do not use our services.
                             </p>
                             <p>
-                                These Terms of Service (&quot;Terms&quot;) govern your use of our 3D printing, product design, and rapid prototyping services provided by VAELINSA (&quot;we,&quot; &quot;us,&quot; or &quot;our&quot;).
+                                These Terms govern your use of our 3D printing, product design, and rapid prototyping services.
                             </p>
                         </section>
 
@@ -80,218 +81,229 @@ export default function TermsOfServicePage() {
                             <p className="mb-4">
                                 VAELINSA provides the following services:
                             </p>
-                            <ul className="list-disc pl-6 mb-4 space-y-2">
+                            <ul className="list-disc pl-6 mb-4 space-y-2 font-medium">
                                 <li>FDM (Fused Deposition Modeling) 3D printing</li>
-                                <li>SLA (Stereolithography) / Resin printing</li>
+                                <li>SLA (Resin) 3D printing</li>
                                 <li>SLS (Selective Laser Sintering) printing</li>
                                 <li>Product design and CAD engineering</li>
-                                <li>Rapid prototyping services</li>
+                                <li>Rapid prototyping</li>
                                 <li>Custom manufacturing and small-batch production</li>
                             </ul>
-                            <p>
-                                We reserve the right to modify, suspend, or discontinue any service at any time without prior notice.
+                            <p className="italic text-slate-500 dark:text-slate-400 text-sm">
+                                We reserve the right to modify or discontinue any service at any time without prior notice.
                             </p>
                         </section>
 
                         <section id="orders">
-                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">3. Orders and Quotes</h2>
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6">3. Orders and Quotations</h2>
 
-                            <h3 id="quote-requests" className="text-xl font-semibold text-slate-900 dark:text-white mb-3">3.1 Quote Requests</h3>
+                            <h3 id="quote-validity" className="text-xl font-semibold text-slate-900 dark:text-white mb-3">3.1 Quote Validity</h3>
                             <p className="mb-4">
-                                Quotes provided by VAELINSA are estimates based on the information provided and are valid for 30 days from the date of issue. Final pricing may vary based on actual material usage, complexity, and production requirements.
+                                All quotes are estimates based on provided information and are valid for 10 days. Final pricing may vary depending on actual production requirements.
                             </p>
 
                             <h3 id="order-acceptance" className="text-xl font-semibold text-slate-900 dark:text-white mb-3 mt-6">3.2 Order Acceptance</h3>
                             <p className="mb-4">
-                                All orders are subject to acceptance by VAELINSA. We reserve the right to refuse or cancel any order for any reason, including but not limited to:
+                                Orders are subject to acceptance. We reserve the right to refuse or cancel orders due to:
                             </p>
                             <ul className="list-disc pl-6 mb-4 space-y-2">
-                                <li>Unavailability of materials or equipment</li>
-                                <li>Design issues or technical limitations</li>
+                                <li>Technical or design limitations</li>
+                                <li>Material unavailability</li>
                                 <li>Suspected fraudulent activity</li>
-                                <li>Violation of intellectual property rights</li>
-                                <li>Orders that may be used for illegal purposes</li>
+                                <li>Legal or intellectual property violations</li>
                             </ul>
 
-                            <h3 id="design-files" className="text-xl font-semibold text-slate-900 dark:text-white mb-3 mt-6">3.3 Design Files</h3>
+                            <h3 id="customer-responsibilities" className="text-xl font-semibold text-slate-900 dark:text-white mb-3 mt-6">3.3 Customer Responsibilities</h3>
                             <p className="mb-4">
-                                You are responsible for ensuring that:
+                                You are responsible for ensuring:
                             </p>
-                            <ul className="list-disc pl-6 mb-4 space-y-2">
-                                <li>All design files (STL, OBJ, etc.) are properly formatted and error-free</li>
-                                <li>You have the legal right to use and reproduce the designs</li>
-                                <li>Designs do not infringe on third-party intellectual property rights</li>
-                                <li>Designs comply with applicable laws and regulations</li>
+                            <ul className="list-disc pl-6 mb-4 space-y-2 font-medium">
+                                <li>Files (STL, OBJ, etc.) are correct and printable</li>
+                                <li>You own or have rights to the design</li>
+                                <li>Designs do not violate any laws or third-party rights</li>
                             </ul>
                         </section>
 
                         <section id="pricing">
                             <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">4. Pricing and Payment</h2>
-                            <p className="mb-4">
-                                All prices are quoted in Indian Rupees (INR) unless otherwise stated. Prices include applicable taxes unless specified otherwise.
-                            </p>
-                            <p className="mb-4">
-                                Payment terms:
-                            </p>
-                            <ul className="list-disc pl-6 mb-4 space-y-2">
-                                <li>Payment is required before production begins, unless otherwise agreed in writing</li>
-                                <li>We accept payment via bank transfer, UPI, and other methods as specified</li>
-                                <li>All payments are non-refundable once production has commenced</li>
-                                <li>Additional charges may apply for rush orders, special materials, or design modifications</li>
+                            <ul className="list-disc pl-6 mb-4 space-y-2 font-medium text-slate-800 dark:text-slate-200">
+                                <li>All prices are in INR (₹) unless stated otherwise</li>
+                                <li>Payment must be completed before production begins</li>
+                                <li>Accepted methods: UPI, bank transfer, or other approved methods</li>
+                                <li>Payments are non-refundable once production has started</li>
+                                <li>Additional charges may apply for revisions or special requests</li>
                             </ul>
                         </section>
 
                         <section id="production">
-                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">5. Production and Delivery</h2>
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6">5. Production and Delivery</h2>
 
                             <h3 id="production-timeline" className="text-xl font-semibold text-slate-900 dark:text-white mb-3">5.1 Production Timeline</h3>
                             <p className="mb-4">
-                                Estimated production times are provided as guidelines and are not guaranteed. Actual production times may vary based on:
+                                Timelines are estimates and may vary due to:
                             </p>
-                            <ul className="list-disc pl-6 mb-4 space-y-2">
-                                <li>Order complexity and quantity</li>
+                            <ul className="list-disc pl-6 mb-4 space-y-2 font-medium">
+                                <li>Order complexity</li>
                                 <li>Material availability</li>
-                                <li>Current production queue</li>
-                                <li>Design modifications or revisions</li>
+                                <li>Production queue</li>
                             </ul>
 
-                            <h3 id="shipping-delivery" className="text-xl font-semibold text-slate-900 dark:text-white mb-3 mt-6">5.2 Shipping and Delivery</h3>
-                            <p className="mb-4">
-                                Shipping costs are calculated based on weight, dimensions, and destination. We are not responsible for delays caused by shipping carriers or customs.
-                            </p>
-                            <p className="mb-4">
-                                Risk of loss and title for products pass to you upon delivery to the carrier. You are responsible for filing any claims with carriers for damaged or lost shipments.
-                            </p>
+                            <h3 id="shipping-delivery" className="text-xl font-semibold text-slate-900 dark:text-white mb-3 mt-8">5.2 Shipping and Delivery</h3>
+                            <ul className="list-disc pl-6 mb-4 space-y-2">
+                                <li>Shipping costs are calculated separately unless stated</li>
+                                <li>We are not responsible for courier delays</li>
+                                <li>Risk transfers to the customer once shipped</li>
+                                <li>Customers must report delivery issues directly with the courier</li>
+                            </ul>
                         </section>
 
                         <section id="quality">
                             <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">6. Quality and Tolerances</h2>
-                            <p className="mb-4">
-                                We strive to maintain high quality standards. However, 3D printing is an additive manufacturing process with inherent limitations:
-                            </p>
-                            <ul className="list-disc pl-6 mb-4 space-y-2">
-                                <li>Dimensional tolerances: ±0.1mm to ±0.5mm depending on material and process</li>
-                                <li>Surface finish may require post-processing</li>
-                                <li>Color matching is approximate and may vary between batches</li>
-                                <li>Material properties may vary slightly from specifications</li>
+                            <p className="mb-4 text-slate-500 dark:text-slate-400 italic">Due to the nature of 3D printing:</p>
+                            <ul className="list-disc pl-6 mb-4 space-y-2 font-medium">
+                                <li>Dimensional tolerance: ±0.1 mm to ±0.5 mm</li>
+                                <li>Surface finish may vary</li>
+                                <li>Color differences may occur</li>
+                                <li>Minor imperfections are normal</li>
                             </ul>
-                            <p>
-                                We will work with you to address any quality concerns, but minor variations are inherent to the manufacturing process.
-                            </p>
                         </section>
 
                         <section id="intellectual-property">
                             <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">7. Intellectual Property</h2>
-                            <p className="mb-4">
-                                You retain all intellectual property rights to your designs and files. By submitting files to us, you grant VAELINSA a limited, non-exclusive license to:
-                            </p>
-                            <ul className="list-disc pl-6 mb-4 space-y-2">
-                                <li>Use your designs solely for the purpose of fulfilling your order</li>
-                                <li>Store and process your files as necessary for production</li>
-                            </ul>
-                            <p className="mb-4">
-                                VAELINSA retains all rights to:
-                            </p>
-                            <ul className="list-disc pl-6 mb-4 space-y-2">
-                                <li>Our proprietary processes, techniques, and know-how</li>
-                                <li>Any improvements or modifications we make to your designs (unless otherwise agreed)</li>
-                                <li>Our website content, branding, and marketing materials</li>
+                            <ul className="list-disc pl-6 mb-4 space-y-2 font-medium text-slate-800 dark:text-slate-200">
+                                <li>You retain ownership of your designs</li>
+                                <li>You grant VAELINSA permission to use files for production</li>
+                                <li>We retain rights to our processes and improvements</li>
                             </ul>
                         </section>
 
                         <section id="warranty">
-                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">8. Warranty and Returns</h2>
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6">8. Warranty and Returns (7-Day Policy)</h2>
 
                             <h3 id="warranty-terms" className="text-xl font-semibold text-slate-900 dark:text-white mb-3">8.1 Warranty</h3>
-                            <p className="mb-4">
-                                We warrant that our products will be free from material defects in workmanship for 30 days from delivery. This warranty does not cover:
+                            <p className="mb-4 font-bold text-cyan-600 dark:text-cyan-400">
+                                We provide a 7-day warranty starting from the date the customer receives the product/package.
                             </p>
-                            <ul className="list-disc pl-6 mb-4 space-y-2">
+                            <p className="mb-4">This warranty covers manufacturing defects only and does not include:</p>
+                            <ul className="list-disc pl-6 mb-6 space-y-2 font-medium">
+                                <li>Misuse or improper handling</li>
+                                <li>Design errors from customer files</li>
+                                <li>Modifications after delivery</li>
                                 <li>Normal wear and tear</li>
-                                <li>Damage caused by misuse, abuse, or improper handling</li>
-                                <li>Design flaws or errors in customer-provided files</li>
-                                <li>Modifications made after delivery</li>
                             </ul>
 
-                            <h3 id="returns-refunds" className="text-xl font-semibold text-slate-900 dark:text-white mb-3 mt-6">8.2 Returns and Refunds</h3>
-                            <p className="mb-4">
-                                Due to the custom nature of our products, returns are generally not accepted. However, we will work with you to resolve any legitimate quality issues:
+                            <h3 id="returns-refunds" className="text-xl font-semibold text-slate-900 dark:text-white mb-3 mt-8">8.2 Returns and Refunds</h3>
+                            <p className="mb-6 italic">
+                                Due to the custom nature of our products, returns are limited. However, we offer a 7-day return/replacement policy starting from the date of delivery.
                             </p>
-                            <ul className="list-disc pl-6 mb-4 space-y-2">
-                                <li>If a product is defective, we will replace it at no charge</li>
-                                <li>If an error is our fault, we will provide a refund or reprint</li>
-                                <li>Refunds are not available for customer design errors or change of mind</li>
-                            </ul>
+
+                            <div className="bg-slate-50 dark:bg-slate-900/40 p-6 rounded-[2rem] border border-slate-200 dark:border-slate-800 space-y-6">
+                                <div>
+                                    <h4 className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-widest mb-3 flex items-center gap-2">
+                                        <div className="w-2 h-2 bg-green-500 rounded-full" /> Eligible Cases (within 7 days)
+                                    </h4>
+                                    <ul className="list-disc pl-6 space-y-2 text-sm font-medium">
+                                        <li>Product is damaged or defective</li>
+                                        <li>Product does not match approved specifications</li>
+                                        <li>Manufacturing error from our side</li>
+                                    </ul>
+                                </div>
+
+                                <div>
+                                    <h4 className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-widest mb-3 flex items-center gap-2">
+                                        <div className="w-2 h-2 bg-red-500 rounded-full" /> Not Eligible
+                                    </h4>
+                                    <ul className="list-disc pl-6 space-y-2 text-sm font-medium">
+                                        <li>Change of mind</li>
+                                        <li>Customer design mistakes</li>
+                                        <li>Minor variations due to printing process</li>
+                                    </ul>
+                                </div>
+
+                                <div className="pt-4 border-t border-slate-200 dark:border-slate-800">
+                                    <h4 className="text-sm font-black text-cyan-600 dark:text-cyan-500 uppercase tracking-[0.2em] mb-4">Return Process</h4>
+                                    <ul className="list-disc pl-6 space-y-2 text-xs font-bold uppercase tracking-tight text-slate-500">
+                                        <li>Must be reported within 7 days of delivery</li>
+                                        <li>Proof (photos/videos) required</li>
+                                        <li>Approval required before return</li>
+                                    </ul>
+                                </div>
+
+                                <div className="pt-4">
+                                    <h4 className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-widest mb-4">Resolution Options</h4>
+                                    <div className="flex flex-wrap gap-3">
+                                        <span className="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-[10px] font-black uppercase">Free replacement</span>
+                                        <span className="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-[10px] font-black uppercase">Partial/Full refund</span>
+                                        <span className="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-[10px] font-black uppercase">Store credit</span>
+                                    </div>
+                                </div>
+                            </div>
                         </section>
 
                         <section id="liability">
                             <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">9. Limitation of Liability</h2>
-                            <p className="mb-4">
-                                To the maximum extent permitted by law:
-                            </p>
-                            <ul className="list-disc pl-6 mb-4 space-y-2">
-                                <li>VAELINSA&apos;s total liability shall not exceed the amount paid by you for the specific order</li>
-                                <li>We are not liable for indirect, incidental, or consequential damages</li>
-                                <li>We are not responsible for any loss or damage resulting from the use of our products</li>
-                                <li>Products are provided &quot;as is&quot; without warranties of merchantability or fitness for a particular purpose (except as stated above)</li>
+                            <ul className="list-disc pl-6 mb-4 space-y-2 font-medium">
+                                <li>Liability is limited to the order value</li>
+                                <li>We are not responsible for indirect or consequential damages</li>
+                                <li>Products are provided “as is” except stated warranty</li>
                             </ul>
                         </section>
 
                         <section id="prohibited">
                             <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">10. Prohibited Uses</h2>
-                            <p className="mb-4">You agree not to use our services to:</p>
-                            <ul className="list-disc pl-6 mb-4 space-y-2">
-                                <li>Create items that violate any laws or regulations</li>
-                                <li>Produce weapons, firearms, or dangerous items</li>
-                                <li>Infringe on intellectual property rights</li>
-                                <li>Create items that are obscene, defamatory, or harmful</li>
-                                <li>Reproduce copyrighted or trademarked materials without authorization</li>
-                                <li>Create items intended to cause harm or injury</li>
+                            <p className="mb-4">You agree not to use our services to create:</p>
+                            <ul className="list-disc pl-6 mb-4 space-y-2 font-medium text-slate-800 dark:text-slate-200">
+                                <li>Illegal or harmful items</li>
+                                <li>Weapons or restricted products</li>
+                                <li>Copyrighted materials without permission</li>
+                                <li>Content that is abusive or harmful</li>
                             </ul>
-                            <p>
-                                We reserve the right to refuse service for any order that violates these prohibitions.
-                            </p>
+                            <p className="mt-6 italic text-slate-500 dark:text-slate-400">We reserve the right to refuse such orders.</p>
                         </section>
 
                         <section id="indemnification">
                             <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">11. Indemnification</h2>
-                            <p>
-                                You agree to indemnify and hold harmless VAELINSA, its employees, and affiliates from any claims, damages, losses, or expenses (including legal fees) arising from:
-                            </p>
-                            <ul className="list-disc pl-6 mb-4 space-y-2 mt-4">
-                                <li>Your use of our services</li>
-                                <li>Your violation of these Terms</li>
-                                <li>Your violation of any third-party rights</li>
-                                <li>Any design files or content you provide to us</li>
+                            <p className="mb-4">You agree to indemnify VAELINSA from any claims arising from:</p>
+                            <ul className="list-disc pl-6 mb-4 space-y-2 font-medium">
+                                <li>Your use of services</li>
+                                <li>Violation of laws or rights</li>
+                                <li>Submitted designs</li>
                             </ul>
                         </section>
 
                         <section id="modifications">
                             <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">12. Modifications to Terms</h2>
-                            <p className="mb-4">
-                                We reserve the right to modify these Terms at any time. Changes will be effective immediately upon posting on our website. Your continued use of our services after changes are posted constitutes acceptance of the modified Terms.
-                            </p>
                             <p>
-                                It is your responsibility to review these Terms periodically for updates.
+                                We may update these Terms at any time. Continued use of our services means acceptance of the updated Terms.
                             </p>
                         </section>
 
                         <section id="governing-law">
                             <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">13. Governing Law</h2>
                             <p>
-                                These Terms shall be governed by and construed in accordance with the laws of India, without regard to its conflict of law provisions. Any disputes arising from these Terms or our services shall be subject to the exclusive jurisdiction of the courts in India.
+                                These Terms are governed by the laws of India, and disputes will be subject to Indian jurisdiction.
                             </p>
                         </section>
 
                         <section id="contact">
-                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">14. Contact Information</h2>
-                            <p className="mb-4">
-                                If you have any questions about these Terms of Service, please contact us:
-                            </p>
-                            <div className="bg-slate-50 dark:bg-slate-900/50 p-6 rounded-lg border border-slate-200 dark:border-slate-800">
-                                <p className="mb-2"><strong className="text-slate-900 dark:text-white">VAELINSA</strong></p>
-                                <p className="mb-2">Email: <a href="mailto:sales@vaelinsa.com" className="text-blue-400 hover:text-blue-300">sales@vaelinsa.com</a></p>
-                                <p>Website: <a href="https://vaelinsa.com" className="text-blue-400 hover:text-blue-300">www.vaelinsa.com</a></p>
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6">14. Contact Information</h2>
+                            <div className="bg-white dark:bg-slate-900/80 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 relative overflow-hidden group">
+                                <div className="absolute top-0 right-0 p-8 opacity-5 dark:opacity-10 group-hover:rotate-12 transition-transform duration-1000">
+                                    <Check size={120} className="text-slate-400 dark:text-cyan-500" />
+                                </div>
+                                <div className="relative z-10">
+                                    <p className="mb-4"><strong className="text-2xl font-black text-slate-900 dark:text-white uppercase italic tracking-tighter">VAELINSA</strong></p>
+                                    <div className="space-y-3">
+                                        <p className="flex items-center gap-3 text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest text-[10px]">
+                                            <span className="p-1.5 bg-slate-100 dark:bg-white/5 rounded-lg text-cyan-600 dark:text-cyan-500"><Mail size={12} /></span> 
+                                            Email: <a href="mailto:sales@vaelinsa.com" className="text-slate-900 dark:text-white hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors">sales@vaelinsa.com</a>
+                                        </p>
+                                        <p className="flex items-center gap-3 text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest text-[10px]">
+                                            <span className="p-1.5 bg-slate-100 dark:bg-white/5 rounded-lg text-cyan-600 dark:text-cyan-500"><Globe size={12} /></span> 
+                                            Website: <a href="https://www.vaelinsa.com" className="text-slate-900 dark:text-white hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors">www.vaelinsa.com</a>
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                         </section>
                     </div>

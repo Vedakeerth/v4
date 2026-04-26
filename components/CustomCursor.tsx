@@ -14,7 +14,10 @@ export default function CustomCursor() {
     const cursorXSpring = useSpring(cursorX, springConfig);
     const cursorYSpring = useSpring(cursorY, springConfig);
 
+    const [mounted, setMounted] = useState(false);
+
     useEffect(() => {
+        setMounted(true);
         const moveCursor = (e: MouseEvent) => {
             cursorX.set(e.clientX);
             cursorY.set(e.clientY);
@@ -40,7 +43,7 @@ export default function CustomCursor() {
         };
     }, [cursorX, cursorY, hasMoved]);
 
-    if (typeof window === 'undefined') return null;
+    if (!mounted) return null;
 
     return (
         <motion.div

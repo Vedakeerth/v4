@@ -11,7 +11,7 @@ const CASHFREE_URL = CASHFREE_ENV === "production"
   : "https://sandbox.cashfree.com/pg/orders";
 
 /**
- * Generate a sequential Quotation Number: VQ[MMDD]-[SERIAL]
+ * Generate a sequential Quotation Number: VQXXXX-XXXX
  * e.g., VQ0426-4102
  * Uses IST (India Standard Time) to ensure the date matches the local user.
  */
@@ -77,7 +77,8 @@ export async function POST(req: Request) {
       createdAt: FieldValue.serverTimestamp(),
     };
 
-    const docRef = await adminDb.collection("orders").add(orderData);
+    const docRef = adminDb.collection("orders").doc(trackingId);
+    await docRef.set(orderData);
 
     // --- CASHFREE INTEGRATION ---
     const cashfreeResponse = await fetch(CASHFREE_URL, {

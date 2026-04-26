@@ -17,9 +17,9 @@ export interface SiteSettings {
     contactAddress: string;
     footerAboutText: string;
     // Navbar & Footer Links
-    navbarLinks: { name: string; href: string }[];
-    footerLinks: { name: string; href: string }[];
-    footerServiceLinks: { name: string; href: string }[];
+    navbarLinks: { name: string; href: string; isActive?: boolean }[];
+    footerLinks: { name: string; href: string; isActive?: boolean }[];
+    footerServiceLinks: { name: string; href: string; isActive?: boolean }[];
 }
 
 const defaultSettings: SiteSettings = {

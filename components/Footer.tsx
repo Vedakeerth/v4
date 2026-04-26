@@ -30,13 +30,13 @@ export default function Footer() {
     }, []);
 
     const aboutText = settings?.footerAboutText || "Premium additive manufacturing and design services for the modern engineer.";
-    const serviceLinks = settings?.footerServiceLinks || [
+    const serviceLinks = (settings?.footerServiceLinks?.filter(l => l.isActive !== false)) || [
         { name: "FDM Printing", href: "/services#fdm" },
         { name: "SLA Resin", href: "/services#sla" },
         { name: "Product Design", href: "/services#design" },
         { name: "Rapid Prototyping", href: "/services#prototyping" },
     ];
-    const quickLinks = settings?.footerLinks || [
+    const quickLinks = (settings?.footerLinks?.filter(l => l.isActive !== false)) || [
         { name: "Gallery", href: "/gallery" },
         { name: "Track Your Order", href: "/track-order" },
         { name: "Blog & Updates", href: "/blog" },

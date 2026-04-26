@@ -201,7 +201,7 @@ export default function OrdersTab() {
             <div
                 key={order.id}
                 onClick={() => { setSelectedOrder(order); setModalStatus(order.status); }}
-                className="bg-slate-50 dark:bg-slate-900/40 cursor-pointer border border-slate-200 dark:border-slate-800/80 rounded-2xl sm:rounded-[2rem] p-5 sm:p-7 h-full hover:border-cyan-500/50 transition-all group relative flex flex-col lg:flex-row gap-6 shadow-sm hover:shadow-2xl hover:shadow-cyan-950/10"
+                className="bg-slate-50 dark:bg-slate-900/40 cursor-pointer border border-slate-200 dark:border-slate-800/80 rounded-2xl sm:rounded-[2rem] p-5 sm:p-7 h-full hover:border-cyan-500/50 transition-all group relative flex flex-col lg:flex-row gap-6"
             >
                 <div className={cn(
                     "absolute top-0 bottom-0 left-0 w-1 transition-opacity opacity-0 group-hover:opacity-100 rounded-l-2xl sm:rounded-l-[2rem]",
@@ -213,7 +213,7 @@ export default function OrdersTab() {
                     <div className="space-y-4">
                         <div className="flex items-center gap-3">
                             <div className={cn(
-                                "w-11 h-11 rounded-2xl bg-white dark:bg-slate-950 border flex items-center justify-center transition-all shadow-inner",
+                                "w-11 h-11 rounded-2xl bg-white dark:bg-slate-950 border flex items-center justify-center transition-all",
                                 isCustom ? "text-purple-400 border-purple-500/30 group-hover:border-purple-500" : "text-cyan-400 border-slate-200 dark:border-slate-800 group-hover:border-cyan-500"
                             )}>
                                 {isCustom ? <Zap size={20} /> : <ShoppingBag size={20} />}
@@ -244,7 +244,7 @@ export default function OrdersTab() {
                     </div>
 
                     <div className="space-y-4 pt-1">
-                        <div className="bg-white dark:bg-slate-950/40 p-4 rounded-2xl border border-slate-200 dark:border-slate-800/50 shadow-inner group-hover:border-slate-300 dark:border-slate-700/50 transition-colors">
+                        <div className="bg-white dark:bg-slate-950/40 p-4 rounded-2xl border border-slate-200 dark:border-slate-800/50 group-hover:border-slate-300 dark:border-slate-700/50 transition-colors">
                             <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-2">Shipping Address</span>
                             <span className="text-slate-700 dark:text-slate-300 text-xs leading-relaxed font-bold line-clamp-2 italic" title={order.address}>{order.address}</span>
                         </div>
@@ -275,7 +275,7 @@ export default function OrdersTab() {
                                 setActiveActionMenu(activeActionMenu === order.id ? null : order.id);
                             }} 
                             className={cn(
-                                "w-12 h-12 flex items-center justify-center rounded-2xl transition-all border shadow-inner group/btn z-10",
+                                "w-12 h-12 flex items-center justify-center rounded-2xl transition-all border group/btn z-10",
                                 activeActionMenu === order.id 
                                     ? "bg-cyan-500/20 border-cyan-500/50 text-cyan-400" 
                                     : "bg-slate-100 dark:bg-slate-800/30 hover:bg-slate-100 dark:bg-slate-800 border-slate-300 dark:border-slate-700/50 text-slate-600 dark:text-slate-400 hover:text-cyan-400"
@@ -284,7 +284,7 @@ export default function OrdersTab() {
                             <MoreVertical size={20} className="group-hover/btn:scale-110 transition-transform" />
                         </button>
                         <div className={cn(
-                            "absolute right-0 top-full mt-2 w-52 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl transition-all z-[110] overflow-hidden origin-top-right",
+                            "absolute right-0 top-full mt-2 w-52 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl transition-all z-[110] overflow-hidden origin-top-right",
                             activeActionMenu === order.id 
                                 ? "opacity-100 scale-100 translate-y-0 pointer-events-auto" 
                                 : "opacity-0 scale-95 -translate-y-2 pointer-events-none"
@@ -375,7 +375,7 @@ export default function OrdersTab() {
     return (
         <div className="w-full space-y-6 sm:space-y-10">
             {!isLoading && orders.length > 0 && (
-                <div className="bg-slate-50 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-xl sm:rounded-[2.5rem] lg:rounded-[3rem] p-4 sm:p-8 lg:p-10 shadow-inner relative overflow-hidden flex flex-col gap-6 sm:gap-10">
+                <div className="bg-slate-50 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-xl sm:rounded-[2.5rem] lg:rounded-[3rem] p-4 sm:p-8 lg:p-10 relative overflow-hidden flex flex-col gap-6 sm:gap-10">
                     <div className="absolute -top-32 -right-32 w-80 h-80 bg-cyan-500/5 blur-3xl rounded-full pointer-events-none" />
                     
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 z-20">
@@ -393,7 +393,7 @@ export default function OrdersTab() {
                             {["14D", "1M", "3M", "6M", "ALL"].map(f => (
                                 <button key={f} onClick={() => setGraphFilter(f as any)} 
                                     className={cn("px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl text-[9px] sm:text-[10px] font-black uppercase tracking-[0.1em] transition-all whitespace-nowrap", 
-                                        graphFilter === f ? "bg-cyan-500 text-slate-950 shadow-xl shadow-cyan-500/20 scale-105" : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-300 dark:border-slate-700/50 hover:border-slate-500")}>
+                                        graphFilter === f ? "bg-cyan-500 text-slate-950 scale-105" : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-300 dark:border-slate-700/50 hover:border-slate-500")}>
                                     {f}
                                 </button>
                             ))}
@@ -409,7 +409,7 @@ export default function OrdersTab() {
                             ].map((t) => (
                                 <button key={t.id} onClick={() => setRevenueType(t.id as any)} 
                                     className={cn("flex items-center gap-2.5 px-3 sm:px-6 py-2 sm:py-2.5 rounded-xl sm:rounded-[1.1rem] text-[8px] sm:text-[9px] font-black uppercase tracking-widest transition-all whitespace-nowrap",
-                                        revenueType === t.id ? "bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white shadow-xl ring-1 ring-slate-700/50" : "text-slate-500 hover:text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:bg-slate-900/30")}>
+                                        revenueType === t.id ? "bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white ring-1 ring-slate-700/50" : "text-slate-500 hover:text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:bg-slate-900/30")}>
                                     {t.icon} {t.label}
                                 </button>
                             ))}
@@ -436,7 +436,7 @@ export default function OrdersTab() {
                                         }} 
                                         width={45} 
                                     />
-                                    <Tooltip contentStyle={{ backgroundColor: '#020617', borderColor: '#1e293b', borderRadius: '20px', color: '#fff', border: '1px solid rgba(6,182,212,0.1)', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)' }} itemStyle={{ fontWeight: '900', fontSize: '13px', paddingTop: '4px' }} formatter={(value: any, name: any) => [`Rs ${value?.toLocaleString('en-IN')}`, name]} labelStyle={{ color: '#64748b', fontWeight: '900', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.1em' }} />
+                                    <Tooltip contentStyle={{ backgroundColor: '#020617', borderColor: '#1e293b', borderRadius: '20px', color: '#fff', border: '1px solid rgba(6,182,212,0.1)' }} itemStyle={{ fontWeight: '900', fontSize: '13px', paddingTop: '4px' }} formatter={(value: any, name: any) => [`Rs ${value?.toLocaleString('en-IN')}`, name]} labelStyle={{ color: '#64748b', fontWeight: '900', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.1em' }} />
                                     <Legend wrapperStyle={{ fontSize: '11px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '0.15em', paddingTop: '30px', opacity: 0.8 }} iconType="cross" />
                                     <Line name="Ready Stock" type="monotone" dataKey="standard" stroke="#22d3ee" strokeWidth={5} dot={false} activeDot={{ r: 10, fill: '#22d3ee', stroke: '#020617', strokeWidth: 4 }} animationDuration={2500} connectNulls={true} />
                                     <Line name="Custom Prints" type="monotone" dataKey="instantQuote" stroke="#a855f7" strokeWidth={5} dot={false} activeDot={{ r: 10, fill: '#a855f7', stroke: '#020617', strokeWidth: 4 }} animationDuration={2500} connectNulls={true} />
@@ -447,7 +447,7 @@ export default function OrdersTab() {
                 </div>
             )}
 
-            <div className="bg-slate-50 dark:bg-slate-900/40 p-4 sm:p-6 rounded-2xl sm:rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-2xl relative overflow-hidden">
+            <div className="bg-slate-50 dark:bg-slate-900/40 p-4 sm:p-6 rounded-2xl sm:rounded-[2.5rem] border border-slate-200 dark:border-slate-800 relative overflow-hidden">
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-500/20 to-transparent" />
                 <div className="relative z-10 flex flex-col xl:flex-row items-center gap-6">
                     {/* Search Field */}
@@ -460,11 +460,11 @@ export default function OrdersTab() {
                                     placeholder="Trace ID, Client name..." 
                                     value={searchTerm} 
                                     onChange={(e) => setSearchTerm(e.target.value)} 
-                                    className="w-full h-12 sm:h-[64px] bg-white dark:bg-slate-950/50 border-2 border-slate-200 dark:border-slate-800/80 rounded-xl sm:rounded-[1.25rem] pl-12 sm:pl-20 pr-4 sm:pr-8 text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500/50 focus:ring-8 focus:ring-cyan-500/5 transition-all text-[9px] sm:text-[12px] font-black uppercase tracking-[0.2em] placeholder:text-slate-600/50 shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] backdrop-blur-md caret-cyan-500" 
+                                    className="w-full h-12 sm:h-[64px] bg-white dark:bg-slate-950/50 border-2 border-slate-200 dark:border-slate-800/80 rounded-xl sm:rounded-[1.25rem] pl-12 sm:pl-20 pr-4 sm:pr-8 text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500/50 focus:ring-8 focus:ring-cyan-500/5 transition-all text-[9px] sm:text-[12px] font-black uppercase tracking-[0.2em] placeholder:text-slate-600/50 backdrop-blur-md caret-cyan-500" 
                                 />
                             </div>
                             <button 
-                                className="h-12 sm:h-[64px] px-6 sm:px-10 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black rounded-xl sm:rounded-[1.25rem] text-[10px] sm:text-[11px] uppercase tracking-[0.25em] transition-all shadow-xl shadow-cyan-500/20 active:scale-95 flex items-center justify-center gap-3 whitespace-nowrap"
+                                className="h-12 sm:h-[64px] px-6 sm:px-10 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black rounded-xl sm:rounded-[1.25rem] text-[10px] sm:text-[11px] uppercase tracking-[0.25em] transition-all active:scale-95 flex items-center justify-center gap-3 whitespace-nowrap"
                             >
                                 <Zap size={14} className="fill-slate-950" />
                                 Trace
@@ -475,7 +475,7 @@ export default function OrdersTab() {
                     {/* Inline Filters */}
                     <div className="w-full shrink-0 xl:w-auto">
                         <div className="flex overflow-x-auto pb-1 scrollbar-none no-scrollbar sm:pb-0">
-                            <div className="inline-flex p-1 sm:p-1.5 bg-white dark:bg-slate-950 rounded-xl sm:rounded-2xl border border-slate-200 dark:border-slate-800/80 shadow-2xl shadow-cyan-950/5">
+                            <div className="inline-flex p-1 sm:p-1.5 bg-white dark:bg-slate-950 rounded-xl sm:rounded-2xl border border-slate-200 dark:border-slate-800/80">
                                 {[
                                     { id: "Active", icon: <Clock size={12} />, label: "ACTIVE" },
                                     { id: "Completed", icon: <CheckCircle2 size={12} />, label: "COMPLETED" },
@@ -487,14 +487,14 @@ export default function OrdersTab() {
                                         className={cn(
                                             "flex items-center gap-2 sm:gap-3 px-3 sm:px-8 py-2 sm:py-3.5 rounded-lg sm:rounded-xl text-[8px] sm:text-[10px] font-black uppercase tracking-widest transition-all relative group whitespace-nowrap",
                                             viewMode === mode.id 
-                                                ? "bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white shadow-xl ring-1 ring-slate-700/50" 
+                                                ? "bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white ring-1 ring-slate-700/50" 
                                                 : "text-slate-600 hover:text-slate-900 dark:text-slate-400 hover:bg-slate-50 dark:bg-slate-900/50"
                                         )}
                                     >
                                         {mode.icon}
                                         <span className="inline">{mode.label}</span>
                                         {viewMode === mode.id && (
-                                            <motion.div layoutId="activeTabIndicator" className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-cyan-500 rounded-full shadow-[0_0_10px_#06b6d4]" />
+                                            <motion.div layoutId="activeTabIndicator" className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-cyan-500 rounded-full" />
                                         )}
                                     </button>
                                 ))}
@@ -512,7 +512,7 @@ export default function OrdersTab() {
             ) : (
                 <div className="space-y-8">
                     <div className="flex items-center gap-5 px-6">
-                        <div className={cn("w-3 h-3 rounded-full shadow-[0_0_15px_rgba(0,0,0,0.5)]", viewMode === "Active" ? "bg-cyan-500 animate-pulse" : viewMode === "Completed" ? "bg-emerald-500 shadow-emerald-500/20" : "bg-red-500 shadow-red-500/20")} />
+                        <div className={cn("w-3 h-3 rounded-full", viewMode === "Active" ? "bg-cyan-500 animate-pulse" : viewMode === "Completed" ? "bg-emerald-500" : "bg-red-500")} />
                         <h3 className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-500 italic">
                             {viewMode === "Active" ? "Live Trajectory Pipeline" : viewMode === "Completed" ? "Permanent Record Archive" : "Nullified Operational Log"}
                         </h3>
@@ -533,21 +533,21 @@ export default function OrdersTab() {
 
             <AnimatePresence>
                 {selectedOrder && (
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[160] flex items-center justify-center p-3 sm:p-6 bg-white dark:bg-slate-950/98 backdrop-blur-xl" onClick={() => setSelectedOrder(null)}>
-                        <motion.div initial={{ scale: 0.98, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.98, opacity: 0, y: 20 }} onClick={(e) => e.stopPropagation()} className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800/50 w-full max-w-4xl rounded-3xl sm:rounded-[4rem] p-6 sm:p-12 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.7)] max-h-[92vh] overflow-y-auto custom-scrollbar relative">
-                            <button onClick={() => setSelectedOrder(null)} className="absolute top-10 right-10 p-4 bg-slate-100 dark:bg-slate-800/50 hover:bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-white rounded-full transition-all border border-slate-300 dark:border-slate-700 shadow-2xl group">
-                                <XCircle size={28} className="group-hover:rotate-90 transition-transform" />
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[160] flex items-center justify-center p-3 sm:p-6 bg-slate-950/40 backdrop-blur-md" onClick={() => setSelectedOrder(null)}>
+                        <motion.div initial={{ scale: 0.98, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.98, opacity: 0, y: 20 }} onClick={(e) => e.stopPropagation()} className="bg-white/80 dark:bg-slate-900/80 border border-slate-200/50 dark:border-white/10 w-full max-w-4xl rounded-3xl sm:rounded-[3rem] p-6 sm:p-8 pt-6 sm:pt-8 backdrop-blur-2xl relative">
+                            <button onClick={() => setSelectedOrder(null)} className="absolute top-8 right-8 p-3 bg-slate-100/50 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-600 dark:text-slate-400 hover:text-cyan-500 rounded-full transition-all border border-slate-200 dark:border-white/10 group">
+                                <XCircle size={22} className="group-hover:rotate-90 transition-transform" />
                             </button>
 
-                            <div className="mb-14 text-left border-b border-slate-200 dark:border-slate-800 pb-10">
+                            <div className="mb-8 text-left border-b border-slate-200 dark:border-slate-800 pb-6">
                                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 mb-4">
-                                    <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white tracking-tighter uppercase italic underline decoration-cyan-500 decoration-[8px] sm:decoration-[12px] underline-offset-[8px] sm:underline-offset-[12px]">Operational Detail</h2>
+                                    <h2 className="text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 dark:text-white tracking-tighter uppercase italic underline decoration-cyan-500 decoration-[4px] sm:decoration-[6px] underline-offset-[4px] sm:underline-offset-[6px]">Operational Detail</h2>
                                     {selectedOrder.notes && (
                                         <div className="relative group/note cursor-help">
-                                            <div className="w-12 h-12 rounded-[1.25rem] bg-amber-500/10 text-amber-500 flex items-center justify-center animate-pulse border border-amber-500/30 shadow-xl shadow-amber-500/5">
+                                            <div className="w-12 h-12 rounded-[1.25rem] bg-amber-500/10 text-amber-500 flex items-center justify-center animate-pulse border border-amber-500/30">
                                                 <span className="font-black text-2xl">!</span>
                                             </div>
-                                            <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-6 opacity-0 group-hover/note:opacity-100 transition-all bg-white dark:bg-slate-950 border border-amber-500/50 text-amber-100 text-[12px] font-black px-8 py-6 rounded-[2rem] pointer-events-none z-[200] w-80 shadow-[0_30px_60px_-12px_rgba(0,0,0,0.8)] translate-y-2 group-hover/note:translate-y-0">
+                                            <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-6 opacity-0 group-hover/note:opacity-100 transition-all bg-white dark:bg-slate-950 border border-amber-500/50 text-amber-100 text-[12px] font-black px-8 py-6 rounded-[2rem] pointer-events-none z-[200] w-80 translate-y-2 group-hover/note:translate-y-0">
                                                 <p className="border-b border-amber-500/30 pb-3 mb-4 text-[10px] font-black uppercase tracking-[0.2em] text-amber-600 dark:text-amber-500">Node Logic Memo</p>
                                                 <p className="italic leading-[1.6] text-slate-900 dark:text-amber-100">"{selectedOrder.notes}"</p>
                                                 <div className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 w-5 h-5 bg-white dark:bg-slate-950 border-r border-b border-amber-500/50 rotate-45" />
@@ -555,7 +555,7 @@ export default function OrdersTab() {
                                         </div>
                                     )}
                                 </div>
-                                <div className="flex items-center gap-4 pt-4">
+                                <div className="flex items-center gap-4 pt-2">
                                     <div className="px-3 py-1 bg-cyan-500/10 border border-cyan-500/30 rounded-lg">
                                         <p className="text-cyan-500 text-[10px] font-black uppercase tracking-[0.3em]">Trace: {getDisplayId(selectedOrder)}</p>
                                     </div>
@@ -567,61 +567,60 @@ export default function OrdersTab() {
 
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-14 text-left">
                                 <div className="space-y-10">
-                                    <div className="bg-white dark:bg-slate-950/80 p-10 rounded-[3rem] border border-slate-200 dark:border-slate-800 relative overflow-hidden group/card shadow-2xl">
+                                    <div className="bg-white/40 dark:bg-white/5 p-8 rounded-[2rem] border border-slate-200/50 dark:border-white/5 relative overflow-hidden group/card">
                                         <div className="absolute -right-8 -top-8 text-slate-900 opacity-30 group-hover/card:text-cyan-500/10 transition-colors"><User size={150} /></div>
-                                        <h4 className="text-[11px] font-black text-slate-600 uppercase tracking-[0.3em] mb-8 italic relative z-10 border-b border-slate-900 pb-4">Client Identification</h4>
+                                        <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] mb-5 italic relative z-10 border-b border-slate-200/50 dark:border-white/5 pb-2">Client Identification</h4>
                                         <div className="space-y-6 relative z-10">
-                                            <p className="text-slate-900 dark:text-white font-black text-2xl italic tracking-tight uppercase">{selectedOrder.customerName}</p>
-                                            <div className="space-y-3">
-                                                <p className="text-xs text-slate-600 dark:text-slate-400 flex items-center gap-4 font-black tracking-wider hover:text-cyan-400 transition-colors cursor-pointer"><Mail size={16} className="text-cyan-500" /> {selectedOrder.email}</p>
-                                                <p className="text-xs text-slate-600 dark:text-slate-400 flex items-center gap-4 font-black tracking-wider"><Phone size={16} className="text-cyan-500" /> {selectedOrder.phone}</p>
-                                            </div>
+                                            <p className="text-slate-900 dark:text-white font-bold text-2xl tracking-tight uppercase">{selectedOrder.customerName}</p>
+                                                <p className="text-xs text-slate-600 dark:text-slate-400 flex items-center gap-3 font-semibold tracking-wider hover:text-cyan-400 transition-colors cursor-pointer"><Mail size={14} className="text-cyan-500" /> {selectedOrder.email}</p>
+                                                <p className="text-xs text-slate-600 dark:text-slate-400 flex items-center gap-3 font-semibold tracking-wider"><Phone size={14} className="text-cyan-500" /> {selectedOrder.phone}</p>
                                         </div>
                                     </div>
-                                    <div className="bg-white dark:bg-slate-950/80 p-10 rounded-[3rem] border border-slate-200 dark:border-slate-800 relative overflow-hidden group/card shadow-2xl">
+
+                                    <div className="bg-white/40 dark:bg-white/5 p-8 rounded-[2rem] border border-slate-200/50 dark:border-white/5 relative overflow-hidden group/card">
                                         <div className="absolute -right-8 -bottom-8 text-slate-900 opacity-30 group-hover/card:text-blue-500/10 transition-colors"><MapPin size={150} /></div>
-                                        <h4 className="text-[11px] font-black text-slate-600 uppercase tracking-[0.3em] mb-8 italic relative z-10 border-b border-slate-900 pb-4">Destination Coordinates</h4>
-                                        <p className="text-sm text-slate-700 dark:text-slate-300 leading-[1.8] font-black italic relative z-10 decoration-slate-800 underline underline-offset-[12px] decoration-4">{selectedOrder.address}</p>
+                                        <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] mb-5 italic relative z-10 border-b border-slate-200/50 dark:border-white/5 pb-2">Destination Coordinates</h4>
+                                        <p className="text-base text-slate-700 dark:text-slate-300 leading-relaxed font-semibold relative z-10">{selectedOrder.address}</p>
                                     </div>
                                 </div>
 
-                                <div className="flex flex-col bg-white dark:bg-slate-950/80 p-10 rounded-[3rem] border border-slate-200 dark:border-slate-800 shadow-2xl">
-                                    <h4 className="text-[11px] font-black text-slate-600 uppercase tracking-[0.3em] mb-8 italic border-b border-slate-900 pb-4">Inventory Manifest</h4>
-                                    <div className="space-y-6 overflow-y-auto pr-3 custom-scrollbar flex-1 mb-8">
+                                <div className="flex flex-col bg-white/40 dark:bg-white/5 p-8 rounded-[2rem] border border-slate-200/50 dark:border-white/5">
+                                    <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] mb-5 italic border-b border-slate-200/50 dark:border-white/5 pb-2">Inventory Manifest</h4>
+                                    <div className="space-y-3 overflow-y-auto pr-3 custom-scrollbar flex-1 mb-6">
                                         {selectedOrder.items.map((item, idx) => (
-                                            <div key={idx} className="flex justify-between items-start py-6 border-b border-slate-900/50 last:border-0 group/item transition-colors hover:bg-slate-50 dark:bg-slate-900/20 px-4 rounded-2xl">
+                                            <div key={idx} className="flex justify-between items-start py-3 border-b border-slate-200/50 dark:border-white/5 last:border-0 group/item transition-colors hover:bg-slate-50 dark:bg-white/5 px-4 rounded-xl">
                                                 <div>
                                                     <div className="flex items-center gap-4">
-                                                        <p className="text-slate-900 dark:text-white text-base font-black italic tracking-tight">{item.name}</p>
+                                                        <p className="text-slate-900 dark:text-white text-base font-bold tracking-tight">{item.name}</p>
                                                         {item.driveFileId && (
-                                                            <a href={`https://drive.google.com/uc?id=${item.driveFileId}&export=download`} target="_blank" rel="noreferrer" className="p-2.5 bg-purple-500/10 hover:bg-purple-500 text-purple-400 hover:text-white rounded-xl transition-all border border-purple-500/20 shadow-lg" title="Capture Asset"><Eye size={14} /></a>
+                                                            <a href={`https://drive.google.com/uc?id=${item.driveFileId}&export=download`} target="_blank" rel="noreferrer" className="p-2.5 bg-purple-500/10 hover:bg-purple-500 text-purple-400 hover:text-white rounded-xl transition-all border border-purple-500/20" title="Capture Asset"><Eye size={14} /></a>
                                                         )}
                                                     </div>
-                                                    <div className="flex gap-4 mt-3">
-                                                        <span className="text-[10px] font-black uppercase text-slate-600 tracking-[0.1em]">QTY: {item.quantity}</span>
-                                                        {item.selectedColor && <span className="text-[10px] font-black uppercase text-slate-600 tracking-[0.1em]">NODE: {item.selectedColor}</span>}
+                                                    <div className="flex gap-4 mt-2">
+                                                        <span className="text-[10px] font-bold uppercase text-slate-500 tracking-[0.15em]">QTY: {item.quantity}</span>
+                                                        {item.selectedColor && <span className="text-[10px] font-bold uppercase text-slate-500 tracking-[0.15em]">NODE: {item.selectedColor}</span>}
                                                     </div>
                                                 </div>
-                                                <p className="text-cyan-400 font-black text-lg italic tracking-tighter">₹{parseAmt(item.price).toLocaleString('en-IN')}</p>
+                                                <p className="text-cyan-400 font-bold text-lg tracking-tighter">₹{parseAmt(item.price).toLocaleString('en-IN')}</p>
                                             </div>
                                         ))}
                                     </div>
-                                    <div className="pt-8 border-t-4 border-slate-200 dark:border-slate-800 flex justify-between items-end">
+                                    <div className="pt-6 border-t-2 border-slate-200/50 dark:border-white/10 flex justify-between items-end">
                                         <p className="text-[11px] font-black text-slate-500 uppercase tracking-[0.4em]">Gross Payload</p>
                                         <div className="text-right">
-                                            <p className="text-emerald-400 font-black text-3xl sm:text-5xl tracking-tighter italic">RS {parseAmt(selectedOrder.totalAmount).toLocaleString('en-IN')}</p>
+                                            <p className="text-emerald-400 font-bold text-3xl sm:text-4xl tracking-tighter uppercase italic">RS {parseAmt(selectedOrder.totalAmount).toLocaleString('en-IN')}</p>
                                             <p className="text-[9px] font-black text-slate-700 uppercase mt-2 tracking-widest">Inclusive of all network taxes</p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="bg-white dark:bg-slate-950 p-6 sm:p-10 rounded-2xl sm:rounded-[3rem] border-2 border-slate-200 dark:border-slate-800 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 sm:gap-10 shadow-2xl relative overflow-hidden">
+                            <div className="bg-white/40 dark:bg-white/5 p-6 rounded-2xl sm:rounded-[2rem] border-2 border-slate-200/50 dark:border-white/5 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 relative overflow-hidden">
                                 <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/5 blur-3xl rounded-full pointer-events-none" />
                                 <div className="w-full lg:w-auto z-10">
-                                    <h4 className="text-[11px] font-black text-slate-600 uppercase tracking-[0.3em] mb-5 italic border-l-4 border-cyan-500 pl-4">Lifecycle State Override</h4>
+                                    <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] mb-3 italic border-l-4 border-cyan-500 pl-4">Lifecycle State Override</h4>
                                     <div className="relative">
-                                        <select value={modalStatus} onChange={(e) => setModalStatus(e.target.value as Order["status"])} className={cn("w-full lg:w-80 px-4 sm:px-8 py-3 sm:py-5 pr-10 sm:pr-14 rounded-xl sm:rounded-[1.5rem] text-[10px] sm:text-[12px] font-black uppercase tracking-[0.4em] border-2 cursor-pointer focus:outline-none appearance-none transition-all shadow-2xl", getStatusStyle(modalStatus))}>
+                                        <select value={modalStatus} onChange={(e) => setModalStatus(e.target.value as Order["status"])} className={cn("w-full lg:w-80 px-4 sm:px-8 py-3 sm:py-5 pr-10 sm:pr-14 rounded-xl sm:rounded-[1.5rem] text-[10px] sm:text-[12px] font-black uppercase tracking-[0.4em] border-2 cursor-pointer focus:outline-none appearance-none transition-all", getStatusStyle(modalStatus))}>
                                             {["Waiting", "Order Taken", "Processing", "Ready to Delivery", "Delivered", "Completed", "Cancelled"].map(s => (
                                                 <option key={s} value={s} className="bg-white dark:bg-slate-950 font-black py-4">{s}</option>
                                             ))}
@@ -631,8 +630,8 @@ export default function OrdersTab() {
                                 </div>
                                 
                                 <div className="flex gap-3 sm:gap-5 w-full lg:w-auto z-10">
-                                    <button onClick={() => setSelectedOrder(null)} className="flex-1 lg:w-44 py-3 sm:py-5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-black rounded-xl sm:rounded-[1.5rem] transition-all uppercase tracking-[0.2em] text-[9px] sm:text-[11px] border border-slate-300 dark:border-slate-700 shadow-xl">Close Trace</button>
-                                    <button onClick={(e) => { if (modalStatus !== selectedOrder.status) updateOrderStatus(selectedOrder.id, modalStatus, e); setSelectedOrder(null); }} className="flex-1 lg:w-44 py-3 sm:py-5 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-xl sm:rounded-[1.5rem] transition-all uppercase tracking-[0.2em] text-[9px] sm:text-[11px] shadow-[0_20px_40px_-10px_rgba(16,185,129,0.3)] ring-1 ring-emerald-400/50">Commit Shift</button>
+                                    <button onClick={() => setSelectedOrder(null)} className="flex-1 lg:w-44 py-3 sm:py-5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-black rounded-xl sm:rounded-[1.5rem] transition-all uppercase tracking-[0.2em] text-[9px] sm:text-[11px] border border-slate-300 dark:border-slate-700">Close Trace</button>
+                                    <button onClick={(e) => { if (modalStatus !== selectedOrder.status) updateOrderStatus(selectedOrder.id, modalStatus, e); setSelectedOrder(null); }} className="flex-1 lg:w-44 py-3 sm:py-5 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-xl sm:rounded-[1.5rem] transition-all uppercase tracking-[0.2em] text-[9px] sm:text-[11px] ring-1 ring-emerald-400/50">Commit Shift</button>
                                 </div>
                             </div>
                         </motion.div>

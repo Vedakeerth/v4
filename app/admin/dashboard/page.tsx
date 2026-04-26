@@ -13,6 +13,7 @@ import {
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useAdminAuth } from "@/lib/adminAuth";
 import { signOut } from "firebase/auth";
+import NavigationManager from "@/components/admin/NavigationManager";
 
 interface Product {
   id: string;
@@ -187,7 +188,7 @@ export default function AdminDashboard() {
   }
 
   return (
-    <main className="min-h-screen bg-white dark:bg-slate-950 pt-24 pb-12">
+    <main className="min-h-screen bg-white dark:bg-slate-950 pt-6 pb-12">
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
@@ -227,6 +228,16 @@ export default function AdminDashboard() {
             }`}
           >
             Orders ({orders.length})
+          </button>
+          <button
+            onClick={() => setActiveTab("navigation" as any)}
+            className={`px-6 py-3 font-bold transition-all border-b-2 ${
+              activeTab === ("navigation" as any)
+                ? "text-purple-400 border-purple-500 bg-purple-500/5" 
+                : "text-slate-500 border-transparent hover:text-white"
+            }`}
+          >
+            Navigation
           </button>
         </div>
 
@@ -287,6 +298,8 @@ export default function AdminDashboard() {
               ))}
             </div>
           </>
+        ) : activeTab === ("navigation" as any) ? (
+          <NavigationManager />
         ) : (
           <div className="space-y-6">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -465,7 +478,7 @@ export default function AdminDashboard() {
             <p className="text-slate-600 dark:text-slate-400 mb-8">This action is permanent and cannot be undone.</p>
             <div className="flex gap-4">
               <button
-                onClick={() => handleDeleteProduct(deleteConfirm)}
+                onClick={() => deleteConfirm && handleDeleteProduct(deleteConfirm)}
                 className="flex-1 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl transition-all"
               >
                 Delete

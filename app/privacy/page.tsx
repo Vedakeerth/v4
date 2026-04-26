@@ -69,7 +69,7 @@ export default function PrivacyPolicyPage() {
                     </Link>
                     <h1 className="text-4xl md:text-6xl font-extrabold text-slate-900 dark:text-white mb-6 uppercase tracking-tight">Privacy Policy</h1>
                     <p className="text-slate-500 font-bold uppercase tracking-widest text-[10px]">Last updated: {lastUpdated}</p>
-                    <div className="h-1 w-20 bg-cyan-500 mt-8 rounded-full shadow-[0_0_15px_rgba(6,182,212,0.5)]" />
+                    <div className="h-1 w-20 bg-cyan-500 mt-8 rounded-full" />
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
@@ -86,12 +86,12 @@ export default function PrivacyPolicyPage() {
                                 VAELINSA ("Company", "we", "our", or "us") is committed to protecting the privacy, confidentiality, and security of personal information entrusted to us. This Privacy Policy explains how we collect, use, store, process, disclose, and safeguard personal data when you access our website or use our 3D printing, prototyping, and product development services.
                             </p>
                             <p className="mb-4">
-                                This Privacy Policy is formulated in accordance with:
+                                This Privacy Policy is formulated in accordance with applicable laws of India, including:
                             </p>
                             <ul className="list-disc pl-6 mb-4 space-y-2">
-                                <li>The Information Technology Act, 2000 (India)</li>
+                                <li>The Information Technology Act, 2000</li>
                                 <li>The Information Technology (Reasonable Security Practices and Procedures and Sensitive Personal Data or Information) Rules, 2011</li>
-                                <li>The General Data Protection Regulation (EU) 2016/679 (GDPR)</li>
+                                <li>The Digital Personal Data Protection Act, 2023</li>
                             </ul>
                             <p>
                                 By using our website or services, you acknowledge that you have read, understood, and agreed to this Privacy Policy.
