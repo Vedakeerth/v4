@@ -169,7 +169,7 @@ export default function ProductDetailClient({ product, similarProducts, pageData
                                     {product.availabilityStatus || (product.inStock ? "In Stock" : "Out of Stock")}
                                 </span>
                                 {product.stockCount !== undefined && product.stockCount > 0 && (
-                                    <span className="text-slate-500 text-[10px] font-bold uppercase tracking-widest">
+                                    <span className="text-slate-600 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest">
                                         {product.stockCount} Units Available
                                     </span>
                                 )}
@@ -204,7 +204,7 @@ export default function ProductDetailClient({ product, similarProducts, pageData
                                     />
                                 ))}
                             </div>
-                            <p className="mt-3 text-sm text-slate-600 dark:text-slate-400">
+                            <p className="mt-3 text-sm text-slate-700 dark:text-slate-300">
                                 Selected: <span className="text-slate-900 dark:text-white font-medium">{getColorName(selectedColor)}</span>
                             </p>
                         </div>
@@ -234,7 +234,7 @@ export default function ProductDetailClient({ product, similarProducts, pageData
                                         <span className="text-xl">+</span>
                                     </button>
                                 </div>
-                                <div className="text-slate-600 dark:text-slate-400">
+                                <div className="text-slate-700 dark:text-slate-300">
                                     {pageData?.totalLabel || "Total"}: <span className="text-cyan-400 font-bold text-xl ml-2">
                                         ₹{(parsePrice(product.price) * quantity).toFixed(2)}
                                     </span>

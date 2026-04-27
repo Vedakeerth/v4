@@ -60,7 +60,7 @@ export default function InstantQuoteModal({ product, onClose }: InstantQuoteModa
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-white dark:bg-slate-950 backdrop-blur-xl">
             <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-full max-w-lg rounded-2xl p-6 shadow-2xl">
                 <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                    <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
                         <FileText className="text-cyan-400" /> AI Quotation
                     </h2>
                     <button onClick={onClose} className="p-2 hover:bg-slate-100 dark:bg-slate-800 rounded-full text-slate-600 dark:text-slate-400 transition-colors">
@@ -73,7 +73,7 @@ export default function InstantQuoteModal({ product, onClose }: InstantQuoteModa
                         <User className="absolute left-3 top-3.5 h-4 w-4 text-slate-500" />
                         <input
                             placeholder="Your Name"
-                            className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg pl-10 pr-4 py-3 text-white focus:border-cyan-500 outline-none"
+                            className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg pl-10 pr-4 py-3 text-slate-900 dark:text-white focus:border-cyan-500 outline-none"
                             value={userDetails.name}
                             onChange={e => setUserDetails({ ...userDetails, name: e.target.value })}
                         />
@@ -82,7 +82,7 @@ export default function InstantQuoteModal({ product, onClose }: InstantQuoteModa
                         <Mail className="absolute left-3 top-3.5 h-4 w-4 text-slate-500" />
                         <input
                             placeholder="Email Address"
-                            className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg pl-10 pr-4 py-3 text-white focus:border-cyan-500 outline-none"
+                            className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg pl-10 pr-4 py-3 text-slate-900 dark:text-white focus:border-cyan-500 outline-none"
                             value={userDetails.email}
                             onChange={e => setUserDetails({ ...userDetails, email: e.target.value })}
                         />
@@ -92,7 +92,7 @@ export default function InstantQuoteModal({ product, onClose }: InstantQuoteModa
                             <Phone className="absolute left-3 top-3.5 h-4 w-4 text-slate-500" />
                             <input
                                 placeholder="Phone"
-                                className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg pl-10 pr-4 py-3 text-white focus:border-cyan-500 outline-none"
+                                className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg pl-10 pr-4 py-3 text-slate-900 dark:text-white focus:border-cyan-500 outline-none"
                                 value={userDetails.phone}
                                 onChange={e => setUserDetails({ ...userDetails, phone: e.target.value })}
                             />
@@ -101,7 +101,7 @@ export default function InstantQuoteModal({ product, onClose }: InstantQuoteModa
                             <Building className="absolute left-3 top-3.5 h-4 w-4 text-slate-500" />
                             <input
                                 placeholder="Company"
-                                className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg pl-10 pr-4 py-3 text-white focus:border-cyan-500 outline-none"
+                                className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg pl-10 pr-4 py-3 text-slate-900 dark:text-white focus:border-cyan-500 outline-none"
                                 value={userDetails.company}
                                 onChange={e => setUserDetails({ ...userDetails, company: e.target.value })}
                             />
@@ -198,8 +198,8 @@ export default function InstantQuoteModal({ product, onClose }: InstantQuoteModa
                                     <span className="font-bold">Calculated at Checkout</span>
                                 </div>
                                 <div className="h-px bg-slate-100 my-2" />
-                                <div className="flex justify-between items-center bg-slate-50 dark:bg-slate-900 text-white p-4 rounded-xl">
-                                    <span className="text-xs font-black uppercase tracking-widest opacity-60">Grand Total</span>
+                                <div className="flex justify-between items-center bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white p-4 rounded-xl">
+                                    <span className="text-slate-600 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest">Grand Total</span>
                                     <span className="text-xl font-black">{product.price}</span>
                                 </div>
                             </div>

@@ -308,15 +308,15 @@ function CheckoutContent() {
                                     <div className="space-y-6 bg-white dark:bg-slate-950/40 p-6 rounded-2xl border border-slate-200 dark:border-slate-800/50">
                                         <div className="grid grid-cols-2 gap-6">
                                             <div>
-                                                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-1">Customer Name</span>
+                                                <span className="text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest block mb-1">Customer Name</span>
                                                 <span className="text-sm font-semibold text-slate-900 dark:text-white">{formData.customerName}</span>
                                             </div>
                                             <div>
-                                                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-1">Phone Number</span>
+                                                <span className="text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest block mb-1">Phone Number</span>
                                                 <span className="text-sm font-semibold text-slate-900 dark:text-white">{formData.countryCode} {formData.phone}</span>
                                             </div>
                                             <div className="col-span-2">
-                                                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-1">Email <span className="text-cyan-400">*Order details will be sent here*</span></span>
+                                                <span className="text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest block mb-1">Email <span className="text-cyan-400">*Order details will be sent here*</span></span>
                                                 <span className="text-sm font-semibold text-slate-900 dark:text-white">{formData.email}</span>
                                             </div>
                                         </div>
@@ -325,7 +325,7 @@ function CheckoutContent() {
                                     <div className="space-y-6 bg-white dark:bg-slate-950/40 p-6 rounded-2xl border border-slate-200 dark:border-slate-800/50 mt-6 mb-8">
                                         <div className="grid grid-cols-1 gap-6">
                                             <div>
-                                                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-1">Shipping Address</span>
+                                                <span className="text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest block mb-1">Shipping Address</span>
                                                 <span className="text-sm font-semibold text-slate-900 dark:text-white block">
                                                     {formData.doorNo}, {formData.street}
                                                 </span>
@@ -365,7 +365,7 @@ function CheckoutContent() {
                                     </h2>
                                     <form id="shipping-form" onSubmit={handleShippingSubmit} className="space-y-6">
                                         <div className="space-y-2">
-                                            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Full Name</label>
+                                            <label className="text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">Full Name</label>
                                             <input
                                                 required
                                                 type="text"
@@ -377,7 +377,7 @@ function CheckoutContent() {
                                             />
                                         </div>
                                         <div className="space-y-2">
-                                            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Phone Number</label>
+                                            <label className="text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">Phone Number</label>
                                             <div className="flex gap-2">
                                                 <input
                                                     required
@@ -441,7 +441,7 @@ function CheckoutContent() {
                                             </div>
                                         </div>
                                         <div className="space-y-2">
-                                            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Email Address</label>
+                                            <label className="text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">Email Address</label>
                                             <input
                                                 required
                                                 type="email"
@@ -454,7 +454,7 @@ function CheckoutContent() {
                                         </div>
                                         <div className="grid grid-cols-2 gap-4">
                                             <div className="space-y-2">
-                                                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Door No / Flat</label>
+                                                <label className="text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">Door No / Flat</label>
                                                 <input
                                                     required
                                                     type="text"
@@ -466,7 +466,7 @@ function CheckoutContent() {
                                                 />
                                             </div>
                                             <div className="space-y-2">
-                                                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Street / Area</label>
+                                                <label className="text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">Street / Area</label>
                                                 <input
                                                     required
                                                     type="text"
@@ -480,7 +480,7 @@ function CheckoutContent() {
                                         </div>
                                         <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
                                             <div className="space-y-2 lg:col-span-1">
-                                                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Pincode</label>
+                                                <label className="text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">Pincode</label>
                                                 <input
                                                     required
                                                     type="text"
@@ -493,7 +493,7 @@ function CheckoutContent() {
                                                 />
                                             </div>
                                             <div className="space-y-2 lg:col-span-1">
-                                                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">City</label>
+                                                <label className="text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">City</label>
                                                 <input
                                                     required
                                                     type="text"
@@ -505,7 +505,7 @@ function CheckoutContent() {
                                                 />
                                             </div>
                                             <div className="space-y-2 lg:col-span-1">
-                                                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">State</label>
+                                                <label className="text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">State</label>
                                                 <input
                                                     required
                                                     type="text"
@@ -518,7 +518,7 @@ function CheckoutContent() {
                                             </div>
                                         </div>
                                         <div className="space-y-2">
-                                            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Additional Message / Delivery Notes</label>
+                                            <label className="text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">Additional Message / Delivery Notes</label>
                                             <textarea
                                                 name="message"
                                                 rows={2}
@@ -562,7 +562,7 @@ function CheckoutContent() {
                                         </div>
                                         <div className="flex-1 py-1">
                                             <h3 className="text-slate-900 dark:text-white font-semibold text-sm mb-1">{item.name}</h3>
-                                            <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest">Quantity: {item.quantity}</p>
+                                            <p className="text-slate-600 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest">Quantity: {item.quantity}</p>
                                             <p className="text-cyan-400 text-sm font-bold mt-2 italic">{item.price}</p>
                                         </div>
                                     </div>
@@ -571,7 +571,7 @@ function CheckoutContent() {
 
                             <div className="border-t-2 border-slate-200 dark:border-slate-800 pt-6 space-y-3">
                                 <div className="flex justify-between text-xs font-bold uppercase tracking-widest">
-                                    <span className="text-slate-500">Subtotal</span>
+                                    <span className="text-slate-600 dark:text-slate-400">Subtotal</span>
                                     <span className="text-slate-900 dark:text-white">Rs {cartTotal.toFixed(2)}</span>
                                 </div>
                                 {appliedCoupon && (
@@ -581,7 +581,7 @@ function CheckoutContent() {
                                     </div>
                                 )}
                                 <div className="flex justify-between text-xs font-bold uppercase tracking-widest">
-                                    <span className="text-slate-500">Shipping</span>
+                                    <span className="text-slate-600 dark:text-slate-400">Shipping</span>
                                     <span className="text-emerald-500">Free</span>
                                 </div>
                                 <div className="flex justify-between items-end pt-4 border-t border-slate-200 dark:border-slate-800/50">
