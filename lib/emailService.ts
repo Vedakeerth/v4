@@ -20,7 +20,7 @@ const TRACKING_MAP: Record<string, string> = {
 };
 
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend(process.env.RESEND_API_KEY || 're_dummy_key_for_build');
 const FROM_EMAIL = 'Vaelinsa <sales@vaelinsa.com>';
 
 // Local getColorName removed in favor of import
