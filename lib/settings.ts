@@ -34,7 +34,7 @@ const defaultSettings: SiteSettings = {
     showProjectsOnProducts: false,
     showProductsOnProducts: true,
     contactEmail: "support@vaelinsa.com",
-    contactPhone: "+91 XXXXXXXXXX",
+    contactPhone: "+91 89035 95542",
     contactAddress: "Your Address Here",
     footerAboutText: "Premium additive manufacturing and design services for the modern engineer.",
     navbarLinks: [
@@ -46,7 +46,7 @@ const defaultSettings: SiteSettings = {
         { name: "Tracking Product", href: "/track-order" },
     ],
     footerLinks: [
-        { name: "Product Catalog", href: "/catalog" },
+        { name: "Gallery", href: "/gallery" },
         { name: "Track Your Order", href: "/track-order" },
         { name: "Blog & Updates", href: "/blog" },
         { name: "Privacy Policy", href: "/privacy" },

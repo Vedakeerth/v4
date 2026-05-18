@@ -28,5 +28,11 @@
         "name": "YouTube",
         "url": "https://youtube.com/@vaelinsa",
         "icon": "Youtube"
+    },
+    {
+        "id": "whatsapp",
+        "name": "WhatsApp",
+        "url": "https://wa.me/918903595542",
+        "icon": "Whatsapp"
     }
 ]

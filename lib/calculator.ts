@@ -24,10 +24,10 @@ export const PRINTER_CONSTANTS = {
         prepareTime: 420 // seconds
     },
     material: {
-        'PLA': { density: 1.24, costPerKg: 1800, multiplier: 1.0 },
-        'ABS': { density: 1.04, costPerKg: 2000, multiplier: 1.2 },
-        'PETG': { density: 1.27, costPerKg: 1900, multiplier: 1.1 },
-        'TPU': { density: 1.21, costPerKg: 3000, multiplier: 1.5 },
+        'PLA': { density: 1.24, costPerKg: 6750, multiplier: 1.0 },
+        'ABS': { density: 1.04, costPerKg: 7000, multiplier: 1.0 },
+        'PETG': { density: 1.27, costPerKg: 6850, multiplier: 1.0 },
+        'TPU': { density: 1.21, costPerKg: 7500, multiplier: 1.0 },
     }
 };
 
@@ -187,7 +187,8 @@ export function calculatePrice(
     surfaceAreaMm2: number = 0,
     heightMm: number = 0,
     color?: string,
-    settings?: QuoteSettings
+    settings?: QuoteSettings,
+    customPricePerGram?: number
 ) {
     const activeSettings = settings || {
         labourCost: 25,
@@ -218,8 +219,8 @@ export function calculatePrice(
     const internalVolume = Math.max(0, modelVolume_mm3 - shellVolume);
     const actualInfillVolume = internalVolume * infillRatio;
 
-    // Support Heuristic: 80% of total volume (Precisely matches user's high-support benchmark)
-    const supportVolume = modelVolume_mm3 * 0.80;
+    // Support Heuristic: 10% of total volume (Standard for general 3D prints)
+    const supportVolume = modelVolume_mm3 * 0.10;
 
     // 3. Extrusion Lengths (for time estimation)
     // cross section area = width * height
@@ -259,8 +260,16 @@ export function calculatePrice(
     const colorMult = color && activeSettings.colors ? (activeSettings.colors[color]?.multiplier || 1.0) : 1.0;
     const infillMult = activeSettings.infillPatternMultipliers ? (activeSettings.infillPatternMultipliers[infillPattern] || 1.0) : 1.0;
 
-    const unifiedFilamentCost = (weightGrams / 1000) * matData.costPerKg * matData.multiplier * colorMult * infillMult;
-    const labourCost = activeSettings.labourCost;
+    let unifiedFilamentCost = 0;
+    let labourCost = 0;
+
+    if (customPricePerGram !== undefined) {
+        unifiedFilamentCost = weightGrams * customPricePerGram;
+        labourCost = 0; // When using custom offline pricing, we skip default labor cost
+    } else {
+        unifiedFilamentCost = (weightGrams / 1000) * matData.costPerKg * matData.multiplier * colorMult * infillMult;
+        labourCost = activeSettings.labourCost;
+    }
 
     const finalPrice = Number((unifiedFilamentCost + labourCost).toFixed(2));
 

@@ -3,24 +3,27 @@
 import { redirectToCashfree } from "@/lib/cashfree";
 
 import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
-import { Upload, FileBox, Trash2, FileText, AlignJustify, Grid3x3, Waves, Box } from 'lucide-react';
+import { useSession, signIn } from 'next-auth/react';
+import { Upload, FileBox, Trash2, FileText, AlignJustify, Grid3x3, Waves, Box, LogIn } from 'lucide-react';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 import { useDropzone } from 'react-dropzone';
 import { calculatePrice, LAYER_HEIGHTS, MATERIALS, INFILL_PATTERNS } from '@/lib/calculator';
 import { getQuoteSettings, type QuoteSettings } from '@/lib/quote-settings';
 import dynamic from 'next/dynamic';
+import { useSearchParams } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import { calculateShipping, ShippingDetails } from '@/lib/shippingCalculator';
 
-const STLViewer = dynamic(() => import('./STLViewer'), {
+const STLViewer = dynamic(() => import('@/components/STLViewer'), {
     loading: () => <div className="flex h-full w-full min-h-[400px] items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-900/50"><Skeleton variant="rounded" height={400} className="w-full" /></div>,
     ssr: false,
 });
-import QuotationDocument from './QuotationDocument';
+import QuotationDocument from '@/components/QuotationDocument';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import { Skeleton } from './Skeleton';
-import CustomDropdown from './CustomDropdown';
+import { Skeleton } from '@/components/Skeleton';
+import CustomDropdown from '@/components/CustomDropdown';
 import Recaptcha from "@/components/Recaptcha";
 
 // Icon mapping for Infill Patterns
@@ -65,9 +68,15 @@ function AnimationLoop5Times() {
 
 interface QuoteCalculatorProps {
     sessionId?: string;
+    isAdminMode?: boolean;
 }
 
-export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
+export default function QuoteCalculator({ sessionId, isAdminMode = false }: QuoteCalculatorProps) {
+    const { data: session } = useSession();
+    const searchParams = useSearchParams();
+    const source = searchParams.get('source');
+    const rootFolder = source === 'gallery' ? 'INVOICE' : 'QUOTATION';
+
     const [uploadedFiles, setUploadedFiles] = useState<{
         id: string;
         file: File;
@@ -78,6 +87,7 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
         scale: number;
         color: string;
         quantity: number;
+        customPriceOverride?: number;
     }[]>([]);
     const [selectedFileId, setSelectedFileId] = useState<string | null>(null);
 
@@ -89,6 +99,9 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
     const [rotation, setRotation] = useState({ x: 0, y: 0, z: 0 });
 
     // Order acceptance states
+    const [megaLink, setMegaLink] = useState('');
+    const [useMega, setUseMega] = useState(false);
+    const MEGA_FOLDER_LINK = "https://mega.nz/folder/70QEDYaa#IZnYAltMGwGxgj2oXDqjdg";
     const [isPaymentAccepted, setIsPaymentAccepted] = useState(false);
     const [isTermsAccepted, setIsTermsAccepted] = useState(false);
     const [showPaymentInfo, setShowPaymentInfo] = useState(false);
@@ -129,10 +142,14 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
     };
 
     // Modal & Order State
-    // const [isModalOpen, setIsModalOpen] = useState(false);
+    const [customPricePerGram, setCustomPricePerGram] = useState<number>(6.75);
     const [orderStep, setOrderStep] = useState<'form' | 'preview' | 'success'>('form');
+    const [uploadedPdfUrl, setUploadedPdfUrl] = useState('');
+    const [uploadedFolderUrl, setUploadedFolderUrl] = useState('');
     const [quoteDetails, setQuoteDetails] = useState({ id: '', date: '', dueDate: '' });
     const [hasScrolledToBottom, setHasScrolledToBottom] = useState(false);
+    const [previewScale, setPreviewScale] = useState(1);
+    const previewContainerRef = useRef<HTMLDivElement>(null);
 
     // Detailed User Details State
     const [userDetails, setUserDetails] = useState({
@@ -155,11 +172,49 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
     const [uploadStatus, setUploadStatus] = useState('');
     const [orderId, setOrderId] = useState('');
     const [settings, setSettings] = useState<QuoteSettings | null>(null);
+    const [shippingDetails, setShippingDetails] = useState<ShippingDetails | null>(null);
 
     // Fetch settings on mount
     useEffect(() => {
         getQuoteSettings().then(setSettings);
     }, []);
+
+    // Handle preview scaling
+    useEffect(() => {
+        if (orderStep !== 'preview' || !previewContainerRef.current) return;
+
+        const updateScale = () => {
+            if (!previewContainerRef.current) return;
+            const containerWidth = previewContainerRef.current.clientWidth - 32; // padding
+            const targetWidth = 794; // A4 width in px
+            if (containerWidth < targetWidth) {
+                setPreviewScale(containerWidth / targetWidth);
+            } else {
+                setPreviewScale(1);
+            }
+        };
+
+        const observer = new ResizeObserver(updateScale);
+        observer.observe(previewContainerRef.current);
+        updateScale();
+
+        return () => observer.disconnect();
+    }, [orderStep]);
+
+    // Handle body scroll lock
+    useEffect(() => {
+        const isAnyModalOpen = showPaymentInfo || showTermsInfo || showContactForm || orderStep === 'preview' || orderStep === 'success';
+        
+        if (isAnyModalOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [showPaymentInfo, showTermsInfo, showContactForm, orderStep]);
 
     // Pincode Lookup Handler
     const handlePincodeChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -168,25 +223,99 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
 
         if (code.length === 6) {
             try {
-                const res = await fetch(`/api/pincode?code=${code}`);
+                const res = await fetch(`https://api.postalpincode.in/pincode/${code}`);
                 const data = await res.json();
-                if (Array.isArray(data) && data.length > 0 && data[0].Status === 'Success') {
-                    const postOffices = data[0].PostOffice;
-                    if (Array.isArray(postOffices) && postOffices.length > 0) {
-                        const details = postOffices[0];
-                        setUserDetails(prev => ({
-                            ...prev,
-                            city: details.Block !== 'NA' ? details.Block : details.Name,
-                            district: details.District,
-                            state: details.State,
-                            area: details.Name, // Explicitly set area from pincode
-                            pincode: code
-                        }));
-                    }
+                if (data[0].Status === "Success") {
+                    const details = data[0].PostOffice[0];
+                    setUserDetails(prev => ({
+                        ...prev,
+                        city: details.District,
+                        district: details.District,
+                        state: details.State,
+                        area: details.Name,
+                        pincode: code
+                    }));
                 }
             } catch (error) {
                 console.error("Failed to fetch pincode details", error);
             }
+        }
+    };
+
+    // Calculate shipping whenever location or products change
+    useEffect(() => {
+        if (uploadedFiles.length > 0) {
+            const products = uploadedFiles.map(f => ({
+                weight: (f.volume * 1.25) || 500, // 1.25g/cm3 density for PLA fallback
+                dimensions: {
+                    length: f.dimensions?.x || 15,
+                    width: f.dimensions?.y || 15,
+                    height: f.dimensions?.z || 10
+                },
+                quantity: f.quantity || 1
+            }));
+
+            // Calculate preliminary total for free shipping check
+            let subtotal = 0;
+            uploadedFiles.forEach(file => {
+                if (file.volume > 0) {
+                    const res = calculatePrice(file.volume, material, infillPercent, infillPattern, layerHeight, file.surfaceArea, file.height, file.color, settings || undefined, isAdminMode ? customPricePerGram : undefined);
+                    subtotal += (file.customPriceOverride !== undefined ? file.customPriceOverride : res.price) * file.quantity;
+                }
+            });
+
+            const details = calculateShipping(products, userDetails.state || "", subtotal, userDetails.pincode || "");
+            setShippingDetails(details);
+        } else {
+            setShippingDetails(null);
+        }
+    }, [userDetails.state, userDetails.pincode, uploadedFiles, material, infillPercent, infillPattern, layerHeight, settings, isAdminMode, customPricePerGram]);
+
+    const handleContactSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (userDetails.phone.length !== 10) {
+            alert('Please enter a valid 10-digit phone number');
+            return;
+        }
+
+        if (!recaptchaToken && process.env.NODE_ENV === 'production') {
+            alert('Please complete the reCAPTCHA verification');
+            return;
+        }
+
+        setIsSending(true);
+        try {
+            console.log("[QuoteCalculator] Fetching sequential ID...");
+            const prefix = source === 'gallery' ? 'IN' : 'VQ';
+            const idRes = await fetch(`/api/generate-id?prefix=${prefix}`);
+            const idData = await idRes.json();
+            if (!idData.success) throw new Error("Failed to generate official ID");
+
+            const quoteId = idData.trackingId;
+            const now = new Date();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const quoteDate = `${day}-${month}-${now.getFullYear()}`;
+
+            const dueDateObj = new Date(now);
+            dueDateObj.setDate(dueDateObj.getDate() + 10);
+            const dueDay = String(dueDateObj.getDate()).padStart(2, '0');
+            const dueMonth = String(dueDateObj.getMonth() + 1).padStart(2, '0');
+            const dueDate = `${dueDay}-${dueMonth}-${dueDateObj.getFullYear()}`;
+
+            setQuoteDetails({
+                id: quoteId,
+                date: quoteDate,
+                dueDate: dueDate
+            });
+
+            setShowContactForm(false);
+            setOrderStep('preview');
+        } catch (err) {
+            console.error(err);
+            alert("Failed to prepare quotation. Please try again.");
+        } finally {
+            setIsSending(false);
         }
     };
 
@@ -213,9 +342,11 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                     file.surfaceArea,
                     file.height,
                     file.color,
-                    settings || undefined
+                    settings || undefined,
+                    isAdminMode ? customPricePerGram : undefined
                 );
-                totalPrice += res.price * file.quantity;
+                const activePrice = file.customPriceOverride !== undefined ? file.customPriceOverride : res.price;
+                totalPrice += activePrice * file.quantity;
                 totalWeight += res.weight * file.quantity;
                 totalTime += res.time * file.quantity;
                 hasVolume = true;
@@ -226,24 +357,91 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
         if (uploadedFiles.length === 0) return null;
 
         let discount = 0;
+        let activeTier = null;
+
+        // Use settings or fallback to defaults for calculation
+        const tiers = settings?.discountTiers?.length ? settings.discountTiers : [
+            { threshold: 1500, percentage: 5 },
+            { threshold: 2500, percentage: 10 },
+            { threshold: 3500, percentage: 20 }
+        ];
+
         if (appliedCoupon) {
             if (appliedCoupon.type === 'percentage') {
                 discount = (totalPrice * appliedCoupon.value) / 100;
             } else if (appliedCoupon.type === 'fixed') {
                 discount = appliedCoupon.value;
             }
+        } else {
+            // Find the highest qualifying tier
+            const sortedTiers = [...tiers].sort((a, b) => b.threshold - a.threshold);
+            activeTier = sortedTiers.find(t => totalPrice >= t.threshold);
+            if (activeTier) {
+                discount = (totalPrice * activeTier.percentage) / 100;
+            }
         }
 
-        const netPrice = Math.max(0, totalPrice - discount);
+        const finalTotal = Math.max(0, totalPrice - discount);
+        const shipping = shippingDetails?.totalShipping || 0;
 
         return {
-            price: totalPrice,
-            discount: discount,
-            netPrice: netPrice,
-            weight: Number(totalWeight.toFixed(1)),
-            time: Math.round(totalTime * 10) / 10
+            subtotal: totalPrice,
+            weight: totalWeight,
+            time: totalTime,
+            discount,
+            finalTotal,
+            shipping,
+            grandTotal: finalTotal + shipping,
+            tier: activeTier
         };
-    }, [uploadedFiles, material, infillPercent, infillPattern, layerHeight, settings]);
+    }, [uploadedFiles, material, infillPercent, infillPattern, layerHeight, appliedCoupon, settings, isAdminMode, customPricePerGram, shippingDetails]);
+
+    // Pre-calculate detailed items for email/API to ensure consistency
+    const detailedItems = useMemo(() => {
+        return uploadedFiles.map(f => {
+            const res = calculatePrice(
+                f.volume,
+                material,
+                infillPercent,
+                infillPattern,
+                layerHeight,
+                f.surfaceArea,
+                f.height,
+                f.color,
+                settings || undefined,
+                isAdminMode ? customPricePerGram : undefined
+            );
+            const activePrice = f.customPriceOverride !== undefined ? f.customPriceOverride : res.price;
+            return {
+                id: f.id,
+                name: f.file.name,
+                dimensions: f.dimensions,
+                scale: f.scale,
+                volume: f.volume,
+                color: f.color,
+                quantity: f.quantity,
+                price: activePrice,
+                total: activePrice * f.quantity,
+                fileUrl: '' // To be filled during upload
+            };
+        });
+    }, [uploadedFiles, material, infillPercent, infillPattern, layerHeight, settings, isAdminMode, customPricePerGram]);
+
+    // Celebration effect logic
+    const [showCelebration, setShowCelebration] = useState(false);
+    const lastDiscountRef = useRef(0);
+
+    useEffect(() => {
+        if (totalResults?.discount && totalResults.discount > lastDiscountRef.current) {
+            setShowCelebration(true);
+            const timer = setTimeout(() => setShowCelebration(false), 3000);
+            lastDiscountRef.current = totalResults.discount;
+            return () => clearTimeout(timer);
+        }
+        if (!totalResults?.discount) {
+            lastDiscountRef.current = 0;
+        }
+    }, [totalResults?.discount]);
 
     // File Drop Handler with validation
     const onDrop = useCallback((acceptedFiles: File[], rejectedFiles: any[]) => {
@@ -251,7 +449,7 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
         if (rejectedFiles.length > 0) {
             const reasons = rejectedFiles.map(({ file, errors }) => {
                 if (errors.some((e: any) => e.code === 'file-too-large')) {
-                    return `${file.name}: File exceeds 50MB limit`;
+                    return `${file.name}: File exceeds 25MB limit`;
                 }
                 if (errors.some((e: any) => e.code === 'file-invalid-type')) {
                     return `${file.name}: Invalid file type`;
@@ -365,9 +563,9 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
         }
     };
 
-    const handleDownloadPDF = async () => {
+    const generatePDFBlob = async (): Promise<Blob | null> => {
         const input = document.getElementById('quotation-paper');
-        if (!input) return;
+        if (!input) return null;
 
         try {
             const canvas = await html2canvas(input, {
@@ -386,8 +584,6 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                 onclone: (clonedDoc) => {
                     const body = clonedDoc.body;
                     const html = clonedDoc.documentElement;
-
-                    // Force absolute zero margins and hide overflows to prevent scrap capture
                     html.style.margin = '0';
                     html.style.padding = '0';
                     html.style.overflow = 'hidden';
@@ -416,9 +612,22 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
             });
 
             pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297, undefined, 'FAST');
-            pdf.save(`Quotation_${quoteDetails.id}.pdf`);
+            return pdf.output('blob');
         } catch (error) {
             console.error('PDF Generation Error:', error);
+            return null;
+        }
+    };
+
+    const handleDownloadPDF = async () => {
+        const blob = await generatePDFBlob();
+        if (blob) {
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `Quotation_${quoteDetails.id}.pdf`;
+            link.click();
+            URL.revokeObjectURL(url);
         }
     };
 
@@ -482,7 +691,7 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
             'application/octet-stream': ['.stl']
         },
         maxFiles: 5,
-        maxSize: 50 * 1024 * 1024, // 50MB
+        maxSize: 25 * 1024 * 1024, // 25MB
         noClick: true,
     });
 
@@ -493,7 +702,7 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                     <div className="lg:col-span-7 space-y-6">
                         <div
                             {...getRootProps()}
-                            className="aspect-square lg:aspect-video w-full cursor-pointer hover:opacity-90 transition-opacity relative group"
+                            className="aspect-square lg:aspect-video w-full cursor-pointer hover:opacity-100 transition-all relative group border border-slate-200 dark:border-slate-800 rounded-[2.5rem] overflow-hidden bg-white dark:bg-slate-900/30 p-3 sm:p-4"
                             onClick={() => !selectedFile && open()}
                         >
                             <input {...getInputProps()} />
@@ -510,28 +719,33 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                                     uploadedCount={uploadedFiles.length}
                                 />
                             ) : selectedFile?.file ? (
-                                <div className="flex h-full w-full min-h-[400px] flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 text-center p-8">
-                                    <div className="mb-4 rounded-full bg-slate-100 dark:bg-slate-800 p-4">
-                                        <FileText className="text-cyan-400" size={48} />
+                                <div className="flex h-full w-full min-h-[400px] flex-col items-center justify-center rounded-[2rem] border-2 border-dashed border-cyan-400/40 dark:border-cyan-500/20 bg-cyan-50/30 dark:bg-cyan-950/10 text-center p-8 transition-all">
+                                    <div className="mb-4 rounded-full bg-cyan-100 dark:bg-cyan-900/30 p-4">
+                                        <FileText className="text-cyan-500" size={48} />
                                     </div>
                                     <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-200 mb-2">{selectedFile.file.name}</h3>
                                     <p className="text-sm text-slate-700 dark:text-slate-400">
                                         {(selectedFile.file.size / 1024 / 1024).toFixed(2)} MB
                                     </p>
-                                    <p className="text-xs text-slate-500 mt-4">STL 3D Model</p>
-                                    <p className="text-xs text-slate-600 mt-2">Processing 3D model...</p>
+                                    <p className="text-xs text-slate-500 mt-4 font-bold uppercase tracking-widest">STL 3D Model</p>
+                                    <p className="text-xs text-cyan-600 dark:text-cyan-400 mt-2 animate-pulse font-medium">Processing 3D model...</p>
                                 </div>
                             ) : (
-                                <div className="flex h-full w-full min-h-[400px] flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-cyan-500/50 hover:bg-slate-100 dark:bg-slate-800/30 transition-all text-center p-8 group">
-                                    <div className="mb-4 rounded-full bg-slate-100 dark:bg-slate-800 p-4 group-hover:bg-cyan-500/20 transition-colors">
-                                        <Upload className="text-slate-600 dark:text-slate-400 group-hover:text-cyan-400" size={32} />
+                                <div className="flex h-full w-full min-h-[400px] flex-col items-center justify-center rounded-[2rem] border-2 border-dashed border-cyan-400/40 dark:border-cyan-500/20 hover:border-cyan-500/60 bg-cyan-50/30 dark:bg-cyan-950/10 hover:bg-cyan-50/50 dark:hover:bg-cyan-950/20 transition-all text-center p-8 group">
+                                    <div className="mb-6 rounded-full bg-cyan-100/50 dark:bg-cyan-900/30 p-6 group-hover:scale-110 transition-transform duration-300 shadow-inner">
+                                        <Upload className="text-cyan-600 dark:text-cyan-400" size={32} />
                                     </div>
-                                    <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-200">Click to Upload STL Files</h3>
-                                    <p className="text-sm text-slate-600 mt-2">or drag and drop below</p>
-                                    <p className="text-xs text-slate-700 mt-4">Max size: 50MB per file • Max files: 5</p>
-                                    <p className="text-xs text-slate-700 mt-1">Format: STL files only</p>
-                                    <div className="mt-8 px-6 py-2 bg-slate-100 dark:bg-slate-800/50 rounded-full border border-slate-300 dark:border-slate-700/50">
-                                        <span className="text-xs font-bold text-slate-700 dark:text-slate-400 uppercase tracking-widest">
+                                    <h3 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">Click to Upload STL Files</h3>
+                                    <p className="text-sm text-slate-600 dark:text-slate-400 mt-2 font-medium">or drag and drop below</p>
+                                    
+                                    <div className="mt-6 flex flex-col gap-1.5">
+                                        <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Specifications</p>
+                                        <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">Max size: 25MB per file • Max files: 5</p>
+                                        <p className="text-xs text-slate-600 dark:text-slate-400 font-medium italic">Format: STL files only</p>
+                                    </div>
+
+                                    <div className="mt-10 px-8 py-3 bg-white dark:bg-slate-800 rounded-full border border-cyan-500/20 shadow-xl shadow-cyan-500/5 group-hover:border-cyan-500/40 transition-all">
+                                        <span className="text-[11px] font-black text-cyan-600 dark:text-cyan-400 uppercase tracking-[0.2em]">
                                             Uploaded Files ({uploadedFiles.length}/5)
                                         </span>
                                     </div>
@@ -548,6 +762,7 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                                     </button>
                                 </div>
                             )}
+
                         </div>
 
                         {selectedFile && selectedFile.dimensions && (
@@ -570,9 +785,12 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                             </div>
                         )}
 
-                        <div className="bg-slate-50 dark:bg-slate-900/50 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 backdrop-blur-sm">
-                            <h3 className="text-xs font-black text-slate-700 dark:text-slate-400 uppercase tracking-[0.2em] mb-5">
-                                MODEL LIST
+                        <div className="bg-slate-50 dark:bg-slate-900/50 p-4 sm:p-6 rounded-2xl border border-slate-200 dark:border-slate-800 backdrop-blur-sm">
+                            <h3 className="text-xs font-black text-slate-700 dark:text-slate-400 uppercase tracking-[0.2em] mb-5 flex justify-between items-center">
+                                <span>MODEL LIST</span>
+                                <span className="text-[10px] font-bold text-slate-400 dark:text-slate-600 normal-case tracking-normal">
+                                    {uploadedFiles.length} / 5 Models
+                                </span>
                             </h3>
 
                             <div className="space-y-2 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
@@ -587,7 +805,8 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                                             file.surfaceArea,
                                             file.height,
                                             file.color,
-                                            settings || undefined
+                                            settings || undefined,
+                                            isAdminMode ? customPricePerGram : undefined
                                         )
                                         : null;
 
@@ -600,13 +819,13 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                                             key={file.id}
                                             onClick={() => setSelectedFileId(file.id)}
                                             className={cn(
-                                                "relative p-4 rounded-2xl border transition-all cursor-pointer group",
+                                                "relative p-3 sm:p-4 rounded-2xl border transition-all cursor-pointer group",
                                                 selectedFileId === file.id
                                                     ? "bg-cyan-500/5 border-cyan-500/50 shadow-xl shadow-cyan-500/10"
                                                     : "bg-white dark:bg-slate-900/50 border-slate-200 dark:border-slate-800 hover:border-cyan-500/30 shadow-sm"
                                             )}
                                         >
-                                            <div className="flex items-center gap-4">
+                                            <div className="flex items-center gap-3 sm:gap-4">
                                                 <div className={cn(
                                                     "w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-colors",
                                                     selectedFileId === file.id ? "bg-cyan-500 text-white" : "bg-cyan-50 dark:bg-cyan-950/30 text-cyan-500"
@@ -615,8 +834,8 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                                                 </div>
                                                 
                                                 <div className="flex-1 min-w-0">
-                                                    <div className="flex justify-between items-start">
-                                                        <div className="truncate pr-4">
+                                                    <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
+                                                        <div className="truncate w-full sm:w-auto">
                                                             <div className="text-sm font-bold text-slate-900 dark:text-white truncate">
                                                                 {file.file.name}
                                                             </div>
@@ -624,7 +843,7 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                                                                 {(file.file.size / 1024 / 1024).toFixed(2)} MB • {material}
                                                             </div>
                                                         </div>
-                                                        <div className="text-right shrink-0">
+                                                        <div className="sm:text-right shrink-0">
                                                             <div className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1">Dimensions</div>
                                                             <div className="text-[11px] font-bold text-cyan-600 dark:text-cyan-400 font-mono">
                                                                 {dimString}
@@ -632,39 +851,41 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                                                         </div>
                                                     </div>
 
-                                                    <div className="flex items-center gap-6 mt-3 pt-3 border-t border-slate-100 dark:border-slate-800/50">
+                                                    <div className="flex flex-wrap items-center gap-3 sm:gap-6 mt-3 pt-3 border-t border-slate-100 dark:border-slate-800/50">
                                                         <div className="flex items-center gap-2">
                                                             <span className="text-[9px] font-black text-slate-400 uppercase">Scale</span>
                                                             <span className="text-xs font-bold text-slate-700 dark:text-slate-300">{Math.round(file.scale * 100)}%</span>
                                                         </div>
-                                                        <div className="flex items-center gap-2 border-l border-slate-200 dark:border-slate-800 pl-6">
+                                                        <div className="flex items-center gap-2 sm:border-l border-slate-200 dark:border-slate-800 sm:pl-6">
                                                             <span className="text-[9px] font-black text-slate-400 uppercase">Qty</span>
                                                             <span className="text-xs font-bold text-slate-700 dark:text-slate-300">{file.quantity}</span>
                                                         </div>
-                                                        <div className="flex items-center gap-2 border-l border-slate-200 dark:border-slate-800 pl-6">
+                                                        <div className="flex items-center gap-2 sm:border-l border-slate-200 dark:border-slate-800 sm:pl-6">
                                                             <span className="text-[9px] font-black text-slate-400 uppercase">Weight</span>
                                                             <span className="text-xs font-bold text-slate-700 dark:text-slate-300">{fileStats?.weight || 0}g</span>
                                                         </div>
-                                                        <div className="flex items-center gap-2 border-l border-slate-200 dark:border-slate-800 pl-6">
+                                                        <div className="flex items-center gap-2 sm:border-l border-slate-200 dark:border-slate-800 sm:pl-6">
                                                             <span className="text-[9px] font-black text-slate-400 uppercase">Color</span>
                                                             <div className="flex items-center gap-1.5">
                                                                 <div className="w-3 h-3 rounded-full border border-slate-400" style={{ backgroundColor: file.color }} />
                                                                 <span className="text-xs font-bold text-slate-700 dark:text-slate-300">{getColorName(file.color)}</span>
                                                             </div>
                                                         </div>
-                                                        <div className="ml-auto text-right">
-                                                            <div className="text-[9px] font-black text-slate-400 uppercase mb-0.5">Item Total</div>
-                                                            <div className="text-lg font-black text-cyan-500">
-                                                                ₹{((fileStats?.price || 0) * file.quantity).toFixed(0)}
+                                                        <div className="ml-auto flex items-center gap-4">
+                                                            <div className="text-right">
+                                                                <div className="text-[9px] font-black text-slate-400 uppercase mb-0.5">Item Total</div>
+                                                                <div className="text-lg font-black text-cyan-500 leading-none">
+                                                                    ₹{((fileStats?.price || 0) * file.quantity).toFixed(0)}
+                                                                </div>
                                                             </div>
+                                                            <button
+                                                                onClick={(e) => removeFile(file.id, e)}
+                                                                className="text-slate-400 hover:text-red-500 p-1.5 rounded-lg transition-colors hover:bg-red-50 dark:hover:bg-red-500/10"
+                                                                title="Remove model"
+                                                            >
+                                                                <Trash2 size={16} />
+                                                            </button>
                                                         </div>
-                                                        <button
-                                                            onClick={(e) => removeFile(file.id, e)}
-                                                            className="text-slate-400 hover:text-red-500 p-1 rounded-lg transition-colors ml-2"
-                                                            title="Remove model"
-                                                        >
-                                                            <Trash2 size={16} />
-                                                        </button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -677,8 +898,23 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
 
                     <div className="lg:col-span-5 space-y-6">
                         <div className="bg-slate-50 dark:bg-slate-900/50 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 backdrop-blur-sm">
-                            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
-                                Print Settings
+                            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6 flex items-center justify-between gap-2">
+                                <span>Print Settings</span>
+                                {isAdminMode && (
+                                    <div className="flex items-center gap-1.5 bg-cyan-500/10 px-4 py-2 rounded-full border border-cyan-500/20 shadow-sm transition-all hover:bg-cyan-500/20">
+                                        <span className="text-sm font-black text-cyan-600 dark:text-cyan-400 uppercase tracking-widest cursor-pointer">
+                                            1G = ₹
+                                        </span>
+                                        <input
+                                            type="number"
+                                            value={customPricePerGram}
+                                            onChange={(e) => setCustomPricePerGram(Number(e.target.value))}
+                                            step="0.01"
+                                            className="w-14 bg-transparent text-sm font-black text-cyan-600 dark:text-cyan-400 outline-none p-0 m-0 border-b border-transparent focus:border-cyan-500/50 transition-colors"
+                                            title="Edit price per gram (Admin Only)"
+                                        />
+                                    </div>
+                                )}
                             </h3>
                             <div className="space-y-4 mb-6">
                                 <label className="text-sm font-medium text-slate-700 dark:text-slate-400">Material</label>
@@ -828,6 +1064,7 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                                             { value: 'custom', label: 'Custom' }
                                         ]}
                                         className="flex-1"
+                                        noScroll
                                     />
 
                                     {isCustomDensity && (
@@ -862,12 +1099,14 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                                                     file.surfaceArea,
                                                     file.height,
                                                     file.color,
-                                                    settings || undefined
+                                                    settings || undefined,
+                                                    isAdminMode ? customPricePerGram : undefined
                                                 ) : null;
 
                                                 if (!res) return null;
 
-                                                const itemTotal = res.price * file.quantity;
+                                                const activePrice = file.customPriceOverride !== undefined ? file.customPriceOverride : res.price;
+                                                const itemTotal = activePrice * file.quantity;
                                                 const dimString = file.dimensions
                                                     ? `${(file.dimensions.x * file.scale).toFixed(1)} × ${(file.dimensions.y * file.scale).toFixed(1)} × ${(file.dimensions.z * file.scale).toFixed(1)} mm`
                                                     : '--';
@@ -887,7 +1126,28 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                                                                 Nos {file.quantity}
                                                             </div>
                                                             <div className="col-span-3 text-right text-cyan-400 font-black">
-                                                                ₹{itemTotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                                                {isAdminMode ? (
+                                                                    <div className="flex flex-col items-end gap-1">
+                                                                        <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 rounded px-1.5 py-1 focus-within:ring-1 ring-cyan-500 transition-shadow mt-[-4px]">
+                                                                            <span className="text-[10px] text-slate-500">₹</span>
+                                                                            <input 
+                                                                                type="number"
+                                                                                value={file.customPriceOverride !== undefined ? file.customPriceOverride : res.price}
+                                                                                onChange={(e) => {
+                                                                                    const val = e.target.value === '' ? undefined : Number(e.target.value);
+                                                                                    setUploadedFiles(prev => prev.map(f => f.id === file.id ? { ...f, customPriceOverride: val } : f));
+                                                                                }}
+                                                                                className="w-16 bg-transparent text-[11px] font-black text-cyan-500 text-right outline-none p-0 m-0"
+                                                                                title="Override individual model price"
+                                                                            />
+                                                                        </div>
+                                                                        {file.quantity > 1 && (
+                                                                            <span className="text-[9px] text-slate-500 font-bold tracking-widest uppercase">Total: ₹{itemTotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                                                                        )}
+                                                                    </div>
+                                                                ) : (
+                                                                    `₹${itemTotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                                                                )}
                                                             </div>
                                                         </div>
                                                     </div>
@@ -899,53 +1159,145 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
 
                                 {(totalResults || isCalculating) && (
                                     <div className="space-y-4">
+                                        {/* Tiered Discount Bar - Always Visible */}
+                                        {(() => {
+                                            const tiers = settings?.discountTiers?.length ? settings.discountTiers : [
+                                                { threshold: 1500, percentage: 5 },
+                                                { threshold: 2500, percentage: 10 },
+                                                { threshold: 3500, percentage: 20 }
+                                            ];
+                                            const currentPrice = totalResults?.subtotal || 0;
+                                            const nextTier = [...tiers].sort((a, b) => a.threshold - b.threshold).find(t => currentPrice < t.threshold);
+                                            const maxThreshold = tiers[tiers.length - 1].threshold * 1.1;
+                                            
+                                            return (
+                                                <div className="space-y-3 mb-8 bg-slate-50 dark:bg-slate-900/50 pt-12 pb-10 px-4 rounded-2xl border border-slate-200 dark:border-slate-800/50 shadow-inner relative overflow-visible">
+                                                    <div className="absolute top-4 left-4 right-4 flex justify-between items-end mb-1">
+                                                        <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Volume Rewards</span>
+                                                        {nextTier ? (
+                                                            <span className="text-[10px] font-bold text-cyan-500 uppercase italic animate-pulse">
+                                                                Add ₹{(nextTier.threshold - currentPrice).toFixed(0)} more for {nextTier.percentage}% OFF!
+                                                            </span>
+                                                        ) : (
+                                                            <span className="text-[10px] font-bold text-emerald-500 uppercase italic">MAX DISCOUNT UNLOCKED!</span>
+                                                        )}
+                                                    </div>
+                                                    <div className="relative">
+                                                        <div className="h-3 w-full bg-white dark:bg-slate-950 rounded-full overflow-hidden relative border border-slate-200 dark:border-slate-800 shadow-sm">
+                                                            {/* Track progress */}
+                                                            <div 
+                                                                className="h-full bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 transition-all duration-1000 ease-out relative"
+                                                                style={{ width: `${Math.min(100, (currentPrice / maxThreshold) * 100)}%` }}
+                                                            >
+                                                                <div className="absolute inset-0 bg-[linear-gradient(45deg,rgba(255,255,255,0.15)_25%,transparent_25%,transparent_50%,rgba(255,255,255,0.15)_50%,rgba(255,255,255,0.15)_75%,transparent_75%,transparent)] bg-[length:20px_20px] animate-[shimmer_2s_linear_infinite]" />
+                                                            </div>
+                                                        </div>
+
+                                                        {/* Tier Markers - Split: Offer Top, Price Bottom */}
+                                                        {tiers.map((tier, idx) => {
+                                                            const leftPos = (tier.threshold / maxThreshold) * 100;
+                                                            const isAchieved = currentPrice >= tier.threshold;
+                                                            return (
+                                                                <div key={idx} className="absolute top-0 bottom-0 w-px" style={{ left: `${leftPos}%` }}>
+                                                                    {/* Marker Dot */}
+                                                                    <div className={`absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full border-2 z-20 transition-all duration-500 ${isAchieved ? 'bg-emerald-400 border-white shadow-[0_0_15px_rgba(52,211,153,1)]' : 'bg-slate-300 border-slate-100 dark:border-slate-900'}`} />
+                                                                    
+                                                                    {/* OFFER - ABOVE */}
+                                                                    <div className="absolute -top-7 left-1/2 -translate-x-1/2 whitespace-nowrap">
+                                                                        <span className={`text-[10px] font-black uppercase tracking-widest ${isAchieved ? 'text-emerald-500 scale-110' : 'text-slate-500'} transition-all`}>
+                                                                            {tier.percentage}% OFF
+                                                                        </span>
+                                                                    </div>
+
+                                                                    {/* PRICE - BELOW */}
+                                                                    <div className="absolute -bottom-7 left-1/2 -translate-x-1/2 whitespace-nowrap">
+                                                                        <span className={`text-[11px] font-black tracking-tight ${isAchieved ? 'text-emerald-600/80' : 'text-slate-400'} transition-all`}>
+                                                                            ₹{tier.threshold.toLocaleString()}
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                    <div className="pt-6" />
+                                                </div>
+                                            );
+                                        })()}
+
                                         <div className="flex justify-between items-center text-sm">
-                                            <span className="text-slate-700 dark:text-slate-400">Total Price</span>
+                                            <span className="text-slate-700 dark:text-slate-400 font-bold">Subtotal</span>
                                             {isCalculating ? (
                                                 <Skeleton variant="text" width={120} height={28} />
                                             ) : (
-                                                <span className="text-xl font-bold text-slate-400">
-                                                    ₹{(totalResults?.price || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                                <span className="text-xl font-black text-slate-500">
+                                                    ₹{(totalResults?.subtotal || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                                 </span>
                                             )}
                                         </div>
 
+                                        {/* Volume Reward Discount Display */}
+                                        {totalResults?.tier && !appliedCoupon && (
+                                            <div className="flex justify-between items-center text-sm text-emerald-500 font-black animate-in fade-in slide-in-from-right duration-500">
+                                                <span className="uppercase tracking-widest text-[10px]">Volume Reward ({totalResults.tier.percentage}%)</span>
+                                                <span>- ₹{totalResults.discount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                                            </div>
+                                        )}
+
                                         {appliedCoupon && (
-                                            <div className="flex justify-between items-center text-sm text-green-500">
-                                                <span>Coupon Discount ({appliedCoupon.type === 'percentage' ? `${appliedCoupon.value}%` : 'Fixed'})</span>
-                                                <span className="font-bold">- ₹{(totalResults?.discount || 0).toFixed(2)}</span>
+                                            <div className="flex justify-between items-center text-sm text-green-500 font-black animate-in fade-in slide-in-from-right duration-500">
+                                                <span className="uppercase tracking-widest text-[10px]">Coupon Discount ({appliedCoupon.type === 'percentage' ? `${appliedCoupon.value}%` : 'Fixed'})</span>
+                                                <span>- ₹{(totalResults?.discount || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                                            </div>
+                                        )}
+
+                                        {showCelebration && (
+                                            <div className="fixed inset-0 pointer-events-none z-[100] flex items-center justify-center overflow-hidden">
+                                                <DotLottieReact
+                                                    src="https://lottie.host/0cd5b8a6-a751-4c86-a698-96d3d4228271/3D8mhnU1H0.lottie"
+                                                    autoplay
+                                                    className="w-full h-full max-w-2xl opacity-80"
+                                                />
+                                            </div>
+                                        )}
+
+                                        {totalResults?.shipping !== undefined && (
+                                            <div className="flex justify-between items-center text-[12.5px] font-bold">
+                                                <span className="text-slate-700 dark:text-slate-500 font-bold text-[11px] uppercase tracking-wider">Handling</span>
+                                                <span className="text-slate-900 dark:text-slate-200">
+                                                    ₹{(totalResults?.shipping || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                                </span>
                                             </div>
                                         )}
 
                                         <div className="flex justify-between items-center text-[12.5px] font-bold">
                                             <span className="text-slate-700 dark:text-slate-500 font-bold text-[11px] uppercase tracking-wider">Round off</span>
                                             <span className={(() => {
-                                                const total = totalResults?.netPrice || 0;
-                                                const rounded = Math.ceil(total);
+                                                const total = totalResults?.grandTotal || 0;
+                                                const rounded = Math.round(total);
                                                 const diff = rounded - total;
                                                 return diff === 0 ? "text-slate-700 dark:text-slate-400 text-[10px] uppercase font-medium" : "text-slate-900 dark:text-slate-200";
                                             })()}>
                                                 {(() => {
-                                                    const total = totalResults?.netPrice || 0;
-                                                    const rounded = Math.ceil(total);
+                                                    const total = totalResults?.grandTotal || 0;
+                                                    const rounded = Math.round(total);
                                                     const diff = rounded - total;
                                                     if (diff === 0) {
                                                         return 'Zero Rupees Only';
                                                     }
-                                                    return `+ ₹${diff.toFixed(2)}`;
+                                                    return `${diff >= 0 ? '+' : '-'} ₹${Math.abs(diff).toFixed(2)}`;
                                                 })()}
                                             </span>
                                         </div>
                                         <div className="border-t border-slate-300 dark:border-slate-700/50 pt-3">
                                             <div className="flex justify-between items-center">
-                                                <span className="text-slate-700 dark:text-slate-300 font-bold">Net Price</span>
-                                                <span className="text-2xl font-black text-cyan-400">
-                                                    ₹{Math.ceil(totalResults?.netPrice || 0).toFixed(2)}
+                                                <span className="text-slate-700 dark:text-slate-300 font-bold">Estimated Total</span>
+                                                <span className="text-2xl font-black text-slate-900 dark:text-white">
+                                                    ₹{Math.round(totalResults?.grandTotal || 0).toLocaleString()}
                                                 </span>
                                             </div>
                                             <div className="text-right mt-1">
                                                 <span className="text-[10px] text-slate-600 dark:text-slate-500 uppercase">
-                                                    {numberToWords(Math.ceil(totalResults?.netPrice || 0))}
+                                                    {numberToWords(Math.round(totalResults?.grandTotal || 0))}
                                                 </span>
                                             </div>
                                         </div>
@@ -957,7 +1309,15 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                                                     type="checkbox"
                                                     id="use-coupon"
                                                     checked={useCoupon}
-                                                    onChange={(e) => setUseCoupon(e.target.checked)}
+                                                    onChange={(e) => {
+                                                        const checked = e.target.checked;
+                                                        setUseCoupon(checked);
+                                                        if (!checked) {
+                                                            setAppliedCoupon(null);
+                                                            setCouponCode('');
+                                                            setCouponError('');
+                                                        }
+                                                    }}
                                                     className="appearance-none w-4 h-4 rounded border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 checked:bg-cyan-500 checked:border-cyan-500 transition-all cursor-pointer shrink-0 relative after:content-[''] after:absolute after:hidden checked:after:block after:left-[5px] after:top-[1px] after:w-[6px] after:h-[10px] after:border-r-2 after:border-b-2 after:border-white after:rotate-45"
                                                 />
                                                 <label htmlFor="use-coupon" className="text-xs font-bold text-slate-700 dark:text-slate-300 cursor-pointer">
@@ -1035,10 +1395,10 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
 
                                         <button
                                             onClick={() => setShowContactForm(true)}
-                                            disabled={!totalResults || !isPaymentAccepted || !isTermsAccepted}
+                                            disabled={!totalResults || (!isAdminMode && (!isPaymentAccepted || !isTermsAccepted))}
                                             className="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black py-4 rounded-xl transition-all shadow-lg hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed mt-4"
                                         >
-                                            Proceed with Order
+                                            {isAdminMode ? 'Generate Offline Quotation' : 'Proceed with Order'}
                                         </button>
                                     </div>
                                 )}
@@ -1051,18 +1411,54 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
 
             {orderStep === 'preview' && (
                 <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4">
-                    <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden">
+                    <div className="relative bg-white dark:bg-slate-900 rounded-2xl max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden">
+                        {isSending && (
+                            <div className="absolute inset-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur-sm z-50 flex flex-col items-center justify-center p-6 text-center select-none animate-in fade-in duration-300">
+                                <div className="relative w-72 h-72 max-w-full flex items-center justify-center mb-4">
+                                    <DotLottieReact
+                                        src="https://lottie.host/b072fe0b-2f02-4ab0-9091-875a4204dff8/za5tOt9uj4.lottie"
+                                        autoplay
+                                        loop
+                                        className="w-full h-full"
+                                    />
+                                </div>
+                                <h3 className="text-lg font-extrabold text-slate-800 dark:text-white uppercase tracking-wider mb-2 italic">
+                                    {uploadStatus}
+                                </h3>
+                                <p className="text-cyan-600 dark:text-cyan-400 font-black text-sm uppercase tracking-widest mb-3">
+                                    Progress: {uploadProgress}%
+                                </p>
+                                <div className="w-56 bg-slate-200 dark:bg-slate-800 rounded-full h-2 overflow-hidden shadow-inner border border-slate-300 dark:border-slate-750">
+                                    <div
+                                        className="bg-gradient-to-r from-cyan-500 to-blue-600 h-full transition-all duration-300 ease-out shadow-[0_0_10px_rgba(6,182,212,0.3)]"
+                                        style={{ width: `${uploadProgress}%` }}
+                                    />
+                                </div>
+                                <p className="text-slate-500 dark:text-slate-400 text-[10px] mt-4 max-w-xs uppercase font-bold tracking-widest animate-pulse">
+                                    Securing your payload... Please do not close this window.
+                                </p>
+                            </div>
+                        )}
                         <div className="p-4 bg-slate-50 dark:bg-slate-900 flex justify-between items-center shrink-0">
                             <button onClick={() => setOrderStep('form')} className="text-cyan-400 font-bold">Back</button>
                             <span className="font-bold text-slate-900 dark:text-white">Quotation Preview</span>
                         </div>
 
                         <div
-                            className="flex-1 overflow-y-auto p-4 sm:p-8 bg-slate-100 custom-scrollbar"
+                            ref={previewContainerRef}
+                            className="flex-1 overflow-y-auto overflow-x-hidden p-4 sm:p-8 bg-slate-100 custom-scrollbar flex flex-col items-center"
                             onScroll={handleScroll}
                         >
                             {/* Standalone Quotation Template Component */}
-                             <div className="flex justify-center p-4 min-h-screen bg-slate-100">
+                             <div 
+                                className="origin-top transition-transform duration-300 shadow-2xl mb-8"
+                                style={{ 
+                                    transform: `scale(${previewScale})`,
+                                    width: `${794 * previewScale}px`,
+                                    height: `${1123 * previewScale}px`,
+                                    minHeight: `${1123 * previewScale}px`
+                                }}
+                             >
                                 <QuotationDocument
                                     quoteId={quoteDetails.id}
                                     date={quoteDetails.date}
@@ -1074,32 +1470,22 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                                         email: userDetails.email || 'mail ID',
                                         phone: `${userDetails.countryCode}${userDetails.phone}`
                                     }}
-                                    items={uploadedFiles.map(f => {
-                                        const res = calculatePrice(
-                                            f.volume,
-                                            material,
-                                            infillPercent,
-                                            infillPattern,
-                                            layerHeight,
-                                            f.surfaceArea,
-                                            f.height,
-                                            f.color,
-                                            settings || undefined
-                                        );
-                                        return {
-                                            name: f.file.name,
-                                            description: `${material} • ${infillPercent}% • ${f.dimensions ? `${(f.dimensions.x * f.scale).toFixed(1)}x${(f.dimensions.y * f.scale).toFixed(1)}x${(f.dimensions.z * f.scale).toFixed(1)}` : '--'}mm`,
-                                            price: res.price,
-                                            quantity: f.quantity,
-                                            total: res.price * f.quantity,
-                                            color: f.color,
-                                            weight: res.price > 0 ? res.filament_weight_g : 0,
-                                            time: res.price > 0 ? res.print_time_hours : 0
-                                        };
-                                    })}
-                                    totalAmount={totalResults?.price || 0}
+                                    items={detailedItems.map(item => ({
+                                        name: item.name,
+                                        description: `${material} • ${infillPercent}% • ${item.dimensions ? `${(item.dimensions.x * item.scale).toFixed(1)}x${(item.dimensions.y * item.scale).toFixed(1)}x${(item.dimensions.z * item.scale).toFixed(1)}` : '--'}mm • ${item.volume.toFixed(1)}g`,
+                                        price: item.price,
+                                        quantity: item.quantity,
+                                        total: item.total,
+                                        color: item.color,
+                                        id: item.id
+                                    }))}
+                                    totalAmount={totalResults?.grandTotal || 0}
                                     totalQty={uploadedFiles.reduce((acc, f) => acc + f.quantity, 0)}
+                                    material={material}
+                                    infillPercent={infillPercent}
+                                    infillPattern={infillPattern}
                                     discount={totalResults?.discount || 0}
+                                    shippingCost={totalResults?.shipping || 0}
                                 />
                             </div>
                         </div>
@@ -1127,138 +1513,169 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                                         </div>
                                     </div>
                                 )}
+
                                 <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-                                <button
-                                    onClick={() => handleDownloadPDF()}
-                                    disabled={!hasScrolledToBottom}
-                                    className="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black px-8 py-3 rounded-xl transition-all shadow-lg flex items-center justify-center gap-3 disabled:opacity-50"
-                                >
-                                    Download Quotation Only
-                                </button>
+                                    {(function() {
+                                        const handleFinalSubmission = async (isCheckout: boolean) => {
+                                            setIsSending(true);
+                                            setUploadProgress(5);
+                                            setUploadStatus('Uploading Models...');
 
-                                <button
-                                    onClick={async () => {
-                                        if (!userDetails.name || !userDetails.phone || !userDetails.email) {
-                                            alert("Please fill in all contact details.");
-                                            return;
-                                        }
-
-                                        const totalSize = uploadedFiles.reduce((acc, f) => acc + f.file.size, 0);
-                                        const MAX_TOTAL_SIZE = 25 * 1024 * 1024; // 25MB
-                                        if (totalSize > MAX_TOTAL_SIZE) {
-                                            alert(`Total file size (${(totalSize / 1024 / 1024).toFixed(2)}MB) exceeds the 25MB limit. Please upload smaller files.`);
-                                            return;
-                                        }
-
-                                        setIsSending(true);
-                                        setUploadProgress(10);
-                                        setUploadStatus('Preparing files...');
-
-                                        try {
-                                            // 1. Upload files
-                                            setUploadStatus('Uploading 3D models to secure storage...');
-                                            setUploadProgress(20);
-                                            const uploadFormData = new FormData();
-                                            uploadFormData.append('fullName', userDetails.name);
-                                            uploadFormData.append('email', userDetails.email);
-                                            uploadFormData.append('phone', `${userDetails.countryCode}${userDetails.phone}`);
-                                            uploadFormData.append('orderId', quoteDetails.id);
-                                            if (userDetails.message) uploadFormData.append('message', userDetails.message);
-
-                                            uploadedFiles.forEach((fileData, index) => uploadFormData.append(`file${index}`, fileData.file));
-
-                                            const uploadRes = await fetch('/api/upload-to-drive', { method: 'POST', body: uploadFormData });
-                                            
-                                            let uploadData;
-                                            const contentType = uploadRes.headers.get("content-type");
-                                            if (contentType && contentType.includes("application/json")) {
-                                                uploadData = await uploadRes.json();
-                                            } else {
-                                                // Handle non-JSON responses (like 413 Request Entity Too Large)
-                                                if (uploadRes.status === 413) {
-                                                    throw new Error("Total upload size too large. Please upload smaller files or fewer files at once.");
+                                            try {
+                                                let uploadedUrls: string[] = [];
+                                                for (let i = 0; i < uploadedFiles.length; i++) {
+                                                    const fileData = uploadedFiles[i];
+                                                    const formData = new FormData();
+                                                    formData.append('file', fileData.file);
+                                                    formData.append('quotationID', quoteDetails.id);
+                                                    formData.append('rootFolder', rootFolder);
+                                                    const response = await fetch('/api/upload-to-mega', { method: 'POST', body: formData });
+                                                    const result = await response.json();
+                                                    if (!result.success) throw new Error(result.error || "Upload failed");
+                                                    uploadedUrls.push(result.data.url);
+                                                    setUploadProgress(10 + ((i + 1) / uploadedFiles.length) * 50);
+                                                    if (i < uploadedFiles.length - 1) await new Promise(r => setTimeout(r, 2000));
                                                 }
-                                                const errorText = await uploadRes.text();
-                                                throw new Error(errorText || `Server error (${uploadRes.status})`);
-                                            }
 
-                                            if (!uploadRes.ok) throw new Error(uploadData?.error || "Upload failed");
-
-                                            const driveFiles = uploadData.data?.files || [];
-                                            setUploadProgress(60);
-                                            setUploadStatus('Initializing payment session...');
-
-                                            // 2. Create Cashfree Session
-                                            const cashfreeRes = await fetch('/api/cashfree/create-order', {
-                                                method: 'POST',
-                                                headers: { 'Content-Type': 'application/json' },
-                                                body: JSON.stringify({
-                                                    amount: totalResults?.price || 0,
-                                                    customerName: userDetails.name,
-                                                    email: userDetails.email,
-                                                    phone: `${userDetails.countryCode}${userDetails.phone}`,
-                                                    orderId: quoteDetails.id
-                                                })
-                                            });
-                                            const cashfreeData = await cashfreeRes.json();
-                                            if (!cashfreeData.payment_session_id) throw new Error("Payment initialization failed");
-                                            setUploadProgress(85);
-                                            setUploadStatus('Saving order details...');
-
-                                            // 3. Save order to system (Pending) before payment
-                                            const fullAddress = `${userDetails.doorNo}, ${userDetails.street}, ${userDetails.area}, ${userDetails.city}, ${userDetails.district} - ${userDetails.pincode}, ${userDetails.state}`;
-                                            await fetch('/api/send-quote', {
-                                                method: 'POST',
-                                                headers: { 'Content-Type': 'application/json' },
-                                                body: JSON.stringify({
-                                                    user: { ...userDetails, address: fullAddress },
-                                                    recaptchaToken,
-                                                    order: {
-                                                        id: quoteDetails.id,
-                                                        models: uploadedFiles.map((f, i) => ({
-                                                            name: f.file.name,
-                                                            dimensions: f.dimensions,
-                                                            scale: f.scale,
-                                                            volume: f.volume,
-                                                            color: f.color,
-                                                            quantity: f.quantity,
-                                                            driveFileId: driveFiles[i]?.id // Pass the file ID
-                                                        })),
-                                                        total: totalResults,
-                                                        material,
-                                                        infillPercent,
-                                                        infillPattern
+                                                setUploadStatus('Generating & Uploading PDF...');
+                                                const pdfBlob = await generatePDFBlob();
+                                                let pdfUrl = '';
+                                                if (pdfBlob) {
+                                                    const pdfFormData = new FormData();
+                                                    pdfFormData.append('file', pdfBlob, `VQ-${quoteDetails.id}.pdf`);
+                                                    pdfFormData.append('quotationID', quoteDetails.id);
+                                                    pdfFormData.append('rootFolder', rootFolder);
+                                                    const pdfRes = await fetch('/api/upload-to-mega', { method: 'POST', body: pdfFormData });
+                                                    const pdfData = await pdfRes.json();
+                                                    if (pdfData.success) {
+                                                        pdfUrl = pdfData.data.url;
+                                                        setUploadedPdfUrl(pdfUrl);
                                                     }
-                                                })
-                                            });
-                                            setUploadProgress(100);
-                                            setUploadStatus('Redirecting to secure gateway...');
+                                                }
 
-                                            // 4. Redirect directly to Cashfree (same window)
-                                            redirectToCashfree(cashfreeData.payment_session_id);
+                                                const fullAddress = `${userDetails.doorNo}, ${userDetails.street}, ${userDetails.area}, ${userDetails.city}, ${userDetails.district} - ${userDetails.pincode}, ${userDetails.state}`;
+                                                
+                                                if (!isCheckout) {
+                                                    setUploadStatus('Sending Quotation Email...');
+                                                    await fetch('/api/send-quote', {
+                                                        method: 'POST',
+                                                        headers: { 'Content-Type': 'application/json' },
+                                                        body: JSON.stringify({
+                                                            user: { ...userDetails, address: fullAddress },
+                                                            recaptchaToken: recaptchaToken || 'offline_bypass',
+                                                            order: {
+                                                                id: quoteDetails.id,
+                                                                pdfUrl,
+                                                                models: detailedItems.map((item, i) => ({ ...item, fileUrl: uploadedUrls[i] })),
+                                                                total: {
+                                                                    subtotal: totalResults?.subtotal || 0,
+                                                                    shipping: totalResults?.shipping || 0,
+                                                                    discount: totalResults?.discount || 0,
+                                                                    grandTotal: totalResults?.grandTotal || 0,
+                                                                },
+                                                                material, infillPercent, infillPattern
+                                                            }
+                                                        })
+                                                    });
+                                                }
 
-                                        } catch (err: any) {
-                                            console.error("Checkout error:", err);
-                                            alert(err.message || "Payment initialization failed. Please check your connection.");
-                                            setUploadProgress(0);
-                                        } finally {
-                                            setIsSending(false);
-                                        }
-                                    }}
-                                    disabled={isSending || !hasScrolledToBottom}
-                                    className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black px-8 py-3 rounded-xl transition-all shadow-lg flex items-center justify-center gap-3 disabled:opacity-50"
-                                >
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="5" width="20" height="14" rx="2" /><line x1="2" y1="10" x2="22" y2="10" /></svg>
-                                    Proceed with Checkout
-                                </button>
+                                                if (isCheckout) {
+                                                    setUploadStatus('Initializing Payment...');
+                                                    const cashfreeRes = await fetch('/api/create-order', {
+                                                         method: 'POST',
+                                                         headers: { 'Content-Type': 'application/json' },
+                                                         body: JSON.stringify({
+                                                             totalAmount: Math.round(totalResults?.grandTotal || 0),
+                                                             customerName: userDetails.name,
+                                                             email: userDetails.email,
+                                                             phone: `${userDetails.countryCode}${userDetails.phone}`,
+                                                             trackingId: quoteDetails.id,
+                                                             address: fullAddress,
+                                                             message: userDetails.message,
+                                                             recaptchaToken: recaptchaToken || 'offline_bypass',
+                                                             pdfUrl,
+                                                             megaFolderUrl: uploadedFolderUrl,
+                                                             items: detailedItems.map((item, i) => ({
+                                                                 id: item.id,
+                                                                 name: item.name,
+                                                                 quantity: item.quantity,
+                                                                 price: item.price,
+                                                                 total: item.total,
+                                                                 selectedColor: item.color,
+                                                                 fileUrl: uploadedUrls[i],
+                                                                 dimensions: item.dimensions,
+                                                                 scale: item.scale,
+                                                                 description: `${material} • ${infillPercent}% • ${item.dimensions ? `${(item.dimensions.x * item.scale).toFixed(1)}x${(item.dimensions.y * item.scale).toFixed(1)}x${(item.dimensions.z * item.scale).toFixed(1)}` : '--'}mm • ${item.volume.toFixed(1)}g`
+                                                             })),
+                                                             shipping: totalResults?.shipping || 0,
+                                                             discount: totalResults?.discount || 0,
+                                                             subtotal: totalResults?.subtotal || 0,
+                                                             roundOff: (Math.round(totalResults?.grandTotal || 0)) - ((totalResults?.subtotal || 0) - (totalResults?.discount || 0) + (totalResults?.shipping || 0))
+                                                         })
+                                                     });
+                                                    const cashfreeData = await cashfreeRes.json();
+                                                    if (!cashfreeData.success || !cashfreeData.payment_session_id) {
+                                                        throw new Error(cashfreeData.error || "Failed to initialize payment session.");
+                                                    }
+                                                    await redirectToCashfree(cashfreeData.payment_session_id, quoteDetails.id);
+                                                } else {
+                                                    if (pdfBlob) {
+                                                        const url = URL.createObjectURL(pdfBlob);
+                                                        const link = document.createElement('a');
+                                                        link.href = url;
+                                                        link.download = `VQ_${quoteDetails.id}.pdf`;
+                                                        link.click();
+                                                    }
+                                                    setOrderStep('success');
+                                                }
+                                            } catch (err: any) {
+                                                alert(err.message || "An error occurred");
+                                            } finally {
+                                                setIsSending(false);
+                                            }
+                                        };
+
+                                        return (
+                                            <>
+                                                <button
+                                                    onClick={() => handleFinalSubmission(false)}
+                                                    disabled={isSending}
+                                                    className="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black px-8 py-3 rounded-xl transition-all shadow-lg flex items-center justify-center gap-3 disabled:opacity-50"
+                                                >
+                                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg>
+                                                    Download Quotation Only
+                                                </button>
+                                                {session ? (
+                                                    <button
+                                                        onClick={() => handleFinalSubmission(true)}
+                                                        disabled={isSending}
+                                                        className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black px-8 py-3 rounded-xl transition-all shadow-lg flex items-center justify-center gap-3 disabled:opacity-50"
+                                                    >
+                                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="5" width="20" height="14" rx="2" /><line x1="2" y1="10" x2="22" y2="10" /></svg>
+                                                        Proceed with Checkout
+                                                    </button>
+                                                ) : (
+                                                    <button
+                                                        onClick={() => signIn('google')}
+                                                        className="bg-white hover:bg-slate-100 text-slate-900 font-bold px-8 py-3 rounded-xl transition-all shadow-lg flex items-center gap-3 border border-slate-200"
+                                                    >
+                                                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" className="w-5 h-5" alt="Google" />
+                                                        Sign in to Checkout
+                                                    </button>
+                                                )}
+                                            </>
+                                        );
+                                    })()}
+                                </div>
+
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        )}
+            )}
 
-            {orderStep === 'success' && (
+
+        {orderStep === 'success' && (
                 <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4">
                     <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 max-w-md w-full relative z-10">
                         {/* DotLottie Confetti Animation - In front of popup */}
@@ -1302,15 +1719,40 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                                 We have sent the quotation summary to <b>{userDetails.email}</b>. Our team will review the files and contact you shortly.
                             </p>
 
-                            <a
-                                href={`https://wa.me/${userDetails.countryCode.replace('+', '')}${userDetails.phone}?text=Hi, I just requested a quote (ID: ${orderId}) for ${uploadedFiles.reduce((acc, f) => acc + f.quantity, 0)} items across ${uploadedFiles.length} models.`}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold py-3 px-6 rounded-xl transition-all shadow-lg shadow-green-500/20"
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" /></svg>
-                                Contact on WhatsApp
-                            </a>
+                            <div className="flex flex-col gap-3">
+                                <a
+                                    href={`https://wa.me/${userDetails.countryCode.replace('+', '')}${userDetails.phone}?text=Hi, I just requested a quote (ID: ${orderId}) for ${uploadedFiles.reduce((acc, f) => acc + f.quantity, 0)} items across ${uploadedFiles.length} models.`}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold py-4 px-6 rounded-xl transition-all shadow-lg shadow-green-500/20 w-full"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" /></svg>
+                                    Contact on WhatsApp
+                                </a>
+
+                                {uploadedPdfUrl && (
+                                    <a
+                                        href={uploadedPdfUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="flex h-14 w-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 rounded-xl flex items-center justify-center gap-3 text-[10px] font-black uppercase tracking-widest hover:bg-cyan-500 hover:text-slate-950 transition-all shadow-lg shadow-cyan-500/10"
+                                    >
+                                        <FileText size={16} />
+                                        Preview Official Quotation
+                                    </a>
+                                )}
+                                {uploadedFolderUrl && (
+                                    <a
+                                        href={uploadedFolderUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="mt-4 flex h-14 w-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 rounded-xl flex items-center justify-center gap-3 text-[10px] font-black uppercase tracking-widest hover:bg-cyan-500 hover:text-slate-950 transition-all shadow-lg shadow-cyan-500/10"
+                                    >
+                                        <FileText size={16} />
+                                        View Folder
+                                    </a>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1318,8 +1760,8 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
 
             {/* Payment Info Modal */}
             {showPaymentInfo && (
-                <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4" onClick={() => setShowPaymentInfo(false)}>
-                    <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 max-w-md w-full" onClick={(e) => e.stopPropagation()}>
+                <div className="fixed inset-0 bg-black/70 z-[100] flex items-center justify-center p-4" onClick={() => setShowPaymentInfo(false)}>
+                    <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 max-w-md w-full overscroll-behavior-contain" onClick={(e) => e.stopPropagation()}>
                         <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-4">Payment Details</h3>
                         <div className="space-y-3 text-sm text-slate-800 dark:text-slate-300">
                             <p>To start the manufacturing process, we require <strong>100% advance payment</strong>.</p>
@@ -1363,8 +1805,8 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
 
             {/* Terms & Conditions Modal */}
             {showTermsInfo && (
-                <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4" onClick={() => setShowTermsInfo(false)}>
-                    <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+                <div className="fixed inset-0 bg-black/70 z-[100] flex items-center justify-center p-4" onClick={() => setShowTermsInfo(false)}>
+                    <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto overscroll-behavior-contain" onClick={(e) => e.stopPropagation()}>
                         <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-4">Terms & Conditions</h3>
                         <div className="space-y-4 text-sm text-slate-800 dark:text-slate-300">
                             <section>
@@ -1409,48 +1851,10 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
 
             {/* Contact Form Modal */}
             {showContactForm && (
-                <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4" onClick={() => setShowContactForm(false)}>
-                    <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+                <div className="fixed inset-0 bg-black/70 z-[100] flex items-center justify-center p-4" onClick={() => setShowContactForm(false)}>
+                    <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto overscroll-behavior-contain" onClick={(e) => e.stopPropagation()}>
                         <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6">Contact Details</h3>
-                        <form onSubmit={(e) => {
-                            e.preventDefault();
-                            if (userDetails.phone.length !== 10) {
-                                alert('Please enter a valid 10-digit phone number');
-                                return;
-                            }
-                            
-                            if (!recaptchaToken) {
-                                alert('Please complete the reCAPTCHA verification');
-                                return;
-                            }
-
-                            // Generate Quote ID: VQ{MMYY}-{0000}
-                            const now = new Date();
-                            const month = String(now.getMonth() + 1).padStart(2, '0');
-                            const year = String(now.getFullYear()).slice(-2);
-                            const quoteNumber = String(Math.floor(Math.random() * 9999) + 1).padStart(4, '0');
-                            const quoteId = `VQ${month}${year}-${quoteNumber}`;
-
-                            // Generate Quote Date: today in dd-mm-yyyy format
-                            const day = String(now.getDate()).padStart(2, '0');
-                            const quoteDate = `${day}-${month}-${now.getFullYear()}`;
-
-                            // Generate Due Date: 10 calendar days from today
-                            const dueDateObj = new Date(now);
-                            dueDateObj.setDate(dueDateObj.getDate() + 10);
-                            const dueDay = String(dueDateObj.getDate()).padStart(2, '0');
-                            const dueMonth = String(dueDateObj.getMonth() + 1).padStart(2, '0');
-                            const dueDate = `${dueDay}-${dueMonth}-${dueDateObj.getFullYear()}`;
-
-                            setQuoteDetails({
-                                id: quoteId,
-                                date: quoteDate,
-                                dueDate: dueDate
-                            });
-
-                            setShowContactForm(false);
-                            setOrderStep('preview');
-                        }}>
+                        <form onSubmit={handleContactSubmit}>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-2">
                                     <label className="text-xs font-medium text-slate-700 dark:text-slate-400">Full Name *</label>
@@ -1569,6 +1973,7 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                                         onChange={e => setUserDetails({ ...userDetails, district: e.target.value })}
                                     />
                                 </div>
+
                                 <div className="space-y-2">
                                     <label className="text-xs font-medium text-slate-700 dark:text-slate-400">State</label>
                                     <input
@@ -1592,7 +1997,7 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                             </div>
                             
                             <div className="flex justify-center mt-6">
-                                <Recaptcha onChange={setRecaptchaToken} />
+                                {!isAdminMode && <Recaptcha onChange={setRecaptchaToken} />}
                             </div>
 
                             <div className="flex gap-3 mt-6">
@@ -1605,7 +2010,7 @@ export default function QuoteCalculator({ sessionId }: QuoteCalculatorProps) {
                                 </button>
                                 <button
                                     type="submit"
-                                    disabled={!recaptchaToken}
+                                    disabled={!recaptchaToken && process.env.NODE_ENV === 'production'}
                                     className="flex-[2] bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black py-3 rounded-xl transition-all shadow-lg hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed"
                                 >
                                     {recaptchaToken ? 'Generate Quotation' : 'Loading Verification...'}

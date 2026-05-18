@@ -1,8 +1,10 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from "react";
 import { Product } from "@/lib/products";
 import { parsePrice } from "@/lib/utils";
+
+const availableColors = ['#2563eb', '#ef4444', '#22c55e', '#eab308', '#ffffff', '#000000'];
 
 export interface CartItem extends Product {
     cartId: string;
@@ -11,9 +13,10 @@ export interface CartItem extends Product {
 
 interface CartContextType {
     items: CartItem[];
-    addToCart: (product: Product, color?: string, quantity?: number) => void;
+    addToCart: (product: Product, color?: string, quantity?: number, shouldOpenCart?: boolean) => void;
     removeFromCart: (cartId: string) => void;
     updateQuantity: (cartId: string, quantity: number) => void;
+    updateItemColor: (oldCartId: string, newColor: string) => void;
     clearCart: () => void;
     cartTotal: number;
     cartCount: number;
@@ -53,8 +56,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         }
     }, [items, isLoaded]);
 
-    const addToCart = (product: Product, color?: string, quantity: number = 1) => {
-        const cartId = `${product.id}-${color || 'default'}`;
+    const addToCart = useCallback((product: Product, color?: string, quantity: number = 1, shouldOpenCart: boolean = true) => {
+        let finalColor = color || product.defaultColor;
+        if (!finalColor) {
+            const displayColors = product.colors && product.colors.length > 0 ? product.colors : availableColors;
+            finalColor = (displayColors.includes('#000000') && product.name.toLowerCase().includes('plant')) ? '#000000' : (displayColors[0] || '#2563eb');
+        }
+
+        const cartId = `${product.id}-${finalColor}`;
         setItems((prevItems) => {
             const existingItem = prevItems.find((item) => item.cartId === cartId);
 
@@ -66,18 +75,21 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
                 );
             }
 
-            return [...prevItems, { ...product, cartId, selectedColor: color, quantity }];
+            return [...prevItems, { ...product, cartId, selectedColor: finalColor, quantity }];
         });
-        setIsCartOpen(true);
-    };
+        
+        if (shouldOpenCart) {
+            setIsCartOpen(true);
+        }
+    }, []);
 
-    const removeFromCart = (cartId: string) => {
+    const removeFromCart = useCallback((cartId: string) => {
         setItems((prevItems) =>
             prevItems.filter((item) => item.cartId !== cartId)
         );
-    };
+    }, []);
 
-    const updateQuantity = (cartId: string, quantity: number) => {
+    const updateQuantity = useCallback((cartId: string, quantity: number) => {
         if (quantity < 1) return;
         setItems((prevItems) =>
             prevItems.map((item) =>
@@ -86,11 +98,37 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
                     : item
             )
         );
-    };
+    }, []);
 
-    const clearCart = () => {
+    const updateItemColor = useCallback((oldCartId: string, newColor: string) => {
+        setItems((prevItems) => {
+            const itemToUpdate = prevItems.find(item => item.cartId === oldCartId);
+            if (!itemToUpdate) return prevItems;
+
+            const newCartId = `${itemToUpdate.id}-${newColor}`;
+            const existingItemWithNewColor = prevItems.find(item => item.cartId === newCartId);
+
+            if (existingItemWithNewColor) {
+                // If an item with the new color already exists, merge quantities
+                return prevItems
+                    .map(item => item.cartId === newCartId 
+                        ? { ...item, quantity: (item.quantity || 1) + (itemToUpdate.quantity || 1) } 
+                        : item)
+                    .filter(item => item.cartId !== oldCartId);
+            } else {
+                // Otherwise, just update the color and cartId
+                return prevItems.map(item => 
+                    item.cartId === oldCartId 
+                        ? { ...item, cartId: newCartId, selectedColor: newColor } 
+                        : item
+                );
+            }
+        });
+    }, []);
+
+    const clearCart = useCallback(() => {
         setItems([]);
-    };
+    }, []);
 
     const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; type: "percentage" | "fixed"; value: number } | null>(null);
 
@@ -131,25 +169,39 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
     const cartCount = items.reduce((count, item) => count + (item.quantity || 1), 0);
 
+    const contextValue = useMemo(() => ({
+        items,
+        addToCart,
+        removeFromCart,
+        updateQuantity,
+        updateItemColor,
+        clearCart,
+        cartTotal,
+        cartCount,
+        isCartOpen,
+        setIsCartOpen,
+        appliedCoupon,
+        applyCoupon,
+        removeCoupon,
+        discountAmount,
+        finalTotal
+    }), [
+        items,
+        addToCart,
+        removeFromCart,
+        updateQuantity,
+        updateItemColor,
+        clearCart,
+        cartTotal,
+        cartCount,
+        isCartOpen,
+        appliedCoupon,
+        discountAmount,
+        finalTotal
+    ]);
+
     return (
-        <CartContext.Provider
-            value={{
-                items,
-                addToCart,
-                removeFromCart,
-                updateQuantity,
-                clearCart,
-                cartTotal,
-                cartCount,
-                isCartOpen,
-                setIsCartOpen,
-                appliedCoupon,
-                applyCoupon,
-                removeCoupon,
-                discountAmount,
-                finalTotal
-            }}
-        >
+        <CartContext.Provider value={contextValue}>
             {children}
         </CartContext.Provider>
     );

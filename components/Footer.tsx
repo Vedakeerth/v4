@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Mail, Phone, Instagram, Facebook, Linkedin, Twitter, Youtube, Share2, Headset } from "lucide-react";
+import { Mail, Phone, Instagram, Facebook, Linkedin, Twitter, Youtube, Share2, Headset, MessageCircle } from "lucide-react";
 import { getSocials, type SocialLink } from "@/lib/socials";
 import { useTheme } from "next-themes";
 
@@ -14,7 +14,8 @@ const ICON_MAP: Record<string, any> = {
     Facebook,
     Linkedin,
     Twitter,
-    Youtube
+    Youtube,
+    Whatsapp: MessageCircle
 };
 
 export default function Footer() {

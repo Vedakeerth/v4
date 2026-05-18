@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { decrypt } from '@/lib/crypto';
 
 export async function POST(req: Request) {
     try {
@@ -6,7 +7,7 @@ export async function POST(req: Request) {
         const { amount, customerName, email, phone, orderId } = body;
 
         const appId = process.env.CASHFREE_APP_ID;
-        const secretKey = process.env.CASHFREE_SECRET_KEY;
+        const secretKey = decrypt(process.env.CASHFREE_SECRET_KEY || '');
         const env = process.env.CASHFREE_ENV || 'sandbox';
 
         if (!appId || !secretKey) {
@@ -56,7 +57,7 @@ export async function POST(req: Request) {
                     customer_phone: cleanPhone
                 },
                 order_meta: {
-                    return_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/checkout/success?order_id={order_id}`
+                    return_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/payment-status?order_id={order_id}`
                 }
             })
         });

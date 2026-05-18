@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { getColorName } from '@/lib/utils';
 
 interface QuotationDocumentProps {
     quoteId: string;
@@ -20,11 +21,18 @@ interface QuotationDocumentProps {
         quantity: number;
         total: number;
         color: string;
+        colorName?: string;
+        id?: string;
         weight?: number;
     }>;
     totalAmount: number;
     totalQty: number;
     discount?: number;
+    shippingCost?: number;
+    material?: string;
+    infillPercent?: number;
+    infillPattern?: string;
+    title?: string;
 }
 
 const numberToWords = (num: number): string => {
@@ -73,17 +81,24 @@ export default function QuotationDocument({
     items,
     totalAmount,
     totalQty,
-    discount = 0
+    discount = 0,
+    shippingCost = 0,
+    material,
+    infillPercent,
+    infillPattern,
+    title = "QUOTATION"
 }: QuotationDocumentProps) {
-    const subtotal = totalAmount;
-    const netTotalBeforeRound = subtotal - discount;
+    const isQuotation = title === "QUOTATION";
+    const activeShipping = shippingCost;
+    const subtotal = items.reduce((acc, item) => acc + item.total, 0);
+    const netTotalBeforeRound = subtotal - discount + activeShipping;
     const finalTotal = Math.round(netTotalBeforeRound);
     const roundOff = finalTotal - netTotalBeforeRound;
 
     return (
         <div
             id="quotation-paper"
-            className="bg-white w-full sm:w-[794px] h-[1123px] relative overflow-hidden flex flex-col text-[#334155] font-sans mx-auto"
+            className="bg-white w-[794px] h-[1123px] relative overflow-hidden flex flex-col text-[#334155] font-sans mx-auto"
             style={{ boxShadow: '0 0 20px rgba(0,0,0,0.1)' }}
         >
             {/* Top Banner Accent */}
@@ -117,7 +132,7 @@ export default function QuotationDocument({
 
                     {/* Quotation Identity */}
                     <div className="text-right">
-                        <h1 className="text-6xl font-normal text-[#334155] mb-4 mt-2 tracking-tight">QUOTATION</h1>
+                        <h1 className="text-5xl font-black text-[#334155] mb-4 mt-2 tracking-tight uppercase italic">{title}</h1>
                         <div className="inline-block text-left text-[13px] space-y-2">
                             <div className="grid grid-cols-[100px_10px_1fr]">
                                 <span className="font-bold text-[#64748b]">Quote ID</span>
@@ -137,6 +152,17 @@ export default function QuotationDocument({
                         </div>
                     </div>
                 </div>
+
+                {/* Technical Specifications (Optional) */}
+                {(material || infillPercent) && (
+                    <div className="mb-4 bg-[#f8fafc] p-3 rounded-lg border border-slate-200">
+                        <h3 className="text-[10px] font-black uppercase text-slate-800 mb-2">Technical Specifications:</h3>
+                        <div className="flex gap-8 text-[11px] font-medium">
+                            <div><span className="text-[#64748b] font-bold">Material:</span> {material}</div>
+                            <div><span className="text-[#64748b] font-bold">Infill:</span> {infillPercent}% ({infillPattern})</div>
+                        </div>
+                    </div>
+                )}
 
                 {/* Client Section */}
                 <div className="mb-4">
@@ -178,9 +204,12 @@ export default function QuotationDocument({
                                             {item.name}<br />
                                             <div className="flex items-center gap-1.5 mt-0.5">
                                                 <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: item.color }}></span>
-                                                <span className="text-[10px] text-slate-600 dark:text-slate-400 font-normal">
-                                                    {item.description} {item.weight ? `• ${item.weight.toFixed(1)}g` : ''}
+                                                <span className="text-[10px] text-slate-600 font-bold uppercase tracking-tight">
+                                                    ({item.colorName || getColorName(item.color)}) / {item.id || 'N/A'}
                                                 </span>
+                                            </div>
+                                            <div className="text-[10px] text-slate-500 font-normal mt-0.5">
+                                                {item.description} {item.weight ? `• ${item.weight.toFixed(1)}g` : ''}
                                             </div>
                                         </td>
                                         <td className="px-4 py-2 border-r border-slate-300 text-right font-medium">₹ {item.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
@@ -189,49 +218,48 @@ export default function QuotationDocument({
                                     </tr>
                                 ))}
                             </tbody>
+                            <tfoot className="text-[13px] font-bold text-slate-800 bg-slate-50/20">
+                                {/* Subtotal Row */}
+                                <tr className="border-t border-slate-300">
+                                    <td colSpan={3} className="px-4 py-2 text-right uppercase tracking-wider text-slate-500 font-bold text-[11px]">Subtotal</td>
+                                    <td className="px-4 py-2 border-l border-r border-slate-300 text-center text-slate-900">{totalQty} Nos</td>
+                                    <td className="px-4 py-2 text-right text-slate-900">₹ {subtotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                                </tr>
+                                {/* Discount Row */}
+                                {discount > 0 && (
+                                    <tr className="border-t border-slate-300">
+                                        <td colSpan={3} className="px-4 py-2 text-right uppercase tracking-wider text-green-600 font-bold text-[11px]">Coupon Discount</td>
+                                        <td className="px-4 py-2 border-l border-r border-slate-300 text-center text-slate-900">-</td>
+                                        <td className="px-4 py-2 text-right text-green-600">- ₹ {discount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                                    </tr>
+                                )}
+                                {/* Handling Fee Row */}
+                                {shippingCost > 0 && (
+                                    <tr className="border-t border-slate-300">
+                                        <td colSpan={3} className="px-4 py-2 text-right uppercase tracking-wider text-slate-500 font-bold text-[11px]">Handling Fee</td>
+                                        <td className="px-4 py-2 border-l border-r border-slate-300 text-center text-slate-900">-</td>
+                                        <td className="px-4 py-2 text-right text-slate-900">₹ {shippingCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                                    </tr>
+                                )}
+                                {/* Round Off Row */}
+                                <tr className="border-t border-slate-300">
+                                    <td colSpan={3} className="px-4 py-2 text-right uppercase tracking-wider text-slate-500 font-bold text-[11px]">Round off</td>
+                                    <td className="px-4 py-2 border-l border-r border-slate-300 text-center text-slate-900">-</td>
+                                    <td className="px-4 py-2 text-right text-slate-900">{roundOff >= 0 ? `+ ₹${roundOff.toFixed(2)}` : `- ₹${Math.abs(roundOff).toFixed(2)}`}</td>
+                                </tr>
+                                {/* Grand Total Row */}
+                                <tr className="border-t-2 border-slate-900 bg-slate-100/50">
+                                    <td colSpan={3} className="px-4 py-3 text-right uppercase tracking-wider text-slate-900 font-black text-[12px]">Total Amount</td>
+                                    <td className="px-4 py-3 border-l border-r border-slate-300 text-center text-slate-900 font-black">{totalQty} Nos</td>
+                                    <td className="px-4 py-3 text-right text-slate-900 font-black text-[15px]">₹ {finalTotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                                </tr>
+                            </tfoot>
                         </table>
 
-                        {/* Totals Section */}
-                        <div className="mt-2 flex flex-col items-end gap-1 relative z-10 pr-0">
-                            {/* Quantity and Subtotal on same line */}
-                            <div className="flex items-center gap-0 text-[13px] font-bold">
-                                <div className="w-[90px] text-center ml-auto">
-                                    <span className="text-slate-900">{totalQty} Nos</span>
-                                </div>
-                                <div className="w-[140px] text-right">
-                                    <span className="text-slate-800">₹ {subtotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-                                </div>
-                            </div>
-
-                            {discount > 0 && (
-                                <div className="flex items-center gap-12 text-[12.5px] font-bold text-green-600">
-                                    <span className="font-bold text-[11px] uppercase tracking-wider">Coupon Discount</span>
-                                    <span className="w-[110px] text-right">
-                                        - ₹ {discount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                                    </span>
-                                </div>
-                            )}
-
-                            <div className="flex items-center gap-12 text-[12.5px] font-bold">
-                                <span className="text-slate-500 font-bold text-[11px] uppercase tracking-wider">Round off</span>
-                                <span className="text-slate-800 w-[110px] text-right">
-                                    {roundOff >= 0 ? `+ ₹${roundOff.toFixed(2)}` : `- ₹${Math.abs(roundOff).toFixed(2)}`}
-                                </span>
-                            </div>
-
-                            <div className="flex items-baseline gap-0 text-[14px] font-black border-t-2 border-slate-900 mt-2 pt-2">
-                                <div className="w-[90px] text-center ml-auto">
-                                    <span className="text-slate-600 dark:text-slate-400 font-bold">-</span>
-                                </div>
-                                <div className="w-[140px] text-right">
-                                    <span className="text-slate-900">₹ {finalTotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-                                </div>
-                            </div>
-                            <div className="mt-2 text-right">
-                                <p className="text-[12px] italic text-[#64748b] font-medium leading-tight max-w-[400px]">
-                                    {numberToWords(finalTotal)}
-                                </p>
-                            </div>
+                        <div className="mt-3 text-right pr-4">
+                            <p className="text-[12px] italic text-[#64748b] font-semibold leading-tight">
+                                {numberToWords(finalTotal)}
+                            </p>
                         </div>
                     </div>
                 </div>

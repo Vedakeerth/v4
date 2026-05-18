@@ -30,7 +30,6 @@ export default function Navbar() {
 
     const navLinks = (settings?.navbarLinks?.filter(l => l.isActive !== false)) || [
         { name: "Services", href: "/services" },
-        { name: "Catalogue", href: "/catalog" },
         { name: "Blog", href: "/blog" },
         { name: "Gallery", href: "/gallery" },
         { name: "Contact", href: "/contact" },
@@ -91,38 +90,40 @@ export default function Navbar() {
                         pathname === '/checkout' ? "top-0" : "top-[30px]"
                     )}
                 >
-                    <div className="dynamic-container h-20 flex items-center justify-between">
-                        {/* Logo */}
-                        <Link href="/" className="flex items-center gap-2 group">
-                            <div className="relative h-10 w-auto aspect-[3/1]">
-                                <Image
-                                    src={resolvedTheme === 'dark' ? "/images/logo.png" : "/images/logo-v2.png"}
-                                    alt="VAELINSA Logo"
-                                    fill
-                                    className="object-contain"
-                                    priority
-                                />
-                            </div>
-                        </Link>
+                    <div className="dynamic-container h-20 flex items-center">
+                        {/* Logo - Flex-1 to push nav to center */}
+                        <div className="flex-1">
+                            <Link href="/" className="flex items-center gap-2 group">
+                                <div className="relative h-10 w-auto aspect-[3/1]">
+                                    <Image
+                                        src={resolvedTheme === 'dark' ? "/images/logo.png" : "/images/logo-v2.png"}
+                                        alt="VAELINSA Logo"
+                                        fill
+                                        className="object-contain"
+                                        priority
+                                    />
+                                </div>
+                            </Link>
+                        </div>
 
-                        {/* Navigation */}
-                        <nav className="hidden md:flex items-center gap-8">
+                        {/* Navigation - Centered */}
+                        <nav className="hidden md:flex items-center gap-8 px-4">
                             {navLinks.map((link) => (
                                 <Link
                                     key={link.name}
                                     href={link.href === "/features" ? "/products" : link.href}
-                                    className="text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-cyan-400 transition-colors"
+                                    className="text-sm font-bold text-slate-700 dark:text-slate-300 hover:text-cyan-400 transition-colors uppercase tracking-widest"
                                 >
                                     {link.name === "Features" ? "Products" : link.name}
                                 </Link>
                             ))}
                         </nav>
 
-                        {/* CTA & Actions */}
-                        <div className="flex items-center gap-2 md:gap-4">
+                        {/* CTA & Actions - Flex-1 to push nav to center */}
+                        <div className="flex-1 flex items-center justify-end gap-2 md:gap-4">
                             <ThemeToggle />
                             <Link href={ctaData.href} className="hidden sm:block">
-                                <button className="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-2 px-6 rounded-full text-sm transition-colors shadow-[0_0_20px_rgba(6,182,212,0.3)] hover:shadow-[0_0_30px_rgba(6,182,212,0.5)]">
+                                <button className="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-2 px-6 rounded-full text-[10px] uppercase tracking-widest transition-all shadow-[0_0_20px_rgba(6,182,212,0.3)] hover:shadow-[0_0_30px_rgba(6,182,212,0.5)] active:scale-95">
                                     {ctaData.text}
                                 </button>
                             </Link>
@@ -132,14 +133,14 @@ export default function Navbar() {
                                     onClick={() => setIsCartOpen(true)}
                                     className="p-2 relative text-slate-700 dark:text-slate-300 hover:text-cyan-500 transition-colors"
                                 >
-                                    <ShoppingCart className="w-6 h-6" />
+                                    <ShoppingCart className="w-5 h-5" />
                                     <AnimatePresence>
                                         {cartCount > 0 && (
                                             <motion.span
                                                 initial={{ scale: 0 }}
                                                 animate={{ scale: 1 }}
                                                 exit={{ scale: 0 }}
-                                                className="absolute -top-1 -right-1 w-5 h-5 bg-cyan-500 text-slate-950 text-xs font-bold rounded-full flex items-center justify-center"
+                                                className="absolute -top-1 -right-1 w-4 h-4 bg-cyan-500 text-slate-950 text-[10px] font-black rounded-full flex items-center justify-center"
                                             >
                                                 {cartCount}
                                             </motion.span>

@@ -3,13 +3,15 @@
 import React from "react";
 import { X, Info, ShoppingCart, Heart, Zap } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Product } from "@/lib/products";
-import { cn, parsePrice } from "@/lib/utils";
+import { cn, parsePrice, formatINR } from "@/lib/utils";
 import { useCart } from "@/context/CartContext";
 import { ChevronLeft, ChevronRight, Minus, Plus } from "lucide-react";
 import BuyNowModal from "./BuyNowModal";
+import Link from "next/link";
+import { createSeoSlug } from "@/lib/seo-utils";
 
 interface ProductQuickViewProps {
     product: Product | null;
@@ -17,6 +19,7 @@ interface ProductQuickViewProps {
 }
 
 export default function ProductQuickView({ product, onClose }: ProductQuickViewProps) {
+    const router = useRouter();
     const [activeImageIndex, setActiveImageIndex] = React.useState(0);
     const [selectedColor, setSelectedColor] = React.useState<string | null>(null);
     const [quantity, setQuantity] = React.useState(1);
@@ -158,11 +161,7 @@ export default function ProductQuickView({ product, onClose }: ProductQuickViewP
                             </h2>
                             <div className="flex items-center justify-between mb-3">
                                 <div className="text-3xl font-black text-cyan-600 dark:text-cyan-400 flex items-baseline gap-2">
-                                    {product?.price
-                                        ? (typeof product.price === 'number'
-                                            ? `₹${product.price.toLocaleString('en-IN')}`
-                                            : product.price.startsWith('₹') ? product.price : `₹${product.price}`)
-                                        : "₹0"}
+                                    {formatINR(product.price)}
                                     <span className="text-xs text-slate-500 font-bold uppercase tracking-widest">per unit</span>
                                 </div>
                                 <div className="flex items-center gap-2 text-red-600 dark:text-red-400 bg-red-500/10 px-3 py-1.5 rounded-xl border border-red-500/20">
@@ -232,7 +231,12 @@ export default function ProductQuickView({ product, onClose }: ProductQuickViewP
                             <div className="mt-auto pt-4 border-t border-slate-200 dark:border-slate-800 space-y-3">
                                 {/* Primary Action: Buy Now */}
                                 <button
-                                    onClick={() => setShowBuyNow(true)}
+                                    onClick={() => {
+                                        // Clear cart and add only this item for "Buy Now"
+                                        localStorage.removeItem('veda_cart'); // Direct clear to be safe
+                                        addToCart(product, selectedColor || undefined, quantity, false);
+                                        router.push('/checkout');
+                                    }}
                                     disabled={!product.inStock}
                                     className="w-full py-6 bg-cyan-400 hover:bg-cyan-500 text-slate-950 font-black rounded-2xl transition-all shadow-lg shadow-cyan-400/20 flex items-center justify-center gap-3 text-lg group disabled:opacity-40 disabled:cursor-not-allowed"
                                 >
@@ -254,7 +258,7 @@ export default function ProductQuickView({ product, onClose }: ProductQuickViewP
                                     </button>
 
                                     <Link
-                                        href={`/gallery/${require("@/lib/seo-utils").createSeoSlug(product.name, product.id)}`}
+                                        href={`/gallery/${createSeoSlug(product.name, product.id)}`}
                                         onClick={onClose}
                                         className="w-full"
                                     >

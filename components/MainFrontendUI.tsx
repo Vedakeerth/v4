@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { usePathname } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import CartDrawer from "@/components/CartDrawer";
@@ -18,19 +19,34 @@ interface MainFrontendUIProps {
 
 export default function MainFrontendUI({ children, navLinks, ctaData }: MainFrontendUIProps) {
     const pathname = usePathname();
+    const [mounted, setMounted] = React.useState(false);
 
-    // Check if current path is an admin page or secure portal
-    const isAdminPage = pathname?.startsWith("/admin") || pathname?.startsWith("/secure-management-portal");
-    const isSpecialPage = pathname === "/" || pathname === "/gallery" || pathname === "/services" || pathname === "/products" || pathname === "/blog" || pathname === "/contact" || pathname === "/index.html" || pathname === "";
+    React.useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    if (!mounted) return null;
+
+    // Aggressive detection for admin and secure portal routes
+    const isPathMatch = (path: string) => {
+        if (!pathname) return false;
+        const normalizedPath = pathname.toLowerCase();
+        return normalizedPath.includes("/admin") || 
+               normalizedPath.includes("/secure-management-portal") || 
+               normalizedPath.includes("/secure-admin");
+    };
+
+    const isAdminPage = isPathMatch(pathname || "");
     const isCheckout = pathname === "/checkout";
 
+    // If it's an admin page, return ONLY the children to prevent double scrolling and UI leakage
     if (isAdminPage) {
         return <>{children}</>;
     }
 
     return (
         <>
-            <NewsTicker />
+            {!isCheckout && <NewsTicker />}
             <Preloader />
             <Navbar />
             <CartDrawer />
@@ -38,7 +54,7 @@ export default function MainFrontendUI({ children, navLinks, ctaData }: MainFron
             <CustomCursor />
             <div className={cn(
                 "transition-all duration-300",
-                isAdminPage ? "pt-0" : "pt-[30px]"
+                isCheckout ? "pt-0" : "pt-[30px]"
             )}>
                 {children}
             </div>
@@ -46,4 +62,3 @@ export default function MainFrontendUI({ children, navLinks, ctaData }: MainFron
         </>
     );
 }
-

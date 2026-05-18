@@ -32,6 +32,7 @@ export interface Product {
     name: string;
     description: string;
     price: string | number;
+    mrp?: string | number;
     image: string;
     images: string[];
     category: string;
@@ -41,8 +42,13 @@ export interface Product {
     isPopular?: boolean;
     quantity?: number; // Used for cart
     colors?: string[]; // Hex codes or names
+    defaultColor?: string; // Explicit default color
     likes?: number;
     hash?: string;
+    weight?: number; // in grams
+    length?: number; // in cm
+    width?: number; // in cm
+    height?: number; // in cm
 }
 
 export interface Order {
@@ -56,6 +62,12 @@ export interface Order {
     items: any[];
     address: string;
     notes?: string;
+    pdfUrl?: string;
+    megaFolderUrl?: string;
+    trackingId?: string;
+    quotationId?: string;
+    paymentStatus?: string;
+    paymentId?: string;
     createdAt?: any;
 }
 

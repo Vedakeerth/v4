@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { updateOrder } from '@/lib/orders';
+import { decrypt } from '@/lib/crypto';
 
 export async function POST(req: Request) {
     try {
@@ -7,7 +8,7 @@ export async function POST(req: Request) {
         const { orderId } = body;
 
         const appId = process.env.CASHFREE_APP_ID;
-        const secretKey = process.env.CASHFREE_SECRET_KEY;
+        const secretKey = decrypt(process.env.CASHFREE_SECRET_KEY || '');
         const env = process.env.CASHFREE_ENV || 'sandbox';
 
         if (!appId || !secretKey) {
@@ -41,6 +42,8 @@ export async function POST(req: Request) {
             // 1. Update Firestore order to Processing
             await updateOrder(orderId, {
                 status: 'Processing',
+                paymentStatus: 'PAID',
+                paymentId: data.cf_order_id,
                 notes: `Cashfree Payment ID: ${data.cf_order_id}`
             });
 
@@ -52,15 +55,15 @@ export async function POST(req: Request) {
                 const order = orderDoc.exists ? orderDoc.data() : null;
 
                 if (order) {
-                    const adminPhone = process.env.ADMIN_WHATSAPP_NUMBER || '919999999999'; // Your WhatsApp number with country code, no +
+                    const adminPhone = process.env.ADMIN_WHATSAPP_NUMBER || '919999999999';
 
                     // Build WhatsApp message
                     const itemsList = (order.items || [])
                         .map((item: any) => `• ${item.name} x${item.quantity} @ ${item.price}`)
                         .join('\n');
 
-                    const message = [
-                        `🛒 *NEW ORDER RECEIVED*`,
+                    const whatsappMessage = [
+                        `🛒 *NEW ORDER CONFIRMED*`,
                         ``,
                         `📦 Order ID: ${orderId}`,
                         `👤 Customer: ${order.customerName}`,
@@ -73,18 +76,21 @@ export async function POST(req: Request) {
                         ``,
                         `💰 Total: ${order.totalAmount}`,
                         `💳 Payment: Cashfree (${data.cf_order_id})`,
+                        order.pdfUrl ? `📄 Invoice/Quote: ${order.pdfUrl}` : '',
                         ``,
                         `✅ Payment verified & confirmed`
                     ].join('\n');
 
-                    // Log the WhatsApp message to console (always)
-                    console.log('\n📱 WhatsApp Order Alert:\n', message);
+                    console.log('\n📱 WhatsApp Order Alert:\n', whatsappMessage);
 
-                    // Send via WhatsApp link (works as a server-side trigger log)
-                    // To actually send: integrate with WhatsApp Business API or Twilio
-                    const encodedMsg = encodeURIComponent(message);
-                    const waLink = `https://wa.me/${adminPhone}?text=${encodedMsg}`;
-                    console.log('WhatsApp Link:', waLink);
+                    // --- CUSTOMER EMAIL NOTIFICATION ---
+                    try {
+                        const { sendOrderConfirmation } = await import('@/lib/emailService');
+                        await sendOrderConfirmation(order);
+                        console.log(`[EMAIL] Resend confirmation sent to ${order.email} for order ${orderId}`);
+                    } catch (emailErr) {
+                        console.error('[EMAIL] Resend failed:', emailErr);
+                    }
                 }
             } catch (notifyError) {
                 // Non-critical — don't fail the verification if notification fails

@@ -3,7 +3,7 @@ import { getAdminDb } from "@/lib/firebaseAdmin";
 import { notFound } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { Package, Truck, CheckCircle, Clock, MapPin, Calendar, CreditCard, ArrowLeft } from "lucide-react";
+import { Package, Truck, CheckCircle, Clock, MapPin, Calendar, CreditCard, ArrowLeft, FileText } from "lucide-react";
 import Link from "next/link";
 import type { Metadata } from "next";
 
@@ -66,6 +66,18 @@ export default async function OrderDetailPage({ params }: PageProps) {
                             <div>
                                 <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Order Summary</p>
                                 <h1 className="text-3xl font-black text-white italic tracking-tighter uppercase">{order.trackingId || order.id}</h1>
+                                
+                                { (order.megaFolderUrl || order.pdfUrl) && (
+                                    <a 
+                                        href={order.megaFolderUrl || order.pdfUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-cyan-500 hover:text-slate-950 transition-all shadow-lg shadow-cyan-500/10"
+                                    >
+                                        <FileText size={14} />
+                                        Preview Official Quotation
+                                    </a>
+                                )}
                             </div>
                             <div className={`px-5 py-2 rounded-full ${STATUS_STEPS[currentStepIndex > -1 ? currentStepIndex : 0].bg} ${STATUS_STEPS[currentStepIndex > -1 ? currentStepIndex : 0].color} font-black text-xs uppercase tracking-widest border border-current/20`}>
                                 {order.status}

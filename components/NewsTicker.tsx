@@ -73,9 +73,9 @@ export default function NewsTicker({ initialItems }: { initialItems?: { text: st
 
     return (
         <div className="ticker-wrapper">
-            <Marquee speed={settings.speed} gradient={false} autoFill={true}>
+            <Marquee speed={settings.speed} gradient={false} autoFill={false}>
                 {news.map((text, i) => (
-                    <span key={i} className="ticker-text" style={{ marginRight: `${settings.spacing}px` }}>{text}</span>
+                    <span key={i} className="ticker-text" style={{ paddingRight: `${settings.spacing}px` }}>{text}</span>
                 ))}
             </Marquee>
         </div>

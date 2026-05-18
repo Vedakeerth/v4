@@ -6,6 +6,7 @@ import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import Image from "next/image";
 import { Product } from "@/lib/products";
+import { formatINR } from "@/lib/utils";
 
 interface InstantQuoteModalProps {
     product: Product;
@@ -21,6 +22,14 @@ export default function InstantQuoteModal({ product, onClose }: InstantQuoteModa
         company: "",
     });
     const quoteRef = useRef<HTMLDivElement>(null);
+
+    // Lock scroll on mount
+    React.useEffect(() => {
+        document.body.style.overflow = "hidden";
+        return () => {
+            document.body.style.overflow = "unset";
+        };
+    }, []);
 
     const handleGenerate = async () => {
         if (!userDetails.name || !userDetails.email) {
@@ -181,8 +190,8 @@ export default function InstantQuoteModal({ product, onClose }: InstantQuoteModa
                                         <p className="text-xs text-slate-500 mt-1">{product.description}</p>
                                     </td>
                                     <td className="py-6 text-center font-bold">1</td>
-                                    <td className="py-6 text-right font-bold">{product.price}</td>
-                                    <td className="py-6 text-right font-black text-cyan-600">{product.price}</td>
+                                    <td className="py-6 text-right font-bold">{formatINR(product.price)}</td>
+                                    <td className="py-6 text-right font-black text-cyan-600">{formatINR(product.price)}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -191,7 +200,7 @@ export default function InstantQuoteModal({ product, onClose }: InstantQuoteModa
                             <div className="w-64 space-y-3">
                                 <div className="flex justify-between text-slate-500">
                                     <span className="text-sm font-semibold">Subtotal</span>
-                                    <span className="font-bold">{product.price}</span>
+                                    <span className="font-bold">{formatINR(product.price)}</span>
                                 </div>
                                 <div className="flex justify-between text-slate-500">
                                     <span className="text-sm font-semibold">Shipping</span>
@@ -200,7 +209,7 @@ export default function InstantQuoteModal({ product, onClose }: InstantQuoteModa
                                 <div className="h-px bg-slate-100 my-2" />
                                 <div className="flex justify-between items-center bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white p-4 rounded-xl">
                                     <span className="text-slate-600 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest">Grand Total</span>
-                                    <span className="text-xl font-black">{product.price}</span>
+                                    <span className="text-xl font-black">{formatINR(product.price)}</span>
                                 </div>
                             </div>
                         </div>

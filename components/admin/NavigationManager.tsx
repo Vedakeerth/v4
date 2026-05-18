@@ -12,7 +12,6 @@ interface NavLink {
 
 const DEFAULT_NAV: NavLink[] = [
     { name: "Services", href: "/services" },
-    { name: "Catalogue", href: "/catalog" },
     { name: "Blog", href: "/blog" },
     { name: "Gallery", href: "/gallery" },
     { name: "Contact", href: "/contact" },
@@ -38,7 +37,6 @@ const DEFAULT_FOOTER_SERVICES: NavLink[] = [
 const SUGGESTED_PATHS = [
     { name: "Home", href: "/" },
     { name: "Services", href: "/services" },
-    { name: "Catalogue", href: "/catalog" },
     { name: "Blog", href: "/blog" },
     { name: "Gallery", href: "/gallery" },
     { name: "Contact", href: "/contact" },

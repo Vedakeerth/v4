@@ -2,12 +2,12 @@
 
 import { redirectToCashfree } from "@/lib/cashfree";
 import React, { useState, useEffect } from "react";
-import { X, ShoppingBag, Trash2, Plus, Minus, ArrowRight, Ticket, Zap, Lock, ShieldCheck, Loader2 } from "lucide-react";
+import { X, ShoppingBag, Trash2, Plus, Minus, ArrowRight, Ticket, Zap, Lock, ShieldCheck, Loader2, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { useCart, CartItem } from "@/context/CartContext";
-import { cn } from "@/lib/utils";
+import { cn, formatINR } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { createSeoSlug } from "@/lib/seo-utils";
 
@@ -31,6 +31,7 @@ export default function CartDrawer() {
         items,
         removeFromCart,
         updateQuantity,
+        updateItemColor,
         cartTotal,
         finalTotal,
         isCartOpen,
@@ -48,6 +49,7 @@ export default function CartDrawer() {
     const [isValidating, setIsValidating] = useState(false);
     const [couponError, setCouponError] = useState<string | null>(null);
     const [showCouponInput, setShowCouponInput] = useState(false);
+    const [openColorDropdownId, setOpenColorDropdownId] = useState<string | null>(null);
 
     // Prevent scrolling when drawer is open
     useEffect(() => {
@@ -147,7 +149,7 @@ export default function CartDrawer() {
                                         }}
                                         className="px-6 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs uppercase tracking-widest rounded-full transition-all border border-slate-300 dark:border-slate-700"
                                     >
-                                        Browse Catalog
+                                        Browse Gallery
                                     </button>
                                 </div>
                             ) : (
@@ -192,16 +194,83 @@ export default function CartDrawer() {
                                                                 <Trash2 className="w-4 h-4" />
                                                             </button>
                                                         </div>
-                                                        {item.selectedColor && (
-                                                            <div className="flex items-center gap-1.5 mt-1">
-                                                                <div className="w-2 h-2 rounded-full border border-white/20" style={{ backgroundColor: item.selectedColor }} />
-                                                                <span className="text-[10px] text-slate-500 font-black uppercase tracking-widest">{getColorName(item.selectedColor)}</span>
-                                                            </div>
-                                                        )}
+                                                        {(() => {
+                                                            const availableColors = ['#2563eb', '#ef4444', '#22c55e', '#eab308', '#ffffff', '#000000'];
+                                                            const displayColors = item.colors && item.colors.length > 0 ? item.colors : availableColors;
+                                                            const fallbackColor = (displayColors.includes('#000000') && item.name.toLowerCase().includes('plant')) ? '#000000' : (displayColors[0] || '#2563eb');
+                                                            const displayColor = item.selectedColor || item.defaultColor || fallbackColor;
+                                                            
+                                                            return (
+                                                                <div className="mt-1.5">
+                                                                    {displayColors.length > 1 ? (
+                                                                        <div className="relative">
+                                                                            <button
+                                                                                onClick={() => setOpenColorDropdownId(openColorDropdownId === item.cartId ? null : item.cartId)}
+                                                                                className={cn(
+                                                                                    "flex items-center gap-2 px-2.5 py-1.5 rounded-xl border transition-all w-fit group/color",
+                                                                                    openColorDropdownId === item.cartId
+                                                                                        ? "border-cyan-500 bg-cyan-500/5 shadow-[0_0_15px_rgba(6,182,212,0.1)]"
+                                                                                        : "border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950/40 hover:border-slate-400 dark:hover:border-slate-600"
+                                                                                )}
+                                                                            >
+                                                                                <div className="w-1.5 h-1.5 rounded-full shrink-0 shadow-sm" style={{ backgroundColor: displayColor }} />
+                                                                                <span className="text-[9px] text-slate-500 dark:text-slate-400 font-black uppercase tracking-[0.15em]">{getColorName(displayColor)}</span>
+                                                                                <ChevronDown className={cn("w-3 h-3 text-slate-400 transition-transform duration-300", openColorDropdownId === item.cartId && "rotate-180 text-cyan-500")} />
+                                                                            </button>
+                                                                            
+                                                                            <AnimatePresence>
+                                                                                {openColorDropdownId === item.cartId && (
+                                                                                    <>
+                                                                                        {/* Backdrop to close */}
+                                                                                        <motion.div 
+                                                                                            initial={{ opacity: 0 }}
+                                                                                            animate={{ opacity: 1 }}
+                                                                                            exit={{ opacity: 0 }}
+                                                                                            className="fixed inset-0 z-[60]" 
+                                                                                            onClick={() => setOpenColorDropdownId(null)} 
+                                                                                        />
+                                                                                        <motion.div
+                                                                                            initial={{ opacity: 0, y: 8, scale: 0.95 }}
+                                                                                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                                                                                            exit={{ opacity: 0, y: 8, scale: 0.95 }}
+                                                                                            transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                                                                                            className="absolute top-full left-0 mt-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] z-[70] py-2 min-w-[120px] overflow-hidden backdrop-blur-xl"
+                                                                                        >
+                                                                                            {displayColors.map(color => (
+                                                                                                <button
+                                                                                                    key={color}
+                                                                                                    onClick={() => {
+                                                                                                        updateItemColor(item.cartId, color);
+                                                                                                        setOpenColorDropdownId(null);
+                                                                                                    }}
+                                                                                                    className={cn(
+                                                                                                        "w-full text-left px-3 py-2.5 text-[9px] font-black uppercase tracking-widest hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all flex items-center gap-3",
+                                                                                                        displayColor === color ? "text-cyan-500 bg-cyan-500/5" : "text-slate-600 dark:text-slate-400"
+                                                                                                    )}
+                                                                                                >
+                                                                                                    <div className="w-2 h-2 rounded-full shadow-sm ring-1 ring-black/5" style={{ backgroundColor: color }} />
+                                                                                                    {getColorName(color)}
+                                                                                                    {displayColor === color && <div className="ml-auto w-1 h-1 rounded-full bg-cyan-500" />}
+                                                                                                </button>
+                                                                                            ))}
+                                                                                        </motion.div>
+                                                                                    </>
+                                                                                )}
+                                                                            </AnimatePresence>
+                                                                        </div>
+                                                                    ) : (
+                                                                        <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl border border-transparent bg-slate-100/50 dark:bg-slate-800/30 w-fit">
+                                                                            <div className="w-1.5 h-1.5 rounded-full shrink-0 opacity-60" style={{ backgroundColor: displayColor }} />
+                                                                            <span className="text-[9px] text-slate-400 font-black uppercase tracking-[0.15em]">{getColorName(displayColor)}</span>
+                                                                        </div>
+                                                                    )}
+                                                                </div>
+                                                            );
+                                                        })()}
                                                     </div>
 
                                                     <div className="flex items-center justify-between mt-2">
-                                                        <span className="text-cyan-400 font-black italic text-sm">{item.price}</span>
+                                                        <span className="text-cyan-400 font-black italic text-sm">{formatINR(item.price)}</span>
                                                         
                                                         <div className="flex items-center bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-2 py-1">
                                                             <button
@@ -303,26 +372,23 @@ export default function CartDrawer() {
                                 <div className="space-y-3">
                                     <div className="flex justify-between items-center text-xs font-bold uppercase tracking-widest">
                                         <span className="text-slate-600 dark:text-slate-400">Subtotal</span>
-                                        <span className="text-slate-900 dark:text-white">₹{cartTotal.toLocaleString('en-IN')}</span>
+                                        <span className="text-slate-900 dark:text-white">{formatINR(cartTotal)}</span>
                                     </div>
                                     
                                     {appliedCoupon && (
                                         <div className="flex justify-between items-center text-xs font-bold uppercase tracking-widest">
                                             <span className="text-slate-600 dark:text-slate-400">Discount ({appliedCoupon.code})</span>
-                                            <span className="text-emerald-500">-₹{discountAmount.toLocaleString('en-IN')}</span>
+                                            <span className="text-emerald-500">-{formatINR(discountAmount)}</span>
                                         </div>
                                     )}
                                     
-                                    <div className="flex justify-between items-center text-xs font-bold uppercase tracking-widest">
-                                        <span className="text-slate-600 dark:text-slate-400">Shipping</span>
-                                        <span className="text-emerald-500 italic">FREE</span>
-                                    </div>
+
 
                                     <div className="pt-3 border-t border-slate-200 dark:border-slate-800">
                                         <div className="flex justify-between items-end">
                                             <div>
                                                 <span className="text-[10px] font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest block mb-1 italic">Total Amount</span>
-                                                <span className="text-2xl md:text-3xl font-black text-cyan-400 italic leading-none">₹{finalTotal.toLocaleString('en-IN')}</span>
+                                                <span className="text-2xl md:text-3xl font-black text-cyan-400 italic leading-none">{formatINR(finalTotal)}</span>
                                             </div>
                                             <div className="flex flex-col items-end">
                                                 <div className="flex items-center gap-1 text-emerald-500">

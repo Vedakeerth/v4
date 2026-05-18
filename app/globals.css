@@ -21,8 +21,33 @@
 }
 
 @layer base {
+  html {
+    overflow-y: scroll;
+    overflow-x: hidden !important;
+    height: auto;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
   body {
     @apply bg-background text-foreground antialiased selection:bg-cyan-500/30 selection:text-slate-900 dark:selection:text-white;
+    overscroll-behavior: none;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Admin Portal Scroll Suppression */
+  .admin-page-body .no-scrollbar-ui *::-webkit-scrollbar {
+    display: none !important;
+  }
+  .admin-page-body .no-scrollbar-ui * {
+    scrollbar-width: none !important;
+  }
+
+  *, *::before, *::after {
+    box-sizing: inherit;
   }
 }
 

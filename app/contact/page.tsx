@@ -3,7 +3,7 @@
 import React, { useState, useRef } from "react";
 import Footer from "@/components/Footer";
 import type { Metadata } from "next";
-import { Mail, Phone, MapPin, Clock, Send, Instagram, Facebook, Linkedin, Twitter, Youtube, Loader2, CheckCircle2, Share2 } from "lucide-react";
+import { Mail, Phone, MapPin, Clock, Send, Instagram, Facebook, Linkedin, Twitter, Youtube, Loader2, CheckCircle2, Share2, MessageCircle } from "lucide-react";
 import { getSocials, type SocialLink } from "@/lib/socials";
 
 
@@ -28,7 +28,8 @@ export default function ContactPage() {
     Facebook,
     Linkedin,
     Twitter,
-    Youtube
+    Youtube,
+    Whatsapp: MessageCircle
   };
 
   const HOVER_MAP: Record<string, string> = {
@@ -36,7 +37,8 @@ export default function ContactPage() {
     Facebook: "hover:text-blue-600 hover:border-blue-600/50",
     Linkedin: "hover:text-blue-500 hover:border-blue-500/50",
     Twitter: "hover:text-sky-500 hover:border-sky-500/50",
-    Youtube: "hover:text-red-500 hover:border-red-500/50"
+    Youtube: "hover:text-red-500 hover:border-red-500/50",
+    Whatsapp: "hover:text-green-500 hover:border-green-500/50"
   };
 
   const handleSubmit = async (e: React.FormEvent) => {

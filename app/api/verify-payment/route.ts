@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { adminDb } from "@/lib/firebaseAdmin";
+import { decrypt } from "@/lib/crypto";
 
 const CASHFREE_APP_ID = process.env.CASHFREE_APP_ID;
-const CASHFREE_SECRET_KEY = process.env.CASHFREE_SECRET_KEY;
+const CASHFREE_SECRET_KEY = decrypt(process.env.CASHFREE_SECRET_KEY || "");
 const CASHFREE_ENV = process.env.CASHFREE_ENV || "sandbox";
 
 const CASHFREE_URL = CASHFREE_ENV === "production" 
@@ -13,6 +14,7 @@ export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     const orderId = searchParams.get("orderId");
+    const paymentId = searchParams.get("paymentId"); // Get paymentId from URL if available
 
     if (!orderId) {
       return NextResponse.json({ success: false, error: "Missing orderId" }, { status: 400 });
@@ -43,6 +45,8 @@ export async function GET(req: Request) {
       await orderRef.update({
         paymentStatus: "paid",
         status: "confirmed",
+        paymentId: paymentId || cashfreeData.cf_order_id, // Store payment ID
+        paidAt: new Date().toISOString(),
       });
 
       // Send automated confirmation email
@@ -62,6 +66,7 @@ export async function GET(req: Request) {
       return NextResponse.json({ 
         success: true, 
         status: "paid",
+        paymentId: paymentId || cashfreeData.cf_order_id,
         message: "Payment verified and order updated" 
       });
     } else {

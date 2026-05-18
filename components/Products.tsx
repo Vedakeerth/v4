@@ -125,11 +125,11 @@ export default function Products({ products, isLoading = false }: ProductsProps)
                 {/* View All Products Link */}
                 <div className="text-center mt-12">
                     <Link
-                        href="/catalog"
+                        href="/gallery"
                         className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
                     >
                         <ShoppingCart className="h-5 w-5" />
-                        View All Products
+                        View Gallery
                     </Link>
                 </div>
             </div>

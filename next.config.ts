@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
-// Trigger restart (corrected keys)
+/** @type {import('next').NextConfig} */
+// Force reload: 2026-04-28
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   images: {
@@ -33,7 +34,8 @@ const nextConfig: NextConfig = {
       },
       {
         source: '/admin/dashboard',
-        destination: '/secure-management-portal/dashboard',
+        destination: '/secure-management-portal/admin',
+
         permanent: false,
       },
       {
@@ -43,7 +45,17 @@ const nextConfig: NextConfig = {
       },
       {
         source: '/features',
-        destination: '/products',
+        destination: '/gallery',
+        permanent: true,
+      },
+      {
+        source: '/catalog',
+        destination: '/gallery',
+        permanent: true,
+      },
+      {
+        source: '/products',
+        destination: '/gallery',
         permanent: true,
       },
     ];

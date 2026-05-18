@@ -78,7 +78,7 @@ export default function ProductShowcase({ header, categories, products: initialP
                         viewport={{ once: true }}
                         className="text-3xl md:text-5xl font-bold text-slate-900 dark:text-white mb-6"
                     >
-                        {header?.title || "Explore Our"} <span className="text-cyan-500">{header?.titleHighlight || "Precision"}</span> {header?.suffix || "Catalog"}
+                        {header?.title || "Explore Our"} <span className="text-cyan-500">{header?.titleHighlight || "Precision"}</span> {header?.suffix || "Gallery"}
                     </motion.h2>
                     <motion.p
                         initial={{ opacity: 0, y: 20 }}
@@ -211,9 +211,9 @@ export default function ProductShowcase({ header, categories, products: initialP
 
 
                 <div className="mt-16 text-center">
-                    <Link href={header?.ctaLink || "/products"}>
+                    <Link href={header?.ctaLink || "/gallery"}>
                         <button className="px-10 py-4 rounded-full border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white font-bold hover:bg-slate-50 dark:bg-slate-900 transition-all duration-300 flex items-center gap-3 mx-auto">
-                            {header?.ctaText || "View Catalog"}
+                            {header?.ctaText || "View Gallery"}
                             <ArrowRight size={20} />
                         </button>
                     </Link>

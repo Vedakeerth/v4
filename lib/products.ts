@@ -1,6 +1,22 @@
 import type { QueryDocumentSnapshot, DocumentData } from 'firebase-admin/firestore';
 import { Product } from '@/types';
 import { unstable_cache } from 'next/cache';
+export function generateProductCode(category: string): string {
+    const words = (category || 'Uncategorized').split(' ').filter(w => w.length > 0);
+    let prefix = "";
+    if (words.length >= 2) {
+        prefix = (words[0][0] + (words[1] ? words[1][0] : '')).toUpperCase();
+    } else if (words.length === 1) {
+        prefix = words[0].substring(0, 2).toUpperCase();
+    } else {
+        prefix = "PR";
+    }
+    // Limit prefix to 3 chars max for shortness
+    prefix = prefix.slice(0, 3);
+    const random = Math.floor(1000 + Math.random() * 9000);
+    return `${prefix}${random}`;
+}
+
 export type { Product } from '@/types';
 
 export const getProducts = unstable_cache(
@@ -32,19 +48,24 @@ export const getPopularProducts = unstable_cache(
             const adminDb = await getAdminDb();
             let products: Product[] = [];
             try {
+                // Workaround: Fetch recent products and filter in memory to avoid "Missing Index" error
+                // This uses the default single-field index on 'createdAt'.
                 const snapshot = await adminDb.collection('products')
-                    .where('isPopular', '==', true)
                     .orderBy('createdAt', 'desc')
-                    .limit(limitCount)
+                    .limit(50) 
                     .get();
                 
-                products = snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
-                    id: doc.id,
-                    ...doc.data()
-                } as Product));
+                products = snapshot.docs
+                    .map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+                        id: doc.id,
+                        ...doc.data()
+                    } as Product))
+                    .filter((p: Product) => p.isPopular === true)
+                    .slice(0, limitCount);
+
             } catch (error) {
-                console.error('Error fetching popular products (likely missing index):', error);
-                // Continue to fallback
+                console.error('Error fetching popular products (memory-filter workaround):', error);
+                // The fallback below will handle returning latest products if memory filter yielded 0
             }
 
             // Fallback: If no popular products (or query failed), return the latest X products

@@ -81,7 +81,7 @@ export default function CategoriesTab() {
 
     const handleImportDefaults = async () => {
         const defaults = ["Gifts", "Table Decor", "Wall Decals", "Organizers", "3D Prints", "Machine Organizers", "Uncategorized"];
-        if (!confirm(`This will add ${defaults.length} default categories. Proceed?`)) return;
+        if (!confirm(`This will add ${defaults.length} default collections. Proceed?`)) return;
 
         try {
             setIsLoading(true);
@@ -89,7 +89,7 @@ export default function CategoriesTab() {
                 await fetch("/api/categories", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ name, description: `Default ${name} category`, order: idx }),
+                    body: JSON.stringify({ name, description: `Default ${name} collection`, order: idx }),
                 });
             }
             fetchCategories();
@@ -107,7 +107,7 @@ export default function CategoriesTab() {
     };
 
     const handleSave = async () => {
-        if (!formData.name.trim()) return alert("Category name is required.");
+        if (!formData.name.trim()) return alert("Collection name is required.");
         setIsSaving(true);
         try {
             const method = editingCategory ? "PUT" : "POST";
@@ -123,7 +123,7 @@ export default function CategoriesTab() {
             if (res.ok && result.success) {
                 setShowModal(false);
                 fetchCategories();
-                alert("✓ Category synchronized successfully!");
+                alert("✓ Collection synchronized successfully!");
             } else {
                 alert("× Synchronization failed: " + (result.message || "Unauthorized or Server Error"));
             }
@@ -136,7 +136,7 @@ export default function CategoriesTab() {
     };
 
     const handleDelete = async (id: string) => {
-        if (!confirm("Are you sure? This might affect products using this category.")) return;
+        if (!confirm("Are you sure? This might affect products using this collection.")) return;
         try {
             await fetch("/api/categories", {
                 method: "DELETE",
@@ -154,7 +154,7 @@ export default function CategoriesTab() {
             <div className="flex justify-between items-center mb-8">
                 <div className="flex gap-3">
                     <button onClick={handleAdd} className="px-6 py-3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-xl flex items-center gap-2 shadow-lg shadow-cyan-500/20 transition-all">
-                        <Plus size={20} /> Add Category
+                        <Plus size={20} /> Add Collection
                     </button>
                     {categories.length === 0 && (
                         <button onClick={handleImportDefaults} className="px-6 py-3 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white font-bold rounded-xl flex items-center gap-2 border border-slate-300 dark:border-slate-700 transition-all">
@@ -165,7 +165,7 @@ export default function CategoriesTab() {
             </div>
 
             <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 mb-8">
-                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4">Categories Marquee Configuration</h3>
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4">Collections Marquee Configuration</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="space-y-1">
                         <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Speed</label>
@@ -189,7 +189,7 @@ export default function CategoriesTab() {
             </div>
 
             {isLoading ? (
-                <div className="text-slate-900 dark:text-white">Loading categories...</div>
+                <div className="text-slate-900 dark:text-white">Loading collections...</div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {categories.map((cat) => (
@@ -225,7 +225,7 @@ export default function CategoriesTab() {
                             className="bg-white/90 dark:bg-slate-900/90 border border-white/30 dark:border-white/10 w-full max-w-md rounded-3xl p-8 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] backdrop-blur-3xl"
                         >
                             <div className="flex justify-between items-center mb-6">
-                                <h2 className="text-xl font-bold text-slate-900 dark:text-white">{editingCategory ? "Edit Category" : "Add Category"}</h2>
+                                <h2 className="text-xl font-bold text-slate-900 dark:text-white">{editingCategory ? "Edit Collection" : "Add Collection"}</h2>
                                 <button onClick={() => setShowModal(false)} className="text-slate-500 hover:text-slate-900 dark:text-white"><X size={24} /></button>
                             </div>
 

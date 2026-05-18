@@ -6,8 +6,9 @@ const COLLECTION = "categories";
 
 export async function getCategories(): Promise<Category[]> {
     if (typeof window === 'undefined') {
-        const { adminDb } = await import("./firebaseAdmin");
+        const { getAdminDb } = await import("./firebaseAdmin");
         try {
+            const adminDb = await getAdminDb();
             const snapshot = await adminDb.collection(COLLECTION).get();
             const categories = snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
                 id: doc.id,
@@ -27,7 +28,8 @@ export async function getCategories(): Promise<Category[]> {
 }
 
 export async function addCategory(data: Omit<Category, "id">): Promise<string> {
-    const { adminDb } = await import("./firebaseAdmin");
+    const { getAdminDb } = await import("./firebaseAdmin");
+    const adminDb = await getAdminDb();
     const docRef = await adminDb.collection(COLLECTION).add({
         ...data,
         createdAt: new Date().toISOString(),
@@ -36,11 +38,13 @@ export async function addCategory(data: Omit<Category, "id">): Promise<string> {
 }
 
 export async function updateCategory(id: string, updates: Partial<Category>): Promise<void> {
-    const { adminDb } = await import("./firebaseAdmin");
+    const { getAdminDb } = await import("./firebaseAdmin");
+    const adminDb = await getAdminDb();
     await adminDb.collection(COLLECTION).doc(id).update(updates);
 }
 
 export async function deleteCategory(id: string): Promise<void> {
-    const { adminDb } = await import("./firebaseAdmin");
+    const { getAdminDb } = await import("./firebaseAdmin");
+    const adminDb = await getAdminDb();
     await adminDb.collection(COLLECTION).doc(id).delete();
 }

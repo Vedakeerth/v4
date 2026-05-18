@@ -2,63 +2,39 @@ import { NextResponse } from "next/server";
 import { adminDb } from "@/lib/firebaseAdmin";
 import { FieldValue, Transaction } from "firebase-admin/firestore";
 import { verifyRecaptchaEnterprise } from "@/lib/recaptcha";
+import { decrypt } from "@/lib/crypto";
+import { generateSequentialId } from "@/lib/order-id";
 
 const CASHFREE_APP_ID = process.env.CASHFREE_APP_ID;
-const CASHFREE_SECRET_KEY = process.env.CASHFREE_SECRET_KEY;
+const CASHFREE_SECRET_KEY = decrypt(process.env.CASHFREE_SECRET_KEY || "");
 const CASHFREE_ENV = process.env.CASHFREE_ENV || "sandbox"; // 'sandbox' or 'production'
 
 const CASHFREE_URL = CASHFREE_ENV === "production" 
   ? "https://api.cashfree.com/pg/orders" 
   : "https://sandbox.cashfree.com/pg/orders";
 
-/**
- * Generate a sequential Quotation Number: VQXXXX-XXXX
- * e.g., VQ0426-4102
- * Uses IST (India Standard Time) to ensure the date matches the local user.
- */
-async function generateQuotationNo() {
-  // Convert to IST (UTC+5:30)
-  const now = new Date();
-  const istOffset = 5.5 * 60 * 60 * 1000;
-  const istDate = new Date(now.getTime() + istOffset);
-  
-  const mm = String(istDate.getUTCMonth() + 1).padStart(2, '0');
-  const dd = String(istDate.getUTCDate()).padStart(2, '0');
-  const datePrefix = `${mm}${dd}`;
-
-  try {
-    const counterRef = adminDb.collection("counters").doc("quotations");
-    
-    // Use a transaction to ensure atomic increment and sequential numbering
-    const newSerial = await adminDb.runTransaction(async (transaction: any) => {
-      const counterDoc = await transaction.get(counterRef);
-      
-      let nextSerial = 4101; // Start from 4101 as per user's sequence example
-      
-      if (counterDoc.exists) {
-        const data = counterDoc.data();
-        const currentSerial = data?.lastSerial || 4100;
-        nextSerial = currentSerial + 1;
-      }
-      
-      transaction.set(counterRef, { lastSerial: nextSerial }, { merge: true });
-      return nextSerial;
-    }) as number;
-
-    return `VQ${datePrefix}-${newSerial}`;
-  } catch (error) {
-    console.error("Error generating sequential number:", error);
-    const randomNum = Math.floor(1000 + Math.random() * 9000);
-    return `VQ${datePrefix}-${randomNum}`;
-  }
-}
-
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { customerName, email, phone, address, items, totalAmount, message, recaptchaToken } = body;
+    const { 
+      customerName, 
+      email, 
+      phone, 
+      address, 
+      items, 
+      totalAmount, 
+      message, 
+      recaptchaToken, 
+      pdfUrl, 
+      megaFolderUrl, 
+      trackingId: providedTrackingId,
+      shipping,
+      discount,
+      subtotal,
+      roundOff
+    } = body;
 
-    if (!customerName || !phone || !address || !items || !totalAmount || !recaptchaToken) {
+    if (!customerName || !phone || !address || !items || !totalAmount) {
       return NextResponse.json({ success: false, error: "Missing required fields or reCAPTCHA token" }, { status: 400 });
     }
 
@@ -67,7 +43,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: "reCAPTCHA verification failed. Please try again." }, { status: 400 });
     }
 
-    const trackingId = await generateQuotationNo();
+    const trackingId = providedTrackingId || await generateSequentialId("IN");
 
     const orderData = {
       trackingId,
@@ -78,6 +54,12 @@ export async function POST(req: Request) {
       message: message || "No additional message",
       items,
       totalAmount,
+      shipping: Number(shipping) || 0,
+      discount: Number(discount) || 0,
+      subtotal: Number(subtotal) || 0,
+      roundOff: Number(roundOff) || 0,
+      pdfUrl: pdfUrl || null,
+      megaFolderUrl: megaFolderUrl || null,
       status: "Waiting",
       paymentStatus: "unpaid",
       createdAt: FieldValue.serverTimestamp(),
@@ -106,7 +88,7 @@ export async function POST(req: Request) {
           customer_phone: phone.replace(/\D/g, '').slice(-10),
         },
         order_meta: {
-          return_url: `${req.headers.get("origin")}/checkout?order_id={order_id}&tracking_id=${trackingId}`,
+          return_url: `${req.headers.get("origin")}/payment-status?order_id={order_id}`,
         },
       }),
     });

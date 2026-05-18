@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { getCategories, addCategory, updateCategory, deleteCategory } from "@/lib/categories";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { getAuthSession } from "@/lib/auth";
 
 export async function GET() {
     const categories = await getCategories();
@@ -10,8 +9,9 @@ export async function GET() {
 
 export async function POST(req: Request) {
     try {
-        const session = await getServerSession(authOptions);
-        if (!session || (session.user as any)?.role !== "SUPER_ADMIN") {
+        const session = await getAuthSession();
+        const userRole = (session?.user as any)?.role;
+        if (!session || (userRole !== "SUPER_ADMIN" && userRole !== "ADMIN")) {
             return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
         }
 
@@ -25,8 +25,9 @@ export async function POST(req: Request) {
 
 export async function PUT(req: Request) {
     try {
-        const session = await getServerSession(authOptions);
-        if (!session || (session.user as any)?.role !== "SUPER_ADMIN") {
+        const session = await getAuthSession();
+        const userRole = (session?.user as any)?.role;
+        if (!session || (userRole !== "SUPER_ADMIN" && userRole !== "ADMIN")) {
             return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
         }
 
@@ -40,8 +41,9 @@ export async function PUT(req: Request) {
 
 export async function DELETE(req: Request) {
     try {
-        const session = await getServerSession(authOptions);
-        if (!session || (session.user as any)?.role !== "SUPER_ADMIN") {
+        const session = await getAuthSession();
+        const userRole = (session?.user as any)?.role;
+        if (!session || (userRole !== "SUPER_ADMIN" && userRole !== "ADMIN")) {
             return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
         }
 

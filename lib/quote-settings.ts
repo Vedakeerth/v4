@@ -9,6 +9,11 @@ export interface ColorSetting {
     customPrice?: number;
 }
 
+export interface DiscountTier {
+    threshold: number;
+    percentage: number;
+}
+
 export interface QuoteSettings {
     labourCost: number;
     materials: {
@@ -24,15 +29,16 @@ export interface QuoteSettings {
     infillPatternMultipliers: {
         [pattern: string]: number;
     };
+    discountTiers?: DiscountTier[];
 }
 
 export const DEFAULT_QUOTE_SETTINGS: QuoteSettings = {
     labourCost: 25,
     materials: {
-        'PLA': { density: 1.24, costPerKg: 1800, multiplier: 1.0 },
-        'ABS': { density: 1.04, costPerKg: 2000, multiplier: 1.2 },
-        'PETG': { density: 1.27, costPerKg: 1900, multiplier: 1.1 },
-        'TPU': { density: 1.21, costPerKg: 3000, multiplier: 1.5 },
+        'PLA': { density: 1.24, costPerKg: 6750, multiplier: 1.0 },
+        'ABS': { density: 1.04, costPerKg: 7000, multiplier: 1.0 },
+        'PETG': { density: 1.27, costPerKg: 6850, multiplier: 1.0 },
+        'TPU': { density: 1.21, costPerKg: 7500, multiplier: 1.0 },
     },
     colors: {
         '#2563eb': { name: 'Blue', multiplier: 1.0, isAvailable: true, useCustomPrice: true, customPrice: 2000 },
@@ -47,7 +53,12 @@ export const DEFAULT_QUOTE_SETTINGS: QuoteSettings = {
         'Grid': 1.1,
         'Gyroid': 1.25,
         'Cubic': 1.15,
-    }
+    },
+    discountTiers: [
+        { threshold: 1500, percentage: 5 },
+        { threshold: 2500, percentage: 10 },
+        { threshold: 3500, percentage: 20 },
+    ]
 };
 
 export async function getQuoteSettings(): Promise<QuoteSettings> {

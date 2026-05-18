@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { adminDb } from "@/lib/firebaseAdmin";
 import { isAuthenticated } from "@/lib/auth";
 
 export async function PATCH(
@@ -14,7 +13,7 @@ export async function PATCH(
         }
 
         const body = await req.json();
-        const { status } = body;
+        const { status, customerName, email, phone, address, totalAmount, notes, items, shippingPartner, carrierTrackingId } = body;
 
         const { getAdminDb } = await import("@/lib/firebaseAdmin");
         const adminDb = await getAdminDb();
@@ -25,18 +24,29 @@ export async function PATCH(
             return NextResponse.json({ success: false, message: "Order not found" }, { status: 404 });
         }
 
-        await docRef.set({
-            status,
-            updatedAt: new Date().toISOString()
-        }, { merge: true });
+        const updateData: any = { updatedAt: new Date().toISOString() };
+        if (status !== undefined) updateData.status = status;
+        if (customerName !== undefined) updateData.customerName = customerName;
+        if (email !== undefined) updateData.email = email;
+        if (phone !== undefined) updateData.phone = phone;
+        if (address !== undefined) updateData.address = address;
+        if (totalAmount !== undefined) updateData.totalAmount = totalAmount;
+        if (notes !== undefined) updateData.notes = notes;
+        if (items !== undefined) updateData.items = items;
+        if (shippingPartner !== undefined) updateData.shippingPartner = shippingPartner;
+        if (carrierTrackingId !== undefined) updateData.carrierTrackingId = carrierTrackingId;
+
+        await docRef.set(updateData, { merge: true });
 
         // Send automated status update email
         try {
             const { sendOrderStatusUpdate } = await import("@/lib/emailService");
-            await sendOrderStatusUpdate({ 
+            const updatedOrder = { 
                 id: docRef.id, 
-                ...doc.data() 
-            }, status);
+                ...doc.data(),
+                ...updateData
+            };
+            await sendOrderStatusUpdate(updatedOrder, status || updatedOrder.status);
         } catch (emailError) {
             console.error("Failed to send status update email:", emailError);
         }

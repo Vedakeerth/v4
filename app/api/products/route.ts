@@ -3,6 +3,7 @@ import { adminDb } from '@/lib/firebaseAdmin';
 import { isAuthenticated } from '@/lib/auth';
 
 import { QueryDocumentSnapshot, DocumentData } from 'firebase-admin/firestore';
+import { generateProductCode } from '@/lib/products';
 
 export interface Product {
     id: string;
@@ -41,6 +42,7 @@ export async function POST(req: Request) {
         }
 
         const body = await req.json();
+        const productId = generateProductCode(body.category || 'Uncategorized');
 
         const newProduct = {
             name: body.name,
@@ -56,12 +58,13 @@ export async function POST(req: Request) {
             createdAt: new Date().toISOString(),
         };
 
-        const docRef = await adminDb.collection('products').add(newProduct);
+        // Use the generated short ID as the document ID
+        await adminDb.collection('products').doc(productId).set(newProduct);
 
         return NextResponse.json({
             success: true,
-            product: { id: docRef.id, ...newProduct },
-            message: 'Product added successfully',
+            product: { id: productId, ...newProduct },
+            message: 'Product added successfully with tracking code ' + productId,
         });
     } catch (error) {
         console.error('Error adding product:', error);

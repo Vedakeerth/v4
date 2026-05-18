@@ -5,7 +5,7 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Heart, MessageSquare, Search, X, ChevronDown, Filter, SlidersHorizontal, ArrowUpDown, Share2, ShoppingCart, LayoutGrid, List } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { cn, parsePrice } from "@/lib/utils";
+import { cn, parsePrice, formatINR } from "@/lib/utils";
 import { Product } from "@/lib/products";
 import { createSeoSlug } from "@/lib/seo-utils";
 
@@ -108,17 +108,21 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
         const isLiked = likedProducts.has(partId);
 
         // Optimistic update
-        setLikedProducts((prev: Set<string>) => {
-            const newSet = new Set(prev);
-            if (isLiked) {
+        if (isLiked) {
+            setLikedProducts((prev) => {
+                const newSet = new Set(prev);
                 newSet.delete(partId);
-                setLikes((l: Record<string, number>) => ({ ...l, [partId]: Math.max(0, l[partId] - 1) }));
-            } else {
+                return newSet;
+            });
+            setLikes((l) => ({ ...l, [partId]: Math.max(0, (l[partId] || 0) - 1) }));
+        } else {
+            setLikedProducts((prev) => {
+                const newSet = new Set(prev);
                 newSet.add(partId);
-                setLikes((l: Record<string, number>) => ({ ...l, [partId]: l[partId] + 1 }));
-            }
-            return newSet;
-        });
+                return newSet;
+            });
+            setLikes((l) => ({ ...l, [partId]: (l[partId] || 0) + 1 }));
+        }
 
         try {
             await fetch(`/api/products/${partId}/like`, {
@@ -327,7 +331,7 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                             Don't see what you need? We specialize in one-off custom engineering solutions.
                         </p>
                         <button
-                            onClick={() => router.push('/quote')}
+                            onClick={() => router.push('/quote?source=gallery')}
                             className="w-full py-2.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 rounded-lg text-xs font-black transition-all shadow-[0_4px_12px_rgba(6,182,212,0.3)]"
                         >
                             GET AI QUOTE
@@ -409,7 +413,7 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                                             )}
                                             onMouseEnter={() => setHoveredId(part.id)}
                                             onMouseLeave={() => setHoveredId(null)}
-                                            onClick={() => setSelectedQuickView(part)}
+                                            onClick={() => handlePartClick(part)}
                                         >
                                             <div className={cn(
                                                 "relative overflow-hidden bg-white dark:bg-slate-950 shrink-0",
@@ -440,25 +444,25 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                                                     </span>
                                                 </div>
 
-                                                <div className="absolute top-4 right-4 flex flex-col gap-2 z-30 opacity-80 group-hover:opacity-100 transition-opacity">
+                                                <div className="absolute top-4 right-4 flex flex-col gap-2 z-30">
                                                     <button
                                                         onClick={(e) => handleLike(e, part.id)}
                                                         className={cn(
-                                                            "p-2.5 rounded-full transition-all shadow-xl hover:scale-110 border backdrop-blur-md",
+                                                            "p-2.5 rounded-full transition-all duration-300 shadow-xl hover:scale-110 border backdrop-blur-md",
                                                             likedProducts.has(part.id)
                                                                 ? "bg-red-500 text-white border-red-400 shadow-red-500/20"
-                                                                : "bg-slate-50 dark:bg-slate-900/60 text-slate-600 dark:text-white border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:bg-slate-800"
+                                                                : "bg-white/80 dark:bg-slate-950/80 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-800 hover:text-cyan-500 dark:hover:text-cyan-400"
                                                         )}
                                                         title="Add to Wishlist"
                                                     >
-                                                        <Heart size={16} fill={likedProducts.has(part.id) ? "currentColor" : "none"} />
+                                                        <Heart size={18} fill={likedProducts.has(part.id) ? "currentColor" : "none"} />
                                                     </button>
                                                     <button
                                                         onClick={(e) => { e.stopPropagation(); handleShare(part); }}
-                                                        className="p-2.5 rounded-full transition-all shadow-xl hover:scale-110 bg-slate-50 dark:bg-slate-900/60 text-slate-600 dark:text-white border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:bg-slate-800 backdrop-blur-md"
+                                                        className="p-2.5 rounded-full transition-all duration-300 shadow-xl hover:scale-110 bg-white/80 dark:bg-slate-950/80 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:text-cyan-500 dark:hover:text-cyan-400 backdrop-blur-md"
                                                         title="Share Part"
                                                     >
-                                                        <Share2 size={16} />
+                                                        <Share2 size={18} />
                                                     </button>
                                                 </div>
                                             </div>
@@ -477,18 +481,21 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                                                     <div className="flex flex-col">
                                                         <div className="flex items-center gap-2 mb-0.5">
                                                             <span className="text-[10px] text-slate-500 uppercase font-black tracking-widest">Component Price</span>
-                                                            <div className="flex items-center gap-1 text-red-400 bg-red-400/10 px-1.5 py-0.5 rounded text-[10px] font-bold border border-red-400/20">
-                                                                <Heart size={10} fill="currentColor" />
+                                                            <div className="flex items-center gap-1.5 text-red-400 bg-red-400/10 px-2 py-1 rounded-lg text-[10px] font-black border border-red-400/20 backdrop-blur-sm">
+                                                                <Heart size={12} fill="currentColor" />
                                                                 {likes[part.id] || 0}
                                                             </div>
                                                         </div>
-                                                        <span className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">
-                                                            {part.price
-                                                                ? (typeof part.price === 'number'
-                                                                    ? `₹${part.price.toLocaleString('en-IN')}`
-                                                                    : part.price.startsWith('₹') ? part.price : `₹${part.price}`)
-                                                                : "₹0"}
-                                                        </span>
+                                                        <div className="flex items-end gap-2">
+                                                            <span className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">
+                                                                {formatINR(part.price)}
+                                                            </span>
+                                                            {part.mrp && (
+                                                                <span className="text-xs text-slate-400 font-medium line-through mb-1">
+                                                                    MRP {formatINR(part.mrp)}
+                                                                </span>
+                                                            )}
+                                                        </div>
                                                     </div>
                                                     <button
                                                         onClick={(e) => {

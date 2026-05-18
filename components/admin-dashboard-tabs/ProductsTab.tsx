@@ -6,6 +6,20 @@ import { Plus, Edit, Trash2, Upload, X, LogOut, Search } from "lucide-react";
 import Image from "next/image";
 import { type Product } from "@/lib/products";
 import CustomDropdown from "../CustomDropdown";
+import { formatINR } from "@/lib/utils";
+
+const availableColors = ['#2563eb', '#ef4444', '#22c55e', '#eab308', '#ffffff', '#000000'];
+const getColorName = (color: string) => {
+    const colorMap: Record<string, string> = {
+        '#2563eb': 'Blue',
+        '#ef4444': 'Red',
+        '#22c55e': 'Green',
+        '#eab308': 'Yellow',
+        '#ffffff': 'White',
+        '#000000': 'Black'
+    };
+    return colorMap[color] || 'Custom';
+};
 
 export default function ProductsTab() {
     const [products, setProducts] = useState<Product[]>([]);
@@ -23,6 +37,7 @@ export default function ProductsTab() {
         name: "",
         description: "",
         price: "",
+        mrp: "",
         image: "",
         images: "",
         category: "",
@@ -31,6 +46,12 @@ export default function ProductsTab() {
         likes: 0,
         isPopular: false,
         availabilityStatus: "In Stock" as "In Stock" | "Out of Stock" | "Pre-order",
+        colors: [] as string[],
+        defaultColor: "",
+        weight: 0,
+        length: 0,
+        width: 0,
+        height: 0,
     });
 
     // Import state
@@ -122,6 +143,7 @@ export default function ProductsTab() {
             name: "",
             description: "",
             price: "",
+            mrp: "",
             image: "",
             images: "",
             category: "",
@@ -130,6 +152,12 @@ export default function ProductsTab() {
             likes: 0,
             isPopular: false,
             availabilityStatus: "In Stock",
+            colors: [],
+            defaultColor: "",
+            weight: 0,
+            length: 0,
+            width: 0,
+            height: 0,
         });
         setUploadedImages([]);
         setEditingProduct(null);
@@ -142,6 +170,7 @@ export default function ProductsTab() {
             name: product.name,
             description: product.description,
             price: product.price.toString().replace("₹", ""),
+            mrp: product.mrp ? product.mrp.toString().replace("₹", "") : "",
             image: product.image,
             images: product.images.join(", "),
             category: product.category,
@@ -150,6 +179,12 @@ export default function ProductsTab() {
             likes: product.likes || 0,
             isPopular: product.isPopular || false,
             availabilityStatus: product.availabilityStatus || "In Stock",
+            colors: product.colors || [],
+            defaultColor: product.defaultColor || (product.colors && product.colors.length > 0 ? product.colors[0] : ""),
+            weight: product.weight || 0,
+            length: product.length || 0,
+            width: product.width || 0,
+            height: product.height || 0,
         });
         setUploadedImages(allImages);
         setEditingProduct(product);
@@ -158,6 +193,9 @@ export default function ProductsTab() {
 
     const handleSaveProduct = async () => {
         try {
+            if (!formData.name.trim() || !formData.price || !formData.category || !formData.image || formData.stockCount === null || formData.stockCount === undefined || formData.likes === null || formData.likes === undefined || !formData.availabilityStatus || formData.colors.length === 0 || !formData.description.trim()) {
+                return alert("Please fill out all mandatory fields, including selecting at least one finish/color.");
+            }
             let finalImages: string[] = [];
             let mainImage = formData.image;
 
@@ -169,6 +207,7 @@ export default function ProductsTab() {
             const productData = {
                 ...formData,
                 price: formData.price.startsWith("₹") ? formData.price : `₹${formData.price}`,
+                mrp: formData.mrp ? (formData.mrp.startsWith("₹") ? formData.mrp : `₹${formData.mrp}`) : "",
                 image: mainImage,
                 images: finalImages,
                 stockCount: parseInt(formData.stockCount.toString()) || 0,
@@ -269,8 +308,8 @@ export default function ProductsTab() {
     };
 
     const downloadCsvTemplate = () => {
-        const headers = "name,description,price,category,image,images,stockCount,availabilityStatus,inStock";
-        const example = "Example Product,Great product description,₹2499.00,Electronics,https://img.com/main.png,https://img.com/1.png;https://img.com/2.png,50,In Stock,true";
+        const headers = "name,description,price,mrp,category,image,images,stockCount,availabilityStatus,inStock";
+        const example = "Example Product,Great product description,₹2499.00,₹3999.00,Electronics,https://img.com/main.png,https://img.com/1.png;https://img.com/2.png,50,In Stock,true";
         const csvContent = "data:text/csv;charset=utf-8," + headers + "\n" + example;
         const encodedUri = encodeURI(csvContent);
         const link = document.createElement("a");
@@ -351,7 +390,16 @@ export default function ProductsTab() {
                                 <p className="text-[9px] text-cyan-500/80 font-black uppercase tracking-widest mb-3 border-b border-slate-200 dark:border-slate-800 pb-2">ID: {p.id}</p>
                                 <p className="text-slate-600 dark:text-slate-400 text-xs line-clamp-2 h-8 mb-4">{p.description}</p>
                                 <div className="flex justify-between items-center mb-6">
-                                    <span className="text-cyan-400 font-black text-xl">{p.price}</span>
+                                    <div className="flex flex-col">
+                                        <span className="text-cyan-400 font-black text-xl">
+                                            {formatINR(p.price)}
+                                        </span>
+                                        {p.mrp && (
+                                            <span className="text-xs text-slate-400 font-bold line-through">
+                                                MRP {formatINR(p.mrp)}
+                                            </span>
+                                        )}
+                                    </div>
                                     <span className="text-[10px] uppercase font-bold text-slate-500 tracking-widest bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-md">{p.category}</span>
                                 </div>
                                 <div className="flex gap-2">
@@ -377,15 +425,43 @@ export default function ProductsTab() {
                             <button onClick={() => setShowAddModal(false)} className="p-2 hover:bg-slate-100 dark:bg-slate-800 rounded-full text-slate-600 dark:text-slate-400 transition-colors"><X size={24} /></button>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="grid grid-cols-1 gap-6">
                             <div className="space-y-4">
                                 <div>
                                     <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">Product Name</label>
                                     <input value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500 transition-all" />
                                 </div>
-                                <div>
-                                    <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">Price (INR)</label>
-                                    <input value={formData.price} onChange={e => setFormData({ ...formData, price: e.target.value })} className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500 transition-all" placeholder="e.g. 2,499.00" />
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                    <div>
+                                        <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">Selling Price</label>
+                                        <input value={formData.price} onChange={e => setFormData({ ...formData, price: e.target.value })} className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500 transition-all" placeholder="2499" />
+                                    </div>
+                                    <div>
+                                        <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">MRP</label>
+                                        <input value={formData.mrp} onChange={e => setFormData({ ...formData, mrp: e.target.value })} className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500 transition-all" placeholder="3999" />
+                                    </div>
+                                    <div>
+                                        <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">Initial Likes</label>
+                                        <input type="number" value={formData.likes} onChange={e => setFormData({ ...formData, likes: parseInt(e.target.value) || 0 })} className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500 transition-all" />
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                                    <div>
+                                        <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">Weight (g)</label>
+                                        <input type="number" value={formData.weight} onChange={e => setFormData({ ...formData, weight: parseInt(e.target.value) || 0 })} className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500 transition-all" placeholder="500" />
+                                    </div>
+                                    <div>
+                                        <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">Length (cm)</label>
+                                        <input type="number" value={formData.length} onChange={e => setFormData({ ...formData, length: parseInt(e.target.value) || 0 })} className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500 transition-all" placeholder="20" />
+                                    </div>
+                                    <div>
+                                        <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">Width (cm)</label>
+                                        <input type="number" value={formData.width} onChange={e => setFormData({ ...formData, width: parseInt(e.target.value) || 0 })} className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500 transition-all" placeholder="15" />
+                                    </div>
+                                    <div>
+                                        <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">Height (cm)</label>
+                                        <input type="number" value={formData.height} onChange={e => setFormData({ ...formData, height: parseInt(e.target.value) || 0 })} className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500 transition-all" placeholder="10" />
+                                    </div>
                                 </div>
                                 <CustomDropdown
                                     label="Category"
@@ -420,7 +496,7 @@ export default function ProductsTab() {
                                 <div className="flex flex-col gap-4 sm:flex-row">
                                     <div className="flex-1">
                                         <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">Stock Count</label>
-                                        <input type="number" value={formData.stockCount} onChange={e => setFormData({ ...formData, stockCount: parseInt(e.target.value) })} className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500 transition-all" />
+                                        <input type="number" value={formData.stockCount} onChange={e => setFormData({ ...formData, stockCount: parseInt(e.target.value) || 0 })} className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500 transition-all" />
                                     </div>
                                     <CustomDropdown
                                         label="Status"
@@ -432,10 +508,6 @@ export default function ProductsTab() {
                                             { value: "Pre-order", label: "Pre-order" }
                                         ]}
                                     />
-                                </div>
-                                <div>
-                                    <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">Initial Likes</label>
-                                    <input type="number" value={formData.likes} onChange={e => setFormData({ ...formData, likes: parseInt(e.target.value) || 0 })} className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500 transition-all" />
                                 </div>
                                 <div>
                                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-2">Image URL / Upload</label>
@@ -484,6 +556,63 @@ export default function ProductsTab() {
                                 })()}
                             </div>
                         </div>
+
+                        <div className="mt-6">
+                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-4">Finished Color</label>
+                            <div className="flex gap-4 flex-wrap">
+                                {availableColors.map((color) => {
+                                    const isSelected = formData.colors.includes(color);
+                                    return (
+                                        <button
+                                            key={color}
+                                            onClick={() => {
+                                                setFormData(prev => {
+                                                    const isCurrentlySelected = prev.colors.includes(color);
+                                                    const newColors = isCurrentlySelected 
+                                                        ? prev.colors.filter(c => c !== color) 
+                                                        : [...prev.colors, color];
+                                                    
+                                                    let newDefaultColor = prev.defaultColor;
+                                                    if (!newColors.includes(prev.defaultColor)) {
+                                                        newDefaultColor = newColors.length > 0 ? newColors[0] : "";
+                                                    } else if (newColors.length === 1) {
+                                                        newDefaultColor = newColors[0];
+                                                    }
+
+                                                    return {
+                                                        ...prev,
+                                                        colors: newColors,
+                                                        defaultColor: newDefaultColor
+                                                    };
+                                                });
+                                            }}
+                                            className={`flex items-center gap-2 px-3 py-2 rounded-full border-2 transition-all hover:scale-105 shadow-sm ${isSelected ? "border-cyan-500 bg-cyan-500/10 ring-2 ring-cyan-500/30" : "border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900/50"}`}
+                                        >
+                                            <div className="w-5 h-5 rounded-full border border-slate-200 dark:border-slate-800 shadow-sm" style={{ backgroundColor: color }} />
+                                            <span className={`text-xs font-bold ${isSelected ? "text-cyan-600 dark:text-cyan-400" : "text-slate-700 dark:text-slate-300"}`}>{getColorName(color)}</span>
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </div>
+
+                        {formData.colors.length > 0 && (
+                            <div className="mt-6">
+                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-4">Default Color</label>
+                                <div className="flex gap-4 flex-wrap">
+                                    {formData.colors.map(color => (
+                                        <button
+                                            key={`default-${color}`}
+                                            onClick={() => setFormData(prev => ({ ...prev, defaultColor: color }))}
+                                            className={`flex items-center gap-2 px-3 py-2 rounded-full border-2 transition-all hover:scale-105 shadow-sm ${formData.defaultColor === color ? "border-cyan-500 bg-cyan-500/10 ring-2 ring-cyan-500/30" : "border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900/50"}`}
+                                        >
+                                            <div className="w-5 h-5 rounded-full border border-slate-200 dark:border-slate-800 shadow-sm" style={{ backgroundColor: color }} />
+                                            <span className={`text-xs font-bold ${formData.defaultColor === color ? "text-cyan-600 dark:text-cyan-400" : "text-slate-700 dark:text-slate-300"}`}>{getColorName(color)}</span>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
 
                         <div className="mt-6">
                             <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-2">Description</label>

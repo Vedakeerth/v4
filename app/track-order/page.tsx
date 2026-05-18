@@ -112,7 +112,7 @@ export default function TrackOrderPage() {
                                     <input
                                         required
                                         type="text"
-                                        placeholder="VQXXXX-XXXX"
+                                        placeholder="INMMYY-XXXX"
                                         value={orderId}
                                         onChange={(e) => setOrderId(e.target.value.toUpperCase())}
                                         className="w-full pl-12 pr-4 py-4 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500/50 focus:ring-4 focus:ring-cyan-500/10 transition-all placeholder:text-slate-400"

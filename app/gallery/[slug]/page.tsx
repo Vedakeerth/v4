@@ -66,9 +66,19 @@ export default async function ProductDetailPage({ params }: PageProps) {
     }
 
     const allProducts = await getProducts();
-    const similarProducts = allProducts
-        .filter(p => p.category === product.category && p.id !== product.id)
-        .slice(0, 4);
+    let similarProducts = allProducts
+        .filter(p => p.category === product.category && p.id !== product.id);
+
+    // If less than 4 similar products, fill with other products
+    if (similarProducts.length < 4) {
+        const others = allProducts
+            .filter(p => p.category !== product.category && p.id !== product.id)
+            .sort(() => 0.5 - Math.random()) // Randomize fallback
+            .slice(0, 4 - similarProducts.length);
+        similarProducts = [...similarProducts, ...others];
+    } else {
+        similarProducts = similarProducts.slice(0, 4);
+    }
 
     return (
         <main className="min-h-screen bg-white dark:bg-slate-950 pt-24">

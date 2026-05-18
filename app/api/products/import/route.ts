@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebaseAdmin';
 import { isAuthenticated } from '@/lib/auth';
+import { generateProductCode } from '@/lib/products';
 
 export async function POST(req: Request) {
     try {
@@ -76,7 +77,6 @@ export async function POST(req: Request) {
                     }
 
                     const productsRef = adminDb.collection('products');
-                    const newDoc = productsRef.doc();
                     const newProduct = {
                         name: productName,
                         description: `Product imported from WhatsApp catalog`,
@@ -88,6 +88,8 @@ export async function POST(req: Request) {
                         quantity: 0,
                         updatedAt: new Date().toISOString()
                     };
+                    const productId = generateProductCode(newProduct.category);
+                    const newDoc = productsRef.doc(productId);
 
                     await newDoc.set(newProduct);
 
@@ -140,14 +142,16 @@ export async function POST(req: Request) {
             const rawDescription = item.description || item.desc || item.details || '';
             const rawImage = item.image || item.imageUrl || item.photo || item.thumbnail || '/images/default.png';
 
-            const newDoc = productsRef.doc();
+            const category = item.category || item.type || item.group || 'Uncategorized';
+            const productId = generateProductCode(category);
+            const newDoc = productsRef.doc(productId);
             const productData = {
                 name: decodeHtml(rawName),
                 description: decodeHtml(rawDescription),
                 price: item.price ? (typeof item.price === 'string' ? item.price : `₹${item.price}`) : '₹0.00',
                 image: decodeHtml(rawImage),
                 images: item.images ? (Array.isArray(item.images) ? item.images.map((img: any) => decodeHtml(img)) : [decodeHtml(item.images)]) : [decodeHtml(rawImage)],
-                category: item.category || item.type || item.group || 'Uncategorized',
+                category: category,
                 inStock: item.inStock !== undefined ? item.inStock : (item.availability !== 'out_of_stock'),
                 quantity: item.quantity !== undefined ? parseInt(item.quantity.toString()) : 0,
                 updatedAt: new Date().toISOString()

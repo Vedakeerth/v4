@@ -6,12 +6,22 @@ import bcrypt from "bcryptjs";
 import { getUserByEmail } from "./users";
 import { getAdminEmails } from "./adminConfig";
 import { getAdminAuth } from "./firebaseAdmin";
+import { decrypt } from "./crypto";
+
 
 export const authOptions: NextAuthOptions = {
+    debug: process.env.NODE_ENV === "development",
     providers: [
         GoogleProvider({
             clientId: process.env.GOOGLE_CLIENT_ID || "",
             clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+
+
+            authorization: {
+                params: {
+                    scope: "openid email profile https://www.googleapis.com/auth/drive.file",
+                },
+            },
         }),
         CredentialsProvider({
             name: "Credentials",
@@ -100,15 +110,8 @@ export const authOptions: NextAuthOptions = {
                 const adminEmails = getAdminEmails();
 
                 if (account?.provider === "google") {
-                    if (adminEmails.includes(email)) return true;
-
-                    try {
-                        const firestoreUser = await getUserByEmail(email);
-                        return !!firestoreUser;
-                    } catch (e) {
-                        console.error("SignIn firestore error:", e);
-                        return false;
-                    }
+                    // Allow all Google sign-ins to enable personal Drive uploads
+                    return true;
                 }
 
                 if (account?.provider === "credentials" || account?.provider === "firebase") {
@@ -122,6 +125,7 @@ export const authOptions: NextAuthOptions = {
             }
         },
         async jwt({ token, user, account }) {
+            console.log("NextAuth JWT callback triggered", { hasUser: !!user, hasAccount: !!account });
             try {
                 if (user) {
                     const email = user.email?.toLowerCase() ?? "";
@@ -143,6 +147,9 @@ export const authOptions: NextAuthOptions = {
                     }
                     token.id = user.id;
                 }
+                if (account) {
+                    token.accessToken = account.access_token;
+                }
                 return token;
             } catch (error) {
                 console.error("NextAuth jwt error:", error);
@@ -150,10 +157,12 @@ export const authOptions: NextAuthOptions = {
             }
         },
         async session({ session, token }) {
+            console.log("NextAuth Session callback triggered", { hasToken: !!token });
             try {
                 if (session.user) {
                     (session.user as any).role = token.role || "USER";
                     (session.user as any).id = token.id;
+                    (session as any).accessToken = token.accessToken;
                 }
                 return session;
             } catch (error) {
@@ -166,10 +175,12 @@ export const authOptions: NextAuthOptions = {
         signIn: "/secure-management-portal/login",
         error: "/secure-management-portal/login",
     },
+
+
     session: {
         strategy: "jwt",
     },
-    secret: process.env.NEXTAUTH_SECRET || "temp-secret-for-debug",
+    secret: process.env.NEXTAUTH_SECRET || "veda3d_secret_2026_cms_portal_security",
     logger: {
         error(code, metadata) {
             console.error("NEXTAUTH_ERROR", code, metadata);

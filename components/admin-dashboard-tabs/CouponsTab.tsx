@@ -4,6 +4,8 @@ import React, { useState, useEffect } from "react";
 import { Plus, Trash2, Ticket, Calendar, Percent, IndianRupee, X, CheckCircle2, Pencil, Copy } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
+import { getQuoteSettings, saveQuoteSettings, type QuoteSettings, DEFAULT_QUOTE_SETTINGS } from "@/lib/quote-settings";
+
 interface Coupon {
     id: string;
     code: string;
@@ -16,6 +18,8 @@ interface Coupon {
 export default function CouponsTab() {
     const [coupons, setCoupons] = useState<Coupon[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [settings, setSettings] = useState<QuoteSettings | null>(null);
+    const [isSavingSettings, setIsSavingSettings] = useState(false);
     const [showAddModal, setShowAddModal] = useState(false);
     const [editingCoupon, setEditingCoupon] = useState<Coupon | null>(null);
     const [formData, setFormData] = useState({
@@ -27,7 +31,31 @@ export default function CouponsTab() {
 
     useEffect(() => {
         fetchCoupons();
+        fetchSettings();
     }, []);
+
+    const fetchSettings = async () => {
+        const data = await getQuoteSettings();
+        setSettings(data);
+    };
+
+    const handleSaveSettings = async (newSettings: QuoteSettings) => {
+        setIsSavingSettings(true);
+        try {
+            await saveQuoteSettings(newSettings);
+            setSettings(newSettings);
+            // Revalidate quote settings
+            await fetch("/api/revalidate", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ tag: "quote" }),
+            });
+        } catch (error) {
+            console.error("Failed to save settings:", error);
+        } finally {
+            setIsSavingSettings(false);
+        }
+    };
 
     const fetchCoupons = async () => {
         try {
@@ -102,103 +130,201 @@ export default function CouponsTab() {
     };
 
     return (
-        <div className="space-y-6 max-w-7xl mx-auto">
-            <div className="flex justify-between items-center mb-8">
+        <div className="space-y-12 max-w-7xl mx-auto pb-12">
+            {/* Header */}
+            <div className="flex justify-between items-center mb-8 bg-slate-50 dark:bg-slate-900/40 p-6 rounded-3xl border border-white/5">
                 <div>
-                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Coupons Management</h2>
-                    <p className="text-slate-600 dark:text-slate-400 text-sm mt-1">Create and manage discount codes for your customers</p>
+                    <h2 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Coupons & Rewards</h2>
+                    <p className="text-slate-600 dark:text-slate-400 text-sm mt-1 font-medium">Manage promotional codes and automatic volume discounts.</p>
                 </div>
-                <button
-                    onClick={() => setShowAddModal(true)}
-                    className="px-6 py-3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-xl flex items-center gap-2 shadow-lg shadow-cyan-500/20 transition-all"
-                >
-                    <Plus size={20} /> New Coupon
-                </button>
             </div>
 
-            {isLoading ? (
-                <div className="text-slate-900 dark:text-white opacity-50 flex items-center gap-3">
-                    <div className="w-5 h-5 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin" />
-                    Loading coupons...
+            {/* Tiered Volume Rewards Section */}
+            <section className="bg-slate-50 dark:bg-slate-900/40 p-8 rounded-3xl border border-white/5 space-y-8 shadow-sm">
+                <div className="flex justify-between items-center">
+                    <div>
+                        <h3 className="text-xs font-black text-slate-500 uppercase tracking-[0.2em] flex items-center gap-2 mb-1">
+                            <Ticket size={14} className="text-cyan-500" /> Tiered Volume Rewards
+                        </h3>
+                        <p className="text-[10px] text-slate-500 font-bold uppercase tracking-tighter italic">Automatic discounts based on total order value</p>
+                    </div>
+                    <button
+                        onClick={() => {
+                            if (!settings) return;
+                            const tiers = settings.discountTiers || [];
+                            const newSettings = {
+                                ...settings,
+                                discountTiers: [...tiers, { threshold: 5000, percentage: 25 }]
+                            };
+                            handleSaveSettings(newSettings);
+                        }}
+                        className="px-4 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-cyan-500/10 text-slate-600 dark:text-slate-300 hover:text-cyan-500 rounded-xl text-[10px] font-black uppercase tracking-widest border border-transparent hover:border-cyan-500/20 transition-all flex items-center gap-2"
+                    >
+                        <Plus size={14} /> Add Reward Tier
+                    </button>
                 </div>
-            ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {coupons.map(coupon => (
-                        <motion.div
-                            key={coupon.id}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 group hover:border-cyan-500/30 transition-all relative overflow-hidden"
-                        >
-                            <div className="absolute top-4 right-4 flex gap-2">
-                                <button
-                                    onClick={() => handleEditCoupon(coupon)}
-                                    className="p-2 text-slate-600 dark:text-slate-400 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all border border-transparent hover:border-cyan-500/20 shadow-sm"
-                                    title="Edit Coupon"
-                                >
-                                    <Pencil size={18} />
-                                </button>
-                                <button
-                                    onClick={() => handleDuplicateCoupon(coupon)}
-                                    className="p-2 text-slate-600 dark:text-slate-400 hover:text-green-400 hover:bg-green-400/10 rounded-lg transition-all border border-transparent hover:border-green-500/20 shadow-sm"
-                                    title="Duplicate Coupon"
-                                >
-                                    <Copy size={18} />
-                                </button>
-                                <button
-                                    onClick={() => handleDeleteCoupon(coupon.id)}
-                                    className="p-2 text-slate-600 dark:text-slate-400 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-all border border-transparent hover:border-red-500/20 shadow-sm"
-                                    title="Delete Coupon"
-                                >
-                                    <Trash2 size={18} />
-                                </button>
-                            </div>
 
-                            <div className="flex items-center gap-4 mb-6">
-                                <div className="w-12 h-12 bg-cyan-500/10 rounded-xl flex items-center justify-center text-cyan-400">
-                                    <Ticket size={24} />
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {settings?.discountTiers?.map((tier, idx) => (
+                        <div key={idx} className="bg-white dark:bg-slate-950/40 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 relative group">
+                            <button
+                                onClick={() => {
+                                    if (!settings) return;
+                                    const next = (settings.discountTiers || []).filter((_, i) => i !== idx);
+                                    handleSaveSettings({ ...settings, discountTiers: next });
+                                }}
+                                className="absolute top-4 right-4 p-2 text-slate-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all"
+                            >
+                                <Trash2 size={16} />
+                            </button>
+                            <div className="space-y-4">
+                                <div>
+                                    <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-2">Order Threshold</label>
+                                    <div className="relative">
+                                        <IndianRupee className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600" size={14} />
+                                        <input
+                                            type="number"
+                                            value={tier.threshold}
+                                            onChange={(e) => {
+                                                if (!settings) return;
+                                                const next = [...(settings.discountTiers || [])];
+                                                next[idx] = { ...tier, threshold: parseFloat(e.target.value) || 0 };
+                                                handleSaveSettings({ ...settings, discountTiers: next });
+                                            }}
+                                            className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl pl-8 pr-4 py-2.5 text-slate-900 dark:text-white font-mono text-sm focus:border-cyan-500 outline-none"
+                                        />
+                                    </div>
                                 </div>
                                 <div>
-                                    <h3 className="text-slate-900 dark:text-white font-black text-xl tracking-wider leading-none">{coupon.code}</h3>
-                                    <div className="flex items-center gap-2 mt-1">
-                                        <span className={`text-[10px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded ${coupon.type === 'percentage' ? 'bg-purple-500/20 text-purple-400' : 'bg-green-500/20 text-green-400'}`}>
-                                            {coupon.type}
-                                        </span>
-                                        <span className="text-xs text-slate-500 font-bold">
-                                            {new Date(coupon.expiryDate) < new Date() ? (
-                                                <span className="text-red-400">Expired</span>
-                                            ) : (
-                                                <span>Active</span>
-                                            )}
-                                        </span>
+                                    <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-2">Reward Discount</label>
+                                    <div className="relative">
+                                        <Percent className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600" size={14} />
+                                        <input
+                                            type="number"
+                                            value={tier.percentage}
+                                            onChange={(e) => {
+                                                if (!settings) return;
+                                                const next = [...(settings.discountTiers || [])];
+                                                next[idx] = { ...tier, percentage: parseFloat(e.target.value) || 0 };
+                                                handleSaveSettings({ ...settings, discountTiers: next });
+                                            }}
+                                            className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl pl-8 pr-4 py-2.5 text-slate-900 dark:text-white font-mono text-sm focus:border-cyan-500 outline-none"
+                                        />
+                                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-black text-slate-600">%</span>
                                     </div>
                                 </div>
                             </div>
-
-                            <div className="space-y-4">
-                                <div className="flex items-center justify-between p-3 bg-white dark:bg-slate-950/50 rounded-xl border border-slate-200 dark:border-slate-800">
-                                    <span className="text-xs font-bold text-slate-500 uppercase">Discount</span>
-                                    <span className="text-lg font-black text-slate-900 dark:text-white">
-                                        {coupon.type === 'percentage' ? `${coupon.value}%` : `₹${coupon.value}`}
-                                    </span>
-                                </div>
-
-                                <div className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400">
-                                    <Calendar size={14} className="text-slate-600" />
-                                    <span>Expires: {new Date(coupon.expiryDate).toLocaleDateString()}</span>
-                                </div>
-                            </div>
-                        </motion.div>
+                        </div>
                     ))}
-
-                    {coupons.length === 0 && (
-                        <div className="col-span-full py-12 text-center bg-slate-50 dark:bg-slate-900/30 border border-slate-200 dark:border-slate-800 border-dashed rounded-3xl">
-                            <Ticket className="mx-auto text-slate-700 mb-4" size={48} />
-                            <p className="text-slate-500 font-medium">No coupons found. Create your first one!</p>
+                    {(!settings?.discountTiers || settings.discountTiers.length === 0) && (
+                        <div className="col-span-full py-12 text-center bg-white dark:bg-slate-950/20 rounded-3xl border border-dashed border-slate-200 dark:border-slate-800">
+                            <p className="text-xs text-slate-500 font-bold uppercase tracking-widest italic">No volume rewards configured.</p>
                         </div>
                     )}
                 </div>
-            )}
+            </section>
+
+            {/* Coupons Section */}
+            <section className="space-y-8">
+                <div className="flex justify-between items-center">
+                    <div>
+                        <h3 className="text-xs font-black text-slate-500 uppercase tracking-[0.2em] flex items-center gap-2 mb-1">
+                            <Percent size={14} className="text-cyan-500" /> Manual Coupon Codes
+                        </h3>
+                        <p className="text-[10px] text-slate-500 font-bold uppercase tracking-tighter italic">Unique codes for marketing and special offers</p>
+                    </div>
+                    <button
+                        onClick={() => setShowAddModal(true)}
+                        className="px-6 py-3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black rounded-xl text-[11px] uppercase tracking-[0.1em] flex items-center gap-2 shadow-lg shadow-cyan-500/20 transition-all"
+                    >
+                        <Plus size={16} /> New Coupon Code
+                    </button>
+                </div>
+
+                {isLoading ? (
+                    <div className="text-slate-900 dark:text-white opacity-50 flex items-center gap-3">
+                        <div className="w-5 h-5 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin" />
+                        Loading coupons...
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {coupons.map(coupon => (
+                            <motion.div
+                                key={coupon.id}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 group hover:border-cyan-500/30 transition-all relative overflow-hidden"
+                            >
+                                <div className="absolute top-4 right-4 flex gap-2">
+                                    <button
+                                        onClick={() => handleEditCoupon(coupon)}
+                                        className="p-2 text-slate-600 dark:text-slate-400 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all border border-transparent hover:border-cyan-500/20 shadow-sm"
+                                        title="Edit Coupon"
+                                    >
+                                        <Pencil size={18} />
+                                    </button>
+                                    <button
+                                        onClick={() => handleDuplicateCoupon(coupon)}
+                                        className="p-2 text-slate-600 dark:text-slate-400 hover:text-green-400 hover:bg-green-400/10 rounded-lg transition-all border border-transparent hover:border-green-500/20 shadow-sm"
+                                        title="Duplicate Coupon"
+                                    >
+                                        <Copy size={18} />
+                                    </button>
+                                    <button
+                                        onClick={() => handleDeleteCoupon(coupon.id)}
+                                        className="p-2 text-slate-600 dark:text-slate-400 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-all border border-transparent hover:border-red-500/20 shadow-sm"
+                                        title="Delete Coupon"
+                                    >
+                                        <Trash2 size={18} />
+                                    </button>
+                                </div>
+
+                                <div className="flex items-center gap-4 mb-6">
+                                    <div className="w-12 h-12 bg-cyan-500/10 rounded-xl flex items-center justify-center text-cyan-400">
+                                        <Ticket size={24} />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-slate-900 dark:text-white font-black text-xl tracking-wider leading-none">{coupon.code}</h3>
+                                        <div className="flex items-center gap-2 mt-1">
+                                            <span className={`text-[10px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded ${coupon.type === 'percentage' ? 'bg-purple-500/20 text-purple-400' : 'bg-green-500/20 text-green-400'}`}>
+                                                {coupon.type}
+                                            </span>
+                                            <span className="text-xs text-slate-500 font-bold">
+                                                {new Date(coupon.expiryDate) < new Date() ? (
+                                                    <span className="text-red-400">Expired</span>
+                                                ) : (
+                                                    <span>Active</span>
+                                                )}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-4">
+                                    <div className="flex items-center justify-between p-3 bg-white dark:bg-slate-950/50 rounded-xl border border-slate-200 dark:border-slate-800">
+                                        <span className="text-xs font-bold text-slate-500 uppercase">Discount</span>
+                                        <span className="text-lg font-black text-slate-900 dark:text-white">
+                                            {coupon.type === 'percentage' ? `${coupon.value}%` : `₹${coupon.value}`}
+                                        </span>
+                                    </div>
+
+                                    <div className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400">
+                                        <Calendar size={14} className="text-slate-600" />
+                                        <span>Expires: {new Date(coupon.expiryDate).toLocaleDateString()}</span>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        ))}
+
+                        {coupons.length === 0 && (
+                            <div className="col-span-full py-12 text-center bg-slate-50 dark:bg-slate-900/30 border border-slate-200 dark:border-slate-800 border-dashed rounded-3xl">
+                                <Ticket className="mx-auto text-slate-700 mb-4" size={48} />
+                                <p className="text-slate-500 font-medium">No coupons found. Create your first one!</p>
+                            </div>
+                        )}
+                    </div>
+                )}
+            </section>
 
             {/* Add Modal */}
             <AnimatePresence>

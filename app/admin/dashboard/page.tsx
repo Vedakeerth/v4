@@ -33,6 +33,8 @@ interface Order {
   totalAmount: number;
   status: string;
   paymentStatus: string;
+  shippingPartner?: string;
+  carrierTrackingId?: string;
   createdAt: any;
 }
 
@@ -59,6 +61,15 @@ export default function AdminDashboard() {
     stock: "",
   });
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  
+  // Tracking Modal State
+  const [showTrackingModal, setShowTrackingModal] = useState(false);
+  const [selectedOrderForTracking, setSelectedOrderForTracking] = useState<Order | null>(null);
+  const [trackingInfo, setTrackingInfo] = useState({
+    partner: "",
+    id: ""
+  });
+  const [pendingStatus, setPendingStatus] = useState<string>("");
 
   useEffect(() => {
     if (!authLoading) {
@@ -166,12 +177,73 @@ export default function AdminDashboard() {
   };
 
   const handleUpdateOrderStatus = async (orderId: string, newStatus: string) => {
+    if (newStatus === "Delivered" || newStatus === "Shipped") {
+      const order = orders.find(o => o.id === orderId);
+      if (order) {
+        setSelectedOrderForTracking(order);
+        setPendingStatus(newStatus);
+        setTrackingInfo({
+          partner: order.shippingPartner || "",
+          id: order.carrierTrackingId || ""
+        });
+        setShowTrackingModal(true);
+        return;
+      }
+    }
+
     try {
       await updateDoc(doc(db, "orders", orderId), { status: newStatus });
+      
+      // Notify customer of status update
+      await fetch('/api/admin/notify-status', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          orderId,
+          status: newStatus
+        })
+      });
+
       fetchOrders();
     } catch (error) {
       console.error("Error updating order status:", error);
       alert("Failed to update status");
+    }
+  };
+
+  const handleSaveTracking = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedOrderForTracking) return;
+
+    setIsSaving(true);
+    try {
+      await updateDoc(doc(db, "orders", selectedOrderForTracking.id), { 
+        status: pendingStatus,
+        shippingPartner: trackingInfo.partner,
+        carrierTrackingId: trackingInfo.id
+      });
+      
+      // Trigger email via API if needed? 
+      // Assuming there's a backend trigger or the frontend should call it.
+      // Usually, it's better to have an API for this.
+      await fetch('/api/admin/notify-status', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          orderId: selectedOrderForTracking.id,
+          status: pendingStatus,
+          shippingPartner: trackingInfo.partner,
+          carrierTrackingId: trackingInfo.id
+        })
+      });
+
+      setShowTrackingModal(false);
+      fetchOrders();
+    } catch (error) {
+      console.error("Error saving tracking:", error);
+      alert("Failed to save tracking details");
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -462,6 +534,68 @@ export default function AdminDashboard() {
                 {isSaving ? <Loader2 className="animate-spin h-5 w-5" /> : <Save className="h-5 w-5" />}
                 {editingProduct ? "Update Product" : "Save Product"}
               </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* Tracking Details Modal */}
+      {showTrackingModal && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <form onSubmit={handleSaveTracking} className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 w-full max-w-md shadow-2xl">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-bold text-white">Shipping Details Required</h2>
+              <button type="button" onClick={() => setShowTrackingModal(false)} className="text-slate-600 dark:text-slate-400 hover:text-white">
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <p className="text-sm text-slate-400 mb-6">
+              Please provide the tracking information before moving the order to <span className="text-cyan-400 font-bold">{pendingStatus}</span>.
+            </p>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Shipping Partner</label>
+                <input
+                  type="text"
+                  required
+                  value={trackingInfo.partner}
+                  onChange={(e) => setTrackingInfo({ ...trackingInfo, partner: e.target.value })}
+                  className="w-full px-4 py-3 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-cyan-500 focus:outline-none text-sm"
+                  placeholder="e.g. BlueDart, Delhivery, ST Courier"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Tracking ID</label>
+                <input
+                  type="text"
+                  required
+                  value={trackingInfo.id}
+                  onChange={(e) => setTrackingInfo({ ...trackingInfo, id: e.target.value })}
+                  className="w-full px-4 py-3 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-cyan-500 focus:outline-none text-sm"
+                  placeholder="e.g. 1234567890"
+                />
+              </div>
+
+              <div className="pt-4 flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setShowTrackingModal(false)}
+                  className="flex-1 py-3 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-white font-bold rounded-xl transition-all text-sm"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSaving}
+                  className="flex-1 py-3 bg-cyan-500 hover:bg-cyan-600 text-slate-950 font-black rounded-xl transition-all disabled:opacity-50 text-sm flex items-center justify-center gap-2"
+                >
+                  {isSaving && <Loader2 className="animate-spin h-4 w-4" />}
+                  Confirm & Notify
+                </button>
+              </div>
             </div>
           </form>
         </div>

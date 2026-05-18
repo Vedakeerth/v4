@@ -2,11 +2,15 @@
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Zap, Lock, Loader2, ShieldCheck } from "lucide-react";
+import { X, Zap, Lock, Loader2, ShieldCheck, FileText } from "lucide-react";
 import Image from "next/image";
 import { Product } from "@/lib/products";
-import { parsePrice } from "@/lib/utils";
+import { parsePrice, formatINR } from "@/lib/utils";
 import { redirectToCashfree } from "@/lib/cashfree";
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+import QuotationDocument from "./QuotationDocument";
+import Recaptcha from "./Recaptcha";
 
 interface BuyNowModalProps {
     product: Product;
@@ -18,7 +22,11 @@ interface BuyNowModalProps {
 export default function BuyNowModal({ product, quantity = 1, selectedColor, onClose }: BuyNowModalProps) {
     const [form, setForm] = useState({ name: "", phone: "", email: "" });
     const [step, setStep] = useState<"form" | "processing">("form");
+    const [status, setStatus] = useState("");
     const [error, setError] = useState<string | null>(null);
+    const [quoteData, setQuoteData] = useState({ id: '', date: '', dueDate: '' });
+    const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
+    const templateRef = React.useRef<HTMLDivElement>(null);
 
     const price = parsePrice(product.price);
     const totalAmount = price * quantity;
@@ -44,8 +52,70 @@ export default function BuyNowModal({ product, quantity = 1, selectedColor, onCl
         }
 
         setStep("processing");
+        setStatus("Generating Order ID...");
+
+        // Generate sequential-like ID
+        const now = new Date();
+        const mm = String(now.getMonth() + 1).padStart(2, '0');
+        const yy = String(now.getFullYear()).slice(-2);
+        const dd = String(now.getDate()).padStart(2, '0');
+        const rand = Math.floor(1000 + Math.random() * 9000);
+        const trackingId = `VQ${mm}${dd}-${rand}`;
+        
+        const dateStr = `${dd}-${mm}-${now.getFullYear()}`;
+        const dueDateObj = new Date(now);
+        dueDateObj.setDate(dueDateObj.getDate() + 10);
+        const dueStr = `${String(dueDateObj.getDate()).padStart(2, '0')}-${String(dueDateObj.getMonth() + 1).padStart(2, '0')}-${dueDateObj.getFullYear()}`;
+
+        setQuoteData({ id: trackingId, date: dateStr, dueDate: dueStr });
 
         try {
+            // Give react a moment to render the template hiddenly
+            await new Promise(r => setTimeout(r, 100));
+
+            setStatus("Generating Invoice PDF...");
+            let pdfUrl = "";
+            let megaFolderUrl = "";
+
+            if (templateRef.current) {
+                const canvas = await html2canvas(templateRef.current, {
+                    scale: 2,
+                    useCORS: true,
+                    logging: false,
+                    backgroundColor: '#ffffff'
+                });
+
+                const imgData = canvas.toDataURL('image/jpeg', 0.95);
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+                const pdfBlob = pdf.output('blob');
+
+                setStatus("Uploading Invoice...");
+                const pdfFormData = new FormData();
+                const fileName = `INVOICE-${trackingId}-invoice.pdf`;
+                pdfFormData.append('file', pdfBlob, fileName);
+                pdfFormData.append('quotationID', trackingId);
+                pdfFormData.append('rootFolder', 'INVOICE');
+
+                try {
+                    const uploadRes = await fetch('/api/upload-to-mega', {
+                        method: 'POST',
+                        body: pdfFormData
+                    });
+                    const uploadData = await uploadRes.json();
+                    if (uploadData.success) {
+                        pdfUrl = uploadData.data.url;
+                        megaFolderUrl = uploadData.data.folderUrl;
+                    } else {
+                        console.error("MEGA Upload error:", uploadData.error);
+                        alert("Warning: Could not upload invoice document to cloud storage. Our team will contact you for the files.");
+                    }
+                } catch (err) {
+                    console.error("Failed to upload to MEGA:", err);
+                }
+            }
+
+            setStatus("Securing payment session...");
             // Step 1: Create Order using the robust create-order API
             const fullPhone = form.phone.startsWith('+91') ? form.phone : `+91${form.phone.replace(/\D/g, '').slice(-10)}`;
             
@@ -56,8 +126,11 @@ export default function BuyNowModal({ product, quantity = 1, selectedColor, onCl
                     customerName: form.name,
                     email: form.email,
                     phone: fullPhone,
-                    address: "Buy Now - Direct Checkout",
                     message: `Color: ${selectedColor || 'None'}`,
+                    trackingId: trackingId, // Pass the generated ID
+                    pdfUrl,
+                    megaFolderUrl,
+                    recaptchaToken,
                     items: [{
                         id: product.id,
                         name: product.name,
@@ -78,7 +151,7 @@ export default function BuyNowModal({ product, quantity = 1, selectedColor, onCl
                 throw new Error("Payment initialization failed.");
             }
 
-            redirectToCashfree(orderData.payment_session_id);
+            redirectToCashfree(orderData.payment_session_id, orderData.trackingId);
 
         } catch (err: any) {
             console.error("Buy Now error:", err);
@@ -94,7 +167,7 @@ export default function BuyNowModal({ product, quantity = 1, selectedColor, onCl
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 onClick={onClose}
-                className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-white dark:bg-slate-950/95 backdrop-blur-xl"
+                className="fixed inset-0 z-[10001] flex items-center justify-center p-4 bg-white dark:bg-slate-950/95 backdrop-blur-xl"
             >
                 <motion.div
                     initial={{ scale: 0.92, opacity: 0, y: 20 }}
@@ -127,7 +200,7 @@ export default function BuyNowModal({ product, quantity = 1, selectedColor, onCl
                                 Connecting to Payment
                             </h3>
                             <p className="text-slate-500 text-xs font-bold uppercase tracking-widest">
-                                Setting up secure gateway...
+                                {status || "Setting up secure gateway..."}
                             </p>
                         </div>
                     ) : (
@@ -158,7 +231,7 @@ export default function BuyNowModal({ product, quantity = 1, selectedColor, onCl
                                 <div className="text-right flex-shrink-0">
                                     <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Total</p>
                                     <p className="text-xl font-black text-cyan-400">
-                                        ₹{totalAmount.toLocaleString('en-IN')}
+                                        {formatINR(totalAmount)}
                                     </p>
                                 </div>
                             </div>
@@ -167,8 +240,30 @@ export default function BuyNowModal({ product, quantity = 1, selectedColor, onCl
                                 <Zap size={18} className="text-cyan-400" />
                                 Instant Checkout
                             </h2>
-                            <p className="text-xs text-slate-500 font-bold uppercase tracking-widest mb-6">
+                            <p className="text-xs text-slate-500 font-bold uppercase tracking-widest mb-6 flex justify-between items-center">
                                 Pay directly — no lengthy forms
+                                <button 
+                                    type="button"
+                                    onClick={async (e) => {
+                                        e.preventDefault();
+                                        setStatus("Generating Preview...");
+                                        // Wait a tiny bit for template to be ready if it was hidden
+                                        await new Promise(r => setTimeout(r, 100));
+                                        if (templateRef.current) {
+                                            const canvas = await html2canvas(templateRef.current, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
+                                            const imgData = canvas.toDataURL('image/jpeg', 0.95);
+                                            const pdf = new jsPDF('p', 'mm', 'a4');
+                                            pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+                                            const idToUse = quoteData.id || `VQ${Math.floor(1000 + Math.random() * 9000)}`;
+                                            pdf.save(`INVOICE-${idToUse}-invoice.pdf`);
+                                        }
+                                        setStatus("");
+                                    }}
+                                    className="text-[10px] text-cyan-500 hover:text-cyan-400 font-black uppercase tracking-widest flex items-center gap-1 transition-colors"
+                                >
+                                    <FileText size={12} />
+                                    Download Quote
+                                </button>
                             </p>
 
                             <form onSubmit={handlePay} className="space-y-4">
@@ -229,11 +324,14 @@ export default function BuyNowModal({ product, quantity = 1, selectedColor, onCl
 
                                 <button
                                     type="submit"
-                                    className="w-full py-4 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black rounded-2xl transition-all shadow-xl shadow-cyan-500/25 hover:shadow-cyan-500/40 uppercase tracking-widest text-sm flex items-center justify-center gap-2 mt-2 group"
+                                    disabled={!recaptchaToken}
+                                    className="w-full py-4 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black rounded-2xl transition-all shadow-xl shadow-cyan-500/25 hover:shadow-cyan-500/40 uppercase tracking-widest text-sm flex items-center justify-center gap-2 mt-2 group disabled:opacity-50"
                                 >
                                     <Lock size={16} className="group-hover:scale-110 transition-transform" />
-                                    Pay ₹{totalAmount.toLocaleString('en-IN')} Now
+                                    Pay {formatINR(totalAmount)} Now
                                 </button>
+                                
+                                <Recaptcha onChange={setRecaptchaToken} action="SUBMIT" className="mt-2" />
                             </form>
 
                             <div className="flex items-center gap-2 mt-5 justify-center">
@@ -245,6 +343,35 @@ export default function BuyNowModal({ product, quantity = 1, selectedColor, onCl
                         </div>
                     )}
                 </motion.div>
+
+                {/* Hidden Template for PDF Generation */}
+                <div className="fixed left-[-9999px] top-[-9999px] pointer-events-none opacity-0">
+                    <div ref={templateRef}>
+                        <QuotationDocument
+                            title="INVOICE"
+                            quoteId={quoteData.id}
+                            date={quoteData.date}
+                            dueDate={quoteData.dueDate}
+                            client={{
+                                name: form.name || 'Customer',
+                                details: 'Gallery Purchase',
+                                address: 'Direct Checkout Order',
+                                email: form.email || 'Email',
+                                phone: form.phone || 'Phone'
+                            }}
+                            items={[{
+                                name: product.name,
+                                description: `Gallery Product • ${product.category}${selectedColor ? ` • ${selectedColor}` : ''}`,
+                                price: price,
+                                quantity: quantity,
+                                total: totalAmount,
+                                color: selectedColor || '#000000'
+                            }]}
+                            totalAmount={totalAmount}
+                            totalQty={quantity}
+                        />
+                    </div>
+                </div>
             </motion.div>
         </AnimatePresence>
     );

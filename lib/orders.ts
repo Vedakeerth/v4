@@ -21,11 +21,13 @@ export async function addOrder(order: Order): Promise<void> {
     const { getAdminDb } = await import('./firebaseAdmin');
     const adminDb = await getAdminDb();
     try {
-        const { id, ...orderData } = order;
-        const docRef = id ? adminDb.collection("orders").doc(id) : adminDb.collection("orders").doc();
+        const docRef = order.id ? adminDb.collection("orders").doc(order.id) : adminDb.collection("orders").doc();
+        const finalId = order.id || docRef.id;
         await docRef.set({
-            ...orderData,
-            createdAt: new Date().toISOString()
+            ...order,
+            id: finalId,
+            trackingId: finalId, // Ensure trackingId is also set
+            createdAt: order.createdAt || new Date().toISOString()
         });
     } catch (error) {
         console.error("Error saving order to Firestore:", error);
@@ -37,7 +39,7 @@ export async function updateOrder(id: string, updates: Partial<Order>): Promise<
     const { getAdminDb } = await import('./firebaseAdmin');
     const adminDb = await getAdminDb();
     try {
-        await adminDb.collection("orders").doc(id).update(updates);
+        await adminDb.collection("orders").doc(id).set(updates, { merge: true });
         return true;
     } catch (error) {
         console.error("Error updating order in Firestore:", error);

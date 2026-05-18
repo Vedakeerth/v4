@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ArrowRight, Heart, HeartOff } from 'lucide-react';
+import { ArrowRight, Heart, HeartOff, Share2, ShoppingCart, Info, Eye } from 'lucide-react';
 import { Skeleton } from './Skeleton';
 import { cn } from '@/lib/utils';
 
@@ -48,12 +48,15 @@ export default function PopularParts({ header, parts }: PopularPartsProps) {
     const toggleLike = (e: React.MouseEvent, id: string | number) => {
         e.preventDefault();
         e.stopPropagation();
-        setLiked(prev => {
-            const idStr = id.toString();
-            const isLiked = !prev[idStr];
-            setLikes(l => ({ ...l, [idStr]: isLiked ? l[idStr] + 1 : Math.max(0, l[idStr] - 1) }));
-            return { ...prev, [idStr]: isLiked };
-        });
+        const idStr = id.toString();
+        const isCurrentlyLiked = liked[idStr];
+        const newLikedState = !isCurrentlyLiked;
+
+        setLiked(prev => ({ ...prev, [idStr]: newLikedState }));
+        setLikes(prev => ({
+            ...prev,
+            [idStr]: newLikedState ? (prev[idStr] || 0) + 1 : Math.max(0, (prev[idStr] || 0) - 1)
+        }));
     };
 
     return (
@@ -122,19 +125,41 @@ export default function PopularParts({ header, parts }: PopularPartsProps) {
                                     />
                                     <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-60" />
 
-                                    <button
-                                        onClick={(e) => toggleLike(e, part?.id)}
-                                        className="absolute top-4 right-4 p-2.5 rounded-full bg-white dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 text-white hover:bg-cyan-500 hover:border-cyan-400 transition-all duration-300 z-20 backdrop-blur-md"
-                                    >
-                                        {liked[part?.id] ? (
-                                            <Heart size={18} className="fill-red-500 text-red-500" />
-                                        ) : (
-                                            <Heart size={18} />
-                                        )}
-                                    </button>
+                                    <div className="absolute top-4 right-4 flex flex-col gap-2 z-20">
+                                        <button
+                                            onClick={(e) => toggleLike(e, part?.id)}
+                                            className={cn(
+                                                "p-2.5 rounded-full transition-all duration-300 backdrop-blur-md border shadow-xl hover:scale-110",
+                                                liked[part?.id]
+                                                    ? "bg-red-500 text-white border-red-400 shadow-red-500/20"
+                                                    : "bg-white/80 dark:bg-slate-950/80 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-800 hover:text-cyan-500 dark:hover:text-cyan-400"
+                                            )}
+                                            title={liked[part?.id] ? "Unlike" : "Like"}
+                                        >
+                                            <Heart size={18} fill={liked[part?.id] ? "currentColor" : "none"} />
+                                        </button>
+
+                                        <button
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                e.stopPropagation();
+                                                const url = window.location.origin + `/products/${part?.id}`;
+                                                if (navigator.share) {
+                                                    navigator.share({ title: part?.name, url }).catch(console.error);
+                                                } else {
+                                                    navigator.clipboard.writeText(url);
+                                                    alert("Link copied!");
+                                                }
+                                            }}
+                                            className="p-2.5 rounded-full bg-white/80 dark:bg-slate-950/80 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:text-cyan-500 dark:hover:text-cyan-400 transition-all duration-300 backdrop-blur-md shadow-xl hover:scale-110"
+                                            title="Share"
+                                        >
+                                            <Share2 size={18} />
+                                        </button>
+                                    </div>
 
                                     <div className="absolute bottom-4 left-4 z-10">
-                                        <span className="px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-400 text-[10px] font-bold uppercase tracking-wider border border-cyan-500/30 backdrop-blur-sm">
+                                        <span className="px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-400 text-[10px] font-black uppercase tracking-widest border border-cyan-500/30 backdrop-blur-md shadow-lg">
                                             {part?.category || "General"}
                                         </span>
                                     </div>
@@ -150,12 +175,12 @@ export default function PopularParts({ header, parts }: PopularPartsProps) {
                                     <div className="flex items-center justify-between">
                                         <div className="flex flex-col">
                                             <div className="flex items-center gap-2 mb-1">
-                                                <div className="flex items-center gap-1 text-red-400 bg-red-400/10 px-1.5 py-0.5 rounded text-[10px] font-bold border border-red-400/20">
-                                                    <Heart size={10} fill={liked[part?.id?.toString() || ""] ? "currentColor" : "none"} />
+                                                <div className="flex items-center gap-1.5 text-red-400 bg-red-400/10 px-2 py-1 rounded-lg text-[10px] font-black border border-red-400/20 backdrop-blur-sm">
+                                                    <Heart size={12} fill={liked[part?.id?.toString() || ""] ? "currentColor" : "none"} />
                                                     {likes[part?.id?.toString() || ""] || 0}
                                                 </div>
                                             </div>
-                                            <span className="text-2xl font-bold text-slate-900 dark:text-white">
+                                            <span className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
                                                 {part?.price
                                                     ? (typeof part.price === 'number'
                                                         ? `₹${part.price.toLocaleString('en-IN')}`
@@ -164,7 +189,8 @@ export default function PopularParts({ header, parts }: PopularPartsProps) {
                                             </span>
                                         </div>
                                         <Link href={`/products/${part?.id}`}>
-                                            <button className="px-5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-cyan-500 text-slate-900 dark:text-white hover:text-slate-950 font-bold text-sm transition-all duration-300 border border-slate-300 dark:border-slate-700 hover:border-cyan-400">
+                                            <button className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-950 font-black text-xs uppercase tracking-widest transition-all duration-300 hover:bg-cyan-500 dark:hover:bg-cyan-400 hover:text-slate-950 shadow-lg hover:shadow-cyan-500/25 active:scale-95">
+                                                <Info size={16} />
                                                 View Details
                                             </button>
                                         </Link>
