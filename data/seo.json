@@ -1,22 +1,22 @@
 {
     "home": {
-        "title": "VAELINSA | 3D Printing, Robotics & Precision Engineering",
-        "description": "Leading provider of industrial 3D printers, precision 3D pens, and advanced robotic manufacturing solutions. Quality medical-safe prototypes and custom hardware.",
-        "keywords": "3D printing, robotics, medical prototyping, 3D printers india, FDM, industrial 3D scanning"
+        "title": "VAELINSA | Industrial 3D Printing & CAD Design Services India",
+        "description": "Premium FDM and SLA resin 3D printing services, rapid prototyping, and CAD modeling in India. Upload STL models for an instant AI quotation.",
+        "keywords": "3D printing India, rapid prototyping services, CAD modeling, FDM printing, resin 3D printing, custom 3D fabrication"
     },
     "catalog": {
-        "title": "Product Catalog - VAELINSA",
-        "description": "Browse our complete range of 3D printers, pens, scanners and custom engineering components.",
-        "keywords": "3D printer catalog, 3D pens, 3D scanners, robotics kits"
+        "title": "Industrial 3D Printing Services | VAELINSA",
+        "description": "Explore our premium 3D printing and CAD engineering services. Fast domestic shipping, high tolerances, and advanced engineering polymers.",
+        "keywords": "FDM 3D printing, resin printing, CAD modeling, reverse engineering, rapid prototyping"
     },
     "gallery": {
-        "title": "Gallery & Portfolio - VAELINSA",
-        "description": "Explore our portfolio of precision engineered parts and customer projects.",
-        "keywords": "3D printing gallery, custom parts portfolio, engineering showcase"
+        "title": "3D Printing Project Gallery | VAELINSA",
+        "description": "Explore high-resolution SLA resin prints, high-strength FDM components, and custom engineering prototype case studies.",
+        "keywords": "3D printed models, prototype gallery, Vaelinsa engineering showcase"
     },
     "blog": {
-        "title": "Vaelinsa Insights - The Future of Manufacturing",
-        "description": "Deep dives into 3D printing technology, robotics tutorials, and engineering news.",
-        "keywords": "3D printing blog, manufacturing insights, robotics tutorial, Vaelinsa blog"
+        "title": "Vaelinsa Engineering Insights | 3D Printing & CAD Blog",
+        "description": "Read our engineering insights on Design for Additive Manufacturing (DFAM), filament comparisons, and rapid prototyping guidelines.",
+        "keywords": "3D printing blog, CAD design tutorial, rapid prototyping guide, DFAM insights"
     }
 }

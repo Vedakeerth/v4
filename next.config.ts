@@ -27,6 +27,99 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   async redirects() {
     return [
+      // Legacy Bad URL / Slug Redirects (301 Permanent - Task 1 & 2)
+      {
+        source: '/introduction-to-industrial-3d-printing-printing',
+        destination: '/blog/intro-to-industrial-3d-printing',
+        permanent: true,
+      },
+      {
+        source: '/blog/introduction-to-industrial-3d-printing-printing',
+        destination: '/blog/intro-to-industrial-3d-printing',
+        permanent: true,
+      },
+      {
+        source: '/toothless-dragen-keychain-KE7726',
+        destination: '/gallery/toothless-dragon-keychain',
+        permanent: true,
+      },
+      {
+        source: '/gallery/toothless-dragen-keychain-KE7726',
+        destination: '/gallery/toothless-dragon-keychain',
+        permanent: true,
+      },
+      {
+        source: '/3d-pen-with-morden-feature-52967925',
+        destination: '/projects/advanced-3d-printing-pen',
+        permanent: true,
+      },
+      {
+        source: '/projects/3d-pen-with-morden-feature-52967925',
+        destination: '/projects/advanced-3d-printing-pen',
+        permanent: true,
+      },
+      {
+        source: '/projects/3d-pen-with-morden-feature-1770352967925',
+        destination: '/projects/advanced-3d-printing-pen',
+        permanent: true,
+      },
+      {
+        source: '/ece-stencile-ET3875',
+        destination: '/gallery/ece-stencil',
+        permanent: true,
+      },
+      {
+        source: '/gallery/ece-stencile-ET3875',
+        destination: '/gallery/ece-stencil',
+        permanent: true,
+      },
+      // Old HTML Page Redirects (301 Permanent)
+      {
+        source: '/index.html',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/services.html',
+        destination: '/services',
+        permanent: true,
+      },
+      {
+        source: '/contact.html',
+        destination: '/contact',
+        permanent: true,
+      },
+      {
+        source: '/about.html',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/gallery.html',
+        destination: '/gallery',
+        permanent: true,
+      },
+      {
+        source: '/projects.html',
+        destination: '/projects',
+        permanent: true,
+      },
+      {
+        source: '/faq.html',
+        destination: '/faq',
+        permanent: true,
+      },
+      {
+        source: '/terms.html',
+        destination: '/terms',
+        permanent: true,
+      },
+      {
+        source: '/privacy.html',
+        destination: '/privacy',
+        permanent: true,
+      },
+      // Admin redirects
       {
         source: '/admin/login',
         destination: '/secure-management-portal/login',
@@ -35,7 +128,6 @@ const nextConfig: NextConfig = {
       {
         source: '/admin/dashboard',
         destination: '/secure-management-portal/admin',
-
         permanent: false,
       },
       {
@@ -43,6 +135,7 @@ const nextConfig: NextConfig = {
         destination: '/secure-management-portal/login',
         permanent: false,
       },
+      // Other legacy redirects
       {
         source: '/features',
         destination: '/gallery',

@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, ShoppingCart, Info, Printer, Cpu, PenLine } from 'lucide-react';
+import { ArrowRight, ShoppingCart, Info, Printer, Cpu, PenLine, Settings } from 'lucide-react';
 import { Skeleton } from './Skeleton';
 import ProductQuickView from './ProductQuickView';
 
@@ -12,7 +12,8 @@ import ProductQuickView from './ProductQuickView';
 const ICON_MAP: Record<string, any> = {
     Printer,
     Cpu,
-    PenLine
+    PenLine,
+    Settings
 };
 
 import { Product } from "@/lib/products";

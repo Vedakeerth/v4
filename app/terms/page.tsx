@@ -3,6 +3,12 @@ import Footer from "@/components/Footer";
 import Link from "next/link";
 import PolicySidebar from "@/components/PolicySidebar";
 import { Check, Mail, Globe } from "lucide-react";
+import type { Metadata } from "next";
+import { getPageMetadata } from "@/lib/seo";
+
+export async function generateMetadata(): Promise<Metadata> {
+    return await getPageMetadata('Terms', '/terms');
+}
 
 const termsSections = [
     { id: "acceptance", title: "1. Acceptance of Terms" },

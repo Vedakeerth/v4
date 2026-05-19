@@ -6,7 +6,7 @@ import type { Metadata } from "next";
 import { getPageMetadata } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
-  return await getPageMetadata('Services');
+  return await getPageMetadata('Services', '/services');
 }
 
 import { getPageContent } from "@/lib/content";

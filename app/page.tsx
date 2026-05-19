@@ -18,14 +18,10 @@ import { getBlogs } from "@/lib/blogs";
 
 export const revalidate = 0; // Ensure dynamic rendering for real-time updates
 
+import { getPageMetadata } from "@/lib/seo";
+
 export async function generateMetadata(): Promise<Metadata> {
-  const seoData = await getSEOData();
-  const seo = seoData.home;
-  return {
-    title: seo?.title || "VAELINSA",
-    description: seo?.description,
-    keywords: seo?.keywords,
-  };
+  return getPageMetadata('Home', '/');
 }
 
 const ProductShowcase = dynamic(() => import("@/components/ProductShowcase"), {
@@ -42,6 +38,7 @@ const CTA = dynamic(() => import("@/components/CTA"));
 const PopularParts = dynamic(() => import("@/components/PopularParts"));
 const ProjectsSection = dynamic(() => import("@/components/ProjectsSection"));
 const BlogSection = dynamic(() => import("@/components/BlogSection"));
+const FAQSection = dynamic(() => import("@/components/FAQSection"));
 
 export default async function Home() {
   const settings = await getSettings();
@@ -112,6 +109,8 @@ export default async function Home() {
       {(settings?.showBlog ?? true) && (
         <BlogSection blogs={allBlogs || []} />
       )}
+
+      <FAQSection />
 
       <CTA content={homeData?.ctaSection} />
       <Footer />

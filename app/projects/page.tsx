@@ -7,7 +7,7 @@ import { createSeoSlug } from "@/lib/seo-utils";
 import { getPageMetadata } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
-    return await getPageMetadata('Projects');
+    return await getPageMetadata('Projects', '/projects');
 }
 
 export const revalidate = 0;

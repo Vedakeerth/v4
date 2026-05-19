@@ -12,6 +12,7 @@ import type { Metadata } from "next";
 import BlogContent from "@/components/BlogContent";
 import { getBlogs, getBlogBySeoSlug } from "@/lib/blogs";
 import { createSeoSlug } from "@/lib/seo-utils";
+import { BlogPostingSchema, BreadcrumbSchema } from "@/components/StructuredData";
 
 interface PageProps {
     params: Promise<{ slug: string }>;
@@ -65,6 +66,14 @@ export default async function BlogDetailPage({ params }: PageProps) {
 
     return (
         <main className="min-h-screen bg-white dark:bg-slate-950 pt-20 text-white">
+            <BlogPostingSchema blog={blog} />
+            <BreadcrumbSchema
+                items={[
+                    { name: "Home", item: "/" },
+                    { name: "Insights", item: "/blog" },
+                    { name: blog.title, item: `/blog/${slug}` }
+                ]}
+            />
 
             {/* Hero Section */}
             <header className="relative h-[70vh] min-h-[500px] w-full overflow-hidden">

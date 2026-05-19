@@ -8,6 +8,7 @@ import { ArrowLeft, Calendar, User, ExternalLink, Globe, Layout, Layers } from "
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { createSeoSlug } from "@/lib/seo-utils";
+import { BreadcrumbSchema } from "@/components/StructuredData";
 
 interface PageProps {
     params: Promise<{ slug: string }>;
@@ -55,6 +56,13 @@ export default async function ProjectDetailPage({ params }: PageProps) {
     return (
         <main className="min-h-screen bg-white dark:bg-slate-950 text-white">
             <Navbar />
+            <BreadcrumbSchema
+                items={[
+                    { name: "Home", item: "/" },
+                    { name: "Projects", item: "/projects" },
+                    { name: project.title, item: `/projects/${slug}` }
+                ]}
+            />
             
             {/* Hero Section */}
             <header className="relative h-[60vh] min-h-[400px] w-full overflow-hidden pt-20">

@@ -10,7 +10,7 @@ import { getPageMetadata } from "@/lib/seo";
 import { Metadata } from "next";
 
 export async function generateMetadata(): Promise<Metadata> {
-    return await getPageMetadata('Gallery');
+    return await getPageMetadata('Gallery', '/gallery');
 }
 
 export default async function GalleryPage() {

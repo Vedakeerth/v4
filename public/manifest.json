@@ -1,0 +1,24 @@
+{
+  "name": "VAELINSA - 3D Printing & Engineering Solutions",
+  "short_name": "VAELINSA",
+  "description": "Premium 3D printing, product design, and rapid prototyping services in India.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/images/favicon-wing.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/images/favicon-wing.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

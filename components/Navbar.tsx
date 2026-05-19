@@ -111,10 +111,10 @@ export default function Navbar() {
                             {navLinks.map((link) => (
                                 <Link
                                     key={link.name}
-                                    href={link.href === "/features" ? "/products" : link.href}
+                                    href={link.href === "/features" ? "/gallery" : link.href}
                                     className="text-sm font-bold text-slate-700 dark:text-slate-300 hover:text-cyan-400 transition-colors uppercase tracking-widest"
                                 >
-                                    {link.name === "Features" ? "Products" : link.name}
+                                    {link.name === "Features" ? "Gallery" : link.name}
                                 </Link>
                             ))}
                         </nav>
@@ -172,11 +172,11 @@ export default function Navbar() {
                                     {navLinks.map((link) => (
                                         <Link
                                             key={link.name}
-                                            href={link.href === "/features" ? "/products" : link.href}
+                                            href={link.href === "/features" ? "/gallery" : link.href}
                                             onClick={() => setIsMenuOpen(false)}
                                             className="text-lg font-medium text-slate-700 dark:text-slate-300 hover:text-cyan-400 transition-colors py-2"
                                         >
-                                            {link.name === "Features" ? "Products" : link.name}
+                                            {link.name === "Features" ? "Gallery" : link.name}
                                         </Link>
                                     ))}
                                     <Link href={ctaData.href} onClick={() => setIsMenuOpen(false)} className="mt-4">

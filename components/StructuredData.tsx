@@ -47,20 +47,23 @@ export function LocalBusinessSchema() {
     '@context': 'https://schema.org',
     '@type': 'LocalBusiness',
     name: 'VAELINSA',
-    image: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://vaelinsa.com'}/images/logo.png`,
+    image: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://vaelinsa.com'}/images/social-preview.png`,
     '@id': process.env.NEXT_PUBLIC_SITE_URL || 'https://vaelinsa.com',
     url: process.env.NEXT_PUBLIC_SITE_URL || 'https://vaelinsa.com',
-    telephone: '+91-XXX-XXX-XXXX',
+    telephone: '+91 89035 95542',
     priceRange: '$$',
     address: {
       '@type': 'PostalAddress',
+      streetAddress: 'Avinashi Road',
+      addressLocality: 'Coimbatore',
+      addressRegion: 'Tamil Nadu',
+      postalCode: '641018',
       addressCountry: 'IN',
     },
     geo: {
       '@type': 'GeoCoordinates',
-      // Add coordinates when available
-      // latitude: 0,
-      // longitude: 0,
+      latitude: 11.0168,
+      longitude: 76.9558,
     },
     openingHoursSpecification: {
       '@type': 'OpeningHoursSpecification',
@@ -151,6 +154,119 @@ export function WebSiteSchema() {
       },
       'query-input': 'required name=search_term_string',
     },
+  };
+
+  return <StructuredData data={schema} />;
+}
+
+interface ProductSchemaProps {
+  product: {
+    id: string | number;
+    name: string;
+    description: string;
+    image: string;
+    category?: string;
+    price: string | number;
+    availabilityStatus?: string;
+  };
+}
+
+export function ProductSchema({ product }: ProductSchemaProps) {
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://vaelinsa.com';
+  const priceStr = String(product.price || '0');
+  const numericPrice = parseFloat(priceStr.replace(/[^\d.]/g, '')) || 0;
+  
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: product.name,
+    image: product.image.startsWith('/') ? `${baseUrl}${product.image}` : product.image,
+    description: product.description,
+    sku: `VL-${product.id}`,
+    category: product.category || '3D Printed Parts',
+    offers: {
+      '@type': 'Offer',
+      url: `${baseUrl}/gallery`,
+      priceCurrency: 'INR',
+      price: numericPrice,
+      availability: product.availabilityStatus === 'Out of Stock' 
+        ? 'https://schema.org/OutOfStock' 
+        : 'https://schema.org/InStock',
+      seller: {
+        '@type': 'Organization',
+        name: 'VAELINSA',
+      },
+    },
+  };
+
+  return <StructuredData data={schema} />;
+}
+
+interface BlogPostingSchemaProps {
+  blog: {
+    id: string;
+    title: string;
+    excerpt: string;
+    content: string;
+    image: string;
+    category: string;
+    author: string;
+    date: string;
+  };
+}
+
+export function BlogPostingSchema({ blog }: BlogPostingSchemaProps) {
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://vaelinsa.com';
+  
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': `${baseUrl}/blog/${blog.id}`,
+    },
+    headline: blog.title,
+    image: blog.image.startsWith('/') ? `${baseUrl}${blog.image}` : blog.image,
+    datePublished: blog.date,
+    dateModified: blog.date,
+    author: {
+      '@type': 'Person',
+      name: blog.author || 'VAELINSA Engineering',
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'VAELINSA',
+      logo: {
+        '@type': 'ImageObject',
+        url: `${baseUrl}/images/logo.png`,
+      },
+    },
+    description: blog.excerpt,
+    articleBody: blog.content ? blog.content.replace(/[#*`_]/g, '') : '',
+  };
+
+  return <StructuredData data={schema} />;
+}
+
+interface BreadcrumbSchemaProps {
+  items: {
+    name: string;
+    item: string;
+  }[];
+}
+
+export function BreadcrumbSchema({ items }: BreadcrumbSchemaProps) {
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://vaelinsa.com';
+  
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: items.map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: item.name,
+      item: item.item.startsWith('/') ? `${baseUrl}${item.item}` : item.item,
+    })),
   };
 
   return <StructuredData data={schema} />;

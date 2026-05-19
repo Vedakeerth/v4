@@ -7,6 +7,7 @@ import Link from "next/link";
 import { ArrowLeft, X } from "lucide-react";
 import type { Metadata } from "next";
 import { createSeoSlug } from "@/lib/seo-utils";
+import { ProductSchema, BreadcrumbSchema } from "@/components/StructuredData";
 
 interface PageProps {
     params: Promise<{ slug: string }>;
@@ -80,14 +81,22 @@ export default async function ProductDetailPage({ params }: PageProps) {
         similarProducts = similarProducts.slice(0, 4);
     }
 
-    return (
-        <main className="min-h-screen bg-white dark:bg-slate-950 pt-24">
-            <ProductDetailClient
-                product={product}
-                similarProducts={similarProducts}
-                pageData={pageData}
-            />
-            <Footer />
-        </main>
-    );
+  return (
+    <main className="min-h-screen bg-white dark:bg-slate-950 pt-24">
+      <ProductSchema product={product} />
+      <BreadcrumbSchema
+        items={[
+          { name: "Home", item: "/" },
+          { name: "Gallery", item: "/gallery" },
+          { name: product.name, item: `/gallery/${slug}` }
+        ]}
+      />
+      <ProductDetailClient
+        product={product}
+        similarProducts={similarProducts}
+        pageData={pageData}
+      />
+      <Footer />
+    </main>
+  );
 }

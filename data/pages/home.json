@@ -1,6 +1,6 @@
 {
     "hero": {
-        "subtitle": "Precision Engineering & Manufacturing",
+        "subtitle": "Precision Additive Manufacturing & CAD Engineering",
         "titleMain": "Concept to Creation",
         "phrases": [
             "In Record Time",
@@ -8,7 +8,7 @@
             "For Engineers",
             "On Demand"
         ],
-        "description": "Industrial-grade 3D printing (FDM, SLA, SLS), mechanical design, and rapid prototyping services tailored for engineers and startups.",
+        "description": "Industrial-grade 3D printing (FDM, SLA, SLS), CAD design engineering, and rapid prototyping services tailored for mechanical engineers, R&D labs, and hardware startups.",
         "primaryCta": {
             "text": "Get an AI Quote",
             "link": "/quote"
@@ -21,38 +21,38 @@
     "ctaSection": {
         "title": "Ready to Materialize Your Ideas?",
         "titleHighlight": "Ideas?",
-        "description": "Stop waiting for slow traditional machining. Get industrial-quality parts in days, not weeks.",
+        "description": "Stop waiting for slow traditional machining. Get industrial-quality FDM and SLA resin prints in days, not weeks.",
         "buttonText": "Contact Us",
         "buttonLink": "/contact"
     },
     "popularParts": {
         "title": "Most Popular",
         "titleHighlight": "Gallery Parts",
-        "description": "The most frequently requested precision-engineered parts from our community.",
+        "description": "The most frequently requested precision-engineered parts and custom prints from our community.",
         "ctaText": "Explore Full Gallery",
         "ctaLink": "/gallery"
     },
     "productShowcase": {
         "title": "Premium",
-        "titleHighlight": "Hardware",
+        "titleHighlight": "Industrial",
         "suffix": "Solutions",
-        "description": "Explore our professional-grade 3D printers, scanners, and design tools tailored for serious engineers.",
+        "description": "Explore our high-precision custom enclosures, structural mechanical frames, and custom tooling fixtures tailored for hardware engineers.",
         "categories": [
-            {
-                "id": "3D Printers",
-                "label": "Machinery",
-                "icon": "Printer"
-            },
-            {
-                "id": "3D Scanners",
-                "label": "Scanners",
-                "icon": "Cpu"
-            },
-            {
-                "id": "3D Pens",
-                "label": "3D Pens",
-                "icon": "PenLine"
-            }
+          {
+            "id": "Enclosures",
+            "label": "Enclosures",
+            "icon": "Cpu"
+          },
+          {
+            "id": "Mechanical",
+            "label": "Mechanical",
+            "icon": "Printer"
+          },
+          {
+            "id": "Tooling",
+            "label": "Tooling",
+            "icon": "Settings"
+          }
         ],
         "ctaText": "Browse Entire Collection",
         "ctaLink": "/gallery"

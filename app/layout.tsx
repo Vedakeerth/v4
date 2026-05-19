@@ -30,13 +30,19 @@ export const viewport: Viewport = {
 };
 
 export async function generateMetadata(): Promise<Metadata> {
-  const metadata = await getPageMetadata('Home');
+  const metadata = await getPageMetadata('Home', '/');
   return {
     ...metadata,
+    manifest: '/manifest.json',
     icons: {
-      icon: "/images/favicon-wing.png",
+      icon: [
+        { url: "/images/favicon-wing.png", sizes: "32x32", type: "image/png" },
+        { url: "/images/favicon-wing.png", sizes: "192x192", type: "image/png" }
+      ],
       shortcut: "/images/favicon-wing.png",
-      apple: "/images/favicon-wing.png",
+      apple: [
+        { url: "/images/favicon-wing.png", sizes: "180x180", type: "image/png" }
+      ]
     },
   };
 }

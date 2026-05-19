@@ -14,6 +14,7 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useAdminAuth } from "@/lib/adminAuth";
 import { signOut } from "firebase/auth";
 import NavigationManager from "@/components/admin/NavigationManager";
+import FaqManager from "@/components/admin/FaqManager";
 
 interface Product {
   id: string;
@@ -45,7 +46,7 @@ export default function AdminDashboard() {
   // State
   const [products, setProducts] = useState<Product[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
-  const [activeTab, setActiveTab] = useState<"products" | "orders">("products");
+  const [activeTab, setActiveTab] = useState<"products" | "orders" | "navigation" | "faqs">("products");
   const [isLoading, setIsLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
@@ -302,14 +303,24 @@ export default function AdminDashboard() {
             Orders ({orders.length})
           </button>
           <button
-            onClick={() => setActiveTab("navigation" as any)}
+            onClick={() => setActiveTab("navigation")}
             className={`px-6 py-3 font-bold transition-all border-b-2 ${
-              activeTab === ("navigation" as any)
+              activeTab === "navigation"
                 ? "text-purple-400 border-purple-500 bg-purple-500/5" 
                 : "text-slate-500 border-transparent hover:text-white"
             }`}
           >
             Navigation
+          </button>
+          <button
+            onClick={() => setActiveTab("faqs")}
+            className={`px-6 py-3 font-bold transition-all border-b-2 ${
+              activeTab === "faqs"
+                ? "text-emerald-400 border-emerald-500 bg-emerald-500/5" 
+                : "text-slate-500 border-transparent hover:text-white"
+            }`}
+          >
+            FAQs
           </button>
         </div>
 
@@ -370,8 +381,10 @@ export default function AdminDashboard() {
               ))}
             </div>
           </>
-        ) : activeTab === ("navigation" as any) ? (
+        ) : activeTab === "navigation" ? (
           <NavigationManager />
+        ) : activeTab === "faqs" ? (
+          <FaqManager />
         ) : (
           <div className="space-y-6">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">

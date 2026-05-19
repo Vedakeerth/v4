@@ -2,6 +2,12 @@ import React from "react";
 import Footer from "@/components/Footer";
 import Link from "next/link";
 import PolicySidebar from "@/components/PolicySidebar";
+import type { Metadata } from "next";
+import { getPageMetadata } from "@/lib/seo";
+
+export async function generateMetadata(): Promise<Metadata> {
+    return await getPageMetadata('Privacy', '/privacy');
+}
 
 interface Section {
     id: string;
