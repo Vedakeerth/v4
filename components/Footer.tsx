@@ -37,7 +37,8 @@ export default function Footer() {
         { name: "Product Design", href: "/services#design" },
         { name: "Rapid Prototyping", href: "/services#prototyping" },
     ];
-    const quickLinks = (settings?.footerLinks?.filter(l => l.isActive !== false)) || [
+    const databaseFooterLinks = settings?.footerLinks?.filter(l => l.isActive !== false);
+    let quickLinks = databaseFooterLinks || [
         { name: "About Us", href: "/about" },
         { name: "Gallery", href: "/gallery" },
         { name: "Track Your Order", href: "/track-order" },
@@ -46,6 +47,13 @@ export default function Footer() {
         { name: "Privacy Policy", href: "/privacy" },
         { name: "Return & Refund Policy", href: "/refunds" },
     ];
+
+    if (databaseFooterLinks && !databaseFooterLinks.some(l => l.href === "/about")) {
+        quickLinks = [
+            { name: "About Us", href: "/about" },
+            ...quickLinks
+        ];
+    }
     const contactEmail = settings?.contactEmail || "support@vaelinsa.com";
 
     if (!mounted) {

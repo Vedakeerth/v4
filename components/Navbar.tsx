@@ -28,7 +28,8 @@ export default function Navbar() {
         getSettings().then(setSettings);
     }, []);
 
-    const navLinks = (settings?.navbarLinks?.filter(l => l.isActive !== false)) || [
+    const databaseLinks = settings?.navbarLinks?.filter(l => l.isActive !== false);
+    let navLinks = databaseLinks || [
         { name: "Services", href: "/services" },
         { name: "Blog", href: "/blog" },
         { name: "Gallery", href: "/gallery" },
@@ -36,6 +37,27 @@ export default function Navbar() {
         { name: "Contact", href: "/contact" },
         { name: "Track Order", href: "/track-order" },
     ];
+
+    if (databaseLinks && !databaseLinks.some(l => l.href === "/about")) {
+        const contactIndex = navLinks.findIndex(l => l.href === "/contact");
+        if (contactIndex !== -1) {
+            navLinks = [
+                ...navLinks.slice(0, contactIndex),
+                { name: "About Us", href: "/about" },
+                ...navLinks.slice(contactIndex)
+            ];
+        } else {
+            navLinks = [...navLinks, { name: "About Us", href: "/about" }];
+        }
+    }
+
+    const targetOrder = ["/services", "/gallery", "/about", "/blog", "/contact", "/track-order"];
+    const getLinkOrder = (href: string) => {
+        const normalized = href === "/features" || href === "/products" ? "/gallery" : href;
+        const index = targetOrder.indexOf(normalized);
+        return index !== -1 ? index : 999;
+    };
+    navLinks = [...navLinks].sort((a, b) => getLinkOrder(a.href) - getLinkOrder(b.href));
 
     const ctaData = { text: "Get Quote", href: "/quote" };
 

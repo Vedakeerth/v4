@@ -92,10 +92,10 @@ export default function AboutPage() {
             {/* Mission Visual Card */}
             <div className="relative p-8 bg-slate-50 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-900 rounded-3xl overflow-hidden shadow-xl">
               <div className="absolute top-0 right-0 h-40 w-40 bg-cyan-500/10 blur-3xl rounded-full" />
-              <Compass className="h-12 w-12 text-cyan-500 mb-6" />
-              <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-4 uppercase tracking-tight">Our Core Mission</h3>
+              <Shield className="h-12 w-12 text-cyan-500 mb-6" />
+              <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-4 uppercase tracking-tight">Quality Assurance</h3>
               <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-6">
-                Our mission is to enable engineers and product developers to iterate faster and manufacture physical products with zero capital tooling costs.
+                Our team stands apart by enforcing multi-point mechanical inspection on every manufactured component to ensure extreme quality control.
               </p>
               <div className="border-t border-slate-200 dark:border-slate-800/80 pt-6 space-y-4">
                 <div className="flex items-center gap-3">
@@ -110,6 +110,48 @@ export default function AboutPage() {
                   <div className="h-2 w-2 rounded-full bg-cyan-500 shadow-[0_0_8px_rgba(6,182,212,1)]" />
                   <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">Strict Quality Inspections (Thread Fits & Tolerances)</span>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Mission & Vision Section */}
+      <section className="py-20 md:py-28 relative overflow-hidden border-t border-slate-200 dark:border-slate-900 bg-slate-50/50 dark:bg-slate-950">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(6,182,212,0.03),transparent_70%)]" />
+        <div className="dynamic-container px-4 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+            {/* Vision Card */}
+            <div className="relative p-10 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-xl flex flex-col justify-between group hover:border-blue-500/30 transition-all duration-300">
+              <div className="absolute top-0 right-0 h-32 w-32 bg-blue-500/10 blur-2xl rounded-full opacity-60" />
+              <div>
+                <div className="h-14 w-14 rounded-2xl bg-blue-500/10 text-blue-500 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
+                  <Compass className="h-7 w-7" />
+                </div>
+                <h3 className="text-3xl font-extrabold text-slate-900 dark:text-white mb-6 uppercase tracking-tight">Our Vision</h3>
+                <p className="text-slate-700 dark:text-slate-300 text-lg leading-relaxed font-medium">
+                  To become a leading industrial 3D printing and engineering innovation company in India, transforming ideas into real-world products through cutting-edge additive manufacturing, CAD design, and next-generation prototyping technologies.
+                </p>
+              </div>
+              <div className="mt-8 border-t border-slate-100 dark:border-slate-800/80 pt-6">
+                <span className="text-xs font-mono text-blue-400 uppercase tracking-widest">National Leadership</span>
+              </div>
+            </div>
+
+            {/* Mission Card */}
+            <div className="relative p-10 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-xl flex flex-col justify-between group hover:border-cyan-500/30 transition-all duration-300">
+              <div className="absolute top-0 right-0 h-32 w-32 bg-cyan-500/10 blur-2xl rounded-full opacity-60" />
+              <div>
+                <div className="h-14 w-14 rounded-2xl bg-cyan-500/10 text-cyan-500 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
+                  <Target className="h-7 w-7" />
+                </div>
+                <h3 className="text-3xl font-extrabold text-slate-900 dark:text-white mb-6 uppercase tracking-tight">Our Mission</h3>
+                <p className="text-slate-700 dark:text-slate-300 text-lg leading-relaxed font-medium">
+                  VAELINSA exists to bridge creativity and manufacturing by making industrial-grade 3D printing, engineering design, and rapid prototyping accessible to everyone.
+                </p>
+              </div>
+              <div className="mt-8 border-t border-slate-100 dark:border-slate-800/80 pt-6">
+                <span className="text-xs font-mono text-cyan-400 uppercase tracking-widest">Bridging Innovation</span>
               </div>
             </div>
           </div>
