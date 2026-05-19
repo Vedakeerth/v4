@@ -74,6 +74,11 @@ const DEFAULT_PAGE_SEO: Record<string, { title: string; description: string; key
         title: "Privacy Policy & Confidentiality | VAELINSA",
         description: "Learn how we protect your personal information, design models, and CAD files. Strict 10-20 day automatic file deletion policy.",
         keywords: "privacy policy, 3D file security, CAD model confidentiality, data retention"
+    },
+    About: {
+        title: "About Us | VAELINSA 3D Printing & Engineering India",
+        description: "Learn about VAELINSA - Coimbatore's premier industrial 3D printing and rapid prototyping lab turning complex CAD concepts into physical engineering realities.",
+        keywords: "about VAELINSA, 3D printing lab Coimbatore, rapid prototyping history India, mechanical engineers team"
     }
 };
 

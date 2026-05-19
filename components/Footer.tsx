@@ -38,6 +38,7 @@ export default function Footer() {
         { name: "Rapid Prototyping", href: "/services#prototyping" },
     ];
     const quickLinks = (settings?.footerLinks?.filter(l => l.isActive !== false)) || [
+        { name: "About Us", href: "/about" },
         { name: "Gallery", href: "/gallery" },
         { name: "Track Your Order", href: "/track-order" },
         { name: "Blog & Updates", href: "/blog" },
