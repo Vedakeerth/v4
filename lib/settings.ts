@@ -38,12 +38,12 @@ const defaultSettings: SiteSettings = {
     contactAddress: "Your Address Here",
     footerAboutText: "Premium additive manufacturing and design services for the modern engineer.",
     navbarLinks: [
-        { name: "Service", href: "/services" },
-        { name: "Products", href: "/products" },
-        { name: "Blogs", href: "/blog" },
+        { name: "Services", href: "/services" },
         { name: "Gallery", href: "/gallery" },
+        { name: "About Us", href: "/about" },
+        { name: "Blog", href: "/blog" },
         { name: "Contact", href: "/contact" },
-        { name: "Tracking Product", href: "/track-order" },
+        { name: "Track Order", href: "/track-order" },
     ],
     footerLinks: [
         { name: "Gallery", href: "/gallery" },

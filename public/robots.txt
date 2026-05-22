@@ -1,0 +1,15 @@
+# *
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /secure-management-portal/
+Disallow: /_next/
+Disallow: /orders/
+Disallow: /quote/*
+
+# Host
+Host: https://vaelinsa.com
+
+# Sitemaps
+Sitemap: https://vaelinsa.com/sitemap.xml

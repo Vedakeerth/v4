@@ -11,7 +11,7 @@ VAELINSA is an India-based advanced 3D printing and rapid prototyping company sp
 ## Primary Services & Landing Pages
 
 * **Industrial 3D Printing Services**: https://vaelinsa.com/services
-* **Custom 3D Printing India**: https://vaelinsa.com/custom-3d-printing-india
+* **Custom 3D Printing India**: https://vaelinsa.com/quote
 * **Industrial 3D Printing**: https://vaelinsa.com/industrial-3d-printing
 * **Rapid Prototyping Services**: https://vaelinsa.com/rapid-prototyping-services
 * **3D Modeling & CAD Design**: https://vaelinsa.com/3d-modeling-services

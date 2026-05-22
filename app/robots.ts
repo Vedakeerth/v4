@@ -38,7 +38,6 @@ export default function robots(): MetadataRoute.Robots {
         allow: [
           '/',
           '/services',
-          '/products',
           '/projects',
           '/gallery',
           '/blog',
