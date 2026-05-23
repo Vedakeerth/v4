@@ -115,6 +115,7 @@ export default function QuoteCalculator({ sessionId, isAdminMode = false }: Quot
     const [appliedCoupon, setAppliedCoupon] = useState<any>(null);
     const [couponError, setCouponError] = useState('');
     const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
+    const [applyVolumeReward, setApplyVolumeReward] = useState(true);
 
     const handleApplyCoupon = async () => {
         if (!couponCode) return;
@@ -372,7 +373,7 @@ export default function QuoteCalculator({ sessionId, isAdminMode = false }: Quot
             } else if (appliedCoupon.type === 'fixed') {
                 discount = appliedCoupon.value;
             }
-        } else {
+        } else if (applyVolumeReward) {
             // Find the highest qualifying tier
             const sortedTiers = [...tiers].sort((a, b) => b.threshold - a.threshold);
             activeTier = sortedTiers.find(t => totalPrice >= t.threshold);
@@ -394,7 +395,7 @@ export default function QuoteCalculator({ sessionId, isAdminMode = false }: Quot
             grandTotal: finalTotal + shipping,
             tier: activeTier
         };
-    }, [uploadedFiles, material, infillPercent, infillPattern, layerHeight, appliedCoupon, settings, isAdminMode, customPricePerGram, shippingDetails]);
+    }, [uploadedFiles, material, infillPercent, infillPattern, layerHeight, appliedCoupon, settings, isAdminMode, customPricePerGram, shippingDetails, applyVolumeReward]);
 
     // Pre-calculate detailed items for email/API to ensure consistency
     const detailedItems = useMemo(() => {
@@ -1160,7 +1161,7 @@ export default function QuoteCalculator({ sessionId, isAdminMode = false }: Quot
                                 {(totalResults || isCalculating) && (
                                     <div className="space-y-4">
                                         {/* Tiered Discount Bar - Always Visible */}
-                                        {(() => {
+                                        {applyVolumeReward && (() => {
                                             const tiers = settings?.discountTiers?.length ? settings.discountTiers : [
                                                 { threshold: 1500, percentage: 5 },
                                                 { threshold: 2500, percentage: 10 },
@@ -1301,6 +1302,24 @@ export default function QuoteCalculator({ sessionId, isAdminMode = false }: Quot
                                                 </span>
                                             </div>
                                         </div>
+
+                                        {/* Admin Volume Reward Toggle */}
+                                        {isAdminMode && (
+                                            <div className="space-y-3 pb-3 border-b border-slate-200 dark:border-slate-800/50 mb-3">
+                                                <div className="flex items-center gap-2">
+                                                    <input
+                                                        type="checkbox"
+                                                        id="apply-volume-reward"
+                                                        checked={applyVolumeReward}
+                                                        onChange={(e) => setApplyVolumeReward(e.target.checked)}
+                                                        className="appearance-none w-4 h-4 rounded border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 checked:bg-cyan-500 checked:border-cyan-500 transition-all cursor-pointer shrink-0 relative after:content-[''] after:absolute after:hidden checked:after:block after:left-[5px] after:top-[1px] after:w-[6px] after:h-[10px] after:border-r-2 after:border-b-2 after:border-white after:rotate-45"
+                                                    />
+                                                    <label htmlFor="apply-volume-reward" className="text-sm font-bold text-slate-700 dark:text-slate-300 cursor-pointer">
+                                                        Apply Volume Reward
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        )}
 
                                         {/* Coupon Code */}
                                         <div className="space-y-3 pb-3 border-b border-slate-200 dark:border-slate-800/50 mb-3">
