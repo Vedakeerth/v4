@@ -15,7 +15,43 @@ export async function verifyRecaptchaEnterprise(token: string, action: string = 
     return true; 
   }
 
+  // Determine if classic or enterprise recaptcha keys are used
+  // Classic secret keys start with '6L' (e.g. 6LfQEvks...)
+  const isClassic = apiKey.startsWith('6L');
+
+  if (isClassic) {
+    try {
+      console.log("[RECAPTCHA] Verifying token using Classic siteverify API.");
+      const url = "https://www.google.com/recaptcha/api/siteverify";
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          secret: apiKey,
+          response: token,
+        }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        const score = data.score !== undefined ? data.score : 1.0;
+        if (score < 0.3) {
+          console.warn(`[RECAPTCHA] Low trust score: ${score} for action: ${action}`);
+        }
+        return true;
+      } else {
+        console.error("[RECAPTCHA] Classic validation failed:", data["error-codes"]);
+        return false;
+      }
+    } catch (error) {
+      console.error("[RECAPTCHA] Classic verification request error:", error);
+      return false;
+    }
+  }
+
+  // Enterprise recaptcha verification
   try {
+    console.log("[RECAPTCHA] Verifying token using Enterprise assessments API.");
     const url = `https://recaptchaenterprise.googleapis.com/v1/projects/${projectId}/assessments?key=${apiKey}`;
     const response = await fetch(url, {
       method: 'POST',
