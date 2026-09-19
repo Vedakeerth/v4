@@ -44,6 +44,7 @@ export interface Product {
     colors?: string[]; // Hex codes or names
     defaultColor?: string; // Explicit default color
     likes?: number;
+    views?: number;
     hash?: string;
     weight?: number; // in grams
     length?: number; // in cm
