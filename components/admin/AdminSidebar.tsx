@@ -29,6 +29,7 @@ interface NavItem {
   href: string;
   icon: React.ElementType;
   group: string;
+  tab: string;
 }
 
 const navItems: NavItem[] = [
