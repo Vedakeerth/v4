@@ -27,7 +27,7 @@ import {
 interface NavItem {
   label: string;
   href: string;
-  icon: React.ElementType;
+  icon: any;
   group: string;
   tab: string;
 }
