@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect } from "react";
 import { Users, UserPlus, Trash2, Shield, User as UserIcon, AlertCircle, Loader2, Check, Eye, EyeOff, Plus, Edit } from "lucide-react";
@@ -155,7 +155,7 @@ export default function UsersTab() {
                 {!isAdding && (
                     <button
                         onClick={() => setIsAdding(true)}
-                        className="flex w-full items-center justify-center gap-2 rounded-xl bg-cyan-500 px-5 py-2.5 text-xs font-black uppercase tracking-widest text-slate-950 transition-all hover:bg-cyan-400 sm:w-auto"
+                        className="flex w-full items-center justify-center gap-2 rounded-xl bg-cyan-500 px-5 py-2.5 text-xs font-black uppercase tracking-widest text-white dark:text-slate-950 transition-all hover:bg-cyan-400 sm:w-auto"
                     >
                         <UserPlus size={18} /> Add User
                     </button>
@@ -211,7 +211,7 @@ export default function UsersTab() {
                                     value={formData.password}
                                     onChange={handleInput}
                                     className="w-full px-5 py-4 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500 transition-all font-bold text-sm"
-                                    placeholder={editingUser ? "Leave blank to keep current" : "••••••••"}
+                                    placeholder={editingUser ? "Leave blank to keep current" : "â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"}
                                 />
                                 <button
                                     type="button"
@@ -245,7 +245,7 @@ export default function UsersTab() {
                             <button
                                 type="submit"
                                 disabled={isSubmitting}
-                                className="px-10 py-3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black rounded-xl transition-all shadow-lg shadow-cyan-500/20 uppercase tracking-widest text-xs flex items-center gap-2"
+                                className="px-10 py-3 bg-cyan-500 hover:bg-cyan-400 text-white dark:text-slate-950 font-black rounded-xl transition-all shadow-lg shadow-cyan-500/20 uppercase tracking-widest text-xs flex items-center gap-2"
                             >
                                 {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <>{editingUser ? <Check size={18} /> : <Plus size={18} />} {editingUser ? "Update Account" : "Create Account"}</>}
                             </button>
@@ -270,7 +270,7 @@ export default function UsersTab() {
                                     value={newPassword}
                                     onChange={(e) => setNewPassword(e.target.value)}
                                     className="w-full px-5 py-4 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500 transition-all font-bold text-sm"
-                                    placeholder="••••••••"
+                                    placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
                                 />
                                 <button
                                     type="button"
@@ -292,7 +292,7 @@ export default function UsersTab() {
                             <button
                                 type="submit"
                                 disabled={isSubmitting}
-                                className="px-8 py-4 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black rounded-xl transition-all shadow-lg shadow-cyan-500/20 uppercase tracking-widest text-[10px] flex items-center gap-2"
+                                className="px-8 py-4 bg-cyan-500 hover:bg-cyan-400 text-white dark:text-slate-950 font-black rounded-xl transition-all shadow-lg shadow-cyan-500/20 uppercase tracking-widest text-[10px] flex items-center gap-2"
                             >
                                 {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Update Password"}
                             </button>

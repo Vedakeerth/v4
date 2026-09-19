@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Printer, Settings, Layers, Cpu } from "lucide-react";
 import { Skeleton } from "./Skeleton";
 import { motion } from "framer-motion";
+import DecryptText from "./DecryptText";
 
 const ICON_MAP: Record<string, any> = {
     Printer,
@@ -44,7 +45,9 @@ export default function Services({ content }: ServicesProps) {
                             viewport={{ once: true }}
                             transition={{ duration: 0.6 }}
                         >
-                            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">{content?.header?.title || "Our Services"}</h2>
+                            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">
+                                <DecryptText text={content?.header?.title || "Our Services"} scrambleFrames={8} frameMs={30} startDelay={2000} />
+                            </h2>
                             <p className="text-slate-700 dark:text-slate-400 max-w-xl mx-auto">
                                 {content?.header?.description || "Comprehensive engineering and technology solutions."}
                             </p>
@@ -77,10 +80,10 @@ export default function Services({ content }: ServicesProps) {
                                 <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-xl" />
 
                                 <div className="relative z-10">
-                                    <div className="w-12 h-12 bg-slate-100 dark:bg-slate-800/80 rounded-lg flex items-center justify-center mb-4 group-hover:bg-cyan-950/50 group-hover:text-cyan-400 transition-colors">
+                                    <div className="w-12 h-12 bg-slate-100 dark:bg-slate-800/80 rounded-lg flex items-center justify-center mb-4 group-hover:bg-cyan-500 dark:group-hover:bg-cyan-400 group-hover:text-white dark:group-hover:text-black transition-colors">
                                         {(() => {
                                             const Icon = ICON_MAP[service?.icon || "Printer"] || Printer;
-                                            return <Icon className="h-6 w-6 text-slate-700 dark:text-slate-300 group-hover:text-cyan-400" />;
+                                            return <Icon className="h-6 w-6 text-slate-700 dark:text-slate-300 group-hover:text-white dark:group-hover:text-black" />;
                                         })()}
                                     </div>
                                     <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">{service?.title || "Specialized Service"}</h3>

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect } from "react";
 import { Save, Home, Plus, Trash2 } from "lucide-react";
@@ -35,12 +35,12 @@ export default function HomeTab() {
             });
             const data = await res.json();
             if (data.success) {
-                alert("✓ Homepage content synchronized successfully!");
+                alert("âœ“ Homepage content synchronized successfully!");
             } else {
-                alert("× Synchronization failed: " + (data.message || "Unknown error"));
+                alert("Ã— Synchronization failed: " + (data.message || "Unknown error"));
             }
         } catch (error) {
-            alert("× Terminal Error: Failed to communicate with the synchronization node.");
+            alert("Ã— Terminal Error: Failed to communicate with the synchronization node.");
         } finally {
             setIsSaving(false);
         }
@@ -72,7 +72,7 @@ export default function HomeTab() {
                 <button
                     onClick={handleSave}
                     disabled={isSaving}
-                    className="px-6 py-3 bg-cyan-500 hover:bg-cyan-400 disabled:opacity-50 disabled:cursor-not-allowed text-slate-950 font-black uppercase tracking-widest text-[10px] rounded-xl flex items-center gap-2 shadow-lg shadow-cyan-500/20 transition-all active:scale-95"
+                    className="px-6 py-3 bg-cyan-500 hover:bg-cyan-400 disabled:opacity-50 disabled:cursor-not-allowed text-white dark:text-slate-950 font-black uppercase tracking-widest text-[10px] rounded-xl flex items-center gap-2 shadow-lg shadow-cyan-500/20 transition-all active:scale-95"
                 >
                     {isSaving ? (
                         <div className="h-4 w-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect } from "react";
 import { Plus, Edit, Trash2, X, Image as ImageIcon, ArrowLeft, Eye } from "lucide-react";
@@ -21,6 +21,8 @@ export default function BlogsTab() {
     const [hashtags, setHashtags] = useState("");
     const [metaTitle, setMetaTitle] = useState("");
     const [metaDescription, setMetaDescription] = useState("");
+    const [likes, setLikes] = useState(0);
+    const [reads, setReads] = useState(0);
 
     useEffect(() => {
         fetchBlogs();
@@ -50,6 +52,8 @@ export default function BlogsTab() {
             setHashtags(blog.hashtags?.join(", ") || "");
             setMetaTitle(blog.metaTitle || "");
             setMetaDescription(blog.metaDescription || "");
+            setLikes(blog.likes || 0);
+            setReads((blog as any).reads || 0);
         } else {
             setActiveBlog(null);
             setTitle("");
@@ -60,6 +64,8 @@ export default function BlogsTab() {
             setHashtags("");
             setMetaTitle("");
             setMetaDescription("");
+            setLikes(0);
+            setReads(0);
         }
         setIsEditing(true);
     };
@@ -98,7 +104,8 @@ export default function BlogsTab() {
             author: activeBlog?.author || "Admin",
             date: activeBlog?.date || new Date().toISOString().split('T')[0],
             readTime: `${Math.ceil(content.split(' ').length / 200)} min read`,
-            likes: activeBlog?.likes || 0,
+            likes: likes,
+            reads: reads,
             comments: activeBlog?.comments || [],
             hashtags: hashtags.split(",").map(h => h.trim()).filter(Boolean),
             metaTitle,
@@ -144,7 +151,7 @@ export default function BlogsTab() {
                     </div>
                     <button
                         onClick={handleSave}
-                        className="px-8 py-3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-xl shadow-lg shadow-cyan-500/20 transition-all"
+                        className="px-8 py-3 bg-cyan-500 hover:bg-cyan-400 text-white dark:text-slate-950 font-bold rounded-xl shadow-lg shadow-cyan-500/20 transition-all"
                     >
                         {activeBlog ? "Update" : "Publish"}
                     </button>
@@ -183,6 +190,14 @@ export default function BlogsTab() {
                                     <div>
                                         <label className="block text-slate-500 text-[10px] font-bold uppercase mb-1.5 ml-1">Meta Description</label>
                                         <textarea value={metaDescription} onChange={e => setMetaDescription(e.target.value)} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white h-20 focus:border-cyan-500/50 outline-none text-xs resize-none" placeholder="Short description for search results" />
+                                    </div>
+                                    <div>
+                                        <label className="block text-slate-500 text-[10px] font-bold uppercase mb-1.5 ml-1">Initial Likes</label>
+                                        <input type="number" value={likes} onChange={e => setLikes(parseInt(e.target.value) || 0)} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:border-cyan-500/50 outline-none text-xs" />
+                                    </div>
+                                    <div>
+                                        <label className="block text-slate-500 text-[10px] font-bold uppercase mb-1.5 ml-1">Initial Reads</label>
+                                        <input type="number" value={reads} onChange={e => setReads(parseInt(e.target.value) || 0)} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:border-cyan-500/50 outline-none text-xs" />
                                     </div>
                                 </div>
                             </div>
@@ -243,7 +258,7 @@ export default function BlogsTab() {
                 <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Blog Posts</h2>
                 <button
                     onClick={() => handleStartEdit()}
-                    className="px-6 py-3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-xl flex items-center gap-2 shadow-lg shadow-cyan-500/20 transition-all"
+                    className="px-6 py-3 bg-cyan-500 hover:bg-cyan-400 text-white dark:text-slate-950 font-bold rounded-xl flex items-center gap-2 shadow-lg shadow-cyan-500/20 transition-all"
                 >
                     <Plus size={20} /> Create Post
                 </button>

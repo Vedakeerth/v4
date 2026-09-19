@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect } from "react";
 import { Save, RefreshCcw, Info, Settings2, Thermometer, Palette, Grid3x3, Plus, Trash2, CheckCircle2 } from "lucide-react";
@@ -83,7 +83,7 @@ export default function QuoteSettingsTab() {
                     <button
                         onClick={handleSave}
                         disabled={isSaving}
-                        className="px-6 py-2 bg-cyan-500 hover:bg-cyan-400 text-slate-950 rounded-xl text-sm font-black shadow-lg shadow-cyan-500/20 transition-all flex items-center gap-2"
+                        className="px-6 py-2 bg-cyan-500 hover:bg-cyan-400 text-white dark:text-slate-950 rounded-xl text-sm font-black shadow-lg shadow-cyan-500/20 transition-all flex items-center gap-2"
                     >
                         <Save size={16} /> {isSaving ? "Saving..." : "Save Changes"}
                     </button>
@@ -103,7 +103,7 @@ export default function QuoteSettingsTab() {
                         <Info size={14} className="text-cyan-500" /> General & Operations
                     </h3>
                     <div>
-                        <label className="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-2 uppercase tracking-tighter">Processing/Labour Fee (₹ per order)</label>
+                        <label className="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-2 uppercase tracking-tighter">Processing/Labour Fee (â‚¹ per order)</label>
                         <input
                             type="number"
                             value={settings.labourCost}
@@ -155,7 +155,7 @@ export default function QuoteSettingsTab() {
                                 <p className="text-cyan-400 font-black mb-3">{mat}</p>
                                 <div className="space-y-4">
                                     <div>
-                                        <label className="block text-[9px] font-bold text-slate-500 mb-1 uppercase">Cost per KG (₹)</label>
+                                        <label className="block text-[9px] font-bold text-slate-500 mb-1 uppercase">Cost per KG (â‚¹)</label>
                                         <input
                                             type="number"
                                             value={data.costPerKg}
@@ -168,7 +168,7 @@ export default function QuoteSettingsTab() {
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-[9px] font-bold text-slate-500 mb-1 uppercase">Density (g/cm³)</label>
+                                        <label className="block text-[9px] font-bold text-slate-500 mb-1 uppercase">Density (g/cmÂ³)</label>
                                         <input
                                             type="number"
                                             step="0.01"
@@ -261,7 +261,7 @@ export default function QuoteSettingsTab() {
                                                 </div>
                                                 <div className="bg-slate-100/50 dark:bg-slate-800/30 rounded-lg py-1 px-2 mb-2">
                                                     <p className="text-[8px] font-black text-slate-500 uppercase tracking-tighter">
-                                                        {data.useCustomPrice ? `₹${data.customPrice}/Kg` : `${data.multiplier}x Multiplier`}
+                                                        {data.useCustomPrice ? `â‚¹${data.customPrice}/Kg` : `${data.multiplier}x Multiplier`}
                                                     </p>
                                                 </div>
                                                 <button

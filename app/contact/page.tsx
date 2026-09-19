@@ -9,6 +9,13 @@ export async function generateMetadata(): Promise<Metadata> {
   return await getPageMetadata('Contact', '/contact');
 }
 
+import Footer from "@/components/Footer";
+
 export default function ContactPage() {
-  return <ContactClient />;
+  return (
+    <>
+      <ContactClient />
+      <Footer />
+    </>
+  );
 }

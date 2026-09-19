@@ -2,29 +2,29 @@
     "header": {
         "badge": "Why Partner With Us",
         "title": "Built for Engineers,",
-        "titleSuffix": "By Engineers.",
-        "description": "We don't just print files; we understand the physics and mechanical properties required for your application. Our fleet is calibrated for industrial performance."
+        "titleSuffix": "Made for Your Ideas.",
+        "description": "We don't just 3D print parts — we focus on understanding your design, application, and functional requirements to deliver reliable parts that fit your needs."
     },
     "features": [
         {
             "icon": "Gauge",
-            "title": "Engineering Precision",
-            "description": "Maintaining tight tolerances (±0.1mm) for functional end-use parts."
+            "title": "Engineering-Focused",
+            "description": "Designed with function in mind. We consider dimensions, tolerances, material selection, and print orientation to achieve practical and functional parts."
         },
         {
             "icon": "Zap",
             "title": "Fast Turnaround",
-            "description": "24-48 hour dispatch for most standard FDM and SLA orders."
+            "description": "From design to print, without unnecessary delays. Quick response and efficient production for prototypes, functional parts, and custom projects."
         },
         {
             "icon": "CheckCircle2",
             "title": "Quality Assurance",
-            "description": "Every part is hand-inspected and post-processed to rapid perfection."
+            "description": "Every part deserves attention to detail. We inspect printed parts for dimensional accuracy, surface quality, and overall finish before delivery."
         },
         {
             "icon": "Scaling",
-            "title": "Scalable Production",
-            "description": "From single prototypes to small-batch manufacturing runs of 500+ units."
+            "title": "Customizable Solutions",
+            "description": "Your design. Your requirements. Your specifications. From simple prototypes to complex functional components, we customize materials, dimensions, colors, finishes, and print settings based on your requirements."
         }
     ],
     "images": [
@@ -45,4 +45,4 @@
             "label": "04_SCALE"
         }
     ]
-}
+}

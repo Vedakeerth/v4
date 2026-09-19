@@ -135,15 +135,14 @@ export default function WhyChooseUs({ content }: WhyChooseUsProps) {
                                                 fill
                                                 className="object-cover hover:scale-105 transition-transform duration-500"
                                             />
-                                            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent" />
-                                            <div className="absolute bottom-2 left-3 font-mono text-xs text-blue-400">{content?.images?.[0]?.label || "Precision"}</div>
+
                                         </motion.div>
                                         <motion.div
                                             initial={{ opacity: 0, scale: 0.9 }}
                                             whileInView={{ opacity: 1, scale: 1 }}
                                             viewport={{ once: true }}
                                             transition={{ duration: 0.5, delay: 0.5 }}
-                                            className="relative h-48 w-full overflow-hidden rounded-2xl border border-slate-300 dark:border-slate-700/50"
+                                            className="relative h-64 w-full overflow-hidden rounded-2xl border border-slate-300 dark:border-slate-700/50"
                                         >
                                             <Image
                                                 src={content?.images?.[1]?.src || "/images/bento-4-mechanical.png"}
@@ -151,8 +150,7 @@ export default function WhyChooseUs({ content }: WhyChooseUsProps) {
                                                 fill
                                                 className="object-cover hover:scale-105 transition-transform duration-500"
                                             />
-                                            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent" />
-                                            <div className="absolute bottom-2 left-3 font-mono text-xs text-blue-400">{content?.images?.[1]?.label || "Mechanical"}</div>
+
                                         </motion.div>
                                     </div>
                                     <div className="space-y-4">
@@ -169,15 +167,14 @@ export default function WhyChooseUs({ content }: WhyChooseUsProps) {
                                                 fill
                                                 className="object-cover hover:scale-105 transition-transform duration-500"
                                             />
-                                            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent" />
-                                            <div className="absolute bottom-2 left-3 font-mono text-xs text-blue-400">{content?.images?.[2]?.label || "Automation"}</div>
+
                                         </motion.div>
                                         <motion.div
                                             initial={{ opacity: 0, scale: 0.9 }}
                                             whileInView={{ opacity: 1, scale: 1 }}
                                             viewport={{ once: true }}
                                             transition={{ duration: 0.5, delay: 0.6 }}
-                                            className="relative h-32 w-full overflow-hidden rounded-2xl border border-slate-300 dark:border-slate-700/50"
+                                            className="relative h-48 w-full overflow-hidden rounded-2xl border border-slate-300 dark:border-slate-700/50"
                                         >
                                             <Image
                                                 src={content?.images?.[3]?.src || "/images/bento-3-shipping.png"}
@@ -185,8 +182,7 @@ export default function WhyChooseUs({ content }: WhyChooseUsProps) {
                                                 fill
                                                 className="object-cover hover:scale-105 transition-transform duration-500"
                                             />
-                                            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent" />
-                                            <div className="absolute bottom-2 left-3 font-mono text-xs text-blue-400">{content?.images?.[3]?.label || "Logistics"}</div>
+
                                         </motion.div>
                                     </div>
                                 </div>

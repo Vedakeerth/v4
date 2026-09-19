@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { IBM_Plex_Sans } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import CustomCursor from "@/components/CustomCursor";
@@ -20,7 +20,11 @@ import { SpeedInsights } from "@vercel/speed-insights/next"
 
 import { getSEOData, getPageMetadata } from "@/lib/seo";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const ibmPlexSans = IBM_Plex_Sans({ 
+  subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700"],
+  variable: "--font-ibm-plex-sans"
+});
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -70,7 +74,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
-      <body suppressHydrationWarning className={cn(inter.variable, "font-sans bg-background text-foreground min-h-screen")}>
+      <body suppressHydrationWarning className={cn(ibmPlexSans.variable, "font-sans bg-background text-foreground min-h-screen")}>
         <Providers>
           <CartProvider>
             <FaviconSwitcher />

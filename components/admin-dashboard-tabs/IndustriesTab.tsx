@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect } from "react";
 import { Save, Plus, Trash2, Activity, Factory, Rocket, Library, CheckCircle2, ChevronDown, ChevronUp } from "lucide-react";
@@ -66,7 +66,7 @@ export default function IndustriesTab() {
                 <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Industries Page Content</h2>
                 <button
                     onClick={handleSave}
-                    className="px-6 py-3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-xl flex items-center gap-2 shadow-lg shadow-cyan-500/20 transition-all"
+                    className="px-6 py-3 bg-cyan-500 hover:bg-cyan-400 text-white dark:text-slate-950 font-bold rounded-xl flex items-center gap-2 shadow-lg shadow-cyan-500/20 transition-all"
                 >
                     <Save size={20} /> Save Changes
                 </button>

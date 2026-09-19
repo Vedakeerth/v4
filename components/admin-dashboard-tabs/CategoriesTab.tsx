@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect } from "react";
 import { Plus, Edit, Trash2, X, Save } from "lucide-react";
@@ -123,13 +123,13 @@ export default function CategoriesTab() {
             if (res.ok && result.success) {
                 setShowModal(false);
                 fetchCategories();
-                alert("✓ Collection synchronized successfully!");
+                alert("âœ“ Collection synchronized successfully!");
             } else {
-                alert("× Synchronization failed: " + (result.message || "Unauthorized or Server Error"));
+                alert("Ã— Synchronization failed: " + (result.message || "Unauthorized or Server Error"));
             }
         } catch (error) {
             console.error("Save failed", error);
-            alert("× Terminal Error: Failed to reach the synchronization node.");
+            alert("Ã— Terminal Error: Failed to reach the synchronization node.");
         } finally {
             setIsSaving(false);
         }
@@ -153,7 +153,7 @@ export default function CategoriesTab() {
         <div>
             <div className="flex justify-between items-center mb-8">
                 <div className="flex gap-3">
-                    <button onClick={handleAdd} className="px-6 py-3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-xl flex items-center gap-2 shadow-lg shadow-cyan-500/20 transition-all">
+                    <button onClick={handleAdd} className="px-6 py-3 bg-cyan-500 hover:bg-cyan-400 text-white dark:text-slate-950 font-bold rounded-xl flex items-center gap-2 shadow-lg shadow-cyan-500/20 transition-all">
                         <Plus size={20} /> Add Collection
                     </button>
                     {categories.length === 0 && (
@@ -246,7 +246,7 @@ export default function CategoriesTab() {
 
                             <div className="mt-8 flex justify-end gap-3">
                                 <button onClick={() => setShowModal(false)} disabled={isSaving} className="px-6 py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white font-bold rounded-xl hover:bg-slate-200 transition-all disabled:opacity-50">Cancel</button>
-                                <button onClick={handleSave} disabled={isSaving} className="px-6 py-2.5 bg-cyan-500 text-slate-950 font-bold rounded-xl shadow-lg shadow-cyan-500/20 flex items-center gap-2 hover:bg-cyan-400 transition-all active:scale-95 disabled:opacity-50">
+                                <button onClick={handleSave} disabled={isSaving} className="px-6 py-2.5 bg-cyan-500 text-white dark:text-slate-950 font-bold rounded-xl shadow-lg shadow-cyan-500/20 flex items-center gap-2 hover:bg-cyan-400 transition-all active:scale-95 disabled:opacity-50">
                                     {isSaving ? (
                                         <div className="h-4 w-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
                                     ) : (

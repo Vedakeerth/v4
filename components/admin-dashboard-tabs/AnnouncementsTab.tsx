@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect, useRef } from "react";
 import NewsTicker from "@/components/NewsTicker";
@@ -182,7 +182,7 @@ export default function AnnouncementsTab() {
                 {!isAdding && (
                     <button
                         onClick={() => setIsAdding(true)}
-                        className="flex w-full items-center justify-center gap-2 rounded-xl bg-cyan-500 px-5 py-2.5 text-xs font-black uppercase tracking-widest text-slate-950 transition-all hover:bg-cyan-400 xl:w-auto"
+                        className="flex w-full items-center justify-center gap-2 rounded-xl bg-cyan-500 px-5 py-2.5 text-xs font-black uppercase tracking-widest text-white dark:text-slate-950 transition-all hover:bg-cyan-400 xl:w-auto"
                     >
                         <Plus size={18} /> New News
                     </button>
@@ -302,7 +302,7 @@ export default function AnnouncementsTab() {
                             <button
                                 type="submit"
                                 disabled={isSubmitting || uploadProgress}
-                                className="px-10 py-3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black rounded-xl transition-all shadow-lg shadow-cyan-500/20 uppercase tracking-widest text-xs flex items-center gap-2"
+                                className="px-10 py-3 bg-cyan-500 hover:bg-cyan-400 text-white dark:text-slate-950 font-black rounded-xl transition-all shadow-lg shadow-cyan-500/20 uppercase tracking-widest text-xs flex items-center gap-2"
                             >
                                 {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : editingId ? "Update News" : "Save Announcement"}
                             </button>

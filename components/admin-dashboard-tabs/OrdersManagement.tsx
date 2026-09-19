@@ -90,7 +90,7 @@ const safeDateStr = (order: Order) => {
     if (order.createdAt && typeof order.createdAt._seconds === 'number') {
         const d = new Date(order.createdAt._seconds * 1000);
         return d.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }) + 
-               " — " + 
+               " â€” " + 
                d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
     }
     return order.date || "Unknown Date";
@@ -248,7 +248,7 @@ export default function OrdersManagement() {
             if (o.status === "Cancelled") return;
             const fullLabel = safeDateStr(o);
             if (fullLabel === "Unknown Date") return;
-            const dateLabel = fullLabel.split(' — ')[0];
+            const dateLabel = fullLabel.split(' â€” ')[0];
             
             if (!grouped[dateLabel]) grouped[dateLabel] = { standard: 0, instantQuote: 0 };
             const amt = parseAmt(o.totalAmount);
@@ -289,13 +289,13 @@ export default function OrdersManagement() {
                             <div>
                                 <div className="flex items-center gap-3 text-cyan-600 dark:text-cyan-400 mb-6">
                                     <Activity size={18} className="animate-pulse" />
-                                    <h3 className="text-[10px] font-black uppercase tracking-[0.4em] italic">Network Growth Metrics</h3>
+                                    <h3 className="text-xs font-black uppercase tracking-[0.4em] italic">Network Growth Metrics</h3>
                                 </div>
                                 <p className="text-5xl sm:text-6xl font-black text-slate-900 dark:text-white italic tracking-tighter leading-none mb-4">
                                     <span className="text-xl text-cyan-500/40 mr-2 not-italic">RS</span>
                                     {globalTotalRevenue.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
                                 </p>
-                                <p className="text-slate-500 dark:text-slate-400 text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-2">
+                                <p className="text-slate-500 dark:text-slate-400 text-xs font-black uppercase tracking-[0.2em] flex items-center gap-2">
                                     <ArrowUpRight size={14} className="text-emerald-500" /> 
                                     Aggregated Value Across {orders.length} Nodes
                                 </p>
@@ -303,12 +303,12 @@ export default function OrdersManagement() {
 
                             <div className="grid grid-cols-2 gap-4 mt-8">
                                 <div className="p-5 bg-slate-50 dark:bg-white/5 rounded-2xl border border-slate-100 dark:border-white/5 backdrop-blur-md hover:bg-slate-100 dark:hover:bg-white/10 transition-colors shadow-sm">
-                                    <p className="text-slate-400 dark:text-slate-500 text-[9px] font-black uppercase tracking-widest mb-1">Active Pulse</p>
-                                    <p className="text-xl font-black text-slate-900 dark:text-white">{activeOrders.length}</p>
+                                    <p className="text-slate-400 dark:text-slate-500 text-xs font-black uppercase tracking-widest mb-1">Active Pulse</p>
+                                    <p className="text-2xl font-black text-slate-900 dark:text-white">{activeOrders.length}</p>
                                 </div>
                                 <div className="p-5 bg-slate-50 dark:bg-white/5 rounded-2xl border border-slate-100 dark:border-white/5 backdrop-blur-md hover:bg-slate-100 dark:hover:bg-white/10 transition-colors shadow-sm">
-                                    <p className="text-slate-400 dark:text-slate-500 text-[9px] font-black uppercase tracking-widest mb-1">Finalized</p>
-                                    <p className="text-xl font-black text-slate-900 dark:text-white">{completedOrders.length}</p>
+                                    <p className="text-slate-400 dark:text-slate-500 text-xs font-black uppercase tracking-widest mb-1">Finalized</p>
+                                    <p className="text-2xl font-black text-slate-900 dark:text-white">{completedOrders.length}</p>
                                 </div>
                             </div>
                         </div>
@@ -318,9 +318,9 @@ export default function OrdersManagement() {
                             <div className="flex justify-between items-center bg-slate-100/50 dark:bg-black/40 backdrop-blur-xl p-1.5 rounded-xl border border-slate-200 dark:border-white/10 self-end shadow-sm">
                                 {["14D", "1M", "3M", "6M", "ALL"].map(f => (
                                     <button key={f} onClick={() => setGraphFilter(f as any)} 
-                                        className={cn("px-4 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all", 
+                                        className={cn("px-4 py-2 rounded-lg text-xs font-black uppercase tracking-widest transition-all", 
                                             graphFilter === f 
-                                                ? "bg-cyan-500 text-slate-950 shadow-xl shadow-cyan-500/20" 
+                                                ? "bg-cyan-500 text-white dark:text-slate-950 shadow-xl shadow-cyan-500/20" 
                                                 : "text-slate-400 hover:text-slate-900 dark:hover:text-white")}>
                                         {f}
                                     </button>
@@ -367,7 +367,7 @@ export default function OrdersManagement() {
                         placeholder="TRACKING ID, CLIENT SIGNATURE..." 
                         value={searchTerm} 
                         onChange={(e) => setSearchTerm(e.target.value)} 
-                        className="w-full h-16 bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/5 rounded-2xl pl-16 pr-6 text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500/50 transition-all text-[10px] font-black uppercase tracking-[0.2em] placeholder:text-slate-400 dark:placeholder:text-slate-600 shadow-sm" 
+                        className="w-full h-16 bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/5 rounded-2xl pl-16 pr-6 text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500/50 transition-all text-sm font-black uppercase tracking-[0.1em] placeholder:text-slate-400 dark:placeholder:text-slate-600 shadow-sm" 
                     />
                 </div>
 
@@ -378,7 +378,7 @@ export default function OrdersManagement() {
                         { id: "Cancelled", label: "VOIDED" }
                     ].map(mode => (
                         <button key={mode.id} onClick={() => setViewMode(mode.id as any)}
-                            className={cn("px-6 py-3 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all",
+                            className={cn("px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all",
                                 viewMode === mode.id 
                                     ? "bg-slate-50 dark:bg-slate-800 text-cyan-500 shadow-lg border border-slate-100 dark:border-white/10" 
                                     : "text-slate-400 hover:text-slate-900 dark:hover:text-white"
@@ -399,7 +399,7 @@ export default function OrdersManagement() {
                 <div className="space-y-6">
                     <div className="flex items-center gap-4 px-4">
                         <div className={cn("w-1.5 h-1.5 rounded-full animate-pulse", viewMode === "Active" ? "bg-cyan-500" : viewMode === "Completed" ? "bg-emerald-500" : "bg-red-500")} />
-                        <h3 className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-400 italic flex items-center gap-3">
+                        <h3 className="text-xs font-black uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400 italic flex items-center gap-3">
                             {viewMode === "Active" ? "Operational Pipeline" : viewMode === "Completed" ? "Cold Storage Logs" : "Interrupted Sessions"}
                             <span className="w-10 h-px bg-slate-200 dark:bg-white/10" />
                         </h3>
@@ -429,7 +429,7 @@ export default function OrdersManagement() {
                                         </div>
                                         <div>
                                             <h4 className="text-lg font-black text-slate-900 dark:text-white uppercase italic tracking-tighter mb-1">{tId}</h4>
-                                            <div className={cn("px-2.5 py-1 rounded-lg border text-[8px] font-black uppercase tracking-widest inline-flex items-center gap-2", getStatusStyle(order.status))}>
+                                            <div className={cn("px-2.5 py-1 rounded-lg border text-[10px] font-black uppercase tracking-widest inline-flex items-center gap-2", getStatusStyle(order.status))}>
                                                 <div className="w-1 h-1 rounded-full bg-current animate-pulse" />
                                                 {order.status}
                                             </div>
@@ -439,27 +439,27 @@ export default function OrdersManagement() {
                                     {/* Client Details */}
                                     <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-6 text-left border-l border-slate-100 dark:border-white/5 pl-0 lg:pl-8 relative z-10">
                                         <div>
-                                            <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1 flex items-center gap-2">
-                                                <User size={10} className="text-cyan-500" /> Subject Identifier
+                                            <p className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1.5 flex items-center gap-2">
+                                                <User size={11} className="text-cyan-500" /> Customer
                                             </p>
-                                            <p className="text-slate-900 dark:text-white font-black text-xs uppercase mb-0.5">{order.customerName}</p>
-                                            <p className="text-slate-500 dark:text-slate-400 text-[10px] font-bold truncate max-w-[180px]">{order.email}</p>
+                                            <p className="text-slate-900 dark:text-white font-black text-sm uppercase mb-1">{order.customerName}</p>
+                                            <p className="text-slate-500 dark:text-slate-400 text-xs font-bold truncate max-w-[200px]">{order.email}</p>
                                         </div>
                                         <div className="hidden sm:block">
-                                            <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1 flex items-center gap-2">
-                                                <MapPin size={10} className="text-purple-500" /> Logistic Node
+                                            <p className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1.5 flex items-center gap-2">
+                                                <MapPin size={11} className="text-purple-500" /> Address
                                             </p>
-                                            <p className="text-slate-700 dark:text-slate-400 text-[10px] font-semibold italic line-clamp-2">{order.address}</p>
+                                            <p className="text-slate-700 dark:text-slate-300 text-xs font-semibold line-clamp-2">{order.address}</p>
                                         </div>
                                     </div>
 
                                     {/* Totals & Metadata */}
                                     <div className="lg:w-64 flex items-center justify-between lg:justify-end gap-8 border-l border-slate-100 dark:border-white/5 pl-0 lg:pl-8 text-right w-full lg:w-auto relative z-10">
                                         <div>
-                                            <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1 flex items-center gap-2 justify-end">
-                                                <Calendar size={10} className="text-cyan-500" /> Operational Timestamp
+                                            <p className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1.5 flex items-center gap-2 justify-end">
+                                                <Calendar size={11} className="text-cyan-500" /> Date
                                             </p>
-                                            <p className="text-slate-900 dark:text-white font-black text-[10px] uppercase mb-2">{safeDateStr(order)}</p>
+                                            <p className="text-slate-900 dark:text-white font-black text-sm uppercase mb-2">{safeDateStr(order)}</p>
                                             <div className="flex items-center gap-4 justify-end">
                                                 <p className="text-2xl font-black text-slate-900 dark:text-white italic tracking-tighter">
                                                     <span className="text-[10px] mr-1 opacity-40 not-italic uppercase font-bold text-slate-500">Rs</span>
@@ -490,7 +490,7 @@ export default function OrdersManagement() {
                                                         <button 
                                                             key={s} 
                                                             onClick={(e) => updateOrderStatus(order.id, s as any, undefined, e)}
-                                                            className="w-full text-left px-4 py-2.5 rounded-xl text-[9px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-white/5 hover:text-cyan-500 transition-all flex items-center gap-3"
+                                                            className="w-full text-left px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/5 hover:text-cyan-500 transition-all flex items-center gap-3"
                                                         >
                                                             <div className={cn("w-1.5 h-1.5 rounded-full", getStatusStyle(s as any))} />
                                                             {s}
@@ -499,7 +499,7 @@ export default function OrdersManagement() {
                                                     <div className="h-px bg-slate-100 dark:bg-white/5 mx-2 my-1.5" />
                                                     <button 
                                                         onClick={(e) => deleteOrder(order.id, e)}
-                                                        className="w-full text-left px-4 py-2.5 rounded-xl text-[9px] font-black uppercase tracking-widest text-red-500 hover:bg-red-500/5 transition-all flex items-center gap-3"
+                                                        className="w-full text-left px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest text-red-500 hover:bg-red-500/5 transition-all flex items-center gap-3"
                                                     >
                                                         <Trash2 size={12} /> Delete Permanent
                                                     </button>

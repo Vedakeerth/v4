@@ -191,22 +191,22 @@ export default function OrderDetailModal({ isOpen, order, onClose, status, onSta
                                 <div>
                                     <h2 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white uppercase italic tracking-tighter leading-none mb-1.5">Operational <span className="text-cyan-500">Trace</span></h2>
                                     <div className="flex flex-col gap-1">
-                                        <p className="text-[11px] font-black text-slate-500 uppercase tracking-[0.2em] flex items-center gap-2">
-                                            <ShieldIcon size={10} className="text-cyan-500" /> SECURE ID: <span className="text-slate-900 dark:text-white">{order.trackingId || order.id}</span>
+                                        <p className="text-xs font-black text-slate-500 uppercase tracking-[0.2em] flex items-center gap-2">
+                                            <ShieldIcon size={11} className="text-cyan-500" /> Order ID: <span className="text-slate-900 dark:text-white">{order.trackingId || order.id}</span>
                                         </p>
                                         {order.paymentId && (
                                             <div className="flex items-center gap-2">
-                                                <p className="text-[9px] font-black text-emerald-500 uppercase tracking-[0.2em] flex items-center gap-2">
-                                                    <CreditCardIcon size={10} /> PAYMENT ID: <span className="text-emerald-600 dark:text-emerald-400 font-mono tracking-tighter">{order.paymentId}</span>
+                                                <p className="text-xs font-black text-emerald-500 uppercase tracking-[0.2em] flex items-center gap-2">
+                                                    <CreditCardIcon size={11} /> Payment ID: <span className="text-emerald-600 dark:text-emerald-400 font-mono tracking-tighter">{order.paymentId}</span>
                                                 </p>
                                                 {order.paymentStatus === 'PAID' && (
-                                                    <span className="px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-500 text-[8px] font-black uppercase border border-emerald-500/20">PAID</span>
+                                                    <span className="px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-500 text-xs font-black uppercase border border-emerald-500/20">PAID</span>
                                                 )}
                                             </div>
                                         )}
                                         {!order.paymentId && order.paymentStatus === 'unpaid' && (
-                                            <p className="text-[9px] font-black text-amber-500 uppercase tracking-[0.2em] flex items-center gap-2">
-                                                <ClockIcon size={10} /> PAYMENT STATUS: <span className="text-amber-600 dark:text-amber-400">UNPAID / PENDING</span>
+                                            <p className="text-xs font-black text-amber-500 uppercase tracking-[0.2em] flex items-center gap-2">
+                                                <ClockIcon size={11} /> Payment: <span className="text-amber-600 dark:text-amber-400">UNPAID / PENDING</span>
                                             </p>
                                         )}
                                     </div>
@@ -214,7 +214,7 @@ export default function OrderDetailModal({ isOpen, order, onClose, status, onSta
                             </div>
 
                             <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
-                                <div className={cn("px-4 py-1.5 rounded-lg border-2 font-black text-[9px] uppercase tracking-widest flex items-center gap-2 shadow-sm", getStatusStyle(order.status))}>
+                                <div className={cn("px-4 py-1.5 rounded-lg border-2 font-black text-xs uppercase tracking-widest flex items-center gap-2 shadow-sm", getStatusStyle(order.status))}>
                                     <div className="w-1.5 h-1.5 rounded-full bg-current animate-pulse" />
                                     {order.status}
                                 </div>
@@ -233,18 +233,18 @@ export default function OrderDetailModal({ isOpen, order, onClose, status, onSta
                                         <div className="absolute top-[-10%] right-[-10%] opacity-[0.03] dark:opacity-[0.05] group-hover:scale-110 transition-transform duration-700">
                                             <UserIcon size={120} />
                                         </div>
-                                        <h3 className="text-[8px] font-black text-slate-400 uppercase tracking-[0.3em] mb-4 flex items-center gap-2">
-                                            <span className="w-4 h-px bg-cyan-500" /> Client Entity
+                                        <h3 className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-[0.3em] mb-4 flex items-center gap-2">
+                                            <span className="w-4 h-px bg-cyan-500" /> Customer
                                         </h3>
                                         <div className="space-y-4 relative z-10">
                                             <p className="text-xl font-black text-slate-900 dark:text-white tracking-tight uppercase leading-none italic">{order.customerName}</p>
                                             <div className="space-y-2">
-                                                <div className="flex items-center gap-3 text-slate-600 dark:text-slate-400 font-bold text-[11px] tracking-wider">
-                                                    <div className="w-7 h-7 rounded-lg bg-white dark:bg-slate-800 flex items-center justify-center border border-slate-200 dark:border-white/5 shadow-sm"><MailIcon size={12} className="text-cyan-500" /></div>
+                                                <div className="flex items-center gap-3 text-slate-700 dark:text-slate-300 font-bold text-sm tracking-wide">
+                                                    <div className="w-7 h-7 rounded-lg bg-white dark:bg-slate-800 flex items-center justify-center border border-slate-200 dark:border-white/5 shadow-sm"><MailIcon size={13} className="text-cyan-500" /></div>
                                                     <span className="font-medium truncate">{order.email}</span>
                                                 </div>
-                                                <div className="flex items-center gap-3 text-slate-600 dark:text-slate-400 font-bold text-[11px] tracking-wider">
-                                                    <div className="w-7 h-7 rounded-lg bg-white dark:bg-slate-800 flex items-center justify-center border border-slate-200 dark:border-white/5 shadow-sm"><PhoneIcon size={12} className="text-cyan-500" /></div>
+                                                <div className="flex items-center gap-3 text-slate-700 dark:text-slate-300 font-bold text-sm tracking-wide">
+                                                    <div className="w-7 h-7 rounded-lg bg-white dark:bg-slate-800 flex items-center justify-center border border-slate-200 dark:border-white/5 shadow-sm"><PhoneIcon size={13} className="text-cyan-500" /></div>
                                                     <span className="font-medium">{order.phone}</span>
                                                 </div>
                                             </div>
@@ -256,12 +256,12 @@ export default function OrderDetailModal({ isOpen, order, onClose, status, onSta
                                         <div className="absolute bottom-[-10%] left-[-10%] opacity-[0.03] dark:opacity-[0.05] group-hover:scale-110 transition-transform duration-700">
                                             <MapPinIcon size={120} />
                                         </div>
-                                        <h3 className="text-[8px] font-black text-slate-400 uppercase tracking-[0.3em] mb-4 flex items-center gap-2">
-                                            <span className="w-4 h-px bg-purple-500" /> Logistics Node
+                                        <h3 className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-[0.3em] mb-4 flex items-center gap-2">
+                                            <span className="w-4 h-px bg-purple-500" /> Delivery Address
                                         </h3>
                                         <div className="flex items-start gap-4 relative z-10">
                                             <div className="w-8 h-8 rounded-xl bg-white dark:bg-slate-800 flex items-center justify-center border border-slate-200 dark:border-white/5 shadow-sm shrink-0"><TruckIcon size={14} className="text-purple-500" /></div>
-                                            <p className="text-slate-700 dark:text-slate-300 font-medium text-[12px] leading-relaxed italic">{order.address}</p>
+                                            <p className="text-slate-700 dark:text-slate-200 font-medium text-sm leading-relaxed">{order.address}</p>
                                         </div>
                                     </section>
 
@@ -269,7 +269,7 @@ export default function OrderDetailModal({ isOpen, order, onClose, status, onSta
                                     {(order.material || order.infillPercent) && (
                                         <section className="p-5 rounded-2xl bg-cyan-500/[0.03] dark:bg-cyan-500/[0.05] border border-cyan-500/20 relative shadow-inner overflow-hidden">
                                             <div className="absolute top-[-10%] right-[-10%] opacity-[0.03] text-cyan-500"><ZapIcon size={80} /></div>
-                                            <h3 className="text-[8px] font-black text-cyan-600 dark:text-cyan-400 uppercase tracking-[0.3em] mb-4 flex items-center gap-2">
+                                            <h3 className="text-xs font-black text-cyan-600 dark:text-cyan-400 uppercase tracking-[0.3em] mb-4 flex items-center gap-2">
                                                 <span className="w-4 h-px bg-cyan-500" /> Technical Specs
                                             </h3>
                                             <div className="space-y-3 relative z-10">
@@ -279,7 +279,7 @@ export default function OrderDetailModal({ isOpen, order, onClose, status, onSta
                                                 </div>
                                                 <div className="flex justify-between items-center">
                                                     <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Infill</span>
-                                                    <span className="text-[10px] font-black text-slate-900 dark:text-white uppercase">{order.infillPercent}% • {order.infillPattern}</span>
+                                                    <span className="text-[10px] font-black text-slate-900 dark:text-white uppercase">{order.infillPercent}% â€¢ {order.infillPattern}</span>
                                                 </div>
                                             </div>
                                         </section>
@@ -292,7 +292,7 @@ export default function OrderDetailModal({ isOpen, order, onClose, status, onSta
                                         <div className="relative z-10">
                                             <div className="flex items-center gap-2 text-slate-400 mb-2">
                                                 <CreditCardIcon size={14} className="text-cyan-500" />
-                                                <p className="text-[9px] font-black uppercase tracking-[0.3em] italic">Total Aggregated Net</p>
+                                                <p className="text-xs font-black uppercase tracking-[0.3em] italic text-slate-400">Order Total</p>
                                             </div>
                                             <div className="flex items-baseline gap-2">
                                                 <span className="text-lg font-black text-slate-600 italic">RS</span>
@@ -300,7 +300,7 @@ export default function OrderDetailModal({ isOpen, order, onClose, status, onSta
                                                     {parseAmt(order.totalAmount).toLocaleString('en-IN')}
                                                 </p>
                                             </div>
-                                            <div className="mt-4 flex items-center gap-2 text-emerald-500 font-black text-[8px] uppercase tracking-[0.2em]">
+                                            <div className="mt-4 flex items-center gap-2 text-emerald-500 font-black text-xs uppercase tracking-[0.2em]">
                                                 <ZapIcon size={12} className="fill-emerald-500 animate-pulse" />
                                                 Network Secured
                                             </div>
@@ -310,8 +310,8 @@ export default function OrderDetailModal({ isOpen, order, onClose, status, onSta
                                     {/* Quotation & Invoice Assets */}
                                     {(order.quotationId || order.pdfUrl || order.megaFolderUrl || (order.trackingId && order.trackingId.startsWith("VQ"))) && (
                                         <section className="p-5 rounded-2xl bg-slate-50 dark:bg-white/[0.02] border border-slate-200 dark:border-white/5 relative overflow-hidden group shadow-inner space-y-3">
-                                            <h3 className="text-[8px] font-black text-slate-400 uppercase tracking-[0.3em] mb-2 flex items-center gap-2">
-                                                <span className="w-4 h-px bg-cyan-500" /> Linked Documentation
+                                            <h3 className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-[0.3em] mb-2 flex items-center gap-2">
+                                                <span className="w-4 h-px bg-cyan-500" /> Documents
                                             </h3>
                                             
                                             <div className="grid grid-cols-1 gap-2">
@@ -327,8 +327,8 @@ export default function OrderDetailModal({ isOpen, order, onClose, status, onSta
                                                                 <FileSearchIcon size={16} className="text-emerald-500" />
                                                             </div>
                                                             <div>
-                                                                <p className="text-[10px] font-black uppercase text-emerald-600 dark:text-emerald-400">View Invoice</p>
-                                                                <p className="text-[7px] font-bold uppercase tracking-widest opacity-60 text-slate-500">Official PDF Document</p>
+                                                                <p className="text-xs font-black uppercase text-emerald-600 dark:text-emerald-400">View Invoice</p>
+                                                                <p className="text-[10px] font-bold uppercase tracking-widest opacity-60 text-slate-500">Official PDF Document</p>
                                                             </div>
                                                         </div>
                                                         <ExternalLinkIcon size={12} className="text-emerald-500 opacity-50 group-hover:opacity-100" />
@@ -341,8 +341,8 @@ export default function OrderDetailModal({ isOpen, order, onClose, status, onSta
                                     {/* Command Memo */}
                                     {order.notes && (
                                         <section className="p-5 rounded-2xl bg-amber-500/[0.03] dark:bg-amber-500/[0.05] border border-amber-500/20 relative shadow-inner">
-                                            <h3 className="text-[8px] font-black text-amber-600 dark:text-amber-500 uppercase tracking-[0.3em] mb-2">Command Memo</h3>
-                                            <p className="text-amber-800 dark:text-amber-200/80 text-[12px] font-medium italic leading-relaxed">"{order.notes}"</p>
+                                            <h3 className="text-xs font-black text-amber-600 dark:text-amber-500 uppercase tracking-[0.3em] mb-2">Notes</h3>
+                                            <p className="text-amber-800 dark:text-amber-200/80 text-sm font-medium leading-relaxed">"{order.notes}"</p>
                                         </section>
                                     )}
 
@@ -352,11 +352,11 @@ export default function OrderDetailModal({ isOpen, order, onClose, status, onSta
                             <div className="flex-1 flex flex-col min-h-0">
                                 <div className="flex-1 rounded-2xl bg-slate-50 dark:bg-white/[0.02] border border-slate-200 dark:border-white/5 overflow-hidden flex flex-col shadow-inner">
                                     <div className="p-4 border-b border-slate-200 dark:border-white/5 flex justify-between items-center bg-white/30 dark:bg-white/[0.01]">
-                                        <h3 className="text-[8px] font-black text-slate-400 uppercase tracking-[0.3em] flex items-center gap-2">
-                                            <span className="w-4 h-px bg-cyan-500" /> Payload Manifest
+                                        <h3 className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-[0.3em] flex items-center gap-2">
+                                            <span className="w-4 h-px bg-cyan-500" /> Order Items
                                         </h3>
-                                        <div className="px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-500 text-[8px] font-black uppercase tracking-widest border border-cyan-500/20">
-                                            {order.items.length} Elements Linked
+                                        <div className="px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-500 text-xs font-black uppercase tracking-widest border border-cyan-500/20">
+                                            {order.items.length} Items
                                         </div>
                                     </div>
                                     
@@ -383,16 +383,16 @@ export default function OrderDetailModal({ isOpen, order, onClose, status, onSta
                                                                 )}
                                                             </div>
                                                             <div className="flex items-center gap-3">
-                                                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Q: {item.quantity}</span>
+                                                                <span className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">Qty: {item.quantity}</span>
                                                                 <span className="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-700" />
-                                                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                                                                <span className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest flex items-center gap-2">
                                                                     <div className="w-2 h-2 rounded-full" style={{ backgroundColor: item.selectedColor }} />
                                                                     {getColorName(item.selectedColor)}
                                                                 </span>
                                                                 {item.dimensions && (
                                                                     <>
                                                                         <span className="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-700" />
-                                                                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                                                                        <span className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">
                                                                             {Math.round(item.dimensions.x)}x{Math.round(item.dimensions.y)}x{Math.round(item.dimensions.z)}mm
                                                                         </span>
                                                                     </>
@@ -405,7 +405,7 @@ export default function OrderDetailModal({ isOpen, order, onClose, status, onSta
                                                                 <span className="text-[9px] mr-1.5 not-italic uppercase font-bold text-slate-500">Rs</span>
                                                                 {(parseAmt(item.totalPrice) || parseAmt(item.price) || 0).toLocaleString('en-IN')}
                                                             </p>
-                                                            <p className="text-[8px] font-bold text-slate-500 uppercase tracking-widest opacity-60">Sub-Payload Value</p>
+                                                            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest opacity-70">Item Total</p>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -415,22 +415,22 @@ export default function OrderDetailModal({ isOpen, order, onClose, status, onSta
                                     </div>
 
                                     <div className="mt-2 p-3 border-t border-slate-200 dark:border-white/5 flex items-center justify-between bg-white/30 dark:bg-white/[0.01] rounded-b-2xl">
-                                        <div className="flex items-center gap-2 text-slate-500 font-black text-[9px] uppercase tracking-[0.1em]">
+                                        <div className="flex items-center gap-2 text-slate-500 font-black text-xs uppercase tracking-[0.1em]">
                                             <TrendingUpIcon size={12} className="text-cyan-500" />
-                                            Active Session Data Stream
+                                            Live Order Data
                                         </div>
-                                        <div className="px-4 py-1.5 rounded-lg bg-slate-900 text-white text-[9px] font-black uppercase tracking-widest">
-                                            Manifest Locked
+                                        <div className="px-4 py-1.5 rounded-lg bg-slate-900 text-white text-xs font-black uppercase tracking-widest">
+                                            Locked
                                         </div>
                                     </div>
                             </div>
                         </div>
 
                         {/* Footer Controls */}
-                        <div className="shrink-0 p-4 sm:px-6 border-t border-slate-200 dark:border-white/5 bg-slate-50/80 dark:bg-slate-950/80 backdrop-blur-3xl flex flex-col xl:flex-row justify-between items-stretch xl:items-center gap-4">
+                        <div className="shrink-0 relative z-50 p-4 sm:px-6 border-t border-slate-200 dark:border-white/5 bg-slate-50/80 dark:bg-slate-950/80 backdrop-blur-3xl flex flex-col xl:flex-row justify-between items-stretch xl:items-center gap-4">
                             <div className="flex-1">
-                                <h4 className="text-[8px] font-black text-slate-500 uppercase tracking-[0.3em] mb-3 flex items-center gap-3 italic">
-                                    <TrendingUpIcon size={12} className="text-cyan-500" /> State Modulation Interface
+                                <h4 className="text-xs font-black text-slate-500 uppercase tracking-[0.3em] mb-3 flex items-center gap-3">
+                                    <TrendingUpIcon size={12} className="text-cyan-500" /> Update Status
                                 </h4>
                                 
                                 {/* Status Dropdown Bar */}
@@ -444,7 +444,7 @@ export default function OrderDetailModal({ isOpen, order, onClose, status, onSta
                                     >
                                         <div className="flex items-center gap-3">
                                             <div className={cn("w-2 h-2 rounded-full animate-pulse", status === "Cancelled" ? "bg-red-500" : "bg-cyan-500")} />
-                                            <span className="text-[9px] font-black uppercase tracking-[0.15em] text-slate-900 dark:text-white">{status}</span>
+                                            <span className="text-sm font-black uppercase tracking-[0.15em] text-slate-900 dark:text-white">{status}</span>
                                         </div>
                                         <ChevronDownIcon size={16} className={cn("text-slate-400 transition-transform duration-300", isDropdownOpen && "rotate-180 text-cyan-500")} />
                                     </button>
@@ -463,10 +463,10 @@ export default function OrderDetailModal({ isOpen, order, onClose, status, onSta
                                                             key={s} 
                                                             onClick={() => { onStatusChange(s); setIsDropdownOpen(false); }}
                                                             className={cn(
-                                                                "w-full text-left px-4 py-2.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all flex items-center justify-between group",
+                                                                "w-full text-left px-4 py-2.5 rounded-lg text-sm font-black uppercase tracking-widest transition-all flex items-center justify-between group",
                                                                 status === s 
                                                                     ? "bg-cyan-500/10 text-cyan-500" 
-                                                                    : "text-slate-500 hover:bg-slate-50 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white"
+                                                                    : "text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white"
                                                             )}
                                                         >
                                                             <span>{s}</span>
@@ -485,11 +485,11 @@ export default function OrderDetailModal({ isOpen, order, onClose, status, onSta
                                 <div className="flex-1 max-w-md animate-in fade-in slide-in-from-bottom-2 duration-300">
                                     <div className="grid grid-cols-2 gap-3">
                                         <div className="space-y-1.5">
-                                            <label className="text-[8px] font-black text-slate-500 uppercase tracking-widest ml-1">Shipping Partner</label>
+                                            <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Shipping Partner</label>
                                             <select 
                                                 value={shippingPartner}
                                                 onChange={(e) => setShippingPartner(e.target.value)}
-                                                className="w-full px-4 py-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-[10px] font-bold text-slate-900 dark:text-white focus:border-cyan-500 outline-none transition-all shadow-sm appearance-none"
+                                                className="w-full px-4 py-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-sm font-bold text-slate-900 dark:text-white focus:border-cyan-500 outline-none transition-all shadow-sm appearance-none"
                                             >
                                                 <option value="" disabled>Select Partner</option>
                                                 {SHIPPING_PARTNERS.map(p => (
@@ -499,13 +499,13 @@ export default function OrderDetailModal({ isOpen, order, onClose, status, onSta
                                             </select>
                                         </div>
                                         <div className="space-y-1.5">
-                                            <label className="text-[8px] font-black text-slate-500 uppercase tracking-widest ml-1">Tracking ID</label>
+                                            <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Tracking ID</label>
                                             <input 
                                                 type="text"
-                                                placeholder="Enter ID..."
+                                                placeholder="Enter tracking ID..."
                                                 value={carrierTrackingId}
                                                 onChange={(e) => setCarrierTrackingId(e.target.value)}
-                                                className="w-full px-4 py-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-[10px] font-bold text-slate-900 dark:text-white focus:border-cyan-500 outline-none transition-all shadow-sm"
+                                                className="w-full px-4 py-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-sm font-bold text-slate-900 dark:text-white focus:border-cyan-500 outline-none transition-all shadow-sm"
                                             />
                                         </div>
                                     </div>
@@ -515,7 +515,7 @@ export default function OrderDetailModal({ isOpen, order, onClose, status, onSta
                             <div className="flex gap-4 min-w-[300px]">
                                 <button 
                                     onClick={onClose} 
-                                    className="flex-1 px-5 py-3.5 bg-white dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 text-slate-500 dark:text-slate-400 font-black rounded-xl transition-all uppercase tracking-[0.2em] text-[9px] border border-slate-200 dark:border-white/10"
+                                    className="flex-1 px-5 py-3.5 bg-white dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 text-slate-600 dark:text-slate-400 font-black rounded-xl transition-all uppercase tracking-[0.2em] text-sm border border-slate-200 dark:border-white/10"
                                 >
                                     Abort
                                 </button>
@@ -527,7 +527,7 @@ export default function OrderDetailModal({ isOpen, order, onClose, status, onSta
                                         onClose(); 
                                     }} 
                                     className={cn(
-                                        "flex-[1.5] px-5 py-3.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black rounded-xl transition-all uppercase tracking-[0.2em] text-[9px] shadow-xl shadow-cyan-500/30 flex items-center justify-center gap-3",
+                                        "flex-[1.5] px-5 py-3.5 bg-cyan-500 hover:bg-cyan-400 text-white dark:text-slate-950 font-black rounded-xl transition-all uppercase tracking-[0.2em] text-sm shadow-xl shadow-cyan-500/30 flex items-center justify-center gap-3",
                                         status === "Delivered" && (!shippingPartner.trim() || !carrierTrackingId.trim()) && "opacity-30 cursor-not-allowed grayscale"
                                     )}
                                 >

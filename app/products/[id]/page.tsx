@@ -5,6 +5,7 @@ import { getProducts } from "@/lib/products";
 import ProductDetailClient from "@/components/ProductDetailClient";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { notFound } from "next/navigation";
 
 interface PageProps {
     params: Promise<{ id: string }>;
@@ -17,14 +18,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
     const product = allProducts.find(p => p.id === id);
 
     if (!product) {
-        return (
-            <main className="min-h-screen bg-white dark:bg-slate-950 pt-32 px-4 flex flex-col items-center">
-                <h1 className="text-2xl text-white mb-4">Product Not Found</h1>
-                <Link href="/gallery" className="text-cyan-400 hover:text-cyan-300 flex items-center gap-2">
-                    <ArrowLeft size={20} /> Back to Gallery
-                </Link>
-            </main>
-        );
+        notFound();
     }
 
     const similarProducts = allProducts

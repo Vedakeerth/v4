@@ -24,6 +24,9 @@ export default function Preloader() {
             // eslint-disable-next-line
             setIsLoading(true);
             setIsFading(false);
+            if (typeof document !== 'undefined') {
+                document.body.classList.remove('preloader-finished');
+            }
         }
 
         previousPathname.current = pathname;
@@ -45,6 +48,10 @@ export default function Preloader() {
                 // Remove from DOM after fade animation
                 setTimeout(() => {
                     setIsLoading(false);
+                    if (typeof window !== 'undefined') {
+                        document.body.classList.add('preloader-finished');
+                        window.dispatchEvent(new Event('preloaderFinished'));
+                    }
                 }, 300);
             }, remainingTime);
         };

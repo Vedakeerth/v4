@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect } from "react";
 import { Globe, Save } from "lucide-react";
@@ -89,7 +89,7 @@ export default function SEOTab() {
                 ))}
                 <button
                     onClick={handleSave}
-                    className="w-full py-4 bg-cyan-500 text-slate-950 font-bold rounded-xl shadow-lg shadow-cyan-500/20 hover:scale-[1.01] active:scale-[0.99] transition-all flex items-center justify-center gap-2"
+                    className="w-full py-4 bg-cyan-500 text-white dark:text-slate-950 font-bold rounded-xl shadow-lg shadow-cyan-500/20 hover:scale-[1.01] active:scale-[0.99] transition-all flex items-center justify-center gap-2"
                 >
                     <Save size={20} />
                     Save All Metadata

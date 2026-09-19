@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect } from "react";
 import { Plus, Edit, Trash2, X, Save, Upload, Image as ImageIcon } from "lucide-react";
@@ -146,7 +146,7 @@ export default function ProjectsTab() {
                 <h2 className="text-2xl font-bold text-slate-900 dark:text-white">My Projects</h2>
                 <button
                     onClick={() => openModal()}
-                    className="px-6 py-3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-xl flex items-center gap-2 shadow-lg shadow-cyan-500/20 transition-all"
+                    className="px-6 py-3 bg-cyan-500 hover:bg-cyan-400 text-white dark:text-slate-950 font-bold rounded-xl flex items-center gap-2 shadow-lg shadow-cyan-500/20 transition-all"
                 >
                     <Plus size={20} /> Add Project
                 </button>
@@ -263,7 +263,7 @@ export default function ProjectsTab() {
                             </div>
                             <button
                                 onClick={handleSave}
-                                className="w-full py-4 bg-cyan-500 text-slate-950 font-black rounded-2xl shadow-lg shadow-cyan-500/20 mt-4"
+                                className="w-full py-4 bg-cyan-500 text-white dark:text-slate-950 font-black rounded-2xl shadow-lg shadow-cyan-500/20 mt-4"
                             >
                                 {editingProject ? "Save Changes" : "Create Project"}
                             </button>

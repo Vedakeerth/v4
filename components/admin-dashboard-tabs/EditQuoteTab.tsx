@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState } from "react";
 import { Search, Save, User, Mail, Phone, MapPin, IndianRupee, FileText } from "lucide-react";
@@ -143,7 +143,7 @@ export default function EditQuoteTab() {
                     <button
                         onClick={fetchOrder}
                         disabled={isLoading}
-                        className="h-14 px-8 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black rounded-2xl uppercase tracking-widest transition-all disabled:opacity-50"
+                        className="h-14 px-8 bg-cyan-500 hover:bg-cyan-400 text-white dark:text-slate-950 font-black rounded-2xl uppercase tracking-widest transition-all disabled:opacity-50"
                     >
                         {isLoading ? "Fetching..." : "Fetch"}
                     </button>
@@ -238,7 +238,7 @@ export default function EditQuoteTab() {
                                                 </div>
                                                 <div className="flex gap-3">
                                                     <div className="flex-1">
-                                                        <label className="text-[9px] font-bold uppercase text-slate-500 mb-1 block">Unit Price (₹)</label>
+                                                        <label className="text-[9px] font-bold uppercase text-slate-500 mb-1 block">Unit Price (â‚¹)</label>
                                                         <input
                                                             type="text"
                                                             value={item.price || ""}
@@ -269,7 +269,7 @@ export default function EditQuoteTab() {
                                 <div className="space-y-4">
                                     <div>
                                         <label className="text-[10px] font-bold uppercase text-slate-500 flex items-center gap-2 mb-1">
-                                            <IndianRupee size={12} /> Total Amount (₹)
+                                            <IndianRupee size={12} /> Total Amount (â‚¹)
                                         </label>
                                         <input
                                             type="text"

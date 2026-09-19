@@ -5,9 +5,11 @@ import { usePathname } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import CartDrawer from "@/components/CartDrawer";
 import BackgroundGrid from "@/components/BackgroundGrid";
-import CustomCursor from "@/components/CustomCursor";
+import dynamic from "next/dynamic";
 import ScrollToTop from "@/components/ScrollToTop";
-import Preloader from "@/components/Preloader";
+
+const CustomCursor = dynamic(() => import("@/components/CustomCursor"), { ssr: false });
+const Preloader = dynamic(() => import("@/components/Preloader"), { ssr: false });
 import NewsTicker from "@/components/NewsTicker";
 import { cn } from "@/lib/utils";
 
@@ -24,8 +26,6 @@ export default function MainFrontendUI({ children, navLinks, ctaData }: MainFron
     React.useEffect(() => {
         setMounted(true);
     }, []);
-
-    if (!mounted) return null;
 
     // Aggressive detection for admin and secure portal routes
     const isPathMatch = (path: string) => {

@@ -1,0 +1,3221 @@
+npm notice run v4@0.1.0 npx
+npm notice run next dev --port 3001
+▲ Next.js 16.1.1 (Turbopack)
+- Local:         http://localhost:3001
+- Network:       http://10.42.55.40:3001
+- Environments: .env.local
+
+✓ Starting...
+⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+✓ Ready in 12.6s
+○ Compiling / ...
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+[1m[33mwarn[39m[22m - Your `content` configuration includes a pattern which looks like it's accidentally matching all of `node_modules` and can cause serious performance issues.
+[1m[33mwarn[39m[22m - Pattern: `./app\**\*.ts`
+[1m[33mwarn[39m[22m - See our documentation for recommendations:
+[1m[33mwarn[39m[22m - https://tailwindcss.com/docs/content-configuration#pattern-recommendations
+Firebase Admin Initialized for Project: react-website-7a1a0
+✓ Finished filesystem cache database compaction in 98s
+Error fetching SEO data from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at getSEOData (lib\seo.ts:9:71)
+    at async getPageMetadata (lib\seo.ts:90:21)
+   7 |         const { adminDb } = await import('./firebaseAdmin');
+   8 |         try {
+>  9 |             const doc = await adminDb.collection('config').doc('seo').get();
+     |                                                                       ^
+  10 |             return (doc.data() as SEOData) || {};
+  11 |         } catch (error) {
+  12 |             console.error('Error fetching SEO data from Firestore:', error); {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching SEO data from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at getSEOData (lib\seo.ts:9:71)
+    at async getPageMetadata (lib\seo.ts:90:21)
+   7 |         const { adminDb } = await import('./firebaseAdmin');
+   8 |         try {
+>  9 |             const doc = await adminDb.collection('config').doc('seo').get();
+     |                                                                       ^
+  10 |             return (doc.data() as SEOData) || {};
+  11 |         } catch (error) {
+  12 |             console.error('Error fetching SEO data from Firestore:', error); {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching settings from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at getSettings (lib\settings.ts:68:76)
+    at async Home (app\page.tsx:44:20)
+  66 |         const adminDb = await getAdminDb();
+  67 |         try {
+> 68 |             const doc = await adminDb.collection('config').doc('settings').get();
+     |                                                                            ^
+  69 |             if (!doc.exists) return defaultSettings;
+  70 |             return { ...defaultSettings, ...doc.data() } as SiteSettings;
+  71 |         } catch (error) { {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching SEO data from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at getSEOData (lib\seo.ts:9:71)
+    at async getPageMetadata (lib\seo.ts:90:21)
+   7 |         const { adminDb } = await import('./firebaseAdmin');
+   8 |         try {
+>  9 |             const doc = await adminDb.collection('config').doc('seo').get();
+     |                                                                       ^
+  10 |             return (doc.data() as SEOData) || {};
+  11 |         } catch (error) {
+  12 |             console.error('Error fetching SEO data from Firestore:', error); {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching SEO data from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at getSEOData (lib\seo.ts:9:71)
+    at async getPageMetadata (lib\seo.ts:90:21)
+   7 |         const { adminDb } = await import('./firebaseAdmin');
+   8 |         try {
+>  9 |             const doc = await adminDb.collection('config').doc('seo').get();
+     |                                                                       ^
+  10 |             return (doc.data() as SEOData) || {};
+  11 |         } catch (error) {
+  12 |             console.error('Error fetching SEO data from Firestore:', error); {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching SEO data from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at getSEOData (lib\seo.ts:9:71)
+    at async getPageMetadata (lib\seo.ts:90:21)
+   7 |         const { adminDb } = await import('./firebaseAdmin');
+   8 |         try {
+>  9 |             const doc = await adminDb.collection('config').doc('seo').get();
+     |                                                                       ^
+  10 |             return (doc.data() as SEOData) || {};
+  11 |         } catch (error) {
+  12 |             console.error('Error fetching SEO data from Firestore:', error); {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching SEO data from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at getSEOData (lib\seo.ts:9:71)
+    at async getPageMetadata (lib\seo.ts:90:21)
+    at async Module.generateMetadata (app\layout.tsx:37:20)
+   7 |         const { adminDb } = await import('./firebaseAdmin');
+   8 |         try {
+>  9 |             const doc = await adminDb.collection('config').doc('seo').get();
+     |                                                                       ^
+  10 |             return (doc.data() as SEOData) || {};
+  11 |         } catch (error) {
+  12 |             console.error('Error fetching SEO data from Firestore:', error); {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching SEO data from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at getSEOData (lib\seo.ts:9:71)
+    at async getPageMetadata (lib\seo.ts:90:21)
+    at async Module.generateMetadata (app\layout.tsx:37:20)
+   7 |         const { adminDb } = await import('./firebaseAdmin');
+   8 |         try {
+>  9 |             const doc = await adminDb.collection('config').doc('seo').get();
+     |                                                                       ^
+  10 |             return (doc.data() as SEOData) || {};
+  11 |         } catch (error) {
+  12 |             console.error('Error fetching SEO data from Firestore:', error); {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching settings from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at getSettings (lib\settings.ts:68:76)
+    at async Home (app\page.tsx:44:20)
+  66 |         const adminDb = await getAdminDb();
+  67 |         try {
+> 68 |             const doc = await adminDb.collection('config').doc('settings').get();
+     |                                                                            ^
+  69 |             if (!doc.exists) return defaultSettings;
+  70 |             return { ...defaultSettings, ...doc.data() } as SiteSettings;
+  71 |         } catch (error) { {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching SEO data from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at getSEOData (lib\seo.ts:9:71)
+    at async getPageMetadata (lib\seo.ts:90:21)
+   7 |         const { adminDb } = await import('./firebaseAdmin');
+   8 |         try {
+>  9 |             const doc = await adminDb.collection('config').doc('seo').get();
+     |                                                                       ^
+  10 |             return (doc.data() as SEOData) || {};
+  11 |         } catch (error) {
+  12 |             console.error('Error fetching SEO data from Firestore:', error); {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching settings from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at getSettings (lib\settings.ts:68:76)
+    at async Home (app\page.tsx:44:20)
+  66 |         const adminDb = await getAdminDb();
+  67 |         try {
+> 68 |             const doc = await adminDb.collection('config').doc('settings').get();
+     |                                                                            ^
+  69 |             if (!doc.exists) return defaultSettings;
+  70 |             return { ...defaultSettings, ...doc.data() } as SiteSettings;
+  71 |         } catch (error) { {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching SEO data from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at getSEOData (lib\seo.ts:9:71)
+    at async getPageMetadata (lib\seo.ts:90:21)
+    at async Module.generateMetadata (app\layout.tsx:37:20)
+   7 |         const { adminDb } = await import('./firebaseAdmin');
+   8 |         try {
+>  9 |             const doc = await adminDb.collection('config').doc('seo').get();
+     |                                                                       ^
+  10 |             return (doc.data() as SEOData) || {};
+  11 |         } catch (error) {
+  12 |             console.error('Error fetching SEO data from Firestore:', error); {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching SEO data from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at getSEOData (lib\seo.ts:9:71)
+    at async getPageMetadata (lib\seo.ts:90:21)
+   7 |         const { adminDb } = await import('./firebaseAdmin');
+   8 |         try {
+>  9 |             const doc = await adminDb.collection('config').doc('seo').get();
+     |                                                                       ^
+  10 |             return (doc.data() as SEOData) || {};
+  11 |         } catch (error) {
+  12 |             console.error('Error fetching SEO data from Firestore:', error); {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching settings from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at getSettings (lib\settings.ts:68:76)
+    at async Home (app\page.tsx:44:20)
+  66 |         const adminDb = await getAdminDb();
+  67 |         try {
+> 68 |             const doc = await adminDb.collection('config').doc('settings').get();
+     |                                                                            ^
+  69 |             if (!doc.exists) return defaultSettings;
+  70 |             return { ...defaultSettings, ...doc.data() } as SiteSettings;
+  71 |         } catch (error) { {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching settings from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at getSettings (lib\settings.ts:68:76)
+    at async Home (app\page.tsx:44:20)
+  66 |         const adminDb = await getAdminDb();
+  67 |         try {
+> 68 |             const doc = await adminDb.collection('config').doc('settings').get();
+     |                                                                            ^
+  69 |             if (!doc.exists) return defaultSettings;
+  70 |             return { ...defaultSettings, ...doc.data() } as SiteSettings;
+  71 |         } catch (error) { {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching SEO data from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at getSEOData (lib\seo.ts:9:71)
+    at async getPageMetadata (lib\seo.ts:90:21)
+    at async Module.generateMetadata (app\layout.tsx:37:20)
+   7 |         const { adminDb } = await import('./firebaseAdmin');
+   8 |         try {
+>  9 |             const doc = await adminDb.collection('config').doc('seo').get();
+     |                                                                       ^
+  10 |             return (doc.data() as SEOData) || {};
+  11 |         } catch (error) {
+  12 |             console.error('Error fetching SEO data from Firestore:', error); {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching SEO data from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at getSEOData (lib\seo.ts:9:71)
+    at async getPageMetadata (lib\seo.ts:90:21)
+    at async Module.generateMetadata (app\layout.tsx:37:20)
+   7 |         const { adminDb } = await import('./firebaseAdmin');
+   8 |         try {
+>  9 |             const doc = await adminDb.collection('config').doc('seo').get();
+     |                                                                       ^
+  10 |             return (doc.data() as SEOData) || {};
+  11 |         } catch (error) {
+  12 |             console.error('Error fetching SEO data from Firestore:', error); {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching settings from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at getSettings (lib\settings.ts:68:76)
+    at async Home (app\page.tsx:44:20)
+  66 |         const adminDb = await getAdminDb();
+  67 |         try {
+> 68 |             const doc = await adminDb.collection('config').doc('settings').get();
+     |                                                                            ^
+  69 |             if (!doc.exists) return defaultSettings;
+  70 |             return { ...defaultSettings, ...doc.data() } as SiteSettings;
+  71 |         } catch (error) { {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching settings from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at getSettings (lib\settings.ts:68:76)
+    at async Home (app\page.tsx:44:20)
+  66 |         const adminDb = await getAdminDb();
+  67 |         try {
+> 68 |             const doc = await adminDb.collection('config').doc('settings').get();
+     |                                                                            ^
+  69 |             if (!doc.exists) return defaultSettings;
+  70 |             return { ...defaultSettings, ...doc.data() } as SiteSettings;
+  71 |         } catch (error) { {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching SEO data from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at getSEOData (lib\seo.ts:9:71)
+    at async getPageMetadata (lib\seo.ts:90:21)
+   7 |         const { adminDb } = await import('./firebaseAdmin');
+   8 |         try {
+>  9 |             const doc = await adminDb.collection('config').doc('seo').get();
+     |                                                                       ^
+  10 |             return (doc.data() as SEOData) || {};
+  11 |         } catch (error) {
+  12 |             console.error('Error fetching SEO data from Firestore:', error); {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching SEO data from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at getSEOData (lib\seo.ts:9:71)
+    at async getPageMetadata (lib\seo.ts:90:21)
+    at async Module.generateMetadata (app\layout.tsx:37:20)
+   7 |         const { adminDb } = await import('./firebaseAdmin');
+   8 |         try {
+>  9 |             const doc = await adminDb.collection('config').doc('seo').get();
+     |                                                                       ^
+  10 |             return (doc.data() as SEOData) || {};
+  11 |         } catch (error) {
+  12 |             console.error('Error fetching SEO data from Firestore:', error); {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching SEO data from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at getSEOData (lib\seo.ts:9:71)
+    at async getPageMetadata (lib\seo.ts:90:21)
+   7 |         const { adminDb } = await import('./firebaseAdmin');
+   8 |         try {
+>  9 |             const doc = await adminDb.collection('config').doc('seo').get();
+     |                                                                       ^
+  10 |             return (doc.data() as SEOData) || {};
+  11 |         } catch (error) {
+  12 |             console.error('Error fetching SEO data from Firestore:', error); {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching SEO data from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at getSEOData (lib\seo.ts:9:71)
+    at async getPageMetadata (lib\seo.ts:90:21)
+    at async Module.generateMetadata (app\layout.tsx:37:20)
+   7 |         const { adminDb } = await import('./firebaseAdmin');
+   8 |         try {
+>  9 |             const doc = await adminDb.collection('config').doc('seo').get();
+     |                                                                       ^
+  10 |             return (doc.data() as SEOData) || {};
+  11 |         } catch (error) {
+  12 |             console.error('Error fetching SEO data from Firestore:', error); {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching SEO data from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at getSEOData (lib\seo.ts:9:71)
+    at async getPageMetadata (lib\seo.ts:90:21)
+    at async Module.generateMetadata (app\layout.tsx:37:20)
+   7 |         const { adminDb } = await import('./firebaseAdmin');
+   8 |         try {
+>  9 |             const doc = await adminDb.collection('config').doc('seo').get();
+     |                                                                       ^
+  10 |             return (doc.data() as SEOData) || {};
+  11 |         } catch (error) {
+  12 |             console.error('Error fetching SEO data from Firestore:', error); {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching SEO data from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at getSEOData (lib\seo.ts:9:71)
+    at async getPageMetadata (lib\seo.ts:90:21)
+   7 |         const { adminDb } = await import('./firebaseAdmin');
+   8 |         try {
+>  9 |             const doc = await adminDb.collection('config').doc('seo').get();
+     |                                                                       ^
+  10 |             return (doc.data() as SEOData) || {};
+  11 |         } catch (error) {
+  12 |             console.error('Error fetching SEO data from Firestore:', error); {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for navigation from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for navigation from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching settings from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at getSettings (lib\settings.ts:68:76)
+    at async Home (app\page.tsx:44:20)
+  66 |         const adminDb = await getAdminDb();
+  67 |         try {
+> 68 |             const doc = await adminDb.collection('config').doc('settings').get();
+     |                                                                            ^
+  69 |             if (!doc.exists) return defaultSettings;
+  70 |             return { ...defaultSettings, ...doc.data() } as SiteSettings;
+  71 |         } catch (error) { {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching SEO data from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at getSEOData (lib\seo.ts:9:71)
+    at async getPageMetadata (lib\seo.ts:90:21)
+    at async Module.generateMetadata (app\layout.tsx:37:20)
+   7 |         const { adminDb } = await import('./firebaseAdmin');
+   8 |         try {
+>  9 |             const doc = await adminDb.collection('config').doc('seo').get();
+     |                                                                       ^
+  10 |             return (doc.data() as SEOData) || {};
+  11 |         } catch (error) {
+  12 |             console.error('Error fetching SEO data from Firestore:', error); {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for navigation from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching settings from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at getSettings (lib\settings.ts:68:76)
+    at async Home (app\page.tsx:44:20)
+  66 |         const adminDb = await getAdminDb();
+  67 |         try {
+> 68 |             const doc = await adminDb.collection('config').doc('settings').get();
+     |                                                                            ^
+  69 |             if (!doc.exists) return defaultSettings;
+  70 |             return { ...defaultSettings, ...doc.data() } as SiteSettings;
+  71 |         } catch (error) { {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching SEO data from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at getSEOData (lib\seo.ts:9:71)
+    at async getPageMetadata (lib\seo.ts:90:21)
+    at async Module.generateMetadata (app\layout.tsx:37:20)
+   7 |         const { adminDb } = await import('./firebaseAdmin');
+   8 |         try {
+>  9 |             const doc = await adminDb.collection('config').doc('seo').get();
+     |                                                                       ^
+  10 |             return (doc.data() as SEOData) || {};
+  11 |         } catch (error) {
+  12 |             console.error('Error fetching SEO data from Firestore:', error); {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for navigation from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching SEO data from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at getSEOData (lib\seo.ts:9:71)
+    at async getPageMetadata (lib\seo.ts:90:21)
+   7 |         const { adminDb } = await import('./firebaseAdmin');
+   8 |         try {
+>  9 |             const doc = await adminDb.collection('config').doc('seo').get();
+     |                                                                       ^
+  10 |             return (doc.data() as SEOData) || {};
+  11 |         } catch (error) {
+  12 |             console.error('Error fetching SEO data from Firestore:', error); {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching settings from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at getSettings (lib\settings.ts:68:76)
+    at async Home (app\page.tsx:44:20)
+  66 |         const adminDb = await getAdminDb();
+  67 |         try {
+> 68 |             const doc = await adminDb.collection('config').doc('settings').get();
+     |                                                                            ^
+  69 |             if (!doc.exists) return defaultSettings;
+  70 |             return { ...defaultSettings, ...doc.data() } as SiteSettings;
+  71 |         } catch (error) { {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching SEO data from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at getSEOData (lib\seo.ts:9:71)
+    at async getPageMetadata (lib\seo.ts:90:21)
+    at async Module.generateMetadata (app\layout.tsx:37:20)
+   7 |         const { adminDb } = await import('./firebaseAdmin');
+   8 |         try {
+>  9 |             const doc = await adminDb.collection('config').doc('seo').get();
+     |                                                                       ^
+  10 |             return (doc.data() as SEOData) || {};
+  11 |         } catch (error) {
+  12 |             console.error('Error fetching SEO data from Firestore:', error); {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching settings from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at getSettings (lib\settings.ts:68:76)
+    at async Home (app\page.tsx:44:20)
+  66 |         const adminDb = await getAdminDb();
+  67 |         try {
+> 68 |             const doc = await adminDb.collection('config').doc('settings').get();
+     |                                                                            ^
+  69 |             if (!doc.exists) return defaultSettings;
+  70 |             return { ...defaultSettings, ...doc.data() } as SiteSettings;
+  71 |         } catch (error) { {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching settings from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at getSettings (lib\settings.ts:68:76)
+    at async Home (app\page.tsx:44:20)
+  66 |         const adminDb = await getAdminDb();
+  67 |         try {
+> 68 |             const doc = await adminDb.collection('config').doc('settings').get();
+     |                                                                            ^
+  69 |             if (!doc.exists) return defaultSettings;
+  70 |             return { ...defaultSettings, ...doc.data() } as SiteSettings;
+  71 |         } catch (error) { {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching SEO data from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at getSEOData (lib\seo.ts:9:71)
+    at async getPageMetadata (lib\seo.ts:90:21)
+   7 |         const { adminDb } = await import('./firebaseAdmin');
+   8 |         try {
+>  9 |             const doc = await adminDb.collection('config').doc('seo').get();
+     |                                                                       ^
+  10 |             return (doc.data() as SEOData) || {};
+  11 |         } catch (error) {
+  12 |             console.error('Error fetching SEO data from Firestore:', error); {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching settings from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at getSettings (lib\settings.ts:68:76)
+    at async Home (app\page.tsx:44:20)
+  66 |         const adminDb = await getAdminDb();
+  67 |         try {
+> 68 |             const doc = await adminDb.collection('config').doc('settings').get();
+     |                                                                            ^
+  69 |             if (!doc.exists) return defaultSettings;
+  70 |             return { ...defaultSettings, ...doc.data() } as SiteSettings;
+  71 |         } catch (error) { {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching settings from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at getSettings (lib\settings.ts:68:76)
+    at async Home (app\page.tsx:44:20)
+  66 |         const adminDb = await getAdminDb();
+  67 |         try {
+> 68 |             const doc = await adminDb.collection('config').doc('settings').get();
+     |                                                                            ^
+  69 |             if (!doc.exists) return defaultSettings;
+  70 |             return { ...defaultSettings, ...doc.data() } as SiteSettings;
+  71 |         } catch (error) { {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching SEO data from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at getSEOData (lib\seo.ts:9:71)
+    at async getPageMetadata (lib\seo.ts:90:21)
+   7 |         const { adminDb } = await import('./firebaseAdmin');
+   8 |         try {
+>  9 |             const doc = await adminDb.collection('config').doc('seo').get();
+     |                                                                       ^
+  10 |             return (doc.data() as SEOData) || {};
+  11 |         } catch (error) {
+  12 |             console.error('Error fetching SEO data from Firestore:', error); {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching SEO data from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at getSEOData (lib\seo.ts:9:71)
+    at async getPageMetadata (lib\seo.ts:90:21)
+   7 |         const { adminDb } = await import('./firebaseAdmin');
+   8 |         try {
+>  9 |             const doc = await adminDb.collection('config').doc('seo').get();
+     |                                                                       ^
+  10 |             return (doc.data() as SEOData) || {};
+  11 |         } catch (error) {
+  12 |             console.error('Error fetching SEO data from Firestore:', error); {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for navigation from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for navigation from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching SEO data from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at getSEOData (lib\seo.ts:9:71)
+    at async getPageMetadata (lib\seo.ts:90:21)
+    at async Module.generateMetadata (app\layout.tsx:37:20)
+   7 |         const { adminDb } = await import('./firebaseAdmin');
+   8 |         try {
+>  9 |             const doc = await adminDb.collection('config').doc('seo').get();
+     |                                                                       ^
+  10 |             return (doc.data() as SEOData) || {};
+  11 |         } catch (error) {
+  12 |             console.error('Error fetching SEO data from Firestore:', error); {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for navigation from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching SEO data from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at getSEOData (lib\seo.ts:9:71)
+    at async getPageMetadata (lib\seo.ts:90:21)
+    at async Module.generateMetadata (app\layout.tsx:37:20)
+   7 |         const { adminDb } = await import('./firebaseAdmin');
+   8 |         try {
+>  9 |             const doc = await adminDb.collection('config').doc('seo').get();
+     |                                                                       ^
+  10 |             return (doc.data() as SEOData) || {};
+  11 |         } catch (error) {
+  12 |             console.error('Error fetching SEO data from Firestore:', error); {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for navigation from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching SEO data from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at getSEOData (lib\seo.ts:9:71)
+    at async getPageMetadata (lib\seo.ts:90:21)
+    at async Module.generateMetadata (app\layout.tsx:37:20)
+   7 |         const { adminDb } = await import('./firebaseAdmin');
+   8 |         try {
+>  9 |             const doc = await adminDb.collection('config').doc('seo').get();
+     |                                                                       ^
+  10 |             return (doc.data() as SEOData) || {};
+  11 |         } catch (error) {
+  12 |             console.error('Error fetching SEO data from Firestore:', error); {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for navigation from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching SEO data from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at getSEOData (lib\seo.ts:9:71)
+    at async getPageMetadata (lib\seo.ts:90:21)
+    at async Module.generateMetadata (app\layout.tsx:37:20)
+   7 |         const { adminDb } = await import('./firebaseAdmin');
+   8 |         try {
+>  9 |             const doc = await adminDb.collection('config').doc('seo').get();
+     |                                                                       ^
+  10 |             return (doc.data() as SEOData) || {};
+  11 |         } catch (error) {
+  12 |             console.error('Error fetching SEO data from Firestore:', error); {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching settings from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at getSettings (lib\settings.ts:68:76)
+    at async Home (app\page.tsx:44:20)
+  66 |         const adminDb = await getAdminDb();
+  67 |         try {
+> 68 |             const doc = await adminDb.collection('config').doc('settings').get();
+     |                                                                            ^
+  69 |             if (!doc.exists) return defaultSettings;
+  70 |             return { ...defaultSettings, ...doc.data() } as SiteSettings;
+  71 |         } catch (error) { {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching SEO data from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at getSEOData (lib\seo.ts:9:71)
+    at async getPageMetadata (lib\seo.ts:90:21)
+    at async Module.generateMetadata (app\layout.tsx:37:20)
+   7 |         const { adminDb } = await import('./firebaseAdmin');
+   8 |         try {
+>  9 |             const doc = await adminDb.collection('config').doc('seo').get();
+     |                                                                       ^
+  10 |             return (doc.data() as SEOData) || {};
+  11 |         } catch (error) {
+  12 |             console.error('Error fetching SEO data from Firestore:', error); {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching settings from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at getSettings (lib\settings.ts:68:76)
+    at async Home (app\page.tsx:44:20)
+  66 |         const adminDb = await getAdminDb();
+  67 |         try {
+> 68 |             const doc = await adminDb.collection('config').doc('settings').get();
+     |                                                                            ^
+  69 |             if (!doc.exists) return defaultSettings;
+  70 |             return { ...defaultSettings, ...doc.data() } as SiteSettings;
+  71 |         } catch (error) { {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for navigation from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching SEO data from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at getSEOData (lib\seo.ts:9:71)
+    at async getPageMetadata (lib\seo.ts:90:21)
+   7 |         const { adminDb } = await import('./firebaseAdmin');
+   8 |         try {
+>  9 |             const doc = await adminDb.collection('config').doc('seo').get();
+     |                                                                       ^
+  10 |             return (doc.data() as SEOData) || {};
+  11 |         } catch (error) {
+  12 |             console.error('Error fetching SEO data from Firestore:', error); {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for navigation from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for navigation from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for navigation from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for navigation from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching SEO data from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at getSEOData (lib\seo.ts:9:71)
+    at async getPageMetadata (lib\seo.ts:90:21)
+   7 |         const { adminDb } = await import('./firebaseAdmin');
+   8 |         try {
+>  9 |             const doc = await adminDb.collection('config').doc('seo').get();
+     |                                                                       ^
+  10 |             return (doc.data() as SEOData) || {};
+  11 |         } catch (error) {
+  12 |             console.error('Error fetching SEO data from Firestore:', error); {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for navigation from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for navigation from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for home from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for home from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for testimonials from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching products from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getProducts.revalidate (lib\products.ts:28:100)
+  26 |             const adminDb = await getAdminDb();
+  27 |             try {
+> 28 |                 const snapshot = await adminDb.collection('products').orderBy('createdAt', 'desc').get();
+     |                                                                                                    ^
+  29 |                 return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  30 |                     id: doc.id,
+  31 |                     ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for industries from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching products from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getProducts.revalidate (lib\products.ts:28:100)
+  26 |             const adminDb = await getAdminDb();
+  27 |             try {
+> 28 |                 const snapshot = await adminDb.collection('products').orderBy('createdAt', 'desc').get();
+     |                                                                                                    ^
+  29 |                 return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  30 |                     id: doc.id,
+  31 |                     ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for home from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for services from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for testimonials from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for home from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching popular products (memory-filter workaround): Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getPopularProducts.revalidate (lib\products.ts:56:22)
+  54 |                     .orderBy('createdAt', 'desc')
+  55 |                     .limit(50) 
+> 56 |                     .get();
+     |                      ^
+  57 |                 
+  58 |                 products = snapshot.docs
+  59 |                     .map((doc: QueryDocumentSnapshot<DocumentData>) => ({ {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for home from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for testimonials from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching products from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getProducts.revalidate (lib\products.ts:28:100)
+  26 |             const adminDb = await getAdminDb();
+  27 |             try {
+> 28 |                 const snapshot = await adminDb.collection('products').orderBy('createdAt', 'desc').get();
+     |                                                                                                    ^
+  29 |                 return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  30 |                     id: doc.id,
+  31 |                     ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for services from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for why-choose-us from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for services from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for home from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching popular products (memory-filter workaround): Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getPopularProducts.revalidate (lib\products.ts:56:22)
+  54 |                     .orderBy('createdAt', 'desc')
+  55 |                     .limit(50) 
+> 56 |                     .get();
+     |                      ^
+  57 |                 
+  58 |                 products = snapshot.docs
+  59 |                     .map((doc: QueryDocumentSnapshot<DocumentData>) => ({ {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for home from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching products from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getProducts.revalidate (lib\products.ts:28:100)
+  26 |             const adminDb = await getAdminDb();
+  27 |             try {
+> 28 |                 const snapshot = await adminDb.collection('products').orderBy('createdAt', 'desc').get();
+     |                                                                                                    ^
+  29 |                 return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  30 |                     id: doc.id,
+  31 |                     ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching projects from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getProjects.revalidate (lib\projects.ts:14:22)
+  12 |                     .orderBy('createdAt', 'desc')
+  13 |                     .limit(limitCount)
+> 14 |                     .get();
+     |                      ^
+  15 |                 return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  16 |                     id: doc.id,
+  17 |                     ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching testimonials from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getTestimonials.revalidate (lib\testimonials.ts:14:22)
+  12 |                     .orderBy('createdAt', 'desc')
+  13 |                     .limit(limitCount)
+> 14 |                     .get();
+     |                      ^
+  15 |                 return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  16 |                     id: doc.id,
+  17 |                     ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for services from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for why-choose-us from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for industries from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching testimonials from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getTestimonials.revalidate (lib\testimonials.ts:14:22)
+  12 |                     .orderBy('createdAt', 'desc')
+  13 |                     .limit(limitCount)
+> 14 |                     .get();
+     |                      ^
+  15 |                 return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  16 |                     id: doc.id,
+  17 |                     ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching popular products (memory-filter workaround): Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getPopularProducts.revalidate (lib\products.ts:56:22)
+  54 |                     .orderBy('createdAt', 'desc')
+  55 |                     .limit(50) 
+> 56 |                     .get();
+     |                      ^
+  57 |                 
+  58 |                 products = snapshot.docs
+  59 |                     .map((doc: QueryDocumentSnapshot<DocumentData>) => ({ {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching testimonials from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getTestimonials.revalidate (lib\testimonials.ts:14:22)
+  12 |                     .orderBy('createdAt', 'desc')
+  13 |                     .limit(limitCount)
+> 14 |                     .get();
+     |                      ^
+  15 |                 return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  16 |                     id: doc.id,
+  17 |                     ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for home from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching products from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getProducts.revalidate (lib\products.ts:28:100)
+  26 |             const adminDb = await getAdminDb();
+  27 |             try {
+> 28 |                 const snapshot = await adminDb.collection('products').orderBy('createdAt', 'desc').get();
+     |                                                                                                    ^
+  29 |                 return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  30 |                     id: doc.id,
+  31 |                     ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching popular products (memory-filter workaround): Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getPopularProducts.revalidate (lib\products.ts:56:22)
+  54 |                     .orderBy('createdAt', 'desc')
+  55 |                     .limit(50) 
+> 56 |                     .get();
+     |                      ^
+  57 |                 
+  58 |                 products = snapshot.docs
+  59 |                     .map((doc: QueryDocumentSnapshot<DocumentData>) => ({ {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for why-choose-us from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for services from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for industries from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for services from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching products from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getProducts.revalidate (lib\products.ts:28:100)
+  26 |             const adminDb = await getAdminDb();
+  27 |             try {
+> 28 |                 const snapshot = await adminDb.collection('products').orderBy('createdAt', 'desc').get();
+     |                                                                                                    ^
+  29 |                 return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  30 |                     id: doc.id,
+  31 |                     ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching testimonials from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getTestimonials.revalidate (lib\testimonials.ts:14:22)
+  12 |                     .orderBy('createdAt', 'desc')
+  13 |                     .limit(limitCount)
+> 14 |                     .get();
+     |                      ^
+  15 |                 return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  16 |                     id: doc.id,
+  17 |                     ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for services from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for testimonials from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for home from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for testimonials from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for industries from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for industries from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for industries from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching products from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getProducts.revalidate (lib\products.ts:28:100)
+  26 |             const adminDb = await getAdminDb();
+  27 |             try {
+> 28 |                 const snapshot = await adminDb.collection('products').orderBy('createdAt', 'desc').get();
+     |                                                                                                    ^
+  29 |                 return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  30 |                     id: doc.id,
+  31 |                     ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching products from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getProducts.revalidate (lib\products.ts:28:100)
+  26 |             const adminDb = await getAdminDb();
+  27 |             try {
+> 28 |                 const snapshot = await adminDb.collection('products').orderBy('createdAt', 'desc').get();
+     |                                                                                                    ^
+  29 |                 return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  30 |                     id: doc.id,
+  31 |                     ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching popular products (memory-filter workaround): Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getPopularProducts.revalidate (lib\products.ts:56:22)
+  54 |                     .orderBy('createdAt', 'desc')
+  55 |                     .limit(50) 
+> 56 |                     .get();
+     |                      ^
+  57 |                 
+  58 |                 products = snapshot.docs
+  59 |                     .map((doc: QueryDocumentSnapshot<DocumentData>) => ({ {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for services from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching products from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getProducts.revalidate (lib\products.ts:28:100)
+  26 |             const adminDb = await getAdminDb();
+  27 |             try {
+> 28 |                 const snapshot = await adminDb.collection('products').orderBy('createdAt', 'desc').get();
+     |                                                                                                    ^
+  29 |                 return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  30 |                     id: doc.id,
+  31 |                     ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for home from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for testimonials from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for services from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching popular products (memory-filter workaround): Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getPopularProducts.revalidate (lib\products.ts:56:22)
+  54 |                     .orderBy('createdAt', 'desc')
+  55 |                     .limit(50) 
+> 56 |                     .get();
+     |                      ^
+  57 |                 
+  58 |                 products = snapshot.docs
+  59 |                     .map((doc: QueryDocumentSnapshot<DocumentData>) => ({ {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for testimonials from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching projects from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getProjects.revalidate (lib\projects.ts:14:22)
+  12 |                     .orderBy('createdAt', 'desc')
+  13 |                     .limit(limitCount)
+> 14 |                     .get();
+     |                      ^
+  15 |                 return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  16 |                     id: doc.id,
+  17 |                     ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching products from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getProducts.revalidate (lib\products.ts:28:100)
+  26 |             const adminDb = await getAdminDb();
+  27 |             try {
+> 28 |                 const snapshot = await adminDb.collection('products').orderBy('createdAt', 'desc').get();
+     |                                                                                                    ^
+  29 |                 return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  30 |                     id: doc.id,
+  31 |                     ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching products from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getProducts.revalidate (lib\products.ts:28:100)
+  26 |             const adminDb = await getAdminDb();
+  27 |             try {
+> 28 |                 const snapshot = await adminDb.collection('products').orderBy('createdAt', 'desc').get();
+     |                                                                                                    ^
+  29 |                 return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  30 |                     id: doc.id,
+  31 |                     ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for industries from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for why-choose-us from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for testimonials from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for industries from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching popular products (memory-filter workaround): Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getPopularProducts.revalidate (lib\products.ts:56:22)
+  54 |                     .orderBy('createdAt', 'desc')
+  55 |                     .limit(50) 
+> 56 |                     .get();
+     |                      ^
+  57 |                 
+  58 |                 products = snapshot.docs
+  59 |                     .map((doc: QueryDocumentSnapshot<DocumentData>) => ({ {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for industries from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for home from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for testimonials from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching testimonials from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getTestimonials.revalidate (lib\testimonials.ts:14:22)
+  12 |                     .orderBy('createdAt', 'desc')
+  13 |                     .limit(limitCount)
+> 14 |                     .get();
+     |                      ^
+  15 |                 return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  16 |                     id: doc.id,
+  17 |                     ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for testimonials from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for why-choose-us from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching projects from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getProjects.revalidate (lib\projects.ts:14:22)
+  12 |                     .orderBy('createdAt', 'desc')
+  13 |                     .limit(limitCount)
+> 14 |                     .get();
+     |                      ^
+  15 |                 return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  16 |                     id: doc.id,
+  17 |                     ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for industries from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching projects from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getProjects.revalidate (lib\projects.ts:14:22)
+  12 |                     .orderBy('createdAt', 'desc')
+  13 |                     .limit(limitCount)
+> 14 |                     .get();
+     |                      ^
+  15 |                 return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  16 |                     id: doc.id,
+  17 |                     ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for why-choose-us from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for industries from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for industries from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for testimonials from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching popular products (memory-filter workaround): Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getPopularProducts.revalidate (lib\products.ts:56:22)
+  54 |                     .orderBy('createdAt', 'desc')
+  55 |                     .limit(50) 
+> 56 |                     .get();
+     |                      ^
+  57 |                 
+  58 |                 products = snapshot.docs
+  59 |                     .map((doc: QueryDocumentSnapshot<DocumentData>) => ({ {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for testimonials from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching testimonials from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getTestimonials.revalidate (lib\testimonials.ts:14:22)
+  12 |                     .orderBy('createdAt', 'desc')
+  13 |                     .limit(limitCount)
+> 14 |                     .get();
+     |                      ^
+  15 |                 return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  16 |                     id: doc.id,
+  17 |                     ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching testimonials from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getTestimonials.revalidate (lib\testimonials.ts:14:22)
+  12 |                     .orderBy('createdAt', 'desc')
+  13 |                     .limit(limitCount)
+> 14 |                     .get();
+     |                      ^
+  15 |                 return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  16 |                     id: doc.id,
+  17 |                     ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for industries from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching projects from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getProjects.revalidate (lib\projects.ts:14:22)
+  12 |                     .orderBy('createdAt', 'desc')
+  13 |                     .limit(limitCount)
+> 14 |                     .get();
+     |                      ^
+  15 |                 return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  16 |                     id: doc.id,
+  17 |                     ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for services from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching testimonials from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getTestimonials.revalidate (lib\testimonials.ts:14:22)
+  12 |                     .orderBy('createdAt', 'desc')
+  13 |                     .limit(limitCount)
+> 14 |                     .get();
+     |                      ^
+  15 |                 return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  16 |                     id: doc.id,
+  17 |                     ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching projects from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getProjects.revalidate (lib\projects.ts:14:22)
+  12 |                     .orderBy('createdAt', 'desc')
+  13 |                     .limit(limitCount)
+> 14 |                     .get();
+     |                      ^
+  15 |                 return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  16 |                     id: doc.id,
+  17 |                     ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for why-choose-us from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for industries from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for home from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for home from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching popular products (memory-filter workaround): Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getPopularProducts.revalidate (lib\products.ts:56:22)
+  54 |                     .orderBy('createdAt', 'desc')
+  55 |                     .limit(50) 
+> 56 |                     .get();
+     |                      ^
+  57 |                 
+  58 |                 products = snapshot.docs
+  59 |                     .map((doc: QueryDocumentSnapshot<DocumentData>) => ({ {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for why-choose-us from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching projects from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getProjects.revalidate (lib\projects.ts:14:22)
+  12 |                     .orderBy('createdAt', 'desc')
+  13 |                     .limit(limitCount)
+> 14 |                     .get();
+     |                      ^
+  15 |                 return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  16 |                     id: doc.id,
+  17 |                     ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for why-choose-us from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for services from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching products from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getProducts.revalidate (lib\products.ts:28:100)
+  26 |             const adminDb = await getAdminDb();
+  27 |             try {
+> 28 |                 const snapshot = await adminDb.collection('products').orderBy('createdAt', 'desc').get();
+     |                                                                                                    ^
+  29 |                 return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  30 |                     id: doc.id,
+  31 |                     ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for why-choose-us from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching projects from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getProjects.revalidate (lib\projects.ts:14:22)
+  12 |                     .orderBy('createdAt', 'desc')
+  13 |                     .limit(limitCount)
+> 14 |                     .get();
+     |                      ^
+  15 |                 return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  16 |                     id: doc.id,
+  17 |                     ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for industries from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching products from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getProducts.revalidate (lib\products.ts:28:100)
+  26 |             const adminDb = await getAdminDb();
+  27 |             try {
+> 28 |                 const snapshot = await adminDb.collection('products').orderBy('createdAt', 'desc').get();
+     |                                                                                                    ^
+  29 |                 return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  30 |                     id: doc.id,
+  31 |                     ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching testimonials from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getTestimonials.revalidate (lib\testimonials.ts:14:22)
+  12 |                     .orderBy('createdAt', 'desc')
+  13 |                     .limit(limitCount)
+> 14 |                     .get();
+     |                      ^
+  15 |                 return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  16 |                     id: doc.id,
+  17 |                     ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching projects from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getProjects.revalidate (lib\projects.ts:14:22)
+  12 |                     .orderBy('createdAt', 'desc')
+  13 |                     .limit(limitCount)
+> 14 |                     .get();
+     |                      ^
+  15 |                 return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  16 |                     id: doc.id,
+  17 |                     ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching projects from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getProjects.revalidate (lib\projects.ts:14:22)
+  12 |                     .orderBy('createdAt', 'desc')
+  13 |                     .limit(limitCount)
+> 14 |                     .get();
+     |                      ^
+  15 |                 return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  16 |                     id: doc.id,
+  17 |                     ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching testimonials from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getTestimonials.revalidate (lib\testimonials.ts:14:22)
+  12 |                     .orderBy('createdAt', 'desc')
+  13 |                     .limit(limitCount)
+> 14 |                     .get();
+     |                      ^
+  15 |                 return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  16 |                     id: doc.id,
+  17 |                     ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for services from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching popular products (memory-filter workaround): Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getPopularProducts.revalidate (lib\products.ts:56:22)
+  54 |                     .orderBy('createdAt', 'desc')
+  55 |                     .limit(50) 
+> 56 |                     .get();
+     |                      ^
+  57 |                 
+  58 |                 products = snapshot.docs
+  59 |                     .map((doc: QueryDocumentSnapshot<DocumentData>) => ({ {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching testimonials from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getTestimonials.revalidate (lib\testimonials.ts:14:22)
+  12 |                     .orderBy('createdAt', 'desc')
+  13 |                     .limit(limitCount)
+> 14 |                     .get();
+     |                      ^
+  15 |                 return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  16 |                     id: doc.id,
+  17 |                     ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching popular products (memory-filter workaround): Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getPopularProducts.revalidate (lib\products.ts:56:22)
+  54 |                     .orderBy('createdAt', 'desc')
+  55 |                     .limit(50) 
+> 56 |                     .get();
+     |                      ^
+  57 |                 
+  58 |                 products = snapshot.docs
+  59 |                     .map((doc: QueryDocumentSnapshot<DocumentData>) => ({ {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for why-choose-us from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching products from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getProducts.revalidate (lib\products.ts:28:100)
+  26 |             const adminDb = await getAdminDb();
+  27 |             try {
+> 28 |                 const snapshot = await adminDb.collection('products').orderBy('createdAt', 'desc').get();
+     |                                                                                                    ^
+  29 |                 return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  30 |                     id: doc.id,
+  31 |                     ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for why-choose-us from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for testimonials from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching products from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getProducts.revalidate (lib\products.ts:28:100)
+  26 |             const adminDb = await getAdminDb();
+  27 |             try {
+> 28 |                 const snapshot = await adminDb.collection('products').orderBy('createdAt', 'desc').get();
+     |                                                                                                    ^
+  29 |                 return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  30 |                     id: doc.id,
+  31 |                     ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for why-choose-us from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for services from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for home from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for testimonials from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching popular products (memory-filter workaround): Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getPopularProducts.revalidate (lib\products.ts:56:22)
+  54 |                     .orderBy('createdAt', 'desc')
+  55 |                     .limit(50) 
+> 56 |                     .get();
+     |                      ^
+  57 |                 
+  58 |                 products = snapshot.docs
+  59 |                     .map((doc: QueryDocumentSnapshot<DocumentData>) => ({ {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching popular products (memory-filter workaround): Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getPopularProducts.revalidate (lib\products.ts:56:22)
+  54 |                     .orderBy('createdAt', 'desc')
+  55 |                     .limit(50) 
+> 56 |                     .get();
+     |                      ^
+  57 |                 
+  58 |                 products = snapshot.docs
+  59 |                     .map((doc: QueryDocumentSnapshot<DocumentData>) => ({ {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching testimonials from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getTestimonials.revalidate (lib\testimonials.ts:14:22)
+  12 |                     .orderBy('createdAt', 'desc')
+  13 |                     .limit(limitCount)
+> 14 |                     .get();
+     |                      ^
+  15 |                 return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  16 |                     id: doc.id,
+  17 |                     ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching projects from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getProjects.revalidate (lib\projects.ts:14:22)
+  12 |                     .orderBy('createdAt', 'desc')
+  13 |                     .limit(limitCount)
+> 14 |                     .get();
+     |                      ^
+  15 |                 return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  16 |                     id: doc.id,
+  17 |                     ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for why-choose-us from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching testimonials from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getTestimonials.revalidate (lib\testimonials.ts:14:22)
+  12 |                     .orderBy('createdAt', 'desc')
+  13 |                     .limit(limitCount)
+> 14 |                     .get();
+     |                      ^
+  15 |                 return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  16 |                     id: doc.id,
+  17 |                     ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching products from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getProducts.revalidate (lib\products.ts:28:100)
+  26 |             const adminDb = await getAdminDb();
+  27 |             try {
+> 28 |                 const snapshot = await adminDb.collection('products').orderBy('createdAt', 'desc').get();
+     |                                                                                                    ^
+  29 |                 return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  30 |                     id: doc.id,
+  31 |                     ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for testimonials from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching projects from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getProjects.revalidate (lib\projects.ts:14:22)
+  12 |                     .orderBy('createdAt', 'desc')
+  13 |                     .limit(limitCount)
+> 14 |                     .get();
+     |                      ^
+  15 |                 return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  16 |                     id: doc.id,
+  17 |                     ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching popular products (memory-filter workaround): Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getPopularProducts.revalidate (lib\products.ts:56:22)
+  54 |                     .orderBy('createdAt', 'desc')
+  55 |                     .limit(50) 
+> 56 |                     .get();
+     |                      ^
+  57 |                 
+  58 |                 products = snapshot.docs
+  59 |                     .map((doc: QueryDocumentSnapshot<DocumentData>) => ({ {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching projects from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getProjects.revalidate (lib\projects.ts:14:22)
+  12 |                     .orderBy('createdAt', 'desc')
+  13 |                     .limit(limitCount)
+> 14 |                     .get();
+     |                      ^
+  15 |                 return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  16 |                     id: doc.id,
+  17 |                     ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching projects from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getProjects.revalidate (lib\projects.ts:14:22)
+  12 |                     .orderBy('createdAt', 'desc')
+  13 |                     .limit(limitCount)
+> 14 |                     .get();
+     |                      ^
+  15 |                 return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  16 |                     id: doc.id,
+  17 |                     ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for testimonials from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching popular products (memory-filter workaround): Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getPopularProducts.revalidate (lib\products.ts:56:22)
+  54 |                     .orderBy('createdAt', 'desc')
+  55 |                     .limit(50) 
+> 56 |                     .get();
+     |                      ^
+  57 |                 
+  58 |                 products = snapshot.docs
+  59 |                     .map((doc: QueryDocumentSnapshot<DocumentData>) => ({ {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching projects from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getProjects.revalidate (lib\projects.ts:14:22)
+  12 |                     .orderBy('createdAt', 'desc')
+  13 |                     .limit(limitCount)
+> 14 |                     .get();
+     |                      ^
+  15 |                 return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  16 |                     id: doc.id,
+  17 |                     ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for why-choose-us from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for services from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for industries from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching testimonials from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getTestimonials.revalidate (lib\testimonials.ts:14:22)
+  12 |                     .orderBy('createdAt', 'desc')
+  13 |                     .limit(limitCount)
+> 14 |                     .get();
+     |                      ^
+  15 |                 return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  16 |                     id: doc.id,
+  17 |                     ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching testimonials from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getTestimonials.revalidate (lib\testimonials.ts:14:22)
+  12 |                     .orderBy('createdAt', 'desc')
+  13 |                     .limit(limitCount)
+> 14 |                     .get();
+     |                      ^
+  15 |                 return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  16 |                     id: doc.id,
+  17 |                     ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for services from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching popular products (memory-filter workaround): Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getPopularProducts.revalidate (lib\products.ts:56:22)
+  54 |                     .orderBy('createdAt', 'desc')
+  55 |                     .limit(50) 
+> 56 |                     .get();
+     |                      ^
+  57 |                 
+  58 |                 products = snapshot.docs
+  59 |                     .map((doc: QueryDocumentSnapshot<DocumentData>) => ({ {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching projects from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getProjects.revalidate (lib\projects.ts:14:22)
+  12 |                     .orderBy('createdAt', 'desc')
+  13 |                     .limit(limitCount)
+> 14 |                     .get();
+     |                      ^
+  15 |                 return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  16 |                     id: doc.id,
+  17 |                     ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error fetching testimonials from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getTestimonials.revalidate (lib\testimonials.ts:14:22)
+  12 |                     .orderBy('createdAt', 'desc')
+  13 |                     .limit(limitCount)
+> 14 |                     .get();
+     |                      ^
+  15 |                 return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  16 |                     id: doc.id,
+  17 |                     ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for home from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for home from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for services from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error loading content for why-choose-us from Firestore: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at revalidate (lib\content.ts:8:73)
+   6 |             const { adminDb } = await import('./firebaseAdmin');
+   7 |             try {
+>  8 |                 const doc = await adminDb.collection('pages').doc(page).get();
+     |                                                                         ^
+   9 |                 if (!doc.exists) {
+  10 |                     console.warn(`Content for page "${page}" not found in Firestore.`);
+  11 |                     return null; {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error in popular products fallback: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getPopularProducts.revalidate (lib\products.ts:77:26)
+  75 |                         .orderBy('createdAt', 'desc')
+  76 |                         .limit(limitCount)
+> 77 |                         .get();
+     |                          ^
+  78 |                     products = fallbackSnapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  79 |                         id: doc.id,
+  80 |                         ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error in popular products fallback: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getPopularProducts.revalidate (lib\products.ts:77:26)
+  75 |                         .orderBy('createdAt', 'desc')
+  76 |                         .limit(limitCount)
+> 77 |                         .get();
+     |                          ^
+  78 |                     products = fallbackSnapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  79 |                         id: doc.id,
+  80 |                         ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error in popular products fallback: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getPopularProducts.revalidate (lib\products.ts:77:26)
+  75 |                         .orderBy('createdAt', 'desc')
+  76 |                         .limit(limitCount)
+> 77 |                         .get();
+     |                          ^
+  78 |                     products = fallbackSnapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  79 |                         id: doc.id,
+  80 |                         ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error in popular products fallback: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getPopularProducts.revalidate (lib\products.ts:77:26)
+  75 |                         .orderBy('createdAt', 'desc')
+  76 |                         .limit(limitCount)
+> 77 |                         .get();
+     |                          ^
+  78 |                     products = fallbackSnapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  79 |                         id: doc.id,
+  80 |                         ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error in popular products fallback: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getPopularProducts.revalidate (lib\products.ts:77:26)
+  75 |                         .orderBy('createdAt', 'desc')
+  76 |                         .limit(limitCount)
+> 77 |                         .get();
+     |                          ^
+  78 |                     products = fallbackSnapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  79 |                         id: doc.id,
+  80 |                         ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error in popular products fallback: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getPopularProducts.revalidate (lib\products.ts:77:26)
+  75 |                         .orderBy('createdAt', 'desc')
+  76 |                         .limit(limitCount)
+> 77 |                         .get();
+     |                          ^
+  78 |                     products = fallbackSnapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  79 |                         id: doc.id,
+  80 |                         ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error in popular products fallback: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getPopularProducts.revalidate (lib\products.ts:77:26)
+  75 |                         .orderBy('createdAt', 'desc')
+  76 |                         .limit(limitCount)
+> 77 |                         .get();
+     |                          ^
+  78 |                     products = fallbackSnapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  79 |                         id: doc.id,
+  80 |                         ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error in popular products fallback: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getPopularProducts.revalidate (lib\products.ts:77:26)
+  75 |                         .orderBy('createdAt', 'desc')
+  76 |                         .limit(limitCount)
+> 77 |                         .get();
+     |                          ^
+  78 |                     products = fallbackSnapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  79 |                         id: doc.id,
+  80 |                         ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error in popular products fallback: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getPopularProducts.revalidate (lib\products.ts:77:26)
+  75 |                         .orderBy('createdAt', 'desc')
+  76 |                         .limit(limitCount)
+> 77 |                         .get();
+     |                          ^
+  78 |                     products = fallbackSnapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  79 |                         id: doc.id,
+  80 |                         ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error in popular products fallback: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getPopularProducts.revalidate (lib\products.ts:77:26)
+  75 |                         .orderBy('createdAt', 'desc')
+  76 |                         .limit(limitCount)
+> 77 |                         .get();
+     |                          ^
+  78 |                     products = fallbackSnapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  79 |                         id: doc.id,
+  80 |                         ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error in popular products fallback: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getPopularProducts.revalidate (lib\products.ts:77:26)
+  75 |                         .orderBy('createdAt', 'desc')
+  76 |                         .limit(limitCount)
+> 77 |                         .get();
+     |                          ^
+  78 |                     products = fallbackSnapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  79 |                         id: doc.id,
+  80 |                         ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error in popular products fallback: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getPopularProducts.revalidate (lib\products.ts:77:26)
+  75 |                         .orderBy('createdAt', 'desc')
+  76 |                         .limit(limitCount)
+> 77 |                         .get();
+     |                          ^
+  78 |                     products = fallbackSnapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  79 |                         id: doc.id,
+  80 |                         ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error in popular products fallback: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getPopularProducts.revalidate (lib\products.ts:77:26)
+  75 |                         .orderBy('createdAt', 'desc')
+  76 |                         .limit(limitCount)
+> 77 |                         .get();
+     |                          ^
+  78 |                     products = fallbackSnapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  79 |                         id: doc.id,
+  80 |                         ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error in popular products fallback: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getPopularProducts.revalidate (lib\products.ts:77:26)
+  75 |                         .orderBy('createdAt', 'desc')
+  76 |                         .limit(limitCount)
+> 77 |                         .get();
+     |                          ^
+  78 |                     products = fallbackSnapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  79 |                         id: doc.id,
+  80 |                         ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error in popular products fallback: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getPopularProducts.revalidate (lib\products.ts:77:26)
+  75 |                         .orderBy('createdAt', 'desc')
+  76 |                         .limit(limitCount)
+> 77 |                         .get();
+     |                          ^
+  78 |                     products = fallbackSnapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  79 |                         id: doc.id,
+  80 |                         ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}
+Error in popular products fallback: Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443
+    at <unknown> (Error: 14 UNAVAILABLE: Name resolution failed for target dns:firestore.googleapis.com:443)
+    at module.exports.getPopularProducts.revalidate (lib\products.ts:77:26)
+  75 |                         .orderBy('createdAt', 'desc')
+  76 |                         .limit(limitCount)
+> 77 |                         .get();
+     |                          ^
+  78 |                     products = fallbackSnapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
+  79 |                         id: doc.id,
+  80 |                         ...doc.data() {
+  code: 14,
+  details: 'Name resolution failed for target dns:firestore.googleapis.com:443',
+  metadata: [Metadata]
+}

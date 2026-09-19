@@ -7,6 +7,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { Clock, User, Calendar, ArrowRight } from "lucide-react";
 
+import DecryptText from "@/components/DecryptText";
+
 export const metadata = {
     title: 'Blog - VEALINSA | Insights into 3D Printing & Robotics',
     description: 'Expert insights, tutorials, and latest news from the world of 3D printing and advanced manufacturing.',
@@ -23,7 +25,7 @@ export default async function BlogPage() {
             <div className="dynamic-container pt-12 pb-24">
                 <div className="text-center mb-20">
                     <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-slate-900 dark:text-white mb-6 uppercase tracking-tight leading-none">
-                        Vealinsa <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Insights</span>
+                        <DecryptText text="Vealinsa" scrambleFrames={8} frameMs={30} startDelay={2000} /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500"><DecryptText text="Insights" scrambleFrames={10} frameMs={35} startDelay={2000} /></span>
                     </h1>
                     <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto text-lg md:text-xl font-medium leading-relaxed">
                         Deep dives into the future of manufacturing, robotics kits, and precision engineering.

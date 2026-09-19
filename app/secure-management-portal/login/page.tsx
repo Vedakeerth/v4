@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, Suspense } from "react";
 import { useRouter } from "next/navigation";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Settings } from "lucide-react";
 import Link from "next/link";
 import { signIn, signOut } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
@@ -71,42 +71,38 @@ function LoginContent() {
 
 
     return (
-        <main className="min-h-screen bg-white dark:bg-slate-950 flex items-center justify-center px-4">
-            <div className="w-full max-w-md">
-                <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 shadow-2xl">
+        <main className="min-h-screen bg-slate-950 flex items-center justify-center px-4 relative overflow-hidden">
+            <div className="absolute top-[-20%] left-[-20%] w-[60%] h-[60%] bg-cyan-500/10 blur-[150px] rounded-full pointer-events-none" />
+            <div className="absolute bottom-[-20%] right-[-20%] w-[60%] h-[60%] bg-indigo-500/10 blur-[150px] rounded-full pointer-events-none" />
+            <div className="w-full max-w-md relative z-10">
+                <div className="bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-3xl p-10 shadow-2xl shadow-black/50">
                     <div className="text-center mb-10">
-                        <Link href="/" className="inline-block mb-4">
-                            <h1 className="text-3xl font-bold text-slate-900 dark:text-white tracking-widest">VAELINSA</h1>
-                        </Link>
-                        <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Admin Access</h2>
-                        <p className="text-slate-600 dark:text-slate-400 text-sm">Sign in with your authorized Google account</p>
+                        <div className="w-16 h-16 bg-cyan-500 rounded-2xl flex items-center justify-center shadow-lg shadow-cyan-500/20 mx-auto mb-6">
+                            <Settings className="text-white" size={32} />
+                        </div>
+                        <h1 className="text-3xl font-black text-white tracking-widest">VAELINSA</h1>
+                        <h2 className="text-xl font-bold text-white mb-1 mt-2">Admin Access</h2>
+                        <p className="text-slate-500 text-sm">Sign in with your authorized Google account</p>
                     </div>
 
                     {(error || formError) && (
-                        <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg flex items-center gap-3 text-red-400">
+                        <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center gap-3 text-red-400">
                             <AlertCircle className="h-5 w-5 shrink-0" />
                             <div className="flex flex-col gap-1">
                                 <span className="text-xs font-bold uppercase tracking-wider">Access Error</span>
                                 <span className="text-sm">
                                     {formError || (error === "AccessDenied"
                                         ? "Unauthorized: This Google account does not have admin permissions."
-                                        : "Authentication failed. Please check your credentials or try again later.")}
+                                        : "Authentication failed. Please try again.")}
                                 </span>
-                                {isGoogleLoading && (
-                                    <Link href="/secure-management-portal/dashboard" className="text-[10px] underline hover:text-white mt-1">
-                                        Click here if not redirected automatically
-                                    </Link>
-                                )}
                             </div>
                         </div>
                     )}
 
-
-
                     <button
                         onClick={handleGoogleSignIn}
                         disabled={isGoogleLoading}
-                        className="w-full py-4 bg-white hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed text-slate-900 font-black rounded-xl transition-all duration-200 flex items-center justify-center gap-3 shadow-lg uppercase tracking-widest text-xs"
+                        className="w-full py-3.5 bg-white hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed text-slate-900 font-black rounded-xl transition-all duration-200 flex items-center justify-center gap-3 shadow-lg uppercase tracking-widest text-xs"
                     >
                         {isGoogleLoading ? (
                             <div className="h-5 w-5 border-2 border-slate-900 border-t-transparent rounded-full animate-spin" />
@@ -123,11 +119,11 @@ function LoginContent() {
                         )}
                     </button>
 
-                    <p className="text-[10px] text-slate-500 text-center uppercase tracking-widest mt-8 font-bold">
+                    <p className="text-[10px] text-slate-600 text-center uppercase tracking-widest mt-8 font-bold">
                         Authorized personnel only
                     </p>
 
-                    <div className="mt-10 text-center pt-6 border-t border-slate-200 dark:border-slate-800">
+                    <div className="mt-8 text-center pt-6 border-t border-slate-800">
                         <Link href="/" className="text-sm text-slate-500 hover:text-cyan-400 transition-colors">
                             ← Back to main website
                         </Link>
@@ -141,7 +137,7 @@ function LoginContent() {
 export default function SecureLoginPage() {
     return (
         <Suspense fallback={
-            <main className="min-h-screen bg-white dark:bg-slate-950 flex items-center justify-center p-4">
+            <main className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
                 <div className="h-12 w-12 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin" />
             </main>
         }>

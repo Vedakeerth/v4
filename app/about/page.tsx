@@ -4,6 +4,8 @@ import Link from "next/link";
 import { ArrowRight, Target, Award, Users, ShieldCheck, Compass, Shield } from "lucide-react";
 import type { Metadata } from "next";
 import { getPageMetadata } from "@/lib/seo";
+import ContactClient from "@/app/contact/ContactClient";
+import DecryptText from "@/components/DecryptText";
 
 export const revalidate = 0;
 
@@ -41,7 +43,7 @@ export default function AboutPage() {
   return (
     <main className="min-h-screen bg-white dark:bg-slate-950 pt-20">
       {/* Hero Header */}
-      <section className="relative py-24 md:py-32 overflow-hidden border-b border-slate-200 dark:border-slate-900">
+      <section className="relative pt-12 pb-16 md:pt-16 md:pb-20 overflow-hidden border-b border-slate-200 dark:border-slate-900">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(6,182,212,0.04),transparent_50%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(59,130,246,0.04),transparent_50%)]" />
         <div className="dynamic-container relative z-10 text-center px-4">
@@ -49,7 +51,7 @@ export default function AboutPage() {
             Who We Are
           </span>
           <h1 className="text-4xl md:text-6xl font-extrabold text-slate-900 dark:text-white uppercase tracking-tight max-w-4xl mx-auto leading-tight mb-8">
-            Pioneering the Future of <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Additive Manufacturing</span>
+            <DecryptText text="Pioneering the Future of" scrambleFrames={8} frameMs={30} startDelay={2000} /> <br className="hidden md:block" /><span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500"><DecryptText text="Additive Manufacturing" scrambleFrames={10} frameMs={35} startDelay={2000} /></span>
           </h1>
           <p className="text-slate-600 dark:text-slate-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
             VAELINSA is an India-based advanced rapid prototyping and product development company transforming raw CAD concepts into physical engineering components.
@@ -58,10 +60,10 @@ export default function AboutPage() {
       </section>
 
       {/* Our Mission & Journey */}
-      <section className="py-20 md:py-28 relative">
+      <section className="py-16 md:py-20 relative">
         <div className="dynamic-container px-4 sm:px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div>
+            <div className="px-4 md:px-8 lg:px-12 xl:px-20">
               <span className="text-cyan-500 font-bold uppercase tracking-widest text-xs mb-3 block">
                 Our Story
               </span>
@@ -90,25 +92,27 @@ export default function AboutPage() {
             </div>
             
             {/* Mission Visual Card */}
-            <div className="relative p-8 bg-slate-50 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-900 rounded-3xl overflow-hidden shadow-xl">
-              <div className="absolute top-0 right-0 h-40 w-40 bg-cyan-500/10 blur-3xl rounded-full" />
-              <Shield className="h-12 w-12 text-cyan-500 mb-6" />
-              <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-4 uppercase tracking-tight">Quality Assurance</h3>
-              <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-6">
-                Our team stands apart by enforcing multi-point mechanical inspection on every manufactured component to ensure extreme quality control.
-              </p>
-              <div className="border-t border-slate-200 dark:border-slate-800/80 pt-6 space-y-4">
-                <div className="flex items-center gap-3">
-                  <div className="h-2 w-2 rounded-full bg-cyan-500 shadow-[0_0_8px_rgba(6,182,212,1)]" />
-                  <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">24-Hour Prototyping Turnaround</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="h-2 w-2 rounded-full bg-cyan-500 shadow-[0_0_8px_rgba(6,182,212,1)]" />
-                  <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">Advanced High-Performance Engineering Polymers</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="h-2 w-2 rounded-full bg-cyan-500 shadow-[0_0_8px_rgba(6,182,212,1)]" />
-                  <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">Strict Quality Inspections (Thread Fits & Tolerances)</span>
+            <div className="px-4 md:px-8 lg:px-12 xl:px-20">
+              <div className="relative p-8 md:p-10 bg-slate-50 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-900 rounded-3xl overflow-hidden shadow-xl">
+                <div className="absolute top-0 right-0 h-40 w-40 bg-cyan-500/10 blur-3xl rounded-full" />
+                <Shield className="h-12 w-12 text-cyan-500 mb-6" />
+                <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-4 uppercase tracking-tight">Quality Assurance</h3>
+                <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-6">
+                  Our team stands apart by enforcing multi-point mechanical inspection on every manufactured component to ensure extreme quality control.
+                </p>
+                <div className="border-t border-slate-200 dark:border-slate-800/80 pt-6 space-y-4">
+                  <div className="flex items-center gap-3">
+                    <div className="h-2 w-2 rounded-full bg-cyan-500 shadow-[0_0_8px_rgba(6,182,212,1)]" />
+                    <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">24-Hour Prototyping Turnaround</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="h-2 w-2 rounded-full bg-cyan-500 shadow-[0_0_8px_rgba(6,182,212,1)]" />
+                    <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">Advanced High-Performance Engineering Polymers</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="h-2 w-2 rounded-full bg-cyan-500 shadow-[0_0_8px_rgba(6,182,212,1)]" />
+                    <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">Strict Quality Inspections (Thread Fits & Tolerances)</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -117,7 +121,7 @@ export default function AboutPage() {
       </section>
 
       {/* Mission & Vision Section */}
-      <section className="py-20 md:py-28 relative overflow-hidden border-t border-slate-200 dark:border-slate-900 bg-slate-50/50 dark:bg-slate-950">
+      <section className="py-16 md:py-20 relative overflow-hidden border-t border-slate-200 dark:border-slate-900 bg-slate-50/50 dark:bg-slate-950">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(6,182,212,0.03),transparent_70%)]" />
         <div className="dynamic-container px-4 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
@@ -159,7 +163,7 @@ export default function AboutPage() {
       </section>
 
       {/* Pillars Section */}
-      <section className="py-20 md:py-28 bg-slate-50 dark:bg-slate-900/20 border-t border-b border-slate-200 dark:border-slate-900 relative">
+      <section className="py-16 md:py-20 bg-slate-50 dark:bg-slate-900/20 border-t border-b border-slate-200 dark:border-slate-900 relative">
         <div className="dynamic-container px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white uppercase tracking-tight">
@@ -187,6 +191,7 @@ export default function AboutPage() {
         </div>
       </section>
 
+      <ContactClient />
       <Footer />
     </main>
   );

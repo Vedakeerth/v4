@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { Skeleton } from "./Skeleton";
+import DecryptText from "./DecryptText";
 
 interface HeroData {
     hero: {
@@ -30,80 +31,35 @@ interface HeroProps {
 
 export default function Hero({ content }: HeroProps) {
     const [isLoading, setIsLoading] = useState(false);
-    const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
     const heroRef = useRef<HTMLDivElement>(null);
-    const textRef = useRef<HTMLSpanElement>(null);
-    const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
+    const phrases = content?.phrases?.length ? content.phrases : ["On Demand", "Precision", "Innovation", "Excellence"];
+    const [currentPhrase, setCurrentPhrase] = useState(phrases[0]);
+
+    const HOLD_MS = 2200;    // how long the phrase is visible
+    const BLANK_MS = 350;    // gap between phrases (DecryptText scrambles out)
 
     useEffect(() => {
-        // Initial delay
-        const timer = setTimeout(() => { }, 600);
+        let idx = 0;
+        let timer: ReturnType<typeof setTimeout>;
+
+        const cycle = () => {
+            // Blank out — DecryptText will scramble-out all chars
+            setCurrentPhrase("");
+            timer = setTimeout(() => {
+                // Show next phrase — DecryptText will scramble-in all chars
+                idx = (idx + 1) % phrases.length;
+                setCurrentPhrase(phrases[idx]);
+                timer = setTimeout(cycle, HOLD_MS);
+            }, BLANK_MS);
+        };
+
+        // Initial hold, then start cycling
+        timer = setTimeout(cycle, HOLD_MS);
         return () => clearTimeout(timer);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-
-    useEffect(() => {
-        if (isLoading || !textRef.current) return;
-
-        // Start animation after a brief delay
-        const startAnimation = () => {
-            let index = 0;
-
-            const animateText = () => {
-                // Fade out animation
-                setTimeout(() => {
-                    if (textRef.current) {
-                        textRef.current.classList.add('text-animate-out');
-                    }
-                }, 0);
-
-                // Change text after scroll out
-                setTimeout(() => {
-                    const phrases = content?.phrases || ["Innovation", "Precision", "Excellence"];
-                    index = (index + 1) % phrases.length;
-                    setCurrentPhraseIndex(index);
-
-                    if (textRef.current) {
-                        textRef.current.classList.remove('text-animate-out');
-                        textRef.current.classList.add('text-animate-in');
-                    }
-                }, 200);
-
-                // Remove animation class after animation completes
-                setTimeout(() => {
-                    if (textRef.current) {
-                        textRef.current.classList.remove('text-animate-in');
-                    }
-                }, 400);
-            };
-
-            // Initial delay
-            const initialDelay = setTimeout(() => {
-                animateText();
-
-                // Set up interval for continuous animation
-                intervalRef.current = setInterval(() => {
-                    animateText();
-                }, 2800); // Total cycle: 0.2s out + 0.2s in + 2.4s hold
-            }, 1000);
-
-            return () => {
-                clearTimeout(initialDelay);
-                if (intervalRef.current) {
-                    clearInterval(intervalRef.current);
-                }
-            };
-        };
-
-        const cleanup = startAnimation();
-
-        return () => {
-            cleanup();
-            if (intervalRef.current) {
-                clearInterval(intervalRef.current);
-            }
-        };
-    }, [isLoading]);
 
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
         if (heroRef.current) {
@@ -152,21 +108,14 @@ export default function Hero({ content }: HeroProps) {
                         <h2 className="text-blue-500 font-medium tracking-wide mb-4 uppercase text-sm">{content?.subtitle || "Vaelinsa"}</h2>
                         <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-slate-900 dark:text-white mb-2">
                             {content?.titleMain || "Future of Technology"} <br />
-                            <span
-                                ref={textRef}
-                                className="inline-block text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-blue-500 to-indigo-500 min-w-fit md:min-w-[400px] mt-4 pb-4 relative animated-gradient-text"
-                                style={{
-                                    willChange: 'transform, opacity',
-                                    transformOrigin: 'center center',
-                                    display: 'inline-block',
-                                    overflow: 'hidden',
-                                    height: '1.2em',
-                                    lineHeight: '1.2em'
-                                }}
-                            >
-                                <span style={{ display: 'inline-block' }}>
-                                    {(content?.phrases || ["Precision", "Innovation", "Efficiency"])[currentPhraseIndex]}
-                                </span>
+                            <span className="inline-block mt-4 pb-4 min-h-[1.2em]">
+                                <DecryptText
+                                    text={currentPhrase}
+                                    scrambleFrames={8}
+                                    frameMs={28}
+                                    startDelay={2000}
+                                    className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-blue-500 to-indigo-500 animated-gradient-text"
+                                />
                             </span>
                         </h1>
                         <p className="text-slate-700 dark:text-slate-400 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
@@ -176,15 +125,15 @@ export default function Hero({ content }: HeroProps) {
                         <div className="flex flex-col gap-4 justify-center items-center w-fit mx-auto">
                             <div className="flex flex-col sm:flex-row gap-4 justify-center items-stretch w-full">
                                 <Link href="/gallery" className="w-full sm:flex-1">
-                                    <button className="w-full group relative inline-flex h-12 items-center justify-center overflow-hidden rounded-md bg-blue-600 px-8 font-medium text-white transition-all duration-300 hover:bg-blue-500 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-slate-900">
-                                        <span className="mr-2">Gallery</span>
-                                        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                                        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-blue-600 to-indigo-600 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                                    <button className="w-full group relative inline-flex h-12 items-center justify-center overflow-hidden rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 px-8 font-medium text-white transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-blue-500/25 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-slate-900">
+                                        <span className="mr-2 relative z-10">Gallery</span>
+                                        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1 relative z-10" />
+                                        <div className="absolute inset-0 -z-0 bg-gradient-to-r from-blue-400 to-indigo-600 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
                                     </button>
                                 </Link>
 
                                 <Link href={content?.secondaryCta?.link || "/contact"} className="w-full sm:flex-1">
-                                    <button className="w-full whitespace-nowrap inline-flex h-12 items-center justify-center rounded-md border border-slate-300 dark:border-slate-700 bg-transparent px-8 font-medium text-slate-700 dark:text-slate-300 transition-colors hover:bg-slate-200 dark:bg-slate-800 hover:text-slate-900 dark:hover:text-white focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-900">
+                                    <button className="w-full whitespace-nowrap inline-flex h-12 items-center justify-center rounded-full border border-slate-300 dark:border-slate-700 bg-transparent px-8 font-medium text-slate-700 dark:text-slate-300 transition-colors hover:bg-slate-200 dark:bg-slate-800 hover:text-slate-900 dark:hover:text-white focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-900">
                                         {content?.secondaryCta?.text || "Contact Us"}
                                     </button>
                                 </Link>
@@ -194,7 +143,7 @@ export default function Hero({ content }: HeroProps) {
                                 <Link href={content?.primaryCta?.link || "/quote"} className="w-full">
                                     <div className="relative w-full group">
                                         {/* Outer pulsing glow ring */}
-                                        <div className="absolute -inset-[3px] rounded-xl bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500 opacity-75 blur-sm animate-pulse group-hover:opacity-100 group-hover:blur-md transition-all duration-500" />
+                                        <div className="absolute -inset-[3px] rounded-full bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500 opacity-75 blur-sm animate-pulse group-hover:opacity-100 group-hover:blur-md transition-all duration-500" />
 
                                         {/* Sparkle particles */}
                                         <div className="absolute -top-2 left-[15%] w-1.5 h-1.5 rounded-full bg-cyan-300 animate-bounce" style={{ animationDelay: '0s', animationDuration: '1.4s' }} />
@@ -204,7 +153,7 @@ export default function Hero({ content }: HeroProps) {
                                         <div className="absolute -bottom-2 right-[30%] w-1.5 h-1.5 rounded-full bg-cyan-400 animate-bounce" style={{ animationDelay: '0.5s', animationDuration: '1.5s' }} />
 
                                         <button
-                                            className="relative w-full h-14 rounded-xl bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-600 font-black tracking-widest uppercase text-white text-sm overflow-hidden transition-all duration-300 group-hover:scale-[1.03] group-hover:shadow-2xl group-hover:shadow-cyan-500/40 shadow-lg shadow-blue-500/30 animate-[breathe_3s_ease-in-out_infinite] focus:outline-none focus:ring-2 focus:ring-cyan-400"
+                                            className="relative w-full h-14 rounded-full bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-600 font-black tracking-widest uppercase text-white dark:text-black text-sm overflow-hidden transition-all duration-300 group-hover:scale-[1.03] group-hover:shadow-2xl group-hover:shadow-cyan-500/40 shadow-lg shadow-blue-500/30 animate-[breathe_3s_ease-in-out_infinite] focus:outline-none focus:ring-2 focus:ring-cyan-400"
                                             style={{ animationName: 'breathe' }}
                                         >
                                             {/* Shimmer sweep */}
@@ -214,15 +163,15 @@ export default function Hero({ content }: HeroProps) {
                                             <span className="absolute inset-0 bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
                                             {/* Content */}
-                                            <span className="relative z-10 flex items-center justify-center gap-3">
-                                                <span className="text-base">{content?.primaryCta?.text || "Get a Quote"}</span>
-                                                <ArrowRight className="h-5 w-5 transition-all duration-300 group-hover:translate-x-2 group-hover:scale-110" />
+                                            <span className="relative z-10 flex items-center justify-center gap-3 !text-white dark:!text-black">
+                                                <span className="text-base !text-white dark:!text-black">{content?.primaryCta?.text || "Get a Quote"}</span>
+                                                <ArrowRight className="h-5 w-5 transition-all duration-300 group-hover:translate-x-2 group-hover:scale-110 !text-white dark:!text-black" />
                                             </span>
                                         </button>
                                     </div>
                                 </Link>
                                 <p className="text-[13px] font-medium text-slate-500 dark:text-slate-400 mt-3 animate-pulse">
-                                    ✦ For custom prints of your part ✦
+                                    For custom prints of your part
                                 </p>
                             </div>
                         </div>

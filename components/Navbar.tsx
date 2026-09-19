@@ -28,36 +28,37 @@ export default function Navbar() {
         getSettings().then(setSettings);
     }, []);
 
-    const databaseLinks = settings?.navbarLinks?.filter(l => l.isActive !== false);
-    let navLinks = databaseLinks || [
-        { name: "Services", href: "/services" },
-        { name: "Blog", href: "/blog" },
-        { name: "Gallery", href: "/gallery" },
-        { name: "About Us", href: "/about" },
-        { name: "Contact", href: "/contact" },
-        { name: "Track Order", href: "/track-order" },
-    ];
+    const targetOrder = ["/gallery", "/services", "/blog", "/about", "/track-order"];
 
-    if (databaseLinks && !databaseLinks.some(l => l.href === "/about")) {
-        const contactIndex = navLinks.findIndex(l => l.href === "/contact");
-        if (contactIndex !== -1) {
-            navLinks = [
-                ...navLinks.slice(0, contactIndex),
-                { name: "About Us", href: "/about" },
-                ...navLinks.slice(contactIndex)
-            ];
-        } else {
-            navLinks = [...navLinks, { name: "About Us", href: "/about" }];
-        }
+    // Filter database links: remove /contact, keep only recognized hrefs
+    const databaseLinks = settings?.navbarLinks
+        ?.filter(l => l.isActive !== false && l.href !== "/contact")
+        ?.map(l => ({
+            ...l,
+            href: l.href === "/features" || l.href === "/products" ? "/gallery" : l.href,
+            name: l.name === "Features" ? "Gallery" : l.name,
+        }))
+        ?.filter(l => targetOrder.includes(l.href));
+
+    let navLinks: { name: string; href: string }[] = databaseLinks?.length
+        ? databaseLinks
+        : [
+            { name: "Gallery", href: "/gallery" },
+            { name: "Services", href: "/services" },
+            { name: "Blog", href: "/blog" },
+            { name: "About Us", href: "/about" },
+            { name: "Track Order", href: "/track-order" },
+          ];
+
+    // Ensure About Us is always present
+    if (!navLinks.some(l => l.href === "/about")) {
+        navLinks = [...navLinks, { name: "About Us", href: "/about" }];
     }
 
-    const targetOrder = ["/services", "/gallery", "/about", "/blog", "/contact", "/track-order"];
-    const getLinkOrder = (href: string) => {
-        const normalized = href === "/features" || href === "/products" ? "/gallery" : href;
-        const index = targetOrder.indexOf(normalized);
-        return index !== -1 ? index : 999;
-    };
-    navLinks = [...navLinks].sort((a, b) => getLinkOrder(a.href) - getLinkOrder(b.href));
+    // Sort by target order
+    navLinks = [...navLinks].sort(
+        (a, b) => targetOrder.indexOf(a.href) - targetOrder.indexOf(b.href)
+    );
 
     const ctaData = { text: "Get Quote", href: "/quote" };
 
@@ -134,10 +135,10 @@ export default function Navbar() {
                             {navLinks.map((link) => (
                                 <Link
                                     key={link.name}
-                                    href={link.href === "/features" ? "/gallery" : link.href}
+                                    href={link.href}
                                     className="text-sm font-bold text-slate-700 dark:text-slate-300 hover:text-cyan-400 transition-colors uppercase tracking-widest"
                                 >
-                                    {link.name === "Features" ? "Gallery" : link.name}
+                                    {link.name}
                                 </Link>
                             ))}
                         </nav>
@@ -146,7 +147,7 @@ export default function Navbar() {
                         <div className="flex-1 flex items-center justify-end gap-2 md:gap-4">
                             <ThemeToggle />
                             <Link href={ctaData.href} className="hidden sm:block">
-                                <button className="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-2 px-6 rounded-full text-[10px] uppercase tracking-widest transition-all shadow-[0_0_20px_rgba(6,182,212,0.3)] hover:shadow-[0_0_30px_rgba(6,182,212,0.5)] active:scale-95">
+                                <button className="bg-cyan-500 hover:bg-cyan-400 text-white dark:text-black font-bold py-2 px-6 rounded-full text-[10px] uppercase tracking-widest transition-all shadow-[0_0_20px_rgba(6,182,212,0.3)] hover:shadow-[0_0_30px_rgba(6,182,212,0.5)] active:scale-95">
                                     {ctaData.text}
                                 </button>
                             </Link>
@@ -195,15 +196,15 @@ export default function Navbar() {
                                     {navLinks.map((link) => (
                                         <Link
                                             key={link.name}
-                                            href={link.href === "/features" ? "/gallery" : link.href}
+                                            href={link.href}
                                             onClick={() => setIsMenuOpen(false)}
                                             className="text-lg font-medium text-slate-700 dark:text-slate-300 hover:text-cyan-400 transition-colors py-2"
                                         >
-                                            {link.name === "Features" ? "Gallery" : link.name}
+                                            {link.name}
                                         </Link>
                                     ))}
                                     <Link href={ctaData.href} onClick={() => setIsMenuOpen(false)} className="mt-4">
-                                        <button className="w-full bg-cyan-500 text-slate-950 font-bold py-3 rounded-xl transition-colors">
+                                        <button className="w-full bg-cyan-500 text-white dark:text-black font-bold py-3 rounded-xl transition-colors">
                                             {ctaData.text}
                                         </button>
                                     </Link>

@@ -7,6 +7,7 @@ import { getPageContent } from "@/lib/content";
 import { getProducts } from "@/lib/products";
 import GalleryGrid from "@/components/GalleryGrid";
 import { getPageMetadata } from "@/lib/seo";
+import DecryptText from "@/components/DecryptText";
 import { Metadata } from "next";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -25,7 +26,7 @@ export default async function GalleryPage() {
                     {/* Header */}
                     <div className="text-center mb-8">
                         <h1 className="text-2xl md:text-5xl font-extrabold text-slate-900 dark:text-white mb-4 uppercase tracking-tight">
-                            {pageData?.header.title}
+                            <DecryptText text={pageData?.header.title || "Gallery"} scrambleFrames={8} frameMs={30} startDelay={2000} />
                         </h1>
                         <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto text-sm md:text-lg">
                             {pageData?.header.description}
@@ -52,7 +53,7 @@ export default async function GalleryPage() {
                             {pageData?.cta.description}
                         </p>
                         <Link href={pageData?.cta.buttonLink || "/quote"}>
-                            <button className="inline-flex h-14 items-center justify-center rounded-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 px-10 text-lg font-bold transition-all duration-200 hover:scale-105 shadow-[0_0_20px_rgba(6,182,212,0.3)] hover:shadow-[0_0_30px_rgba(6,182,212,0.5)] focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 focus:ring-offset-slate-950">
+                            <button className="inline-flex h-14 items-center justify-center rounded-full bg-cyan-500 hover:bg-cyan-400 text-white px-10 text-lg font-bold transition-all duration-200 hover:scale-105 shadow-[0_0_20px_rgba(6,182,212,0.3)] hover:shadow-[0_0_30px_rgba(6,182,212,0.5)] focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 focus:ring-offset-slate-950">
                                 {pageData?.cta.buttonText}
                                 <ArrowRight className="ml-2 h-5 w-5" />
                             </button>

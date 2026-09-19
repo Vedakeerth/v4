@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { google } from 'googleapis';
-import { Readable } from 'stream';
 import { getAuthSession } from '@/lib/auth';
+import { uploadFileToDrive } from '@/lib/driveUpload';
 
 /**
  * GOOGLE DRIVE PERSONAL UPLOAD SYSTEM (OAuth2 via NextAuth)
@@ -84,34 +84,15 @@ export async function POST(req: NextRequest) {
             targetFolderId = 'root';
         }
 
-        // 5. Convert file to Buffer then Stream
-        const buffer = Buffer.from(await file.arrayBuffer());
-        const stream = Readable.from(buffer);
-
+        // 5. Upload via shared helper
         console.log(`🚀 Uploading to Drive: ${file.name}...`);
 
-        const res = await drive.files.create({
-            requestBody: {
-                name: file.name,
-                parents: [targetFolderId!],
-            },
-            media: {
-                mimeType: file.type,
-                body: stream,
-            },
-            fields: 'id, name, webViewLink, webContentLink',
-        });
-
-        console.log(`✅ Upload successful: ${res.data.id}`);
+        const fileId = await uploadFileToDrive(drive, file, targetFolderId!, file.name);
 
         return Response.json({ 
             success: true, 
-            fileId: res.data.id, 
-            webViewLink: res.data.webViewLink,
-            name: res.data.name,
-            data: {
-                files: [{ id: res.data.id, link: res.data.webViewLink }]
-            }
+            fileId,
+            name: file.name,
         });
 
     } catch (error: any) {

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect } from "react";
 import { Save, ToggleLeft, ToggleRight, Settings as SettingsIcon, Mail, Phone, MapPin, Layout, Info } from "lucide-react";
@@ -91,7 +91,7 @@ export default function SettingsTab() {
                 <button
                     onClick={handleSave}
                     disabled={isSaving}
-                    className="px-8 py-3 bg-cyan-500 text-slate-950 font-black rounded-2xl shadow-xl shadow-cyan-500/20 hover:scale-[1.05] active:scale-[0.98] transition-all flex items-center gap-2 disabled:opacity-50 uppercase tracking-widest text-xs"
+                    className="px-8 py-3 bg-cyan-500 text-white dark:text-slate-950 font-black rounded-2xl shadow-xl shadow-cyan-500/20 hover:scale-[1.05] active:scale-[0.98] transition-all flex items-center gap-2 disabled:opacity-50 uppercase tracking-widest text-xs"
                 >
                     <Save size={18} />
                     {isSaving ? "Saving..." : "Save Changes"}

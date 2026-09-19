@@ -47,8 +47,8 @@ describe('uploadFileToDrive', () => {
     };
   });
 
-  // Import the function from route.ts
-  const { uploadFileToDrive } = require('../route');
+  // Import the function from the shared helper module
+  const { uploadFileToDrive } = require('@/lib/driveUpload');
 
   describe('Successful upload', () => {
     it('should upload a file successfully and return file ID', async () => {

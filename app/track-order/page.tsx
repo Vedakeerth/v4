@@ -8,6 +8,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Metadata } from "next";
 import Recaptcha from "@/components/Recaptcha";
+import DecryptText from "@/components/DecryptText";
 
 // Metadata moved to layout or parent for App Router compatibility in "use client" files
 
@@ -81,7 +82,7 @@ export default function TrackOrderPage() {
                             transition={{ delay: 0.1 }}
                             className="text-4xl md:text-6xl font-extrabold uppercase tracking-tight mb-6 text-slate-900 dark:text-white"
                         >
-                            Track Your <span className="text-cyan-500 dark:text-cyan-400">Order</span>
+                            <DecryptText text="Track Your" scrambleFrames={8} frameMs={30} startDelay={2000} /> <span className="text-cyan-500 dark:text-cyan-400"><DecryptText text="Order" scrambleFrames={10} frameMs={35} startDelay={2000} /></span>
                         </motion.h1>
                         <motion.p 
                             initial={{ opacity: 0, y: 20 }}

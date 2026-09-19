@@ -55,7 +55,7 @@ export default function CTA({ content }: CTAProps) {
                             {content?.description || "Get high-precision engineering parts delivered with unmatched quality and speed."}
                         </p>
                         <Link href={content?.buttonLink || "/quote"}>
-                            <button className="inline-flex h-14 items-center justify-center rounded-full bg-white px-10 text-lg font-bold text-slate-900 transition-transform duration-200 hover:scale-105 hover:bg-cyan-50 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-slate-900">
+                            <button className="inline-flex h-14 items-center justify-center rounded-full bg-white dark:bg-slate-950 px-10 text-lg font-bold text-slate-900 dark:text-white transition-transform duration-200 hover:scale-105 hover:bg-slate-50 dark:hover:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 focus:ring-offset-slate-900 border border-slate-200 dark:border-slate-800">
                                 {content?.buttonText || "Get a Quote"}
                                 <ArrowRight className="ml-2 h-5 w-5" />
                             </button>

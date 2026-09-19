@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import Footer from "@/components/Footer";
+
+import GlobeCanvas from "@/components/GlobeCanvas";
 import { Mail, Phone, MapPin, Clock, Send, Instagram, Facebook, Linkedin, Twitter, Youtube, Loader2, CheckCircle2, Share2, MessageCircle } from "lucide-react";
 import { getSocials, type SocialLink } from "@/lib/socials";
 
@@ -68,8 +69,16 @@ export default function ContactClient() {
   };
 
   return (
-    <main className="min-h-screen bg-white dark:bg-slate-950 pt-32 pb-20">
-      <div className="dynamic-container px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24">
+    <main className="min-h-screen bg-white dark:bg-slate-950 pt-32 pb-20 relative overflow-hidden">
+      {/* Background Rotating Globe */}
+      <div
+        className="absolute top-1/2 left-0 -translate-x-1/3 -translate-y-1/2 pointer-events-none select-none opacity-15"
+        style={{ zIndex: 0 }}
+      >
+        <GlobeCanvas size={800} />
+      </div>
+      
+      <div className="dynamic-container px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 relative z-10">
         <div className="w-full max-w-6xl mx-auto">
           {/* Header */}
           <div className="text-center mb-16">
@@ -159,7 +168,7 @@ export default function ContactClient() {
                   <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-2">
-                        <label htmlFor="name" className="text-sm font-medium text-slate-600 dark:text-slate-400 ml-1">Full Name</label>
+                        <label htmlFor="name" className="text-sm font-medium text-slate-600 dark:text-slate-400 ml-1">Full Name<span className="text-red-500 ml-1">*</span></label>
                         <input
                           type="text"
                           id="name"
@@ -167,12 +176,11 @@ export default function ContactClient() {
                           required
                           value={formData.name}
                           onChange={handleChange}
-                          placeholder="John Doe"
                           className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 transition-all"
                         />
                       </div>
                       <div className="space-y-2">
-                        <label htmlFor="email" className="text-sm font-medium text-slate-600 dark:text-slate-400 ml-1">Email Address</label>
+                        <label htmlFor="email" className="text-sm font-medium text-slate-600 dark:text-slate-400 ml-1">Email Address<span className="text-red-500 ml-1">*</span></label>
                         <input
                           type="email"
                           id="email"
@@ -180,27 +188,26 @@ export default function ContactClient() {
                           required
                           value={formData.email}
                           onChange={handleChange}
-                          placeholder="john@example.com"
                           className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 transition-all"
                         />
                       </div>
                     </div>
 
                     <div className="space-y-2">
-                      <label htmlFor="phone" className="text-sm font-medium text-slate-600 dark:text-slate-400 ml-1">Phone Number (Optional)</label>
+                      <label htmlFor="phone" className="text-sm font-medium text-slate-600 dark:text-slate-400 ml-1">Phone Number<span className="text-red-500 ml-1">*</span></label>
                       <input
                         type="tel"
                         id="phone"
                         name="phone"
+                        required
                         value={formData.phone}
                         onChange={handleChange}
-                        placeholder="+91 89035 95542"
                         className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 transition-all"
                       />
                     </div>
 
                     <div className="space-y-2">
-                      <label htmlFor="message" className="text-sm font-medium text-slate-600 dark:text-slate-400 ml-1">Your Message</label>
+                      <label htmlFor="message" className="text-sm font-medium text-slate-600 dark:text-slate-400 ml-1">Your Message<span className="text-red-500 ml-1">*</span></label>
                       <textarea
                         id="message"
                         name="message"
@@ -208,7 +215,6 @@ export default function ContactClient() {
                         rows={5}
                         value={formData.message}
                         onChange={handleChange}
-                        placeholder="Tell us about your project..."
                         className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 transition-all resize-none"
                       ></textarea>
                     </div>
@@ -260,9 +266,6 @@ export default function ContactClient() {
             </div>
           </div>
         </div>
-      </div>
-      <div className="mt-20">
-        <Footer />
       </div>
     </main>
   );

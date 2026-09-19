@@ -269,7 +269,7 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                                         className={cn(
                                             "flex-1 py-2 text-xs font-bold rounded-lg border transition-all",
                                             itemsPerPage === num
-                                                ? "bg-cyan-500 border-cyan-400 text-slate-950"
+                                                ? "bg-cyan-500 border-cyan-400 text-white"
                                                 : "bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:border-slate-700"
                                         )}
                                     >
@@ -332,7 +332,7 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                         </p>
                         <button
                             onClick={() => router.push('/quote?source=gallery')}
-                            className="w-full py-2.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 rounded-lg text-xs font-black transition-all shadow-[0_4px_12px_rgba(6,182,212,0.3)]"
+                            className="w-full py-2.5 bg-cyan-500 hover:bg-cyan-400 text-white rounded-lg text-xs font-black transition-all shadow-[0_4px_12px_rgba(6,182,212,0.3)]"
                         >
                             GET AI QUOTE
                         </button>
@@ -351,7 +351,7 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                                     onClick={() => setViewMode("grid")}
                                     className={cn(
                                         "p-2 rounded-lg transition-all",
-                                        viewMode === "grid" ? "bg-cyan-500 text-slate-950 shadow-lg shadow-cyan-500/20" : "text-slate-500 hover:text-white"
+                                        viewMode === "grid" ? "bg-cyan-500 text-white shadow-lg shadow-cyan-500/20" : "text-slate-500 hover:text-white"
                                     )}
                                     title="Grid View"
                                 >
@@ -361,7 +361,7 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                                     onClick={() => setViewMode("list")}
                                     className={cn(
                                         "p-2 rounded-lg transition-all",
-                                        viewMode === "list" ? "bg-cyan-500 text-slate-950 shadow-lg shadow-cyan-500/20" : "text-slate-500 hover:text-white"
+                                        viewMode === "list" ? "bg-cyan-500 text-white shadow-lg shadow-cyan-500/20" : "text-slate-500 hover:text-white"
                                     )}
                                     title="List View"
                                 >
@@ -503,7 +503,7 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                                                             addToCart(part);
                                                             setIsCartOpen(true);
                                                         }}
-                                                        className="bg-cyan-500 hover:bg-cyan-400 text-slate-950 p-3.5 rounded-2xl transition-all shadow-[0_4px_12px_rgba(6,182,212,0.3)] hover:shadow-[0_4px_25px_rgba(6,182,212,0.5)] hover:-translate-y-1 active:translate-y-0"
+                                                        className="bg-cyan-500 hover:bg-cyan-400 text-white p-3.5 rounded-2xl transition-all shadow-[0_4px_12px_rgba(6,182,212,0.3)] hover:shadow-[0_4px_25px_rgba(6,182,212,0.5)] hover:-translate-y-1 active:translate-y-0"
                                                         title="Add to AI Quote Cart"
                                                     >
                                                         <ShoppingCart className="h-5 w-5" />
@@ -534,7 +534,7 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                                                 className={cn(
                                                     "w-10 h-10 rounded-xl font-bold text-sm transition-all",
                                                     currentPage === i + 1
-                                                        ? "bg-cyan-500 text-slate-950 shadow-lg shadow-cyan-500/20"
+                                                        ? "bg-cyan-500 text-white shadow-lg shadow-cyan-500/20"
                                                         : "bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:border-slate-700 hover:text-slate-900 dark:text-white"
                                                 )}
                                             >

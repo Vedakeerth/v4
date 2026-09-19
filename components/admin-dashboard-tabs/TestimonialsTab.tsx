@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect } from "react";
 import { Plus, Edit, Trash2, X, Star } from "lucide-react";
@@ -98,7 +98,7 @@ export default function TestimonialsTab() {
                 <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Testimonials</h2>
                 <button
                     onClick={() => openModal()}
-                    className="px-6 py-3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-xl flex items-center gap-2 shadow-lg shadow-cyan-500/20 transition-all"
+                    className="px-6 py-3 bg-cyan-500 hover:bg-cyan-400 text-white dark:text-slate-950 font-bold rounded-xl flex items-center gap-2 shadow-lg shadow-cyan-500/20 transition-all"
                 >
                     <Plus size={20} /> Add Testimonial
                 </button>
@@ -193,7 +193,7 @@ export default function TestimonialsTab() {
                             />
                             <button
                                 onClick={handleSave}
-                                className="w-full py-4 bg-cyan-500 text-slate-950 font-black rounded-2xl shadow-lg shadow-cyan-500/20"
+                                className="w-full py-4 bg-cyan-500 text-white dark:text-slate-950 font-black rounded-2xl shadow-lg shadow-cyan-500/20"
                             >
                                 Save Testimonial
                             </button>
