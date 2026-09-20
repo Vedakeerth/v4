@@ -11,7 +11,7 @@ export async function GET(req: NextRequest) {
     try {
         const buffer = await getFileBufferFromMega(url);
         
-        return new NextResponse(buffer, {
+        return new NextResponse(buffer as any, {
             headers: {
                 "Content-Type": "image/jpeg",
                 "Cache-Control": "public, max-age=31536000, immutable", // Cache for 1 year
