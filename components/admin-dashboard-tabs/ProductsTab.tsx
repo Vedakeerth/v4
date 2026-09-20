@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, Edit, Trash2, Upload, X, LogOut, Search, ArrowLeft, Star } from "lucide-react";
+import { Plus, Edit, Trash2, Upload, X, LogOut, Search, ArrowLeft, Star, ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import { type Product } from "@/lib/products";
 import CustomDropdown from "../CustomDropdown";
@@ -22,6 +22,13 @@ const getColorName = (color: string) => {
 };
 
 export default function ProductsTab() {
+    const getImageUrl = (url: string) => {
+        if (url && url.includes("mega.nz")) {
+            return `/api/mega-image?url=${encodeURIComponent(url)}`;
+        }
+        return url;
+    };
+
     const [products, setProducts] = useState<Product[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [showAddModal, setShowAddModal] = useState(false);
@@ -61,9 +68,13 @@ export default function ProductsTab() {
     const [isImporting, setIsImporting] = useState(false);
     const [importMode, setImportMode] = useState<"url" | "json" | "csv">("csv");
 
-    // Image Upload State
+    const [manualGalleryUrl, setManualGalleryUrl] = useState("");
+    const [isAddingUrl, setIsAddingUrl] = useState(false);
+
     const [uploadedImages, setUploadedImages] = useState<string[]>([]);
     const [isUploading, setIsUploading] = useState(false);
+    const [uploadProgress, setUploadProgress] = useState<number | null>(null);
+    const [uploadSessionId, setUploadSessionId] = useState<string>("");
 
     useEffect(() => {
         fetchProducts();
@@ -100,43 +111,118 @@ export default function ProductsTab() {
         if (!file) return;
 
         setIsUploading(true);
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = async () => {
-            try {
-                const res = await fetch("/api/upload", {
-                    method: "POST",
-                    body: JSON.stringify({
-                        file: reader.result,
-                        fileName: file.name,
-                    }),
-                });
-                const data = await res.json();
-                if (data.success) {
-                    if (targetField === 'image') {
-                        setFormData(prev => ({ ...prev, image: data.url }));
-                    } else if (targetField === 'gallery') {
-                        const currentImages = formData.images ? formData.images.split(",").map(i => i.trim()).filter(Boolean) : [];
-                        if (index !== undefined && index < currentImages.length) {
-                            currentImages[index] = data.url;
-                        } else {
-                            currentImages.push(data.url);
-                        }
-                        setFormData(prev => ({ ...prev, images: currentImages.join(", ") }));
+        setUploadProgress(0);
+        try {
+            const formDataPayload = new FormData();
+            formDataPayload.append('file', file);
+            formDataPayload.append('quotationID', `image/${uploadSessionId}`);
+            formDataPayload.append('rootFolder', 'website');
+
+            const responseData = await new Promise<any>((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.open("POST", "/api/upload-to-mega", true);
+
+                xhr.upload.onprogress = (event) => {
+                    if (event.lengthComputable) {
+                        const percentComplete = Math.round((event.loaded / event.total) * 100);
+                        setUploadProgress(percentComplete);
                     }
+                };
+
+                xhr.onload = () => {
+                    try {
+                        resolve(JSON.parse(xhr.responseText));
+                    } catch (e) {
+                        reject(new Error("Invalid JSON response"));
+                    }
+                };
+
+                xhr.onerror = () => reject(new Error("Network Error"));
+                xhr.send(formDataPayload);
+            });
+            
+            if (responseData.success) {
+                const uploadedUrl = responseData.data.url;
+                if (targetField === 'image') {
+                    setFormData(prev => ({ ...prev, image: uploadedUrl }));
+                } else if (targetField === 'gallery') {
+                    const currentImages = formData.images ? formData.images.split(",").map(i => i.trim()).filter(Boolean) : [];
+                    if (index !== undefined && index < currentImages.length) {
+                        currentImages[index] = uploadedUrl;
+                    } else {
+                        currentImages.push(uploadedUrl);
+                    }
+                    setFormData(prev => ({ ...prev, images: currentImages.join(", ") }));
                 }
-            } catch (error) {
-                console.error("Upload failed", error);
-            } finally {
-                setIsUploading(false);
+            } else {
+                console.error("Upload error response:", responseData.error);
+                alert("Upload failed: " + responseData.error);
             }
-        };
+        } catch (error) {
+            console.error("Upload failed", error);
+            alert("Upload failed: " + (error as Error).message);
+        } finally {
+            setIsUploading(false);
+            setUploadProgress(null);
+        }
     };
 
     const removeGalleryImage = (index: number) => {
         const currentImages = formData.images.split(",").map(i => i.trim()).filter(Boolean);
         currentImages.splice(index, 1);
         setFormData(prev => ({ ...prev, images: currentImages.join(", ") }));
+    };
+
+    const moveGalleryImage = (index: number, direction: 'left' | 'right') => {
+        const currentImages = formData.images.split(",").map(i => i.trim()).filter(Boolean);
+        if (direction === 'left' && index > 0) {
+            const temp = currentImages[index - 1];
+            currentImages[index - 1] = currentImages[index];
+            currentImages[index] = temp;
+        } else if (direction === 'right' && index < currentImages.length - 1) {
+            const temp = currentImages[index + 1];
+            currentImages[index + 1] = currentImages[index];
+            currentImages[index] = temp;
+        }
+        setFormData(prev => ({ ...prev, images: currentImages.join(", ") }));
+    };
+
+    const handleAddGalleryUrl = async () => {
+        if (!manualGalleryUrl.trim()) return;
+        setIsAddingUrl(true);
+        try {
+            if (manualGalleryUrl.includes("mega.nz/folder/")) {
+                const res = await fetch("/api/mega-folder", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ folderUrl: manualGalleryUrl })
+                });
+                const data = await res.json();
+                if (data.success && data.urls && data.urls.length > 0) {
+                    setFormData(prev => {
+                        const currentImages = prev.images ? prev.images.split(",").map(i => i.trim()).filter(Boolean) : [];
+                        const newImages = [...currentImages, ...data.urls];
+                        return { ...prev, images: newImages.join(", ") };
+                    });
+                    setManualGalleryUrl("");
+                    alert(`Added ${data.urls.length} images from MEGA folder!`);
+                } else {
+                    alert(data.error || "Failed to load MEGA folder");
+                }
+            } else {
+                setFormData(prev => {
+                    const currentImages = prev.images ? prev.images.split(",").map(i => i.trim()).filter(Boolean) : [];
+                    currentImages.push(manualGalleryUrl.trim());
+                    return { ...prev, images: currentImages.join(", ") };
+                });
+                setManualGalleryUrl("");
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Failed to add URL");
+        } finally {
+            setIsAddingUrl(false);
+        }
     };
 
     const handleAddProduct = () => {
@@ -163,6 +249,7 @@ export default function ProductsTab() {
         });
         setUploadedImages([]);
         setEditingProduct(null);
+        setUploadSessionId(`NEW_${Date.now()}`);
         setShowAddModal(true);
     };
 
@@ -191,6 +278,7 @@ export default function ProductsTab() {
         });
         setUploadedImages(allImages);
         setEditingProduct(product);
+        setUploadSessionId(product.id);
         setShowAddModal(true);
     };
 
@@ -358,7 +446,7 @@ export default function ProductsTab() {
             <div className="bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6">
                 <div className="flex justify-between items-center mb-6 border-b border-slate-200 dark:border-slate-800 pb-6">
                     <div className="flex items-center gap-4">
-                        <button onClick={() => setShowAddModal(false)} className="p-2 hover:bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-600 dark:text-slate-400 hover:text-white transition-colors">
+                        <button onClick={() => setShowAddModal(false)} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
                             <ArrowLeft size={24} />
                         </button>
                         <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{editingProduct ? "Edit Product" : "Add New Product"}</h2>
@@ -493,7 +581,7 @@ export default function ProductsTab() {
                                                     }`}
                                                         onClick={() => setFormData(prev => ({ ...prev, image: img }))}
                                                     >
-                                                        <Image src={img} alt={`Gallery ${idx}`} fill className="object-cover group-hover:scale-105 transition-transform duration-300" />
+                                                        <Image src={getImageUrl(img)} alt={`Gallery ${idx}`} fill className="object-cover group-hover:scale-105 transition-transform duration-300" unoptimized={img.includes("mega.nz")} />
 
                                                         {/* Primary badge */}
                                                         {isPrimary && (
@@ -520,6 +608,24 @@ export default function ProductsTab() {
                                                         >
                                                             <Trash2 size={11} />
                                                         </button>
+
+                                                        {/* Rearrange buttons */}
+                                                        {idx > 0 && (
+                                                            <button
+                                                                onClick={(e) => { e.stopPropagation(); moveGalleryImage(idx, 'left'); }}
+                                                                className="absolute left-1 top-1/2 -translate-y-1/2 p-1 bg-slate-900/80 text-white rounded-md hover:bg-slate-900 z-20 opacity-0 group-hover:opacity-100 transition-all"
+                                                            >
+                                                                <ChevronLeft size={14} />
+                                                            </button>
+                                                        )}
+                                                        {idx < imgs.length - 1 && (
+                                                            <button
+                                                                onClick={(e) => { e.stopPropagation(); moveGalleryImage(idx, 'right'); }}
+                                                                className="absolute right-1 top-1/2 -translate-y-1/2 p-1 bg-slate-900/80 text-white rounded-md hover:bg-slate-900 z-20 opacity-0 group-hover:opacity-100 transition-all"
+                                                            >
+                                                                <ChevronRight size={14} />
+                                                            </button>
+                                                        )}
                                                     </div>
                                                 );
                                             })}
@@ -527,14 +633,41 @@ export default function ProductsTab() {
                                             {/* Upload new snap */}
                                             {imgs.length < 5 && (
                                                 <label className="aspect-square bg-slate-50 dark:bg-slate-800/50 border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-cyan-500/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all group">
-                                                    <Plus size={22} className="text-slate-400 group-hover:text-cyan-400 mb-1" />
-                                                    <span className="text-[9px] font-bold text-slate-400 group-hover:text-cyan-400 uppercase tracking-widest">Add Snap</span>
-                                                    <input type="file" className="hidden" onChange={(e) => handleFileUpload(e, "gallery")} />
+                                                    {isUploading && uploadProgress !== null ? (
+                                                        <span className="text-cyan-500 font-bold">{uploadProgress}%</span>
+                                                    ) : (
+                                                        <>
+                                                            <Plus size={22} className="text-slate-400 group-hover:text-cyan-400 mb-1" />
+                                                            <span className="text-[9px] font-bold text-slate-400 group-hover:text-cyan-400 uppercase tracking-widest">Add Snap</span>
+                                                        </>
+                                                    )}
+                                                    <input type="file" className="hidden" onChange={(e) => handleFileUpload(e, "gallery")} disabled={isUploading} />
                                                 </label>
                                             )}
                                         </>
                                     );
                                 })()}
+                            </div>
+
+                            {/* Add URL or MEGA Folder */}
+                            <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
+                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Add Image URL or MEGA Folder Link</p>
+                                <div className="flex flex-col gap-2 sm:flex-row">
+                                    <input
+                                        value={manualGalleryUrl}
+                                        onChange={e => setManualGalleryUrl(e.target.value)}
+                                        className="flex-1 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-slate-900 dark:text-white text-xs font-bold focus:outline-none focus:border-cyan-500 transition-all"
+                                        placeholder="https://mega.nz/folder/... or image URL"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={handleAddGalleryUrl}
+                                        disabled={isAddingUrl}
+                                        className="flex cursor-pointer items-center justify-center rounded-xl bg-slate-200 dark:bg-slate-800 px-5 py-2.5 transition-all hover:bg-slate-300 dark:hover:bg-slate-700 font-bold text-sm text-slate-700 dark:text-slate-300 gap-2 disabled:opacity-50"
+                                    >
+                                        {isAddingUrl ? "Adding..." : <><Plus size={16} /> Add to Gallery</>}
+                                    </button>
+                                </div>
                             </div>
 
                             {/* Manual URL + upload fallback */}
@@ -548,8 +681,12 @@ export default function ProductsTab() {
                                         placeholder="https://..."
                                     />
                                     <label className="flex cursor-pointer items-center justify-center rounded-xl bg-slate-200 dark:bg-slate-800 px-5 py-2.5 transition-all hover:bg-slate-300 dark:hover:bg-slate-700 font-bold text-sm text-slate-700 dark:text-slate-300 gap-2">
-                                        <Upload size={16} className={isUploading ? "animate-bounce" : ""} /> Upload
-                                        <input type="file" className="hidden" onChange={(e) => handleFileUpload(e, "image")} />
+                                        {isUploading && uploadProgress !== null ? (
+                                            <span className="text-cyan-500">{uploadProgress}%</span>
+                                        ) : (
+                                            <><Upload size={16} /> Upload</>
+                                        )}
+                                        <input type="file" className="hidden" onChange={(e) => handleFileUpload(e, "image")} disabled={isUploading} />
                                     </label>
                                 </div>
                             </div>
@@ -640,7 +777,7 @@ export default function ProductsTab() {
                     {products.map(p => (
                         <div key={p.id} className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden group hover:border-cyan-500/30 transition-all">
                             <div className="relative h-48 bg-slate-100 dark:bg-slate-800">
-                                <Image src={p.image || "/placeholder.png"} alt={p.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                                <Image src={getImageUrl(p.image) || "/placeholder.png"} alt={p.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" unoptimized={p.image.includes("mega.nz")} />
                                 <div className="absolute top-3 right-3 flex flex-col gap-2">
                                     <span className={`px-2 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest ${p.inStock ? "bg-green-500/20 text-green-400" : "bg-red-500/20 text-red-400"}`}>
                                         {p.availabilityStatus || (p.inStock ? "In Stock" : "Out of Stock")}

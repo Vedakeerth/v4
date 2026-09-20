@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect } from "react";
 import { Plus, Edit, Trash2, X, Image as ImageIcon, ArrowLeft, Eye } from "lucide-react";
@@ -144,7 +144,7 @@ export default function BlogsTab() {
             <div className="bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6">
                 <div className="flex justify-between items-center mb-6 border-b border-slate-200 dark:border-slate-800 pb-6">
                     <div className="flex items-center gap-4">
-                        <button onClick={() => setIsEditing(false)} className="p-2 hover:bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-600 dark:text-slate-400 hover:text-white transition-colors">
+                        <button onClick={() => setIsEditing(false)} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
                             <ArrowLeft size={24} />
                         </button>
                         <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{activeBlog ? "Edit Post" : "New Post"}</h2>

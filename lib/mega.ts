@@ -41,30 +41,11 @@ async function getStorage(): Promise<any> {
             userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
         });
 
-        await new Promise((resolve, reject) => {
-            const timeout = setTimeout(() => {
-                s.close();
-                reject(new Error("MEGA login timeout (30s)"));
-            }, 30000);
-            
-            s.on('ready', () => {
-                clearTimeout(timeout);
-                console.log(`[MEGA] Storage instance ready event received.`);
-                resolve(s);
-            });
-            
-            (s as any).on('error', (err: any) => {
-                clearTimeout(timeout);
-                console.error(`[MEGA] Storage instance error:`, err);
-                reject(err);
-            });
-            
-            // Check if already ready
-            if ((s as any).ready) {
-                clearTimeout(timeout);
-                resolve(s);
-            }
-        });
+        // Use Promise.race to add timeout to s.ready
+        await Promise.race([
+            s.ready,
+            new Promise((_, reject) => setTimeout(() => reject(new Error("MEGA login timeout (30s)")), 30000))
+        ]);
 
         console.log(`[MEGA] Login successful. Verifying root...`);
         // Only reload if root is not already populated
@@ -137,34 +118,40 @@ export async function uploadToMega(
         // Step 2: Navigate to or create the specific quotation folder
         console.log(`[MEGA][${fileName}] Navigating to quotation subfolder: '${quotationID}'`);
         
-        // Always reload children for the specific root folder to ensure we see new subfolders
-        let folder = quotationsRoot.children?.find((child: any) => child.name === quotationID && isDir(child));
-        
-        if (!folder) {
-            console.log(`[MEGA][${fileName}] Subfolder '${quotationID}' not found. Creating...`);
-            try {
-                folder = await quotationsRoot.mkdir(quotationID);
-                console.log(`[MEGA][${fileName}] Successfully created subfolder: ${quotationID}`);
-            } catch (err: any) {
-                console.log(`[MEGA][${fileName}] Subfolder mkdir failed, reloading parent...`);
-                await mega.reload();
-                // Re-find root after reload as objects might have changed
-                const refreshedRoot = mega.root.children?.find((child: any) => 
-                    child.name?.toUpperCase() === rootFolderName.toUpperCase() && isDir(child)
-                );
-                if (!refreshedRoot) throw new Error(`Root folder ${rootFolderName} lost after reload.`);
-                
-                folder = refreshedRoot.children?.find((child: any) => child.name === quotationID && isDir(child));
-                if (!folder) {
-                    console.log(`[MEGA][${fileName}] Still not found, second attempt to create subfolder...`);
-                    folder = await refreshedRoot.mkdir(quotationID);
+        const subfolders = quotationID.split('/').filter(Boolean);
+        let currentFolder = quotationsRoot;
+
+        for (const folderName of subfolders) {
+            // Always reload children for the specific root folder to ensure we see new subfolders
+            let nextFolder = currentFolder.children?.find((child: any) => child.name === folderName && isDir(child));
+            
+            if (!nextFolder) {
+                console.log(`[MEGA][${fileName}] Subfolder '${folderName}' not found. Creating...`);
+                try {
+                    nextFolder = await currentFolder.mkdir(folderName);
+                    console.log(`[MEGA][${fileName}] Successfully created subfolder: ${folderName}`);
+                } catch (err: any) {
+                    console.log(`[MEGA][${fileName}] Subfolder mkdir failed, reloading parent...`);
+                    await mega.reload();
+                    
+                    // Re-find root after reload as objects might have changed
+                    const refreshedParent = mega.root.children?.find((child: any) => child.name === currentFolder.name && isDir(child)) || mega.root;
+                    
+                    nextFolder = refreshedParent.children?.find((child: any) => child.name === folderName && isDir(child));
+                    if (!nextFolder) {
+                        console.log(`[MEGA][${fileName}] Still not found, second attempt to create subfolder...`);
+                        nextFolder = await refreshedParent.mkdir(folderName);
+                    }
                 }
             }
+            
+            if (!nextFolder) {
+                throw new Error(`Failed to resolve target folder: ${folderName}`);
+            }
+            currentFolder = nextFolder;
         }
 
-        if (!folder) {
-            throw new Error(`Failed to resolve target folder: ${quotationID}`);
-        }
+        const folder = currentFolder;
 
         console.log(`[MEGA][${fileName}] Pausing 2s for session stability...`);
         await new Promise(r => setTimeout(r, 2000));

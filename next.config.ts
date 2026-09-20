@@ -21,6 +21,14 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'firebasestorage.googleapis.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'mega.nz',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.mega.nz',
+      },
     ],
   },
   compress: true,
