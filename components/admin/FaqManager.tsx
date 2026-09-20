@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect } from "react";
 import { Plus, Edit, Trash2, Save, X, AlertCircle, Loader2, ArrowUp, ArrowDown } from "lucide-react";
@@ -7,6 +7,7 @@ import {
   collection, addDoc, updateDoc, deleteDoc, doc, 
   getDocs, query, orderBy, writeBatch 
 } from "firebase/firestore";
+import { toast } from 'sonner';
 
 interface FAQItem {
   id?: string;
