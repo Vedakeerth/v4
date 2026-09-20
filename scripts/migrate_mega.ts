@@ -1,6 +1,5 @@
 import { getAdminDb } from '../lib/firebaseAdmin';
 import { uploadToMega } from '../lib/mega';
-import fetch from 'node-fetch';
 import * as dotenv from 'dotenv';
 import path from 'path';
 

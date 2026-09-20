@@ -60,6 +60,7 @@
     "@types/jest": "^30.0.0",
     "@types/megajs": "^0.14.7",
     "@types/node": "^20.19.37",
+    "@types/node-fetch": "^2.6.13",
     "@types/nodemailer": "^7.0.4",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
