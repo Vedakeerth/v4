@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
             if (!child.directory) {
                 // Generate a link for the file
                 try {
-                    const url = await child.link();
+                    const url = await child.link(false);
                     imageUrls.push(url);
                 } catch (linkErr) {
                     console.warn(`[MEGA-FOLDER] Failed to generate link for ${child.name}`, linkErr);
