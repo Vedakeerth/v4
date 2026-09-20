@@ -1,8 +1,9 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect } from "react";
 import { Globe, Save } from "lucide-react";
 import { type SEOData } from "@/lib/seo";
+import { toast } from 'sonner';
 
 export default function SEOTab() {
     const [seoData, setSeoData] = useState<SEOData>({});
@@ -32,7 +33,7 @@ export default function SEOTab() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(seoData),
             });
-            if (res.ok) alert("SEO data saved!");
+            if (res.ok) toast.success("SEO data saved!");
         } catch (error) {
             console.error(error);
         }

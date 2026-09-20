@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Plus, Edit, Trash2, X, Save } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { toast } from 'sonner';
 
 interface Category {
     id: string;
@@ -51,10 +52,10 @@ export default function CategoriesTab() {
                 body: JSON.stringify({ categoriesSettings })
             });
             if (!res.ok) throw new Error("Failed to save settings");
-            alert("Settings saved successfully!");
+            toast.error(`Settings saved successfully!`);
         } catch (err) {
             console.error(err);
-            alert("Failed to save settings");
+            toast.error(`Failed to save settings`);
         } finally {
             setIsSavingSettings(false);
         }
@@ -107,7 +108,7 @@ export default function CategoriesTab() {
     };
 
     const handleSave = async () => {
-        if (!formData.name.trim()) return alert("Collection name is required.");
+        if (!formData.name.trim()) return toast.error(`Collection name is required.`);
         setIsSaving(true);
         try {
             const method = editingCategory ? "PUT" : "POST";
@@ -123,13 +124,13 @@ export default function CategoriesTab() {
             if (res.ok && result.success) {
                 setShowModal(false);
                 fetchCategories();
-                alert("âœ“ Collection synchronized successfully!");
+                toast.success('Collection synchronized successfully!');
             } else {
-                alert("Ã— Synchronization failed: " + (result.message || "Unauthorized or Server Error"));
+                toast.error('Synchronization failed: ' + (result.message || 'Unauthorized or Server Error'));
             }
         } catch (error) {
             console.error("Save failed", error);
-            alert("Ã— Terminal Error: Failed to reach the synchronization node.");
+            toast.error('Terminal Error: Failed to reach the synchronization node.');
         } finally {
             setIsSaving(false);
         }
@@ -262,3 +263,5 @@ export default function CategoriesTab() {
         </div>
     );
 }
+
+

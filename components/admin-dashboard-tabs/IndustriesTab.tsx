@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Save, Plus, Trash2, Activity, Factory, Rocket, Library, CheckCircle2, ChevronDown, ChevronUp } from "lucide-react";
+import { toast } from 'sonner';
 
 // Helper for dynamic icons if needed, though for now we can just use text input or select
 const AVAILABLE_ICONS = ["Activity", "Factory", "Rocket", "Library", "CheckCircle2", "Zap", "Gauge", "Scaling"];
@@ -34,9 +35,9 @@ export default function IndustriesTab() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(content),
             });
-            if (res.ok) alert("Industries content saved!");
+            if (res.ok) toast.error(`Industries content saved!`);
         } catch (error) {
-            alert("Failed to save content");
+            toast.error(`Failed to save content`);
         }
     };
 
@@ -147,3 +148,4 @@ export default function IndustriesTab() {
         </div>
     );
 }
+

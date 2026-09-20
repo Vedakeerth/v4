@@ -1,8 +1,9 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect } from "react";
 import { Save, ToggleLeft, ToggleRight, Settings as SettingsIcon, Mail, Phone, MapPin, Layout, Info } from "lucide-react";
 import { SiteSettings } from "@/lib/settings";
+import { toast } from 'sonner';
 
 export default function SettingsTab() {
     const [settings, setSettings] = useState<SiteSettings | null>(null);
@@ -37,9 +38,9 @@ export default function SettingsTab() {
             });
             const data = await res.json();
             if (data.success) {
-                alert("Settings saved successfully!");
+                toast.success("Settings saved successfully!");
             } else {
-                alert("Failed to save settings");
+                toast.error("Failed to save settings");
             }
         } catch (error) {
             console.error(error);

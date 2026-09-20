@@ -17,6 +17,7 @@ import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { FileText, Download, Truck, Info } from "lucide-react";
 import { calculateShipping, ShippingDetails } from "@/lib/shippingCalculator";
+import { toast } from 'sonner';
 
 
 function CheckoutContent() {
@@ -194,7 +195,7 @@ function CheckoutContent() {
                         console.error("Payment verification failed:", data.message || data.error);
                         setVerificationStatus('failed');
                         setCheckoutStep('review'); // Fallback to review
-                        alert("Payment verification pending or failed. Status: " + (data.status || "Unknown") + "\nIf you have already paid, please contact support with your Tracking ID: " + tracking_id);
+                        toast.error(`Payment verification pending or failed. Status: ${data.status || 'Unknown'}. If you have already paid, please contact support with your Tracking ID: ${tracking_id}`);
                     }
                 } catch (error) {
                     console.error("Verification Error:", error);
@@ -260,7 +261,7 @@ function CheckoutContent() {
     const handleShippingSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!validatePhone(formData.phone)) {
-            alert("Please enter a valid 10-digit phone number");
+            toast.error('Please enter a valid 10-digit phone number');
             return;
         }
 
@@ -342,7 +343,7 @@ function CheckoutContent() {
             setCheckoutStep('review');
         } catch (error) {
             console.error("Error during shipping transition:", error);
-            alert("There was an issue preparing your order documents. Please try again.");
+            toast.error('There was an issue preparing your order documents. Please try again.');
         } finally {
             setIsSubmitting(false);
         }
@@ -352,7 +353,7 @@ function CheckoutContent() {
 
     const handlePaymentSubmit = async () => {
         if (!recaptchaToken && process.env.NODE_ENV === 'production') {
-            alert("Please complete the reCAPTCHA verification to proceed.");
+            toast.error('Please complete the reCAPTCHA verification to proceed.');
             return;
         }
         
@@ -360,7 +361,7 @@ function CheckoutContent() {
         const finalToken = recaptchaToken || (process.env.NODE_ENV === 'development' ? 'dev-dummy-token' : null);
         
         if (!finalToken) {
-            alert("Please complete the reCAPTCHA verification to proceed.");
+            toast.error('Please complete the reCAPTCHA verification to proceed.');
             return;
         }
         
@@ -424,8 +425,8 @@ function CheckoutContent() {
 
         } catch (error: any) {
             console.error("Payment Error:", error);
-            const msg = error.name === 'AbortError' ? "Request timed out. Please check your connection and try again." : (error.message || "An error occurred during payment.");
-            alert(msg);
+            const msg = error.name === 'AbortError' ? 'Request timed out. Please check your connection and try again.' : (error.message || 'An error occurred during payment.');
+            toast.error(msg);
             setCheckoutStep('review');
         }
     };

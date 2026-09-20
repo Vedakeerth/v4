@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect, useRef } from "react";
 import NewsTicker from "@/components/NewsTicker";
@@ -7,6 +7,7 @@ import { Announcement } from "@/lib/announcements";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from "@/lib/firebase";
 import NextImage from "next/image";
+import { toast } from 'sonner';
 
 export default function AnnouncementsTab() {
     const [announcements, setAnnouncements] = useState<Announcement[]>([]);
@@ -47,10 +48,10 @@ export default function AnnouncementsTab() {
                 body: JSON.stringify({ tickerSettings })
             });
             if (!res.ok) throw new Error("Failed to save settings");
-            alert("Settings saved successfully!");
+            toast.success('Settings saved successfully!');
         } catch (err) {
             console.error(err);
-            alert("Failed to save settings");
+            toast.error('Failed to save settings');
         } finally {
             setIsSavingSettings(false);
         }
@@ -85,7 +86,7 @@ export default function AnnouncementsTab() {
             setFormData({ ...formData, imageUrl: downloadURL });
         } catch (err) {
             console.error("Upload error:", err);
-            alert("Failed to upload image");
+            toast.error('Failed to upload image');
         } finally {
             setUploadProgress(false);
         }
@@ -137,7 +138,7 @@ export default function AnnouncementsTab() {
             const res = await fetch(`/api/admin/announcements?id=${id}`, { method: "DELETE" });
             if (res.ok) fetchAnnouncements();
         } catch (err) {
-            alert("Failed to delete");
+            toast.error('Failed to delete');
         }
     };
 
@@ -150,7 +151,7 @@ export default function AnnouncementsTab() {
             });
             fetchAnnouncements();
         } catch (err) {
-            alert("Failed to toggle status");
+            toast.error('Failed to toggle announcement status');
         }
     };
 

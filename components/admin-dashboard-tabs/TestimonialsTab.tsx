@@ -1,8 +1,9 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect } from "react";
 import { Plus, Edit, Trash2, X, Star } from "lucide-react";
 import { Testimonial } from "@/types";
+import { toast } from 'sonner';
 
 export default function TestimonialsTab() {
     const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
@@ -52,7 +53,7 @@ export default function TestimonialsTab() {
                 setShowModal(false);
                 fetchTestimonials();
             } else {
-                alert("Failed to save testimonial");
+                toast.error('Failed to save testimonial');
             }
         } catch (error) {
             console.error(error);

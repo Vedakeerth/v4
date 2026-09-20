@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Plus, Edit, Trash2, X, Save, Upload, Image as ImageIcon } from "lucide-react";
 import Image from "next/image";
 import { Project } from "@/types";
+import { toast } from 'sonner';
 
 export default function ProjectsTab() {
     const [projects, setProjects] = useState<Project[]>([]);
@@ -94,7 +95,7 @@ export default function ProjectsTab() {
                 setShowModal(false);
                 fetchProjects();
             } else {
-                alert("Failed to save project");
+                toast.error(`Failed to save project`);
             }
         } catch (error) {
             console.error("Error saving project:", error);
@@ -274,3 +275,4 @@ export default function ProjectsTab() {
         </div>
     );
 }
+

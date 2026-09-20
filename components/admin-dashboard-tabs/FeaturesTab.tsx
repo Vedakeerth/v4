@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Save, Plus, Trash2, ToggleLeft, ToggleRight, LayoutDashboard } from "lucide-react";
+import { toast } from 'sonner';
 
 export default function FeaturesTab() {
     const [content, setContent] = useState<any>(null);
@@ -51,9 +52,9 @@ export default function FeaturesTab() {
                     body: JSON.stringify(settings),
                 })
             ]);
-            alert("âœ“ Assets and configurations synchronized!");
+            toast.error(`âœ“ Assets and configurations synchronized!`);
         } catch (error) {
-            alert("Ã— Error: Synchronization failure.");
+            toast.error(`Ã— Error: Synchronization failure.`);
         } finally {
             setIsSaving(false);
         }
@@ -200,3 +201,4 @@ export default function FeaturesTab() {
         </div>
     );
 }
+

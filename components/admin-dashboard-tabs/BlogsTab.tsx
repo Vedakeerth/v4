@@ -1,10 +1,11 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect } from "react";
 import { Plus, Edit, Trash2, X, Image as ImageIcon, ArrowLeft, Eye } from "lucide-react";
 import Image from "next/image";
 import { BlogPost } from "@/types";
 import BlogContent from "@/components/BlogContent";
+import { toast } from 'sonner';
 
 export default function BlogsTab() {
     const [blogs, setBlogs] = useState<BlogPost[]>([]);
@@ -126,7 +127,7 @@ export default function BlogsTab() {
                 setIsEditing(false);
                 fetchBlogs();
             } else {
-                alert("Failed to save blog");
+                toast.error(`Failed to save blog`);
             }
         } catch (error) {
             console.error(error);
@@ -297,3 +298,4 @@ export default function BlogsTab() {
         </div>
     );
 }
+

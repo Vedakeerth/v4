@@ -1,9 +1,9 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect } from "react";
 import { Plus, Trash2, Ticket, Calendar, Percent, IndianRupee, X, CheckCircle2, Pencil, Copy } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-
+import { toast } from 'sonner';
 import { getQuoteSettings, saveQuoteSettings, type QuoteSettings, DEFAULT_QUOTE_SETTINGS } from "@/lib/quote-settings";
 
 interface Coupon {
@@ -87,10 +87,10 @@ export default function CouponsTab() {
                 setFormData({ code: "", type: "percentage", value: "", expiryDate: "" });
                 fetchCoupons();
             } else {
-                alert(data.message || "Failed to save coupon");
+                toast.error(data.message || 'Failed to save coupon');
             }
         } catch (error) {
-            alert("Failed to save coupon");
+            toast.error('Failed to save coupon');
         }
     };
 
@@ -125,7 +125,7 @@ export default function CouponsTab() {
                 fetchCoupons();
             }
         } catch (error) {
-            alert("Failed to delete coupon");
+            toast.error('Failed to delete coupon');
         }
     };
 

@@ -11,6 +11,7 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import QuotationDocument from "./QuotationDocument";
 import Recaptcha from "./Recaptcha";
+import { toast } from 'sonner';
 
 interface BuyNowModalProps {
     product: Product;
@@ -108,7 +109,7 @@ export default function BuyNowModal({ product, quantity = 1, selectedColor, onCl
                         megaFolderUrl = uploadData.data.folderUrl;
                     } else {
                         console.error("MEGA Upload error:", uploadData.error);
-                        alert("Warning: Could not upload invoice document to cloud storage. Our team will contact you for the files.");
+                        toast.warning('Could not upload invoice to cloud storage. Our team will contact you for the files.');
                     }
                 } catch (err) {
                     console.error("Failed to upload to MEGA:", err);

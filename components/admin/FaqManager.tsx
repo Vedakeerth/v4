@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect } from "react";
 import { Plus, Edit, Trash2, Save, X, AlertCircle, Loader2, ArrowUp, ArrowDown } from "lucide-react";
@@ -94,10 +94,10 @@ export default function FaqManager() {
       });
       await batch.commit();
       await fetchFaqs();
-      alert("Successfully seeded default SEO FAQs!");
+      toast.error(`Successfully seeded default SEO FAQs!`);
     } catch (error) {
       console.error("Error seeding FAQs:", error);
-      alert("Failed to seed FAQs");
+      toast.error(`Failed to seed FAQs`);
     } finally {
       setIsSaving(false);
     }
@@ -125,7 +125,7 @@ export default function FaqManager() {
       fetchFaqs();
     } catch (error) {
       console.error("Error saving FAQ:", error);
-      alert("Failed to save FAQ");
+      toast.error(`Failed to save FAQ`);
     } finally {
       setIsSaving(false);
     }
@@ -139,7 +139,7 @@ export default function FaqManager() {
       fetchFaqs();
     } catch (error) {
       console.error("Error deleting FAQ:", error);
-      alert("Failed to delete FAQ");
+      toast.error(`Failed to delete FAQ`);
     } finally {
       setIsSaving(false);
     }
@@ -390,3 +390,4 @@ export default function FaqManager() {
     </div>
   );
 }
+

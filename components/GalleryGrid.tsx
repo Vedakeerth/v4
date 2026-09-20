@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { cn, parsePrice, formatINR } from "@/lib/utils";
 import { Product } from "@/lib/products";
 import { createSeoSlug } from "@/lib/seo-utils";
+import { toast } from 'sonner';
 
 
 
@@ -145,7 +146,7 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
             }).catch(console.error);
         } else {
             navigator.clipboard.writeText(seoUrl);
-            alert("Link copied to clipboard!");
+            toast.success('Link copied to clipboard!');
         }
     };
 

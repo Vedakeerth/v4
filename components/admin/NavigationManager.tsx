@@ -1,8 +1,9 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect } from "react";
 import { Plus, Edit, Trash2, Save, Eye, EyeOff, GripVertical, Loader2, X, Check, Monitor, Layout, ArrowRight, MousePointer2, MoreVertical, Link2, ExternalLink, ChevronDown } from "lucide-react";
 import { getSettings, saveSettings, type SiteSettings } from "@/lib/settings";
+import { toast } from 'sonner';
 
 interface NavLink {
     name: string;
@@ -80,7 +81,7 @@ export default function NavigationManager() {
             setSettings(updatedSettings);
         } catch (error) {
             console.error("Failed to save settings:", error);
-            alert("Failed to save changes");
+            toast.error(`Failed to save changes`);
         } finally {
             setIsSaving(false);
         }
@@ -508,3 +509,4 @@ export default function NavigationManager() {
         </div>
     );
 }
+

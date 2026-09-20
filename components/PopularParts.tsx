@@ -7,6 +7,7 @@ import { motion } from 'framer-motion';
 import { ArrowRight, Heart, HeartOff, Share2, ShoppingCart, Info, Eye } from 'lucide-react';
 import { Skeleton } from './Skeleton';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 
 interface Product {
     id: string | number;
@@ -148,7 +149,7 @@ export default function PopularParts({ header, parts }: PopularPartsProps) {
                                                     navigator.share({ title: part?.name, url }).catch(console.error);
                                                 } else {
                                                     navigator.clipboard.writeText(url);
-                                                    alert("Link copied!");
+                                                    toast.success('Link copied!');
                                                 }
                                             }}
                                             className="p-2.5 rounded-full bg-white/80 dark:bg-slate-950/80 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:text-cyan-500 dark:hover:text-cyan-400 transition-all duration-300 backdrop-blur-md shadow-xl hover:scale-110"

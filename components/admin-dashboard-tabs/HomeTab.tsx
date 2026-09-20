@@ -1,7 +1,8 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect } from "react";
 import { Save, Home, Plus, Trash2 } from "lucide-react";
+import { toast } from 'sonner';
 
 export default function HomeTab() {
     const [content, setContent] = useState<any>(null);
@@ -35,12 +36,12 @@ export default function HomeTab() {
             });
             const data = await res.json();
             if (data.success) {
-                alert("âœ“ Homepage content synchronized successfully!");
+                toast.success('Homepage content synchronized successfully!');
             } else {
-                alert("Ã— Synchronization failed: " + (data.message || "Unknown error"));
+                toast.error('Synchronization failed: ' + (data.message || 'Unknown error'));
             }
         } catch (error) {
-            alert("Ã— Terminal Error: Failed to communicate with the synchronization node.");
+            toast.error('Failed to communicate with the synchronization node.');
         } finally {
             setIsSaving(false);
         }
@@ -222,3 +223,4 @@ export default function HomeTab() {
         </div>
     );
 }
+

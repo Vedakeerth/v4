@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -15,6 +15,7 @@ import { useAdminAuth } from "@/lib/adminAuth";
 import { signOut } from "firebase/auth";
 import NavigationManager from "@/components/admin/NavigationManager";
 import FaqManager from "@/components/admin/FaqManager";
+import { toast } from 'sonner';
 
 interface Product {
   id: string;
@@ -125,7 +126,7 @@ export default function AdminDashboard() {
       setFormData(prev => ({ ...prev, image: url }));
     } catch (error) {
       console.error("Upload failed:", error);
-      alert("Image upload failed");
+      toast.error(`Image upload failed`);
     } finally {
       setUploadingImage(false);
     }
@@ -133,7 +134,7 @@ export default function AdminDashboard() {
 
   const handleSaveProduct = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.image) return alert("Please upload an image");
+    if (!formData.image) return toast.error(`Please upload an image`);
     
     setIsSaving(true);
     try {
@@ -155,7 +156,7 @@ export default function AdminDashboard() {
       fetchProducts();
     } catch (error) {
       console.error("Error saving product:", error);
-      alert("Failed to save product");
+      toast.error(`Failed to save product`);
     } finally {
       setIsSaving(false);
     }
@@ -168,7 +169,7 @@ export default function AdminDashboard() {
       fetchProducts();
     } catch (error) {
       console.error("Error deleting product:", error);
-      alert("Failed to delete product");
+      toast.error(`Failed to delete product`);
     }
   };
 
@@ -208,7 +209,7 @@ export default function AdminDashboard() {
       fetchOrders();
     } catch (error) {
       console.error("Error updating order status:", error);
-      alert("Failed to update status");
+      toast.error(`Failed to update status`);
     }
   };
 
@@ -242,7 +243,7 @@ export default function AdminDashboard() {
       fetchOrders();
     } catch (error) {
       console.error("Error saving tracking:", error);
-      alert("Failed to save tracking details");
+      toast.error(`Failed to save tracking details`);
     } finally {
       setIsSaving(false);
     }
@@ -643,3 +644,4 @@ export default function AdminDashboard() {
     </main>
   );
 }
+

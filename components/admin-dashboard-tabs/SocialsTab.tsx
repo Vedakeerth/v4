@@ -1,8 +1,9 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect } from "react";
 import { Share2, Save } from "lucide-react";
 import { type SocialLink } from "@/lib/socials";
+import { toast } from 'sonner';
 
 export default function SocialsTab() {
     const [socials, setSocials] = useState<SocialLink[]>([]);
@@ -32,7 +33,7 @@ export default function SocialsTab() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(socials),
             });
-            if (res.ok) alert("Social links saved!");
+            if (res.ok) toast.success("Social links saved!");
         } catch (error) {
             console.error(error);
         }

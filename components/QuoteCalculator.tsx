@@ -14,6 +14,12 @@ import dynamic from 'next/dynamic';
 import { useSearchParams } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { calculateShipping, ShippingDetails } from '@/lib/shippingCalculator';
+import { toast } from 'sonner';
+
+// Helper: show a toast notification
+const showToast = (message: string, type: 'error' | 'success' | 'info' | 'warning' = 'error') => {
+    toast[type](message);
+};
 
 const STLViewer = dynamic(() => import('@/components/STLViewer'), {
     loading: () => <div className="flex h-full w-full min-h-[400px] items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-900/50"><Skeleton variant="rounded" height={400} className="w-full" /></div>,
@@ -168,6 +174,9 @@ export default function QuoteCalculator({ sessionId, isAdminMode = false }: Quot
         message: ''
     });
 
+    // Field-level validation error flags
+    const [fieldErrors, setFieldErrors] = useState<Record<string, boolean>>({});
+
     const [isSending, setIsSending] = useState(false);
     const [uploadProgress, setUploadProgress] = useState(0);
     const [uploadStatus, setUploadStatus] = useState('');
@@ -274,16 +283,47 @@ export default function QuoteCalculator({ sessionId, isAdminMode = false }: Quot
 
     const handleContactSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (userDetails.phone.length !== 10) {
-            alert('Please enter a valid 10-digit phone number');
+
+        // Validate required fields and show the first missing field in the toast
+        const requiredFields: { key: keyof typeof userDetails; label: string }[] = [
+            { key: 'name',    label: 'Full Name' },
+            { key: 'email',   label: 'Email Address' },
+            { key: 'phone',   label: 'Phone Number' },
+            { key: 'pincode', label: 'Pincode' },
+            { key: 'doorNo',  label: 'Door No / Building' },
+            { key: 'street',  label: 'Street' },
+            { key: 'area',    label: 'Area / Landmark' },
+        ];
+
+        const errors: Record<string, boolean> = {};
+        let firstMissingLabel = '';
+
+        for (const { key, label } of requiredFields) {
+            if (!userDetails[key] || String(userDetails[key]).trim() === '') {
+                errors[key] = true;
+                if (!firstMissingLabel) firstMissingLabel = label;
+            }
+        }
+
+        if (userDetails.phone && userDetails.phone.length !== 10) {
+            errors.phone = true;
+            if (!firstMissingLabel || errors.phone) firstMissingLabel = 'Phone Number (must be 10 digits)';
+        }
+
+        if (Object.keys(errors).length > 0) {
+            setFieldErrors(errors);
+            showToast(`Please fill in: ${firstMissingLabel}`, 'error');
             return;
         }
 
         if (!recaptchaToken && process.env.NODE_ENV === 'production') {
-            alert('Please complete the reCAPTCHA verification');
+            setFieldErrors(prev => ({ ...prev, recaptcha: true }));
+            showToast('Please complete the reCAPTCHA verification', 'error');
             return;
         }
 
+        // Clear errors on successful validation
+        setFieldErrors({});
         setIsSending(true);
         try {
             console.log("[QuoteCalculator] Fetching sequential ID...");
@@ -314,7 +354,7 @@ export default function QuoteCalculator({ sessionId, isAdminMode = false }: Quot
             setOrderStep('preview');
         } catch (err) {
             console.error(err);
-            alert("Failed to prepare quotation. Please try again.");
+            showToast('Failed to prepare quotation. Please try again.', 'error');
         } finally {
             setIsSending(false);
         }
@@ -457,19 +497,19 @@ export default function QuoteCalculator({ sessionId, isAdminMode = false }: Quot
                 }
                 return `${file.name}: ${errors.map((e: any) => e.message).join(', ')}`;
             });
-            alert(`Some files were rejected:\n${reasons.join('\n')}`);
+            showToast(`Some files were rejected:\n${reasons.join('\n')}`);
         }
 
         setUploadedFiles(prev => {
             const availableSlots = 5 - prev.length;
             if (availableSlots <= 0) {
-                alert("Maximum 5 files allowed.");
+                showToast("Maximum 5 files allowed.");
                 return prev;
             }
 
             const filesToAdd = acceptedFiles.slice(0, availableSlots);
             if (filesToAdd.length < acceptedFiles.length) {
-                alert(`Only the first ${availableSlots} files were added. Maximum 5 files allowed.`);
+                showToast(`Only the first ${availableSlots} files were added. Maximum 5 files allowed.`);
             }
 
             const newFiles = filesToAdd.map(file => ({
@@ -1648,7 +1688,7 @@ export default function QuoteCalculator({ sessionId, isAdminMode = false }: Quot
                                                     setOrderStep('success');
                                                 }
                                             } catch (err: any) {
-                                                alert(err.message || "An error occurred");
+                                                showToast(err.message || 'An error occurred. Please try again.', 'error');
                                             } finally {
                                                 setIsSending(false);
                                             }
@@ -1876,29 +1916,31 @@ export default function QuoteCalculator({ sessionId, isAdminMode = false }: Quot
                         <form onSubmit={handleContactSubmit}>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <label className="text-xs font-medium text-slate-700 dark:text-slate-400">Full Name *</label>
+                                    <label className={cn("text-xs font-medium", fieldErrors.name ? "text-red-500" : "text-slate-700 dark:text-slate-400")}>Full Name *</label>
                                     <input
                                         required
                                         type="text"
-                                        className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg px-4 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500"
+                                        className={cn("w-full bg-white dark:bg-slate-950 border rounded-lg px-4 py-2.5 text-slate-900 dark:text-white focus:outline-none transition-all", fieldErrors.name ? "border-red-500 focus:border-red-500 animate-shake" : "border-slate-200 dark:border-slate-800 focus:border-cyan-500")}
                                         value={userDetails.name}
-                                        onChange={e => setUserDetails({ ...userDetails, name: e.target.value })}
+                                        onChange={e => { setUserDetails({ ...userDetails, name: e.target.value }); setFieldErrors(p => ({ ...p, name: false })); }}
                                     />
+                                    {fieldErrors.name && <p className="text-xs text-red-500 mt-1">Full name is required</p>}
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-xs font-medium text-slate-700 dark:text-slate-400">Email Address *</label>
+                                    <label className={cn("text-xs font-medium", fieldErrors.email ? "text-red-500" : "text-slate-700 dark:text-slate-400")}>Email Address *</label>
                                     <input
                                         required
                                         type="email"
-                                        className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg px-4 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500"
+                                        className={cn("w-full bg-white dark:bg-slate-950 border rounded-lg px-4 py-2.5 text-slate-900 dark:text-white focus:outline-none transition-all", fieldErrors.email ? "border-red-500 focus:border-red-500 animate-shake" : "border-slate-200 dark:border-slate-800 focus:border-cyan-500")}
                                         value={userDetails.email}
-                                        onChange={e => setUserDetails({ ...userDetails, email: e.target.value })}
+                                        onChange={e => { setUserDetails({ ...userDetails, email: e.target.value }); setFieldErrors(p => ({ ...p, email: false })); }}
                                     />
+                                    {fieldErrors.email && <p className="text-xs text-red-500 mt-1">Valid email is required</p>}
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-xs font-medium text-slate-700 dark:text-slate-400">Phone Number *</label>
+                                    <label className={cn("text-xs font-medium", fieldErrors.phone ? "text-red-500" : "text-slate-700 dark:text-slate-400")}>Phone Number *</label>
                                     <div className="flex gap-2">
                                         <input
                                             type="text"
@@ -1916,62 +1958,68 @@ export default function QuoteCalculator({ sessionId, isAdminMode = false }: Quot
                                             required
                                             type="tel"
                                             inputMode="numeric"
-                                            className="w-[180px] bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg px-4 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500"
+                                            className={cn("w-[180px] bg-white dark:bg-slate-950 border rounded-lg px-4 py-2.5 text-slate-900 dark:text-white focus:outline-none transition-all", fieldErrors.phone ? "border-red-500 focus:border-red-500 animate-shake" : "border-slate-200 dark:border-slate-800 focus:border-cyan-500")}
                                             value={userDetails.phone.length > 5 ? `${userDetails.phone.slice(0, 5)} ${userDetails.phone.slice(5, 10)}` : userDetails.phone}
                                             onChange={e => {
                                                 const value = e.target.value.replace(/[^0-9]/g, '').slice(0, 10);
                                                 setUserDetails({ ...userDetails, phone: value });
+                                                setFieldErrors(p => ({ ...p, phone: false }));
                                             }}
                                             placeholder=""
                                             title="Please enter a valid 10-digit phone number"
                                         />
                                     </div>
+                                    {fieldErrors.phone && <p className="text-xs text-red-500 mt-1">Valid 10-digit phone number required</p>}
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-xs font-medium text-slate-700 dark:text-slate-400">Pincode *</label>
+                                    <label className={cn("text-xs font-medium", fieldErrors.pincode ? "text-red-500" : "text-slate-700 dark:text-slate-400")}>Pincode *</label>
                                     <input
                                         required
                                         type="number"
-                                        className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg px-4 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500"
+                                        className={cn("w-full bg-white dark:bg-slate-950 border rounded-lg px-4 py-2.5 text-slate-900 dark:text-white focus:outline-none transition-all", fieldErrors.pincode ? "border-red-500 focus:border-red-500 animate-shake" : "border-slate-200 dark:border-slate-800 focus:border-cyan-500")}
                                         value={userDetails.pincode}
-                                        onChange={handlePincodeChange}
+                                        onChange={e => { handlePincodeChange(e); setFieldErrors(p => ({ ...p, pincode: false })); }}
                                     />
+                                    {fieldErrors.pincode && <p className="text-xs text-red-500 mt-1">Pincode is required</p>}
                                 </div>
 
                                 <div className="space-y-2 md:col-span-2">
-                                    <label className="text-xs font-medium text-slate-700 dark:text-slate-400">Door No / Building *</label>
+                                    <label className={cn("text-xs font-medium", fieldErrors.doorNo ? "text-red-500" : "text-slate-700 dark:text-slate-400")}>Door No / Building *</label>
                                     <input
                                         required
                                         type="text"
-                                        className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg px-4 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500"
+                                        className={cn("w-full bg-white dark:bg-slate-950 border rounded-lg px-4 py-2.5 text-slate-900 dark:text-white focus:outline-none transition-all", fieldErrors.doorNo ? "border-red-500 focus:border-red-500 animate-shake" : "border-slate-200 dark:border-slate-800 focus:border-cyan-500")}
                                         value={userDetails.doorNo}
-                                        onChange={e => setUserDetails({ ...userDetails, doorNo: e.target.value })}
+                                        onChange={e => { setUserDetails({ ...userDetails, doorNo: e.target.value }); setFieldErrors(p => ({ ...p, doorNo: false })); }}
                                     />
+                                    {fieldErrors.doorNo && <p className="text-xs text-red-500 mt-1">Door No / Building is required</p>}
                                 </div>
 
                                 <div className="space-y-2 md:col-span-2">
-                                    <label className="text-xs font-medium text-slate-700 dark:text-slate-400">Street *</label>
+                                    <label className={cn("text-xs font-medium", fieldErrors.street ? "text-red-500" : "text-slate-700 dark:text-slate-400")}>Street *</label>
                                     <input
                                         required
                                         type="text"
-                                        className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg px-4 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500"
+                                        className={cn("w-full bg-white dark:bg-slate-950 border rounded-lg px-4 py-2.5 text-slate-900 dark:text-white focus:outline-none transition-all", fieldErrors.street ? "border-red-500 focus:border-red-500 animate-shake" : "border-slate-200 dark:border-slate-800 focus:border-cyan-500")}
                                         value={userDetails.street}
-                                        onChange={e => setUserDetails({ ...userDetails, street: e.target.value })}
+                                        onChange={e => { setUserDetails({ ...userDetails, street: e.target.value }); setFieldErrors(p => ({ ...p, street: false })); }}
                                         placeholder="Main Road, Cross Street..."
                                     />
+                                    {fieldErrors.street && <p className="text-xs text-red-500 mt-1">Street is required</p>}
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-xs font-medium text-slate-700 dark:text-slate-400">Area / Landmark *</label>
+                                    <label className={cn("text-xs font-medium", fieldErrors.area ? "text-red-500" : "text-slate-700 dark:text-slate-400")}>Area / Landmark *</label>
                                     <input
                                         required
                                         type="text"
-                                        className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg px-4 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500"
+                                        className={cn("w-full bg-white dark:bg-slate-950 border rounded-lg px-4 py-2.5 text-slate-900 dark:text-white focus:outline-none transition-all", fieldErrors.area ? "border-red-500 focus:border-red-500 animate-shake" : "border-slate-200 dark:border-slate-800 focus:border-cyan-500")}
                                         value={userDetails.area}
-                                        onChange={e => setUserDetails({ ...userDetails, area: e.target.value })}
+                                        onChange={e => { setUserDetails({ ...userDetails, area: e.target.value }); setFieldErrors(p => ({ ...p, area: false })); }}
                                         placeholder="Fetched automatically"
                                     />
+                                    {fieldErrors.area && <p className="text-xs text-red-500 mt-1">Area / Landmark is required</p>}
                                 </div>
 
                                 <div className="space-y-2">

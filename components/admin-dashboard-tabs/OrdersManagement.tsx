@@ -32,6 +32,7 @@ import {
     Database
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { toast } from 'sonner';
 import {
     LineChart,
     Line,
@@ -171,10 +172,10 @@ export default function OrdersManagement() {
                     setModalStatus(newStatus);
                 }
             } else {
-                alert(`Error: ${data.message || "Failed to update"}`);
+                toast.error(data.message || 'Failed to update order status');
             }
         } catch (error) {
-            alert("Failed to update status");
+            toast.error('Failed to update status');
         }
     };
 
@@ -192,10 +193,10 @@ export default function OrdersManagement() {
                     setIsModalOpen(false);
                 }
             } else {
-                alert(`Error: ${data.message || "Failed to delete"}`);
+                toast.error(data.message || 'Failed to delete order');
             }
         } catch (error) {
-            alert("Failed to delete order");
+            toast.error('Failed to delete order');
         }
     };
 

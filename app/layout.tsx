@@ -16,6 +16,7 @@ import { Providers } from "@/components/Providers";
 import CookieConsent from "@/components/CookieConsent";
 import MainFrontendUI from "@/components/MainFrontendUI";
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import { ToastProvider } from "@/components/ToastProvider";
 
 
 import { getSEOData, getPageMetadata } from "@/lib/seo";
@@ -76,6 +77,7 @@ export default async function RootLayout({
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <body suppressHydrationWarning className={cn(ibmPlexSans.variable, "font-sans bg-background text-foreground min-h-screen")}>
         <Providers>
+          <ToastProvider />
           <CartProvider>
             <FaviconSwitcher />
             <OrganizationSchema />

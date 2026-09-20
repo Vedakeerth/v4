@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -7,6 +7,7 @@ import Image from "next/image";
 import { type Product } from "@/lib/products";
 import CustomDropdown from "../CustomDropdown";
 import { formatINR } from "@/lib/utils";
+import { toast } from 'sonner';
 
 const availableColors = ['#2563eb', '#ef4444', '#22c55e', '#eab308', '#ffffff', '#000000'];
 const getColorName = (color: string) => {
@@ -156,11 +157,11 @@ export default function ProductsTab() {
                 }
             } else {
                 console.error("Upload error response:", responseData.error);
-                alert("Upload failed: " + responseData.error);
+                toast.error("Upload failed: " + responseData.error);
             }
         } catch (error) {
             console.error("Upload failed", error);
-            alert("Upload failed: " + (error as Error).message);
+            toast.error("Upload failed: " + (error as Error).message);
         } finally {
             setIsUploading(false);
             setUploadProgress(null);
@@ -205,9 +206,9 @@ export default function ProductsTab() {
                         return { ...prev, images: newImages.join(", ") };
                     });
                     setManualGalleryUrl("");
-                    alert(`Added ${data.urls.length} images from MEGA folder!`);
+                    toast.error(`Added ${data.urls.length} images from MEGA folder!`);
                 } else {
-                    alert(data.error || "Failed to load MEGA folder");
+                    toast.error(data.error || "Failed to load MEGA folder");
                 }
             } else {
                 setFormData(prev => {
@@ -219,7 +220,7 @@ export default function ProductsTab() {
             }
         } catch (err) {
             console.error(err);
-            alert("Failed to add URL");
+            toast.error(`Failed to add URL`);
         } finally {
             setIsAddingUrl(false);
         }
@@ -284,8 +285,8 @@ export default function ProductsTab() {
 
     const handleSaveProduct = async () => {
         try {
-            if (!formData.name.trim() || !formData.price || !formData.category || !formData.image || formData.stockCount === null || formData.stockCount === undefined || formData.likes === null || formData.likes === undefined || !formData.availabilityStatus || formData.colors.length === 0 || !formData.description.trim()) {
-                return alert("Please fill out all mandatory fields, including selecting at least one finish/color.");
+            if (!formData.name.trim() || !formData.price || !formData.mrp || !formData.category || !formData.image || formData.stockCount === null || formData.stockCount === undefined || formData.likes === null || formData.likes === undefined || !formData.availabilityStatus || formData.colors.length === 0 || !formData.description.trim()) {
+                return toast.error(`Please fill out all mandatory fields, including MRP and selecting at least one finish/color.`);
             }
             let finalImages: string[] = [];
             let mainImage = formData.image;
@@ -321,10 +322,10 @@ export default function ProductsTab() {
                     body: JSON.stringify({ tag: "products" }),
                 });
             } else {
-                alert(data.message || "Failed to save product");
+                toast.error(data.message || "Failed to save product");
             }
         } catch (error) {
-            alert("Failed to save product");
+            toast.error(`Failed to save product`);
         }
     };
 
@@ -344,7 +345,7 @@ export default function ProductsTab() {
                 });
             }
         } catch (error) {
-            alert("Failed to delete product");
+            toast.error(`Failed to delete product`);
         }
     };
 
@@ -385,12 +386,12 @@ export default function ProductsTab() {
                 });
                 const data = await res.json();
                 if (data.success) {
-                    alert(`Imported ${data.imported} products from CSV`);
+                    toast.error(`Imported ${data.imported} products from CSV`);
                     setShowImportModal(false);
                     fetchProducts();
                 }
             } catch (error) {
-                alert("CSV Import failed");
+                toast.error(`CSV Import failed`);
             } finally {
                 setIsImporting(false);
             }
@@ -430,12 +431,12 @@ export default function ProductsTab() {
             });
             const data = await res.json();
             if (data.success) {
-                alert(`Imported ${data.imported} products`);
+                toast.error(`Imported ${data.imported} products`);
                 setShowImportModal(false);
                 fetchProducts();
             }
         } catch (error) {
-            alert("Import failed");
+            toast.error(`Import failed`);
         } finally {
             setIsImporting(false);
         }
@@ -463,16 +464,16 @@ export default function ProductsTab() {
                     <div className="space-y-6">
                         <div className="space-y-4">
                             <div>
-                                <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">Product Name</label>
+                                <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">Product Name *</label>
                                 <input value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500 transition-all" />
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 <div>
-                                    <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">Selling Price</label>
+                                    <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">Selling Price *</label>
                                     <input value={formData.price} onChange={e => setFormData({ ...formData, price: e.target.value })} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500 transition-all" placeholder="2499" />
                                 </div>
                                 <div>
-                                    <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">MRP</label>
+                                    <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">MRP *</label>
                                     <input value={formData.mrp} onChange={e => setFormData({ ...formData, mrp: e.target.value })} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500 transition-all" placeholder="3999" />
                                 </div>
                                 <div>
@@ -485,7 +486,7 @@ export default function ProductsTab() {
                                 </div>
                                 <div className="col-span-1 lg:col-span-2">
                                     <CustomDropdown
-                                        label="Category"
+                                        label="Category *"
                                         value={formData.category}
                                         onChange={val => setFormData({ ...formData, category: val })}
                                         options={categoriesList.length > 0 ? categoriesList : [
@@ -538,12 +539,12 @@ export default function ProductsTab() {
                         <div className="space-y-4">
                             <div className="flex flex-col gap-6 sm:flex-row">
                                 <div className="flex-1">
-                                    <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">Stock Count</label>
+                                    <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">Stock Count *</label>
                                     <input type="number" value={formData.stockCount} onChange={e => setFormData({ ...formData, stockCount: parseInt(e.target.value) || 0 })} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500 transition-all" />
                                 </div>
                                 <div className="flex-1">
                                     <CustomDropdown
-                                        label="Status"
+                                        label="Status *"
                                         value={formData.availabilityStatus}
                                         onChange={val => setFormData({ ...formData, availabilityStatus: val as any })}
                                         options={[
@@ -871,3 +872,6 @@ export default function ProductsTab() {
         </div>
     );
 }
+
+
+

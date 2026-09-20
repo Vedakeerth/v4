@@ -1,8 +1,9 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect } from "react";
 import { Users, UserPlus, Trash2, Shield, User as UserIcon, AlertCircle, Loader2, Check, Eye, EyeOff, Plus, Edit } from "lucide-react";
 import { User, UserRole } from "@/lib/users";
+import { toast } from 'sonner';
 
 export default function UsersTab() {
     const [users, setUsers] = useState<Omit<User, 'password'>[]>([]);
@@ -81,10 +82,10 @@ export default function UsersTab() {
                 fetchUsers();
             } else {
                 const data = await res.json();
-                alert(data.error || "Failed to delete user");
+                toast.error(data.error || 'Failed to delete user');
             }
         } catch (err) {
-            alert("Failed to delete user");
+            toast.error('Failed to delete user');
         }
     };
 
@@ -107,13 +108,13 @@ export default function UsersTab() {
                 setIsChangingPassword(null);
                 setNewPassword("");
                 setShowChangePassword(false);
-                alert("Password updated successfully");
+                toast.success('Password updated successfully');
             } else {
                 const data = await res.json();
-                alert(data.error || "Failed to update password");
+                toast.error(data.error || 'Failed to update password');
             }
         } catch (err) {
-            alert("Something went wrong");
+            toast.error('Something went wrong');
         } finally {
             setIsSubmitting(false);
         }

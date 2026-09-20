@@ -7,6 +7,7 @@ import jsPDF from "jspdf";
 import Image from "next/image";
 import { Product } from "@/lib/products";
 import { formatINR } from "@/lib/utils";
+import { toast } from 'sonner';
 
 interface InstantQuoteModalProps {
     product: Product;
@@ -15,6 +16,7 @@ interface InstantQuoteModalProps {
 
 export default function InstantQuoteModal({ product, onClose }: InstantQuoteModalProps) {
     const [isGenerating, setIsGenerating] = useState(false);
+    const [fieldErrors, setFieldErrors] = useState<Record<string, boolean>>({});
     const [userDetails, setUserDetails] = useState({
         name: "",
         email: "",
@@ -32,10 +34,16 @@ export default function InstantQuoteModal({ product, onClose }: InstantQuoteModa
     }, []);
 
     const handleGenerate = async () => {
-        if (!userDetails.name || !userDetails.email) {
-            alert("Please provide at least your name and email.");
+        const errors: Record<string, boolean> = {};
+        if (!userDetails.name) errors.name = true;
+        if (!userDetails.email) errors.email = true;
+        if (Object.keys(errors).length > 0) {
+            setFieldErrors(errors);
+            const first = errors.name ? 'Full Name' : 'Email Address';
+            toast.error(`Please fill in: ${first}`);
             return;
         }
+        setFieldErrors({});
 
         setIsGenerating(true);
         try {
@@ -59,7 +67,7 @@ export default function InstantQuoteModal({ product, onClose }: InstantQuoteModa
             onClose();
         } catch (error) {
             console.error("PDF generation error:", error);
-            alert("Failed to generate PDF. Please try again.");
+            toast.error("Failed to generate PDF. Please try again.");
         } finally {
             setIsGenerating(false);
         }
@@ -81,20 +89,22 @@ export default function InstantQuoteModal({ product, onClose }: InstantQuoteModa
                     <div className="relative">
                         <User className="absolute left-3 top-3.5 h-4 w-4 text-slate-500" />
                         <input
-                            placeholder="Your Name"
-                            className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg pl-10 pr-4 py-3 text-slate-900 dark:text-white focus:border-cyan-500 outline-none"
+                            placeholder="Your Name *"
+                            className={`w-full bg-slate-100 dark:bg-slate-800 border rounded-lg pl-10 pr-4 py-3 text-slate-900 dark:text-white focus:border-cyan-500 outline-none transition-all ${fieldErrors.name ? 'border-red-500 animate-shake' : 'border-slate-300 dark:border-slate-700'}`}
                             value={userDetails.name}
-                            onChange={e => setUserDetails({ ...userDetails, name: e.target.value })}
+                            onChange={e => { setUserDetails({ ...userDetails, name: e.target.value }); setFieldErrors(p => ({ ...p, name: false })); }}
                         />
+                        {fieldErrors.name && <p className="text-xs text-red-500 mt-1 ml-1">Full name is required</p>}
                     </div>
                     <div className="relative">
                         <Mail className="absolute left-3 top-3.5 h-4 w-4 text-slate-500" />
                         <input
-                            placeholder="Email Address"
-                            className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg pl-10 pr-4 py-3 text-slate-900 dark:text-white focus:border-cyan-500 outline-none"
+                            placeholder="Email Address *"
+                            className={`w-full bg-slate-100 dark:bg-slate-800 border rounded-lg pl-10 pr-4 py-3 text-slate-900 dark:text-white focus:border-cyan-500 outline-none transition-all ${fieldErrors.email ? 'border-red-500 animate-shake' : 'border-slate-300 dark:border-slate-700'}`}
                             value={userDetails.email}
-                            onChange={e => setUserDetails({ ...userDetails, email: e.target.value })}
+                            onChange={e => { setUserDetails({ ...userDetails, email: e.target.value }); setFieldErrors(p => ({ ...p, email: false })); }}
                         />
+                        {fieldErrors.email && <p className="text-xs text-red-500 mt-1 ml-1">Email address is required</p>}
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                         <div className="relative">
