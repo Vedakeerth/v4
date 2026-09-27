@@ -30,12 +30,6 @@ const nextConfig: NextConfig = {
         hostname: '*.mega.nz',
       },
     ],
-    localPatterns: [
-      {
-        pathname: '/api/mega-image',
-        search: '**',
-      },
-    ],
   },
   compress: true,
   poweredByHeader: false,
