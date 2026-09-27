@@ -271,7 +271,7 @@ export default function ProductsTab() {
             likes: product.likes || "",
             views: product.views || "",
             isPopular: product.isPopular || false,
-            availabilityStatus: product.availabilityStatus || "In Stock",
+            availabilityStatus: (product.availabilityStatus || "In Stock") as "In Stock" | "Out of Stock" | "Pre-order" | "Draft",
             colors: product.colors || [],
             defaultColor: product.defaultColor || (product.colors && product.colors.length > 0 ? product.colors[0] : ""),
             weight: product.weight || "",
