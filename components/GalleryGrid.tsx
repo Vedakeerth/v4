@@ -424,6 +424,7 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                                                     src={part.image?.includes("mega.nz") ? `/api/mega-image?url=${encodeURIComponent(part.image)}` : part.image}
                                                     alt={part.name}
                                                     fill
+                                                    unoptimized={!!(part.image?.includes("mega.nz"))}
                                                     className="object-cover group-hover:scale-110 transition-transform duration-700"
                                                 />
                                                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent opacity-60 group-hover:opacity-100 transition-opacity" />

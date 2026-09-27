@@ -122,6 +122,7 @@ export default function PopularParts({ header, parts }: PopularPartsProps) {
                                         src={part?.image?.includes("mega.nz") ? `/api/mega-image?url=${encodeURIComponent(part.image)}` : (part?.image || "/images/placeholder.png")}
                                         alt={part?.name || "Product"}
                                         fill
+                                        unoptimized={!!(part?.image?.includes("mega.nz"))}
                                         className="object-cover group-hover:scale-110 transition-transform duration-700"
                                     />
                                     <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-60" />
