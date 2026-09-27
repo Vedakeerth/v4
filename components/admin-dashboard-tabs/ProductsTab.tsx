@@ -6,6 +6,7 @@ import { Plus, Edit, Trash2, Upload, X, LogOut, Search, ArrowLeft, Star, Chevron
 import Image from "next/image";
 import { type Product } from "@/lib/products";
 import CustomDropdown from "../CustomDropdown";
+import RichTextEditor from "../RichTextEditor";
 import { formatINR } from "@/lib/utils";
 import { toast } from 'sonner';
 
@@ -783,7 +784,11 @@ export default function ProductsTab() {
 
                         <div>
                             <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-2">Description <span className="text-red-500">*</span></label>
-                            <textarea value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} className="w-full h-32 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500 resize-none font-medium leading-relaxed" placeholder="Detailed product description..." />
+                            <RichTextEditor
+                                value={formData.description}
+                                onChange={(val) => setFormData({ ...formData, description: val })}
+                                placeholder="Detailed product description..."
+                            />
                         </div>
                     </div>
                 </div>
