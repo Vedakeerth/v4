@@ -54,7 +54,7 @@ export default function ProductsTab() {
         likes: "" as number | string,
         views: "" as number | string,
         isPopular: false,
-        availabilityStatus: "In Stock" as "In Stock" | "Out of Stock" | "Pre-order",
+        availabilityStatus: "In Stock" as "In Stock" | "Out of Stock" | "Pre-order" | "Draft",
         colors: [] as string[],
         defaultColor: "",
         weight: "" as number | string,
