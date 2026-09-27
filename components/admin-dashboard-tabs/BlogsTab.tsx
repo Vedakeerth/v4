@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect } from "react";
 import { Plus, Edit, Trash2, X, Image as ImageIcon, ArrowLeft, Eye } from "lucide-react";
@@ -6,6 +6,7 @@ import Image from "next/image";
 import { BlogPost } from "@/types";
 import BlogContent from "@/components/BlogContent";
 import { toast } from 'sonner';
+import RichTextEditor from "@/components/RichTextEditor";
 
 export default function BlogsTab() {
     const [blogs, setBlogs] = useState<BlogPost[]>([]);
@@ -225,12 +226,10 @@ export default function BlogsTab() {
                                         }} title="Insert Image" className="p-1.5 hover:bg-slate-100 dark:bg-slate-800 rounded text-slate-600 dark:text-slate-400"><ImageIcon size={14} /></button>
                                     </div>
                                 </div>
-                                <textarea
-                                    id="blog-content-area"
+                                <RichTextEditor
                                     value={content}
-                                    onChange={e => setContent(e.target.value)}
-                                    className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-6 text-slate-900 dark:text-white h-[600px] font-mono text-sm focus:border-cyan-500/50 outline-none leading-relaxed"
-                                    placeholder="# Write your post here..."
+                                    onChange={setContent}
+                                    placeholder="Write your blog post here..."
                                 />
                             </div>
                         </div>

@@ -1,10 +1,11 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect } from "react";
 import { Plus, Edit, Trash2, X, Save, Upload, Image as ImageIcon } from "lucide-react";
 import Image from "next/image";
 import { Project } from "@/types";
 import { toast } from 'sonner';
+import RichTextEditor from "@/components/RichTextEditor";
 
 export default function ProjectsTab() {
     const [projects, setProjects] = useState<Project[]>([]);
@@ -256,10 +257,10 @@ export default function ProjectsTab() {
                             </div>
                             <div>
                                 <label className="block text-slate-500 text-[10px] font-bold uppercase mb-1.5 ml-1">Description</label>
-                                <textarea
+                                <RichTextEditor
                                     value={formData.description}
-                                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                                    className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-slate-900 dark:text-white h-24 focus:border-cyan-500/50 outline-none"
+                                    onChange={(val) => setFormData({ ...formData, description: val })}
+                                    placeholder="Describe this project..."
                                 />
                             </div>
                             <button

@@ -6,6 +6,7 @@ import { Package, ShoppingCart } from "lucide-react";
 import { Skeleton } from "./Skeleton";
 import Link from "next/link";
 import ProductQuickView from "./ProductQuickView";
+import { formatINR } from "@/lib/utils";
 
 
 import { Product } from "@/lib/products";
@@ -95,7 +96,7 @@ export default function Products({ products, isLoading = false }: ProductsProps)
                                     <h3 className="text-slate-900 dark:text-white font-bold text-lg mb-2 group-hover:text-blue-400 transition-colors uppercase tracking-tight">{product.name}</h3>
                                     <p className="text-slate-700 dark:text-slate-400 text-sm mb-4 line-clamp-2 leading-relaxed">{product.description}</p>
                                     <div className="flex items-center justify-between mb-6">
-                                        <span className="text-blue-400 font-black text-xl">{product.price}</span>
+                                        <span className="text-blue-400 font-black text-xl">{formatINR(product.price)}</span>
                                         {product.quantity !== undefined && (
                                             <span className="text-slate-500 text-[10px] font-black uppercase tracking-widest">
                                                 Qty: {product.quantity}
