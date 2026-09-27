@@ -38,7 +38,7 @@ export interface Product {
     category: string;
     inStock: boolean;
     stockCount?: number;
-    availabilityStatus?: "In Stock" | "Out of Stock" | "Pre-order";
+    availabilityStatus?: "In Stock" | "Out of Stock" | "Pre-order" | "Draft";
     isPopular?: boolean;
     quantity?: number; // Used for cart
     colors?: string[]; // Hex codes or names
