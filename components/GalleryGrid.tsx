@@ -421,7 +421,7 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                                                 viewMode === "grid" ? "h-60 w-full" : "h-full w-64"
                                             )}>
                                                 <Image
-                                                    src={part.image}
+                                                    src={part.image?.includes("mega.nz") ? `/api/mega-image?url=${encodeURIComponent(part.image)}` : part.image}
                                                     alt={part.name}
                                                     fill
                                                     className="object-cover group-hover:scale-110 transition-transform duration-700"

@@ -29,7 +29,7 @@ export const getProducts = unstable_cache(
                 return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
                     id: doc.id,
                     ...doc.data()
-                } as Product));
+                } as Product)).filter((p: Product) => p.availabilityStatus !== "Draft");
             } catch (error) {
                 console.error('Error fetching products from Firestore:', error);
                 return [];
@@ -60,7 +60,7 @@ export const getPopularProducts = unstable_cache(
                         id: doc.id,
                         ...doc.data()
                     } as Product))
-                    .filter((p: Product) => p.isPopular === true)
+                    .filter((p: Product) => p.isPopular === true && p.availabilityStatus !== "Draft")
                     .slice(0, limitCount);
 
             } catch (error) {

@@ -119,7 +119,7 @@ export default function PopularParts({ header, parts }: PopularPartsProps) {
                             >
                                 <div className="relative h-64 w-full overflow-hidden">
                                     <Image
-                                        src={part?.image || "/images/placeholder.png"}
+                                        src={part?.image?.includes("mega.nz") ? `/api/mega-image?url=${encodeURIComponent(part.image)}` : (part?.image || "/images/placeholder.png")}
                                         alt={part?.name || "Product"}
                                         fill
                                         className="object-cover group-hover:scale-110 transition-transform duration-700"

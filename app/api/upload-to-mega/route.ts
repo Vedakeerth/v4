@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { uploadToMega } from '@/lib/mega';
 
+export const maxDuration = 60; // Set max duration for Vercel
+
 export async function POST(req: Request) {
     try {
         const contentType = req.headers.get('content-type') || '';

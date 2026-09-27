@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -50,17 +50,17 @@ export default function ProductsTab() {
         images: "",
         category: "",
         inStock: true,
-        stockCount: 0,
-        likes: 0,
-        views: 0,
+        stockCount: "" as number | string,
+        likes: "" as number | string,
+        views: "" as number | string,
         isPopular: false,
         availabilityStatus: "In Stock" as "In Stock" | "Out of Stock" | "Pre-order",
         colors: [] as string[],
         defaultColor: "",
-        weight: 0,
-        length: 0,
-        width: 0,
-        height: 0,
+        weight: "" as number | string,
+        length: "" as number | string,
+        width: "" as number | string,
+        height: "" as number | string,
     });
 
     // Import state
@@ -68,6 +68,7 @@ export default function ProductsTab() {
     const [jsonData, setJsonData] = useState("");
     const [isImporting, setIsImporting] = useState(false);
     const [importMode, setImportMode] = useState<"url" | "json" | "csv">("csv");
+    const [importAsDraft, setImportAsDraft] = useState(false);
 
     const [manualGalleryUrl, setManualGalleryUrl] = useState("");
     const [isAddingUrl, setIsAddingUrl] = useState(false);
@@ -76,6 +77,7 @@ export default function ProductsTab() {
     const [isUploading, setIsUploading] = useState(false);
     const [uploadProgress, setUploadProgress] = useState<number | null>(null);
     const [uploadSessionId, setUploadSessionId] = useState<string>("");
+    const [filterStatus, setFilterStatus] = useState<"All" | "In Stock" | "Out of Stock" | "Draft">("All");
 
     useEffect(() => {
         fetchProducts();
@@ -236,17 +238,17 @@ export default function ProductsTab() {
             images: "",
             category: "",
             inStock: true,
-            stockCount: 0,
-            likes: 0,
-            views: 0,
+            stockCount: "",
+            likes: "",
+            views: "",
             isPopular: false,
             availabilityStatus: "In Stock",
             colors: [],
             defaultColor: "",
-            weight: 0,
-            length: 0,
-            width: 0,
-            height: 0,
+            weight: "",
+            length: "",
+            width: "",
+            height: "",
         });
         setUploadedImages([]);
         setEditingProduct(null);
@@ -265,17 +267,17 @@ export default function ProductsTab() {
             images: product.images.join(", "),
             category: product.category,
             inStock: product.inStock,
-            stockCount: product.stockCount || 0,
-            likes: product.likes || 0,
-            views: product.views || 0,
+            stockCount: product.stockCount || "",
+            likes: product.likes || "",
+            views: product.views || "",
             isPopular: product.isPopular || false,
             availabilityStatus: product.availabilityStatus || "In Stock",
             colors: product.colors || [],
             defaultColor: product.defaultColor || (product.colors && product.colors.length > 0 ? product.colors[0] : ""),
-            weight: product.weight || 0,
-            length: product.length || 0,
-            width: product.width || 0,
-            height: product.height || 0,
+            weight: product.weight || "",
+            length: product.length || "",
+            width: product.width || "",
+            height: product.height || "",
         });
         setUploadedImages(allImages);
         setEditingProduct(product);
@@ -283,10 +285,30 @@ export default function ProductsTab() {
         setShowAddModal(true);
     };
 
-    const handleSaveProduct = async () => {
+    const handleSaveProduct = async (asDraft: boolean = false) => {
         try {
-            if (!formData.name.trim() || !formData.price || !formData.mrp || !formData.category || !formData.image || formData.stockCount === null || formData.stockCount === undefined || formData.likes === null || formData.likes === undefined || !formData.availabilityStatus || formData.colors.length === 0 || !formData.description.trim()) {
-                return toast.error(`Please fill out all mandatory fields, including MRP and selecting at least one finish/color.`);
+            if (asDraft && !formData.name.trim()) {
+                return toast.error("Product Name is required to save as a draft.");
+            }
+            if (!asDraft && (!formData.name.trim() || !formData.price || !formData.mrp || !formData.category || !formData.image || formData.stockCount === null || formData.stockCount === undefined || formData.likes === null || formData.likes === undefined || !formData.availabilityStatus || formData.colors.length === 0 || !formData.description.trim() || formData.weight === "" || formData.length === "" || formData.width === "" || formData.height === "")) {
+                const missingFields: string[] = [];
+                if (!formData.name.trim()) missingFields.push("Product Name");
+                if (!formData.price) missingFields.push("Selling Price");
+                if (!formData.mrp) missingFields.push("MRP");
+                if (!formData.category) missingFields.push("Category");
+                if (!formData.image) missingFields.push("Primary Image");
+                if (formData.stockCount === null || formData.stockCount === undefined || formData.stockCount === "") missingFields.push("Stock Count");
+                if (formData.likes === null || formData.likes === undefined || formData.likes === "") missingFields.push("Initial Likes");
+                if (formData.views === null || formData.views === undefined || formData.views === "") missingFields.push("Initial Views");
+                if (!formData.availabilityStatus) missingFields.push("Status");
+                if (formData.colors.length === 0) missingFields.push("Finish/Color");
+                if (!formData.description.trim()) missingFields.push("Description");
+                if (formData.weight === "") missingFields.push("Weight");
+                if (formData.length === "") missingFields.push("Length");
+                if (formData.width === "") missingFields.push("Width");
+                if (formData.height === "") missingFields.push("Height");
+                
+                return toast.error(`Missing fields: ${missingFields.join(", ")}`);
             }
             let finalImages: string[] = [];
             let mainImage = formData.image;
@@ -303,6 +325,7 @@ export default function ProductsTab() {
                 image: mainImage,
                 images: finalImages,
                 stockCount: parseInt(formData.stockCount.toString()) || 0,
+                availabilityStatus: asDraft ? "Draft" : formData.availabilityStatus,
             };
 
             const res = await fetch(editingProduct ? `/api/products/${editingProduct.id}` : "/api/products", {
@@ -382,7 +405,7 @@ export default function ProductsTab() {
                 const res = await fetch("/api/products/import", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ products: productsToImport }),
+                    body: JSON.stringify({ products: productsToImport, asDraft: importAsDraft }),
                 });
                 const data = await res.json();
                 if (data.success) {
@@ -418,9 +441,9 @@ export default function ProductsTab() {
             let body: any;
             if (importMode === "json") {
                 const p = JSON.parse(jsonData);
-                body = { products: Array.isArray(p) ? p : (p.products || []) };
+                body = { products: Array.isArray(p) ? p : (p.products || []), asDraft: importAsDraft };
             } else if (importMode === "url") {
-                body = { catalogUrl };
+                body = { catalogUrl, asDraft: importAsDraft };
             } else {
                 return; // CSV handled by separate input
             }
@@ -452,41 +475,49 @@ export default function ProductsTab() {
                         </button>
                         <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{editingProduct ? "Edit Product" : "Add New Product"}</h2>
                     </div>
-                    <button
-                        onClick={handleSaveProduct}
+                    <div className="flex gap-3">
+                        <button
+                            onClick={() => handleSaveProduct(true)}
+                            className="px-6 py-3 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-900 dark:text-white font-bold rounded-xl transition-all"
+                        >
+                            Save as Draft
+                        </button>
+                        <button
+                        onClick={() => handleSaveProduct(false)}
                         className="px-8 py-3 bg-cyan-500 hover:bg-cyan-400 text-white dark:text-slate-950 font-bold rounded-xl shadow-lg shadow-cyan-500/20 transition-all"
                     >
                         {editingProduct ? "Save Changes" : "Save Product"}
                     </button>
+                    </div>
                 </div>
 
                 <div className="grid grid-cols-1 gap-8 w-full">
                     <div className="space-y-6">
                         <div className="space-y-4">
                             <div>
-                                <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">Product Name *</label>
+                                <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">Product Name <span className="text-red-500">*</span></label>
                                 <input value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500 transition-all" />
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 <div>
-                                    <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">Selling Price *</label>
+                                    <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">Selling Price <span className="text-red-500">*</span></label>
                                     <input value={formData.price} onChange={e => setFormData({ ...formData, price: e.target.value })} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500 transition-all" placeholder="2499" />
                                 </div>
                                 <div>
-                                    <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">MRP *</label>
+                                    <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">MRP <span className="text-red-500">*</span></label>
                                     <input value={formData.mrp} onChange={e => setFormData({ ...formData, mrp: e.target.value })} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500 transition-all" placeholder="3999" />
                                 </div>
                                 <div>
-                                    <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">Initial Likes</label>
-                                    <input type="number" value={formData.likes} onChange={e => setFormData({ ...formData, likes: parseInt(e.target.value) || 0 })} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500 transition-all" />
+                                    <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">Initial Likes <span className="text-red-500">*</span></label>
+                                    <input type="number" value={formData.likes} onChange={e => setFormData({ ...formData, likes: e.target.value === "" ? "" : parseInt(e.target.value) || 0 })} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500 transition-all" placeholder="0" />
                                 </div>
                                 <div>
-                                    <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">Initial Views</label>
-                                    <input type="number" value={formData.views} onChange={e => setFormData({ ...formData, views: parseInt(e.target.value) || 0 })} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500 transition-all" />
+                                    <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">Initial Views <span className="text-red-500">*</span></label>
+                                    <input type="number" value={formData.views} onChange={e => setFormData({ ...formData, views: e.target.value === "" ? "" : parseInt(e.target.value) || 0 })} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500 transition-all" placeholder="0" />
                                 </div>
                                 <div className="col-span-1 lg:col-span-2">
                                     <CustomDropdown
-                                        label="Category *"
+                                        label={<>Category <span className="text-red-500">*</span></>}
                                         value={formData.category}
                                         onChange={val => setFormData({ ...formData, category: val })}
                                         options={categoriesList.length > 0 ? categoriesList : [
@@ -502,20 +533,20 @@ export default function ProductsTab() {
                             </div>
                             <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
                                 <div>
-                                    <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">Weight (g)</label>
-                                    <input type="number" value={formData.weight} onChange={e => setFormData({ ...formData, weight: parseInt(e.target.value) || 0 })} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500 transition-all" placeholder="500" />
+                                    <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">Weight (g) <span className="text-red-500">*</span></label>
+                                    <input type="number" value={formData.weight} onChange={e => setFormData({ ...formData, weight: e.target.value === "" ? "" : parseFloat(e.target.value) || 0 })} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500 transition-all" placeholder="500" />
                                 </div>
                                 <div>
-                                    <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">Length (cm)</label>
-                                    <input type="number" value={formData.length} onChange={e => setFormData({ ...formData, length: parseInt(e.target.value) || 0 })} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500 transition-all" placeholder="20" />
+                                    <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">Length (cm) <span className="text-red-500">*</span></label>
+                                    <input type="number" value={formData.length} onChange={e => setFormData({ ...formData, length: e.target.value === "" ? "" : parseFloat(e.target.value) || 0 })} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500 transition-all" placeholder="20" />
                                 </div>
                                 <div>
-                                    <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">Width (cm)</label>
-                                    <input type="number" value={formData.width} onChange={e => setFormData({ ...formData, width: parseInt(e.target.value) || 0 })} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500 transition-all" placeholder="15" />
+                                    <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">Width (cm) <span className="text-red-500">*</span></label>
+                                    <input type="number" value={formData.width} onChange={e => setFormData({ ...formData, width: e.target.value === "" ? "" : parseFloat(e.target.value) || 0 })} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500 transition-all" placeholder="15" />
                                 </div>
                                 <div>
-                                    <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">Height (cm)</label>
-                                    <input type="number" value={formData.height} onChange={e => setFormData({ ...formData, height: parseInt(e.target.value) || 0 })} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500 transition-all" placeholder="10" />
+                                    <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">Height (cm) <span className="text-red-500">*</span></label>
+                                    <input type="number" value={formData.height} onChange={e => setFormData({ ...formData, height: e.target.value === "" ? "" : parseFloat(e.target.value) || 0 })} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500 transition-all" placeholder="10" />
                                 </div>
                             </div>
                             
@@ -539,12 +570,12 @@ export default function ProductsTab() {
                         <div className="space-y-4">
                             <div className="flex flex-col gap-6 sm:flex-row">
                                 <div className="flex-1">
-                                    <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">Stock Count *</label>
-                                    <input type="number" value={formData.stockCount} onChange={e => setFormData({ ...formData, stockCount: parseInt(e.target.value) || 0 })} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500 transition-all" />
+                                    <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">Stock Count <span className="text-red-500">*</span></label>
+                                    <input type="number" value={formData.stockCount} onChange={e => setFormData({ ...formData, stockCount: e.target.value === "" ? "" : parseInt(e.target.value) || 0 })} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500 transition-all" placeholder="0" />
                                 </div>
                                 <div className="flex-1">
                                     <CustomDropdown
-                                        label="Status *"
+                                        label={<>Status <span className="text-red-500">*</span></>}
                                         value={formData.availabilityStatus}
                                         onChange={val => setFormData({ ...formData, availabilityStatus: val as any })}
                                         options={[
@@ -561,9 +592,9 @@ export default function ProductsTab() {
                     <div className="space-y-6">
                         <div className="p-4 bg-white dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-800">
                             <div className="flex items-center justify-between mb-4">
-                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Product Gallery & Primary Image</label>
+                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Product Gallery & Primary Image <span className="text-red-500">*</span></label>
                                 <span className="text-[10px] text-slate-400 font-bold flex items-center gap-1.5">
-                                    <Star size={10} className="text-yellow-400 fill-yellow-400" /> Click image to set as Primary
+                                    <Star size={10} className="text-red-500 fill-red-500" /> Click image to set as Primary
                                 </span>
                             </div>
 
@@ -635,7 +666,7 @@ export default function ProductsTab() {
                                             {imgs.length < 5 && (
                                                 <label className="aspect-square bg-slate-50 dark:bg-slate-800/50 border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-cyan-500/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all group">
                                                     {isUploading && uploadProgress !== null ? (
-                                                        <span className="text-cyan-500 font-bold">{uploadProgress}%</span>
+                                                        <div className="flex flex-col items-center justify-center gap-1"><div className="w-5 h-5 rounded-full border-2 border-cyan-500 border-t-transparent animate-spin" /><span className="text-cyan-500 font-bold text-[10px] text-center">{uploadProgress === 100 ? "Saving to Mega..." : `Fetching... ${uploadProgress}%`}</span></div>
                                                     ) : (
                                                         <>
                                                             <Plus size={22} className="text-slate-400 group-hover:text-cyan-400 mb-1" />
@@ -683,7 +714,7 @@ export default function ProductsTab() {
                                     />
                                     <label className="flex cursor-pointer items-center justify-center rounded-xl bg-slate-200 dark:bg-slate-800 px-5 py-2.5 transition-all hover:bg-slate-300 dark:hover:bg-slate-700 font-bold text-sm text-slate-700 dark:text-slate-300 gap-2">
                                         {isUploading && uploadProgress !== null ? (
-                                            <span className="text-cyan-500">{uploadProgress}%</span>
+                                            <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full border-2 border-cyan-500 border-t-transparent animate-spin" /><span className="text-cyan-500 whitespace-nowrap text-xs">{uploadProgress === 100 ? "Saving to Mega..." : `Fetching... ${uploadProgress}%`}</span></div>
                                         ) : (
                                             <><Upload size={16} /> Upload</>
                                         )}
@@ -694,7 +725,7 @@ export default function ProductsTab() {
                         </div>
 
                         <div className="p-4 bg-white dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-800">
-                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-4">Available Colors</label>
+                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-4">Available Colors <span className="text-red-500">*</span></label>
                             <div className="flex gap-4 flex-wrap">
                                 {availableColors.map((color) => {
                                     const isSelected = formData.colors.includes(color);
@@ -751,7 +782,7 @@ export default function ProductsTab() {
                         </div>
 
                         <div>
-                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-2">Description</label>
+                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-2">Description <span className="text-red-500">*</span></label>
                             <textarea value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} className="w-full h-32 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500 resize-none font-medium leading-relaxed" placeholder="Detailed product description..." />
                         </div>
                     </div>
@@ -762,7 +793,8 @@ export default function ProductsTab() {
 
     return (
         <div>
-            <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:gap-4">
+            <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center">
+                <div className="flex flex-col gap-3 sm:flex-row sm:gap-4 w-full sm:w-auto">
                 <button onClick={handleAddProduct} className="flex w-full items-center justify-center gap-2 rounded-xl bg-cyan-500 px-6 py-2.5 sm:py-3 font-black text-[10px] sm:text-sm text-white dark:text-slate-950 shadow-lg shadow-cyan-500/20 transition-all hover:bg-cyan-400 sm:w-auto uppercase tracking-widest">
                     <Plus size={18} /> Add Product
                 </button>
@@ -770,17 +802,36 @@ export default function ProductsTab() {
                     <Upload size={18} /> Bulk Import
                 </button>
             </div>
+            <div className="w-full sm:w-48 z-10">
+                <CustomDropdown
+                    value={filterStatus}
+                    onChange={(val) => setFilterStatus(val as any)}
+                    options={[
+                        { value: "All", label: "All Statuses" },
+                        { value: "In Stock", label: "In Stock" },
+                        { value: "Out of Stock", label: "Out of Stock" },
+                        { value: "Draft", label: "Draft" },
+                    ]}
+                />
+            </div>
+            </div>
 
             {isLoading ? (
                 <div className="text-slate-900 dark:text-white">Loading products...</div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    {products.map(p => (
+                    {products.filter(p => {
+                        if (filterStatus === "All") return true;
+                        if (filterStatus === "Draft") return p.availabilityStatus === "Draft";
+                        if (filterStatus === "In Stock") return p.availabilityStatus === "In Stock" || (p.inStock && p.availabilityStatus !== "Draft" && p.availabilityStatus !== "Out of Stock");
+                        if (filterStatus === "Out of Stock") return p.availabilityStatus === "Out of Stock" || (!p.inStock && p.availabilityStatus !== "Draft" && p.availabilityStatus !== "In Stock");
+                        return true;
+                    }).map(p => (
                         <div key={p.id} className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden group hover:border-cyan-500/30 transition-all">
                             <div className="relative h-48 bg-slate-100 dark:bg-slate-800">
                                 <Image src={getImageUrl(p.image) || "/placeholder.png"} alt={p.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" unoptimized={p.image.includes("mega.nz")} />
                                 <div className="absolute top-3 right-3 flex flex-col gap-2">
-                                    <span className={`px-2 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest ${p.inStock ? "bg-green-500/20 text-green-400" : "bg-red-500/20 text-red-400"}`}>
+                                    <span className={`px-2 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest ${p.availabilityStatus === "Draft" ? "bg-yellow-500/20 text-yellow-500" : (p.availabilityStatus === "Out of Stock" || (!p.availabilityStatus && !p.inStock)) ? "bg-red-500/20 text-red-400" : "bg-green-500/20 text-green-400"}`}>
                                         {p.availabilityStatus || (p.inStock ? "In Stock" : "Out of Stock")}
                                     </span>
                                     {p.isPopular && (
@@ -861,6 +912,10 @@ export default function ProductsTab() {
                         ) : (
                             <textarea value={jsonData} onChange={e => setJsonData(e.target.value)} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:border-cyan-500/50 outline-none mb-4 h-32" placeholder='[{"name": "Product 1", ...}]' />
                         )}
+                        <label className="flex items-center gap-2 mb-4 mt-2 cursor-pointer">
+                            <input type="checkbox" checked={importAsDraft} onChange={(e) => setImportAsDraft(e.target.checked)} className="rounded text-cyan-500 focus:ring-cyan-500 bg-slate-100 dark:bg-slate-800 border-slate-300 dark:border-slate-700 w-4 h-4" />
+                            <span className="text-[11px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300">Save imported products as Draft</span>
+                        </label>
                         {importMode !== "csv" && (
                             <button onClick={handleImportCatalog} disabled={isImporting} className="w-full py-3 bg-cyan-500 hover:bg-cyan-400 text-white dark:text-slate-950 font-bold rounded-xl shadow-lg shadow-cyan-500/20 transition-all">
                                 {isImporting ? "Importing..." : "Start Import"}

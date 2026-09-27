@@ -14,7 +14,7 @@ export async function POST(req: Request) {
         }
 
         const body = await req.json();
-        const { catalogUrl, products: importedProducts } = body;
+        const { catalogUrl, products: importedProducts, asDraft } = body;
 
         let productsToImport: any[] = [];
 
@@ -85,6 +85,7 @@ export async function POST(req: Request) {
                         images: [decodeHtml(image)],
                         category: 'Uncategorized',
                         inStock: true,
+                        availabilityStatus: asDraft ? "Draft" : "In Stock",
                         quantity: 0,
                         updatedAt: new Date().toISOString()
                     };
@@ -153,6 +154,7 @@ export async function POST(req: Request) {
                 images: item.images ? (Array.isArray(item.images) ? item.images.map((img: any) => decodeHtml(img)) : [decodeHtml(item.images)]) : [decodeHtml(rawImage)],
                 category: category,
                 inStock: item.inStock !== undefined ? item.inStock : (item.availability !== 'out_of_stock'),
+                availabilityStatus: asDraft ? "Draft" : (item.availabilityStatus || "In Stock"),
                 quantity: item.quantity !== undefined ? parseInt(item.quantity.toString()) : 0,
                 updatedAt: new Date().toISOString()
             };

@@ -153,8 +153,8 @@ export async function uploadToMega(
 
         const folder = currentFolder;
 
-        console.log(`[MEGA][${fileName}] Pausing 2s for session stability...`);
-        await new Promise(r => setTimeout(r, 2000));
+        console.log(`[MEGA][${fileName}] Pausing 500ms for session stability...`);
+        await new Promise(r => setTimeout(r, 500));
 
         console.log(`[MEGA][${fileName}] Initializing direct buffer upload (${file.length} bytes)...`);
         
@@ -173,8 +173,8 @@ export async function uploadToMega(
                     return reject(err);
                 }
 
-                console.log(`[MEGA][${fileName}] Upload callback received. File node created. waiting 5s for propagation...`);
-                await new Promise(r => setTimeout(r, 5000));
+                console.log(`[MEGA][${fileName}] Upload callback received. File node created. waiting 1s for propagation...`);
+                await new Promise(r => setTimeout(r, 1000));
 
                 try {
                     let url = '';

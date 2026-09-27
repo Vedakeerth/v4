@@ -71,7 +71,7 @@ export default function Products({ products, isLoading = false }: ProductsProps)
                             >
                                 <div className="relative h-64 w-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
                                     <Image
-                                        src={product.image}
+                                        src={product.image.includes("mega.nz") ? `/api/mega-image?url=${encodeURIComponent(product.image)}` : product.image}
                                         alt={product.name}
                                         fill
                                         className="object-cover group-hover:scale-110 transition-transform duration-700"
