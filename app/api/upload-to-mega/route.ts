@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { uploadToMega } from '@/lib/mega';
+import { uploadFileToR2 } from '@/lib/r2';
 
 export const maxDuration = 60; // Set max duration for Vercel
 
@@ -11,14 +11,14 @@ export async function POST(req: Request) {
         let fileName: string;
         let rootFolder = 'Quotations';
         let quotationID: string;
+        let mimeType = 'application/octet-stream';
+
         if (contentType.includes('multipart/form-data')) {
             const data = await req.formData();
             const fileEntry = data.get('file') as File;
             quotationID = data.get('quotationID') as string;
             rootFolder = (data.get('rootFolder') as string) || 'Quotations';
             
-            console.log(`[API][MEGA] FormData Request - Root: ${rootFolder}, Quote: ${quotationID}`);
-
             if (!fileEntry || !quotationID) {
                 return NextResponse.json({ success: false, error: "Missing file or quotationID" }, { status: 400 });
             }
@@ -26,9 +26,8 @@ export async function POST(req: Request) {
             const bytes = await fileEntry.arrayBuffer();
             file = Buffer.from(bytes);
             fileName = fileEntry.name;
-            console.log(`[API][MEGA] Received file: ${fileName} (${(file.length / 1024 / 1024).toFixed(2)} MB)`);
+            mimeType = fileEntry.type || mimeType;
         } else {
-            // Fallback for JSON if they send base64
             const body = await req.json();
             const { fileBase64, name, quoteID, rootFolder: rf } = body;
             
@@ -42,17 +41,25 @@ export async function POST(req: Request) {
             rootFolder = rf || 'Quotations';
         }
 
-        const result = await uploadToMega(file, fileName, quotationID, rootFolder);
+        const safeFileName = fileName.replace(/[^a-zA-Z0-9.-]/g, '_');
+        const r2Key = `${rootFolder}/${quotationID}/${Date.now()}-${safeFileName}`;
 
-        console.log(`[API][MEGA] Upload success for ${fileName}. URL: ${result.url}`);
+        await uploadFileToR2(file, r2Key, mimeType);
+        const url = `/api/r2-file?key=${encodeURIComponent(r2Key)}`;
 
         return NextResponse.json({
             success: true,
-            data: result
+            data: {
+                name: fileName,
+                size: file.length,
+                url: url,
+                folderUrl: url,
+                r2Key: r2Key
+            }
         });
 
     } catch (error: any) {
-        console.error('[API][MEGA] Detailed Error:', {
+        console.error('[API][R2] Detailed Error:', {
             message: error.message,
             stack: error.stack,
             cause: error.cause

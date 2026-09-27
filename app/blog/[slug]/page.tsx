@@ -127,7 +127,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
             </header>
 
             <div className="container mx-auto px-4 py-24">
-                <div className="max-w-4xl mx-auto">
+                <div className="max-w-6xl mx-auto">
                     {/* Interaction Bar Top */}
                     <div className="flex items-center justify-between mb-16 pb-8 border-b border-slate-900">
                         <LikeButton blogId={blog.id} initialLikes={blog.likes || 0} />

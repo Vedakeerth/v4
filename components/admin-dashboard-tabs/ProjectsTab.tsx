@@ -51,7 +51,7 @@ export default function ProjectsTab() {
         reader.readAsDataURL(file);
         reader.onload = async () => {
             try {
-                const res = await fetch("/api/upload", {
+                const res = await fetch("/api/upload-to-mega", {
                     method: "POST",
                     body: JSON.stringify({
                         file: reader.result,
@@ -199,7 +199,7 @@ export default function ProjectsTab() {
 
             {showModal && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 dark:bg-slate-950/60 backdrop-blur-2xl transition-all duration-500">
-                    <div className="bg-white/90 dark:bg-slate-900/90 border border-white/30 dark:border-white/10 w-full max-w-2xl rounded-3xl p-8 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] backdrop-blur-3xl max-h-[90vh] overflow-y-auto custom-scrollbar">
+                    <div className="bg-white/90 dark:bg-slate-900/90 border border-white/30 dark:border-white/10 w-full max-w-6xl rounded-3xl p-8 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] backdrop-blur-3xl max-h-[90vh] overflow-y-auto custom-scrollbar">
                         <div className="flex justify-between items-center mb-8">
                             <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
                                 {editingProject ? "Edit Project" : "Add Project"}
@@ -209,7 +209,8 @@ export default function ProjectsTab() {
                             </button>
                         </div>
 
-                        <div className="space-y-4">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            <div className="space-y-4">
                             <div>
                                 <label className="block text-slate-900 dark:text-slate-300 text-[11px] font-black uppercase mb-2 ml-1 tracking-widest">Title</label>
                                 <input
@@ -269,6 +270,22 @@ export default function ProjectsTab() {
                             >
                                 {editingProject ? "Save Changes" : "Create Project"}
                             </button>
+                        </div>
+                        {/* Preview Pane */}
+                        <div className="hidden lg:flex flex-col h-full bg-slate-50 dark:bg-slate-950/50 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 overflow-y-auto">
+                            <h3 className="text-sm font-bold text-slate-500 uppercase tracking-widest mb-6">Live Preview</h3>
+                            {formData.image && (
+                                <div className="relative w-full h-48 mb-6 rounded-xl overflow-hidden">
+                                    <Image src={formData.image} alt="Preview" fill className="object-cover" unoptimized={formData.image.includes("mega.nz")} />
+                                </div>
+                            )}
+                            <h1 className="text-3xl font-extrabold mb-2 text-slate-900 dark:text-white">{formData.title || "Project Title"}</h1>
+                            <div className="flex gap-2 mb-6">
+                                <span className="text-cyan-500 font-bold text-xs">{formData.category || "Category"}</span>
+                                <span className="text-slate-500 font-bold text-xs">{formData.status}</span>
+                            </div>
+                            <div className="prose prose-sm dark:prose-invert prose-headings:font-black prose-a:text-cyan-500 max-w-none" dangerouslySetInnerHTML={{ __html: formData.description || "<p class='text-slate-400'>Description will appear here...</p>" }} />
+                        </div>
                         </div>
                     </div>
                 </div>

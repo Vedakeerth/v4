@@ -97,7 +97,7 @@ export default function ProductQuickView({ product, onClose }: ProductQuickViewP
                                         src={product.images?.[activeImageIndex] || product.image}
                                         alt={product.name}
                                         fill
-                                        className="object-cover"
+                                        className="object-contain p-4"
                                         priority
                                     />
                                 </motion.div>

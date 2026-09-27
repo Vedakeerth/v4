@@ -76,7 +76,7 @@ export default function Products({ products, isLoading = false }: ProductsProps)
                                         alt={product.name}
                                         fill
                                         unoptimized={product.image.includes("mega.nz")}
-                                        className="object-cover group-hover:scale-110 transition-transform duration-700"
+                                        className="object-contain p-4 group-hover:scale-110 transition-transform duration-700"
                                     />
                                     <div className="absolute top-2 right-2 flex gap-2">
                                         <span

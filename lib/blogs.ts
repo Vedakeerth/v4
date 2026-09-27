@@ -36,28 +36,8 @@ export const getBlogBySeoSlug = (seoSlug: string) => unstable_cache(
         const hashId = extractIdFromSlug(seoSlug);
         if (!hashId) return undefined;
 
-        if (typeof window === 'undefined') {
-            const { getAdminDb } = await import('./firebaseAdmin');
-            const adminDb = await getAdminDb();
-            
-            // First try fetching by ID (if hashId was the actual doc ID or slice)
-            // But requirement says "decode to get original ID"
-            // For now, assume it's the doc ID slice or stored 'hash'
-            const snapshot = await adminDb.collection('blogs').where('hash', '==', hashId).limit(1).get();
-            if (snapshot.empty) {
-                // Fallback to searching by document ID if hashId matches length
-                if (hashId.length >= 20) {
-                    const doc = await adminDb.collection('blogs').doc(hashId).get();
-                    if (doc.exists) return { id: doc.id, ...doc.data() } as BlogPost;
-                }
-                return undefined;
-            }
-            const doc = snapshot.docs[0];
-            return { id: doc.id, ...doc.data() } as BlogPost;
-        } else {
-            const blogs = await getBlogs();
-            return blogs.find(b => b.id.endsWith(hashId));
-        }
+        const blogs = await getBlogs();
+        return blogs.find(b => b.id.endsWith(hashId));
     },
     [`blog-seo-${seoSlug}`],
     { revalidate: false, tags: [`blog-${seoSlug}`] }
