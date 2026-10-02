@@ -117,7 +117,7 @@ export default function ProductsTab() {
         setIsUploading(true);
         setUploadProgress(0);
         
-        const uploadedUrls = [];
+        const uploadedUrls: string[] = [];
         
         for (let i = 0; i < files.length; i++) {
             const file = files[i];
