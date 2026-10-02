@@ -8,6 +8,7 @@ import { ArrowRight, ShoppingCart, Info, Printer, Cpu, PenLine, Settings } from 
 import { Skeleton } from './Skeleton';
 import ProductQuickView from './ProductQuickView';
 import { formatINR } from '@/lib/utils';
+import Marquee from 'react-fast-marquee';
 
 
 const ICON_MAP: Record<string, any> = {
@@ -134,13 +135,14 @@ export default function ProductShowcase({ header, categories, products: initialP
                                 animate={{ opacity: 1, x: 0 }}
                                 exit={{ opacity: 0, x: -20 }}
                                 transition={{ duration: 0.3 }}
-                                className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto"
+                                className="w-full"
                             >
+                                <Marquee autoFill={true} pauseOnHover={true} speed={40} direction="right" className="py-4">
                                 {filteredProducts.map((product, index) => (
                                     <div
                                         key={product?.id || index}
                                         onClick={() => setSelectedQuickView(product)}
-                                        className="group flex flex-col md:flex-row bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-3xl overflow-hidden hover:border-cyan-500/30 transition-all duration-500 cursor-pointer"
+                                        className="group flex flex-col md:flex-row bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-3xl overflow-hidden hover:border-cyan-500/30 transition-all duration-500 cursor-pointer w-[300px] md:w-[600px] shrink-0 mx-4"
                                     >
                                         <div className="relative w-full md:w-2/5 aspect-square md:aspect-auto h-64 md:h-auto overflow-hidden bg-white dark:bg-slate-950">
                                             <Image
@@ -204,6 +206,7 @@ export default function ProductShowcase({ header, categories, products: initialP
                                         </div>
                                     </div>
                                 ))}
+                                </Marquee>
                             </motion.div>
                         )}
                     </AnimatePresence>

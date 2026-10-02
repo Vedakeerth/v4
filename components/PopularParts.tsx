@@ -112,7 +112,7 @@ export default function PopularParts({ header, parts }: PopularPartsProps) {
                             ))}
                         </div>
                     ) : (
-                        <Marquee autoFill={true} pauseOnHover={true} speed={40} className="py-4">
+                        <Marquee autoFill={true} pauseOnHover={true} speed={40} direction="right" className="py-4">
                             {(parts || []).map((part, index) => (
                                 <motion.div
                                     key={part?.id || index}
@@ -182,7 +182,7 @@ export default function PopularParts({ header, parts }: PopularPartsProps) {
                                             {likes[part?.id?.toString() || ""] || 0}
                                         </div>
                                     </div>
-                                    <p className="text-slate-600 dark:text-slate-400 text-sm mb-6 line-clamp-2">
+                                    <p className="text-slate-600 dark:text-slate-400 text-sm mb-6 line-clamp-2 min-h-[2.5rem]">
                                         {part?.description?.replace(/<[^>]+>/g, '') || "High precision component designed for advanced industrial applications."}
                                     </p>
                                     <div className="flex items-center justify-between">
