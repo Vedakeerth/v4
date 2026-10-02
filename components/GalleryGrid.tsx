@@ -43,9 +43,14 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
     const { addToCart, setIsCartOpen, cartCount } = useCart();
 
     // We'll simulate likes and comments as client-side state for now
-    const [likes, setLikes] = useState<Record<string, number>>(
-        Object.fromEntries(parts.map((p: Product) => [p.id, p.likes || 0]))
-    );
+    const [likes, setLikes] = useState<Record<string, number>>({});
+    useEffect(() => {
+        const initialLikes: Record<string, number> = {};
+        parts.forEach((p: Product) => {
+            initialLikes[p.id] = p.likes || Math.floor(Math.random() * 20) + 5;
+        });
+        setLikes(initialLikes);
+    }, [parts]);
     const [commentsCount] = useState<Record<string, number>>(
         Object.fromEntries(parts.map((p: Product) => [p.id, 0]))
     );
@@ -474,9 +479,15 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
 
                                             <div className="p-5 flex flex-col flex-1 bg-slate-50 dark:bg-slate-900/20 backdrop-blur-sm">
                                                 <div className="flex-1">
-                                                    <h3 className="text-slate-900 dark:text-white font-bold text-lg mb-1 leading-tight group-hover:text-cyan-400 transition-colors line-clamp-1">
-                                                        {part.name}
-                                                    </h3>
+                                                    <div className="flex items-start justify-between gap-2 mb-1">
+                                                        <h3 className="text-slate-900 dark:text-white font-bold text-lg leading-tight group-hover:text-cyan-400 transition-colors line-clamp-1 flex-1">
+                                                            {part.name}
+                                                        </h3>
+                                                        <div className="flex items-center gap-1.5 text-red-400 bg-red-400/10 px-2 py-1 rounded-lg text-[10px] font-black border border-red-400/20 backdrop-blur-sm whitespace-nowrap">
+                                                            <Heart size={12} fill="currentColor" />
+                                                            {likes[part.id] || 0}
+                                                        </div>
+                                                    </div>
                                                     <p className="text-slate-600 dark:text-slate-400 text-xs mb-4 line-clamp-2 leading-relaxed">
                                                         {part.description}
                                                     </p>
@@ -484,13 +495,7 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
 
                                                 <div className="mt-auto pt-4 border-t border-slate-200 dark:border-slate-800/50 flex items-center justify-between">
                                                     <div className="flex flex-col">
-                                                        <div className="flex items-center gap-2 mb-0.5">
-                                                            <span className="text-[10px] text-slate-500 uppercase font-black tracking-widest">Component Price</span>
-                                                            <div className="flex items-center gap-1.5 text-red-400 bg-red-400/10 px-2 py-1 rounded-lg text-[10px] font-black border border-red-400/20 backdrop-blur-sm">
-                                                                <Heart size={12} fill="currentColor" />
-                                                                {likes[part.id] || 0}
-                                                            </div>
-                                                        </div>
+                                                        <span className="text-[10px] text-slate-500 uppercase font-black tracking-widest mb-0.5">Component Price</span>
                                                         <div className="flex items-end gap-2">
                                                             <span className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">
                                                                 {formatINR(part.price)}
