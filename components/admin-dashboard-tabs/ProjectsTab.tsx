@@ -268,7 +268,7 @@ export default function ProjectsTab() {
                 )}
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-[calc(100vh-300px)]">
-                    <div className="space-y-4 overflow-y-auto pr-2 custom-scrollbar pb-10">
+                    <div className="space-y-4 overflow-y-auto pr-4 custom-scrollbar pb-10">
                         {/* Title */}
                         <div>
                             <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Title *</label>
