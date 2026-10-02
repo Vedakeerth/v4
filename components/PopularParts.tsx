@@ -99,7 +99,7 @@ export default function PopularParts({ header, parts }: PopularPartsProps) {
                     </motion.div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div className="flex overflow-x-auto gap-6 pb-8 snap-x snap-mandatory custom-scrollbar w-full">
                     {isLoading ? (
                         Array.from({ length: 3 }).map((_, i) => (
                             <div key={i} className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4">
@@ -116,7 +116,7 @@ export default function PopularParts({ header, parts }: PopularPartsProps) {
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
                                 transition={{ delay: index * 0.1 }}
-                                className="group relative bg-slate-50 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden hover:border-cyan-500/50 transition-all duration-500"
+                                className="group relative bg-slate-50 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden hover:border-cyan-500/50 transition-all duration-500 min-w-[280px] md:min-w-[350px] shrink-0 snap-center"
                             >
                                 <div className="relative h-64 w-full overflow-hidden">
                                     <Image
