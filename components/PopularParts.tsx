@@ -133,13 +133,13 @@ export default function PopularParts({ header, parts }: PopularPartsProps) {
                                             onClick={(e) => toggleLike(e, part?.id)}
                                             className={cn(
                                                 "p-2.5 rounded-full transition-all duration-300 backdrop-blur-md border shadow-xl hover:scale-110",
-                                                liked[part?.id]
+                                                liked[part?.id?.toString() || ""]
                                                     ? "bg-red-500 text-white border-red-400 shadow-red-500/20"
                                                     : "bg-white/80 dark:bg-slate-950/80 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-800 hover:text-cyan-500 dark:hover:text-cyan-400"
                                             )}
-                                            title={liked[part?.id] ? "Unlike" : "Like"}
+                                            title={liked[part?.id?.toString() || ""] ? "Unlike" : "Like"}
                                         >
-                                            <Heart size={18} fill={liked[part?.id] ? "currentColor" : "none"} />
+                                            <Heart size={18} fill={liked[part?.id?.toString() || ""] ? "currentColor" : "none"} />
                                         </button>
 
                                         <button
@@ -174,7 +174,7 @@ export default function PopularParts({ header, parts }: PopularPartsProps) {
                                             {part?.name || "Engineering Specialized Part"}
                                         </h3>
                                         <div className="flex items-center gap-1.5 text-red-400 bg-red-400/10 px-2 py-1 rounded-lg text-[10px] font-black border border-red-400/20 backdrop-blur-sm whitespace-nowrap">
-                                            <Heart size={12} fill={liked[part?.id?.toString() || ""] ? "currentColor" : "none"} />
+                                            <Heart size={12} fill="currentColor" />
                                             {likes[part?.id?.toString() || ""] || 0}
                                         </div>
                                     </div>
