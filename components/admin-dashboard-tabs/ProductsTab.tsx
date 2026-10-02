@@ -520,12 +520,12 @@ export default function ProductsTab() {
                                     <input value={formData.mrp} onChange={e => setFormData({ ...formData, mrp: e.target.value })} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500 transition-all" placeholder="3999" />
                                 </div>
                                 <div>
-                                    <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">Initial Likes <span className="text-red-500">*</span></label>
-                                    <input type="number" value={formData.likes} onChange={e => setFormData({ ...formData, likes: e.target.value === "" ? "" : parseInt(e.target.value) || 0 })} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500 transition-all" placeholder="0" />
-                                </div>
-                                <div>
                                     <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">Initial Views <span className="text-red-500">*</span></label>
                                     <input type="number" value={formData.views} onChange={e => setFormData({ ...formData, views: e.target.value === "" ? "" : parseInt(e.target.value) || 0 })} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500 transition-all" placeholder="0" />
+                                </div>
+                                <div>
+                                    <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">Initial Likes <span className="text-red-500">*</span></label>
+                                    <input type="number" value={formData.likes} onChange={e => setFormData({ ...formData, likes: e.target.value === "" ? "" : parseInt(e.target.value) || 0 })} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500 transition-all" placeholder="0" />
                                 </div>
                                 <div className="col-span-1 lg:col-span-2">
                                     <CustomDropdown

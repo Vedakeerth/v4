@@ -438,25 +438,22 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                                                 />
                                                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent opacity-60 group-hover:opacity-100 transition-opacity z-10 pointer-events-none" />
 
-                                                <div className="absolute top-4 left-4 z-20 pointer-events-none flex flex-col gap-2">
-                                                    <span className={cn(
-                                                        "px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest border backdrop-blur-md shadow-lg",
-                                                        part.availabilityStatus === "Draft" 
-                                                            ? "bg-yellow-500/20 text-yellow-500 border-yellow-500/30" 
-                                                            : (part.availabilityStatus === "Out of Stock" || (!part.availabilityStatus && !part.inStock)) 
-                                                                ? "bg-red-500/20 text-red-400 border-red-500/20" 
-                                                                : "bg-green-500/20 text-green-400 border-green-500/20"
-                                                    )}>
-                                                        {part.availabilityStatus || (part.inStock ? "In Stock" : "Out of Stock")}
+                                                <div className="absolute top-4 left-4 z-20 pointer-events-none">
+                                                    <span className="px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest bg-white dark:bg-slate-950/80 text-cyan-400 border border-cyan-500/20 backdrop-blur-md">
+                                                        {part.category}
                                                     </span>
-                                                    {part.isPopular && (
-                                                        <span className="px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 backdrop-blur-md shadow-lg">
-                                                            POPULAR
-                                                        </span>
-                                                    )}
                                                 </div>
 
-
+                                                <div className="absolute bottom-4 left-4 z-20 pointer-events-none">
+                                                    <span className={cn(
+                                                        "px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest border backdrop-blur-md shadow-lg",
+                                                        part.inStock
+                                                            ? "bg-green-500/10 text-green-400 border-green-500/20"
+                                                            : "bg-red-500/10 text-red-400 border-red-500/20"
+                                                    )}>
+                                                        {part.inStock ? "In Stock" : "Out of Stock"}
+                                                    </span>
+                                                </div>
 
                                                 <div className="absolute top-4 right-4 flex flex-col gap-2 z-30">
                                                     <button
@@ -492,37 +489,37 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                                                             {likes[part.id.toString()] || 0}
                                                         </div>
                                                     </div>
-                                                    <p className="text-[9px] text-cyan-500/80 font-black uppercase tracking-widest mb-3 border-b border-slate-200 dark:border-slate-800 pb-2">ID: {part.id}</p>
-                                                    <p className="text-slate-600 dark:text-slate-400 text-xs mb-4 line-clamp-2 h-8 leading-relaxed">
+                                                    <p className="text-slate-600 dark:text-slate-400 text-xs mb-4 line-clamp-2 leading-relaxed">
                                                         {part.description?.replace(/<[^>]+>/g, '')}
                                                     </p>
                                                 </div>
 
-                                                <div className="mt-auto pt-4 flex items-center justify-between mb-6">
+                                                <div className="mt-auto pt-4 border-t border-slate-200 dark:border-slate-800/50 flex items-center justify-between">
                                                     <div className="flex flex-col">
-                                                        <span className="text-cyan-400 font-black text-xl">
-                                                            {formatINR(part.price)}
-                                                        </span>
-                                                        {part.mrp && (
-                                                            <span className="text-xs text-slate-400 font-bold line-through mt-1">
-                                                                MRP {formatINR(part.mrp)}
+                                                        <span className="text-[10px] text-slate-500 uppercase font-black tracking-widest mb-0.5">Component Price</span>
+                                                        <div className="flex items-end gap-2">
+                                                            <span className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">
+                                                                {formatINR(part.price)}
                                                             </span>
-                                                        )}
+                                                            {part.mrp && (
+                                                                <span className="text-xs text-slate-400 font-medium line-through mb-1">
+                                                                    MRP {formatINR(part.mrp)}
+                                                                </span>
+                                                            )}
+                                                        </div>
                                                     </div>
-                                                    <span className="text-[10px] uppercase font-bold text-slate-500 tracking-widest bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-md">{part.category}</span>
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            addToCart(part);
+                                                            setIsCartOpen(true);
+                                                        }}
+                                                        className="bg-cyan-500 hover:bg-cyan-400 text-white p-3.5 rounded-2xl transition-all shadow-[0_4px_12px_rgba(6,182,212,0.3)] hover:shadow-[0_4px_25px_rgba(6,182,212,0.5)] hover:-translate-y-1 active:translate-y-0"
+                                                        title="Add to AI Quote Cart"
+                                                    >
+                                                        <ShoppingCart className="h-5 w-5" />
+                                                    </button>
                                                 </div>
-
-                                                <button
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        addToCart(part);
-                                                        setIsCartOpen(true);
-                                                    }}
-                                                    className="w-full bg-cyan-500 hover:bg-cyan-400 text-white p-3 rounded-xl font-bold transition-all shadow-[0_4px_12px_rgba(6,182,212,0.3)] hover:shadow-[0_4px_25px_rgba(6,182,212,0.5)] flex items-center justify-center gap-2"
-                                                    title="Add to AI Quote Cart"
-                                                >
-                                                    <ShoppingCart className="h-5 w-5" /> Add to Cart
-                                                </button>
                                             </div>
                                         </motion.div>
                                     ))}
