@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Heart, MessageSquare, Search, X, ChevronDown, Filter, SlidersHorizontal, ArrowUpDown, Share2, ShoppingCart, LayoutGrid, List } from "lucide-react";
