@@ -108,30 +108,31 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
         router.push(seoUrl);
     };
 
-    const handleLike = async (e: React.MouseEvent, partId: string) => {
+    const handleLike = async (e: React.MouseEvent, partId: string | number) => {
         e.preventDefault();
         e.stopPropagation();
-        const isLiked = likedProducts.has(partId);
+        const idStr = partId.toString();
+        const isLiked = likedProducts.has(idStr);
 
         // Optimistic update
         if (isLiked) {
             setLikedProducts((prev) => {
                 const newSet = new Set(prev);
-                newSet.delete(partId);
+                newSet.delete(idStr);
                 return newSet;
             });
-            setLikes((l) => ({ ...l, [partId]: Math.max(0, (l[partId] || 0) - 1) }));
+            setLikes((l) => ({ ...l, [idStr]: Math.max(0, (l[idStr] || 0) - 1) }));
         } else {
             setLikedProducts((prev) => {
                 const newSet = new Set(prev);
-                newSet.add(partId);
+                newSet.add(idStr);
                 return newSet;
             });
-            setLikes((l) => ({ ...l, [partId]: (l[partId] || 0) + 1 }));
+            setLikes((l) => ({ ...l, [idStr]: (l[idStr] || 0) + 1 }));
         }
 
         try {
-            await fetch(`/api/products/${partId}/like`, {
+            await fetch(`/api/products/${idStr}/like`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ type: isLiked ? 'unlike' : 'like' })
@@ -459,13 +460,13 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                                                         onClick={(e) => handleLike(e, part.id)}
                                                         className={cn(
                                                             "p-2.5 rounded-full transition-all duration-300 shadow-xl hover:scale-110 border backdrop-blur-md",
-                                                            likedProducts.has(part.id)
+                                                            likedProducts.has(part.id.toString())
                                                                 ? "bg-red-500 text-white border-red-400 shadow-red-500/20"
                                                                 : "bg-white/80 dark:bg-slate-950/80 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-800 hover:text-cyan-500 dark:hover:text-cyan-400"
                                                         )}
                                                         title="Add to Wishlist"
                                                     >
-                                                        <Heart size={18} fill={likedProducts.has(part.id) ? "currentColor" : "none"} />
+                                                        <Heart size={18} fill={likedProducts.has(part.id.toString()) ? "currentColor" : "none"} />
                                                     </button>
                                                     <button
                                                         onClick={(e) => { e.stopPropagation(); handleShare(part); }}
@@ -485,7 +486,7 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                                                         </h3>
                                                         <div className="flex items-center gap-1.5 text-red-400 bg-red-400/10 px-2 py-1 rounded-lg text-[10px] font-black border border-red-400/20 backdrop-blur-sm whitespace-nowrap">
                                                             <Heart size={12} fill="currentColor" />
-                                                            {likes[part.id] || 0}
+                                                            {likes[part.id.toString()] || 0}
                                                         </div>
                                                     </div>
                                                     <p className="text-slate-600 dark:text-slate-400 text-xs mb-4 line-clamp-2 leading-relaxed">

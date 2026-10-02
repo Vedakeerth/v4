@@ -112,7 +112,7 @@ export default function PopularParts({ header, parts }: PopularPartsProps) {
                             ))}
                         </div>
                     ) : (
-                        <Marquee pauseOnHover={true} speed={40} className="py-4">
+                        <Marquee autoFill={true} pauseOnHover={true} speed={40} className="py-4">
                             {(parts || []).map((part, index) => (
                                 <motion.div
                                     key={part?.id || index}
