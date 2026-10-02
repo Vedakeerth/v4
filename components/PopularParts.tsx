@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
@@ -35,6 +35,28 @@ export default function PopularParts({ header, parts }: PopularPartsProps) {
     const [isLoading, setIsLoading] = useState(false);
     const [liked, setLiked] = useState<Record<string, boolean>>({});
     const [likes, setLikes] = useState<Record<string, number>>({});
+    const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+    // Auto-scroll logic
+    useEffect(() => {
+        if (!isLoading && parts && parts.length > 0) {
+            const container = scrollContainerRef.current;
+            if (!container) return;
+
+            const scrollInterval = setInterval(() => {
+                if (container) {
+                    const maxScrollLeft = container.scrollWidth - container.clientWidth;
+                    if (container.scrollLeft >= maxScrollLeft - 5) {
+                        container.scrollTo({ left: 0, behavior: 'smooth' });
+                    } else {
+                        container.scrollBy({ left: 350, behavior: 'smooth' });
+                    }
+                }
+            }, 3000);
+
+            return () => clearInterval(scrollInterval);
+        }
+    }, [isLoading, parts]);
 
     useEffect(() => {
         // Initialize likes if not present
@@ -99,7 +121,7 @@ export default function PopularParts({ header, parts }: PopularPartsProps) {
                     </motion.div>
                 </div>
 
-                <div className="flex overflow-x-auto gap-6 pb-8 snap-x snap-mandatory custom-scrollbar w-full">
+                <div ref={scrollContainerRef} className="flex overflow-x-auto gap-6 pb-8 snap-x snap-mandatory custom-scrollbar w-full">
                     {isLoading ? (
                         Array.from({ length: 3 }).map((_, i) => (
                             <div key={i} className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4">
