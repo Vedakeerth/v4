@@ -37,7 +37,7 @@ export const getProjectBySeoSlug = (seoSlug: string) => unstable_cache(
         if (!hashId) return undefined;
 
         const projects = await getProjects();
-        return projects.find(p => p.id.endsWith(hashId));
+        return projects.find(p => p.id && String(p.id).endsWith(hashId));
     },
     [`project-seo-${seoSlug}`],
     { revalidate: 60, tags: [`project-${seoSlug}`] } // ISR 60 as requested

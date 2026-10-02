@@ -37,7 +37,7 @@ export const getBlogBySeoSlug = (seoSlug: string) => unstable_cache(
         if (!hashId) return undefined;
 
         const blogs = await getBlogs();
-        return blogs.find(b => b.id.endsWith(hashId));
+        return blogs.find(b => b.id && String(b.id).endsWith(hashId));
     },
     [`blog-seo-${seoSlug}`],
     { revalidate: false, tags: [`blog-${seoSlug}`] }

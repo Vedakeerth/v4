@@ -117,13 +117,13 @@ export const getProductBySeoSlug = (seoSlug: string) => unstable_cache(
             // 3. Last resort: Fetch all and find if ID ends with hashId
             // This is for cases like "custom-fixture-6" where '6' is the suffix
             const allSnapshot = await adminDb.collection('products').get();
-            const found = allSnapshot.docs.find((doc: any) => doc.id.endsWith(hashId));
+            const found = allSnapshot.docs.find((doc: any) => doc.id && String(doc.id).endsWith(hashId));
             if (found) return { id: found.id, ...found.data() } as Product;
 
             return undefined;
         } else {
             const products = await getProducts();
-            return products.find(p => p.id === hashId || p.id.endsWith(hashId));
+            return products.find(p => p.id === hashId || (p.id && String(p.id).endsWith(hashId)));
         }
     },
     [`product-seo-${seoSlug}`],
