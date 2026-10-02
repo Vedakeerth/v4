@@ -1588,7 +1588,7 @@ export default function QuoteCalculator({ sessionId, isAdminMode = false }: Quot
                                                     formData.append('file', fileData.file);
                                                     formData.append('quotationID', quoteDetails.id);
                                                     formData.append('rootFolder', rootFolder);
-                                                    const response = await fetch('/api/upload-to-mega', { method: 'POST', body: formData });
+                                                    const response = await fetch('/api/upload-r2', { method: 'POST', body: formData });
                                                     const result = await response.json();
                                                     if (!result.success) throw new Error(result.error || "Upload failed");
                                                     uploadedUrls.push(result.data.url);
@@ -1604,7 +1604,7 @@ export default function QuoteCalculator({ sessionId, isAdminMode = false }: Quot
                                                     pdfFormData.append('file', pdfBlob, `VQ-${quoteDetails.id}.pdf`);
                                                     pdfFormData.append('quotationID', quoteDetails.id);
                                                     pdfFormData.append('rootFolder', rootFolder);
-                                                    const pdfRes = await fetch('/api/upload-to-mega', { method: 'POST', body: pdfFormData });
+                                                    const pdfRes = await fetch('/api/upload-r2', { method: 'POST', body: pdfFormData });
                                                     const pdfData = await pdfRes.json();
                                                     if (pdfData.success) {
                                                         pdfUrl = pdfData.data.url;

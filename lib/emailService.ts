@@ -61,15 +61,23 @@ export async function sendOrderConfirmation(order: any) {
             `;
         }).join('');
 
-        // Try to get PDF buffer if it's a MEGA link
+        // Try to get PDF buffer if it's an R2 link
         let attachments: any[] = [];
         if (order.pdfUrl) {
             try {
-                if (order.pdfUrl.includes('mega.nz')) {
-                    // Add delay to allow MEGA to propagate the link
-                    console.log(`[EMAIL] Waiting 5s for MEGA propagation before attachment download...`);
-                    await new Promise(resolve => setTimeout(resolve, 5000));
-                    
+                if (order.pdfUrl.includes('/api/r2-file?key=')) {
+                    const r2Key = decodeURIComponent(order.pdfUrl.split('?key=')[1]);
+                    const { getFileStreamFromR2 } = await import('./r2');
+                    const body = await getFileStreamFromR2(r2Key);
+                    if (body) {
+                        const buffer = Buffer.from(await body.transformToByteArray());
+                        attachments.push({
+                            content: buffer,
+                            filename: `Invoice_${order.trackingId || order.id}.pdf`
+                        });
+                    }
+                } else if (order.pdfUrl.includes('mega.nz')) {
+                    // Legacy support
                     const { getFileBufferFromMega } = await import('./mega');
                     const buffer = await getFileBufferFromMega(order.pdfUrl);
                     attachments.push({
@@ -235,15 +243,23 @@ export async function sendInstantQuotation(quote: any) {
             `;
         }).join('');
 
-        // Try to get PDF buffer if it's a MEGA link
+        // Try to get PDF buffer if it's an R2 link
         let attachments: any[] = [];
         if (quote.pdfUrl) {
             try {
-                if (quote.pdfUrl.includes('mega.nz')) {
-                    // Add delay to allow MEGA to propagate the link
-                    console.log(`[EMAIL] Waiting 5s for MEGA propagation before quotation download...`);
-                    await new Promise(resolve => setTimeout(resolve, 5000));
-
+                if (quote.pdfUrl.includes('/api/r2-file?key=')) {
+                    const r2Key = decodeURIComponent(quote.pdfUrl.split('?key=')[1]);
+                    const { getFileStreamFromR2 } = await import('./r2');
+                    const body = await getFileStreamFromR2(r2Key);
+                    if (body) {
+                        const buffer = Buffer.from(await body.transformToByteArray());
+                        attachments.push({
+                            content: buffer,
+                            filename: `Quotation_${quote.id}.pdf`
+                        });
+                    }
+                } else if (quote.pdfUrl.includes('mega.nz')) {
+                    // Legacy support
                     const { getFileBufferFromMega } = await import('./mega');
                     const buffer = await getFileBufferFromMega(quote.pdfUrl);
                     attachments.push({

@@ -103,7 +103,7 @@ export default function ProjectsTab() {
                 formDataPayload.append('rootFolder', 'projects');
                 const responseData: any = await new Promise((resolve, reject) => {
                     const xhr = new XMLHttpRequest();
-                    xhr.open('POST', '/api/upload-to-mega', true);
+                    xhr.open('POST', '/api/upload-r2', true);
                     xhr.upload.onprogress = (event) => {
                         if (event.lengthComputable) {
                             setUploadProgress(Math.round(((i / files.length) + (event.loaded / event.total) * (1 / files.length)) * 100));

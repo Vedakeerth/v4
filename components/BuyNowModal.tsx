@@ -99,7 +99,7 @@ export default function BuyNowModal({ product, quantity = 1, selectedColor, onCl
                 pdfFormData.append('rootFolder', 'INVOICE');
 
                 try {
-                    const uploadRes = await fetch('/api/upload-to-mega', {
+                    const uploadRes = await fetch('/api/upload-r2', {
                         method: 'POST',
                         body: pdfFormData
                     });

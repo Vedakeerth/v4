@@ -128,7 +128,7 @@ export default function BlogsTab() {
 
             const responseData = await new Promise<any>((resolve, reject) => {
                 const xhr = new XMLHttpRequest();
-                xhr.open("POST", "/api/upload-to-mega", true);
+                xhr.open("POST", "/api/upload-r2", true);
                 xhr.upload.onprogress = (event) => {
                     if (event.lengthComputable) setUploadProgress(Math.round((event.loaded / event.total) * 100));
                 };

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { uploadToMega } from '@/lib/mega';
+import { uploadFileToR2 } from '@/lib/r2';
 import { updateOrder } from '@/lib/orders';
 
 export async function POST(req: Request) {
@@ -18,32 +18,31 @@ export async function POST(req: Request) {
             
         const buffer = Buffer.from(base64Data, 'base64');
 
-        console.log(`[API] Uploading invoice for order ${orderId} to MEGA (${buffer.length} bytes)...`);
+        console.log(`[API] Uploading invoice for order ${orderId} to R2 (${buffer.length} bytes)...`);
 
-        // Upload to MEGA
-        const result = await uploadToMega(
-            buffer,
-            fileName || `INVOICE-${orderId}.pdf`,
-            orderId,
-            'Invoices' // Root folder
-        );
+        const safeFileName = (fileName || `INVOICE-${orderId}.pdf`).replace(/[^a-zA-Z0-9.-]/g, '_');
+        const r2Key = `Invoices/${orderId}/${Date.now()}-${safeFileName}`;
+
+        await uploadFileToR2(buffer, r2Key, 'application/pdf');
+        
+        const url = `/api/r2-file?key=${encodeURIComponent(r2Key)}`;
 
         // Update order with PDF URL in Firestore
         await updateOrder(orderId, {
-            pdfUrl: result.url,
-            megaFolderUrl: result.folderUrl
+            pdfUrl: url,
+            megaFolderUrl: url // Keep for backwards compatibility with DB schema if needed
         });
 
         return NextResponse.json({ 
             success: true, 
-            url: result.url,
-            folderUrl: result.folderUrl
+            url: url,
+            folderUrl: url
         });
 
     } catch (error: any) {
-        console.error('MEGA Upload API Error:', error);
+        console.error('R2 Upload API Error:', error);
         return NextResponse.json({ 
-            error: 'Failed to upload to MEGA', 
+            error: 'Failed to upload to R2', 
             details: error.message 
         }, { status: 500 });
     }

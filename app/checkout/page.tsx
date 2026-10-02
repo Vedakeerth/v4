@@ -315,7 +315,7 @@ function CheckoutContent() {
                 pdfFormData.append('quotationID', trackingId!);
                 pdfFormData.append('rootFolder', 'INVOICE');
 
-                const uploadRes = await fetch('/api/upload-to-mega', {
+                const uploadRes = await fetch('/api/upload-r2', {
                     method: 'POST',
                     body: pdfFormData
                 });

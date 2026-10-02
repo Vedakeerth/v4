@@ -159,7 +159,7 @@ export default function RichTextEditor({
 
             const responseData = await new Promise<any>((resolve, reject) => {
                 const xhr = new XMLHttpRequest();
-                xhr.open("POST", "/api/upload-to-mega", true);
+                xhr.open("POST", "/api/upload-r2", true);
                 xhr.onload = () => {
                     if (xhr.status >= 200 && xhr.status < 300) {
                         try { resolve(JSON.parse(xhr.responseText)); } catch { reject(new Error("Invalid response")); }
