@@ -90,7 +90,17 @@ export async function POST(req: Request) {
       }),
     });
 
-    const cashfreeData = await cashfreeResponse.json();
+    let cashfreeData;
+    const textResponse = await cashfreeResponse.text();
+    try {
+        cashfreeData = JSON.parse(textResponse);
+    } catch (e) {
+        console.error("Cashfree returned non-JSON response:", textResponse.substring(0, 500));
+        return NextResponse.json({ 
+            success: false, 
+            error: "Payment gateway returned an invalid response. Please try again later." 
+        }, { status: 502 });
+    }
 
     if (!cashfreeResponse.ok) {
       console.error("Cashfree Error:", cashfreeData);

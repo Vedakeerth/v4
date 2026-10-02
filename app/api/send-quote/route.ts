@@ -8,9 +8,7 @@ export async function POST(req: Request) {
         const body = await req.json();
         const { user, order, recaptchaToken } = body;
 
-        if (!recaptchaToken) {
-            return NextResponse.json({ success: false, error: 'reCAPTCHA token is required' }, { status: 400 });
-        }
+
 
         // ReCaptcha validation removed
 

@@ -7,10 +7,8 @@ export async function GET(req: Request) {
         const { searchParams } = new URL(req.url);
         const trackingId = searchParams.get('trackingId');
         const phone = searchParams.get('phone');
-        const token = searchParams.get('token');
-
-        if (!trackingId || !phone || !token) {
-            return NextResponse.json({ error: 'Tracking ID, phone number, and reCAPTCHA token are required' }, { status: 400 });
+        if (!trackingId || !phone) {
+            return NextResponse.json({ error: 'Tracking ID and phone number are required' }, { status: 400 });
         }
 
         // ReCaptcha validation removed
