@@ -104,7 +104,7 @@ export default function PopularParts({ header, parts }: PopularPartsProps) {
                     {isLoading ? (
                         <div className="flex gap-8 overflow-hidden px-4 md:px-8">
                             {Array.from({ length: 4 }).map((_, i) => (
-                                <div key={i} className="w-[400px] shrink-0 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4">
+                                <div key={i} className="w-[450px] shrink-0 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4">
                                     <Skeleton variant="rounded" height={240} className="mb-4" />
                                     <Skeleton variant="text" width="60%" height={24} className="mb-2" />
                                     <Skeleton variant="text" width="100%" height={16} />
@@ -120,7 +120,7 @@ export default function PopularParts({ header, parts }: PopularPartsProps) {
                                     whileInView={{ opacity: 1, y: 0 }}
                                     viewport={{ once: true }}
                                     transition={{ delay: 0.1 }}
-                                    className="group w-[400px] shrink-0 mx-4 relative bg-slate-50 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden hover:border-cyan-500/50 transition-all duration-500"
+                                    className="group w-[450px] shrink-0 mx-4 relative bg-slate-50 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden hover:border-cyan-500/50 transition-all duration-500"
                                 >
                                 <div className="relative h-64 w-full overflow-hidden">
                                     <Image
