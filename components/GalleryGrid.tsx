@@ -47,7 +47,7 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
     useEffect(() => {
         const initialLikes: Record<string, number> = {};
         parts.forEach((p: Product) => {
-            initialLikes[p.id] = p.likes || Math.floor(Math.random() * 20) + 5;
+            initialLikes[p.id.toString()] = p.likes !== undefined ? p.likes : Math.floor(Math.random() * 20) + 5;
         });
         setLikes(initialLikes);
     }, [parts]);

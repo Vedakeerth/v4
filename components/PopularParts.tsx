@@ -42,7 +42,7 @@ export default function PopularParts({ header, parts }: PopularPartsProps) {
         const initialLikes: Record<string, number> = {};
         (parts || []).forEach(p => {
             if (p?.id) {
-                initialLikes[p.id.toString()] = p.likes || Math.floor(Math.random() * 20) + 5;
+                initialLikes[p.id.toString()] = p.likes !== undefined ? p.likes : Math.floor(Math.random() * 20) + 5;
             }
         });
         setLikes(initialLikes);
