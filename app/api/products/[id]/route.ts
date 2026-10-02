@@ -108,6 +108,41 @@ export async function DELETE(
         }
 
         const productData = doc.data();
+
+        // Extract and delete images from R2
+        try {
+            const { deleteFileFromR2 } = await import('@/lib/r2');
+            
+            const extractR2Key = (url: string) => {
+                if (!url || !url.includes('/api/r2-file?key=')) return null;
+                try {
+                    const keyParam = url.split('key=')[1]?.split('&')[0];
+                    return keyParam ? decodeURIComponent(keyParam) : null;
+                } catch { return null; }
+            };
+
+            const keysToDelete: string[] = [];
+            
+            if (productData.image) {
+                const key = extractR2Key(productData.image);
+                if (key) keysToDelete.push(key);
+            }
+            
+            if (productData.images && Array.isArray(productData.images)) {
+                for (const imgUrl of productData.images) {
+                    const key = extractR2Key(imgUrl);
+                    if (key) keysToDelete.push(key);
+                }
+            }
+            
+            // Delete all collected keys
+            for (const key of keysToDelete) {
+                await deleteFileFromR2(key).catch(e => console.error("Failed to delete R2 file:", key, e));
+            }
+        } catch (e) {
+            console.error("Error cleaning up R2 files:", e);
+        }
+
         await docRef.delete();
 
         return NextResponse.json({

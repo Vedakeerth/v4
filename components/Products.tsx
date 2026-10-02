@@ -80,14 +80,14 @@ export default function Products({ products, isLoading = false }: ProductsProps)
                                     />
                                     <div className="absolute top-2 right-2 flex gap-2">
                                         <span
-                                            className={`px-2 py-1 rounded text-[10px] font-black uppercase tracking-widest ${product.inStock
-                                                ? "bg-green-500/20 text-green-400"
-                                                : "bg-red-500/20 text-red-400"
+                                            className={`px-2 py-1 rounded text-[10px] font-black uppercase tracking-widest shadow-md ${product.inStock
+                                                ? "bg-green-500 text-white shadow-green-500/20"
+                                                : "bg-red-500 text-white shadow-red-500/20"
                                                 }`}
                                         >
                                             {product.inStock ? "In Stock" : "Out of Stock"}
                                         </span>
-                                        <span className="px-2 py-1 rounded text-[10px] font-black uppercase tracking-widest bg-slate-50 dark:bg-slate-900/80 text-blue-400">
+                                        <span className="px-2 py-1 rounded text-[10px] font-black uppercase tracking-widest bg-blue-500 text-white shadow-md shadow-blue-500/20">
                                             {product.category}
                                         </span>
                                     </div>

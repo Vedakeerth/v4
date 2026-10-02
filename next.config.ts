@@ -29,6 +29,18 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: '*.mega.nz',
       },
+      {
+        protocol: 'https',
+        hostname: '*.r2.cloudflarestorage.com',
+      },
+    ],
+    localPatterns: [
+      {
+        pathname: '/**',
+      },
+      {
+        pathname: '/api/r2-file',
+      },
     ],
   },
   compress: true,

@@ -98,7 +98,7 @@ export interface Project {
     image: string;
     images: string[];
     category: string;
-    status: 'Ongoing' | 'Completed' | 'Conceptual';
+    status: 'Ongoing' | 'Completed' | 'Conceptual' | 'Draft';
     date: string;
     client?: string;
     createdAt?: string;

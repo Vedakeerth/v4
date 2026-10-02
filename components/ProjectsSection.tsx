@@ -68,9 +68,7 @@ export default function ProjectsSection({ projects }: ProjectsSectionProps) {
                                  <h3 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white mb-3 group-hover:text-cyan-400 transition-colors leading-tight tracking-tight">
                                     {project?.title || "Engineering Solution"}
                                 </h3>
-                                <p className="text-slate-600 dark:text-slate-400 line-clamp-2 mb-8 text-sm/relaxed">
-                                    {project?.description || "High-precision engineering project delivered with excellence."}
-                                </p>
+                                <div className="text-slate-600 dark:text-slate-400 line-clamp-2 mb-8 text-sm/relaxed overflow-hidden prose-sm dark:prose-invert" dangerouslySetInnerHTML={{ __html: project?.description || "High-precision engineering project delivered with excellence." }} />
                                 
                                 <div className="mt-auto flex items-center justify-between border-t border-slate-200 dark:border-slate-800/50 pt-6">
                                     <div className="flex items-center gap-3">

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, Edit, Trash2, Upload, X, LogOut, Search, ArrowLeft, Star, ChevronLeft, ChevronRight } from "lucide-react";
+import { Plus, Edit, Trash2, Upload, X, LogOut, Search, ArrowLeft, Star, ChevronLeft, ChevronRight, Image as ImageIcon } from "lucide-react";
 import Image from "next/image";
 import { type Product } from "@/lib/products";
 import CustomDropdown from "../CustomDropdown";
@@ -111,64 +111,75 @@ export default function ProductsTab() {
     };
 
     const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, targetField: 'image' | 'gallery', index?: number) => {
-        const file = e.target.files?.[0];
-        if (!file) return;
+        const files = Array.from(e.target.files || []);
+        if (files.length === 0) return;
 
         setIsUploading(true);
         setUploadProgress(0);
-        try {
-            const formDataPayload = new FormData();
-            formDataPayload.append('file', file);
-            formDataPayload.append('quotationID', `image/${uploadSessionId}`);
-            formDataPayload.append('rootFolder', 'website');
+        
+        const uploadedUrls = [];
+        
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            try {
+                const formDataPayload = new FormData();
+                formDataPayload.append('file', file);
+                formDataPayload.append('quotationID', editingProduct ? editingProduct.id : uploadSessionId);
+                formDataPayload.append('rootFolder', 'products');
 
-            const responseData = await new Promise<any>((resolve, reject) => {
-                const xhr = new XMLHttpRequest();
-                xhr.open("POST", "/api/upload-to-mega", true);
+                const responseData = await new Promise((resolve, reject) => {
+                    const xhr = new XMLHttpRequest();
+                    xhr.open('POST', '/api/upload-to-mega', true);
 
-                xhr.upload.onprogress = (event) => {
-                    if (event.lengthComputable) {
-                        const percentComplete = Math.round((event.loaded / event.total) * 100);
-                        setUploadProgress(percentComplete);
-                    }
-                };
+                    xhr.upload.onprogress = (event) => {
+                        if (event.lengthComputable) {
+                            const baseProgress = (i / files.length) * 100;
+                            const fileProgress = (event.loaded / event.total) * (100 / files.length);
+                            setUploadProgress(Math.round(baseProgress + fileProgress));
+                        }
+                    };
 
-                xhr.onload = () => {
-                    try {
-                        resolve(JSON.parse(xhr.responseText));
-                    } catch (e) {
-                        reject(new Error("Invalid JSON response"));
-                    }
-                };
+                    xhr.onload = () => {
+                        try {
+                            resolve(JSON.parse(xhr.responseText));
+                        } catch (e) {
+                            reject(new Error('Invalid JSON response'));
+                        }
+                    };
 
-                xhr.onerror = () => reject(new Error("Network Error"));
-                xhr.send(formDataPayload);
-            });
-            
-            if (responseData.success) {
-                const uploadedUrl = responseData.data.url;
-                if (targetField === 'image') {
-                    setFormData(prev => ({ ...prev, image: uploadedUrl }));
-                } else if (targetField === 'gallery') {
-                    const currentImages = formData.images ? formData.images.split(",").map(i => i.trim()).filter(Boolean) : [];
-                    if (index !== undefined && index < currentImages.length) {
-                        currentImages[index] = uploadedUrl;
-                    } else {
-                        currentImages.push(uploadedUrl);
-                    }
-                    setFormData(prev => ({ ...prev, images: currentImages.join(", ") }));
+                    xhr.onerror = () => reject(new Error('Network Error'));
+                    xhr.send(formDataPayload);
+                });
+                
+                if (responseData.success) {
+                    uploadedUrls.push(responseData.data.url);
+                } else {
+                    console.error('Upload error response:', responseData.error);
                 }
-            } else {
-                console.error("Upload error response:", responseData.error);
-                toast.error("Upload failed: " + responseData.error);
+            } catch (error) {
+                console.error('Upload failed', error);
             }
-        } catch (error) {
-            console.error("Upload failed", error);
-            toast.error("Upload failed: " + (error as Error).message);
-        } finally {
-            setIsUploading(false);
-            setUploadProgress(null);
         }
+
+        if (uploadedUrls.length > 0) {
+            if (targetField === 'image') {
+                setFormData(prev => ({ ...prev, image: uploadedUrls[0] }));
+            } else if (targetField === 'gallery') {
+                setFormData(prev => {
+                    const currentImages = prev.images ? prev.images.split(',').map(i => i.trim()).filter(Boolean) : [];
+                    if (index !== undefined && index < currentImages.length) {
+                        currentImages[index] = uploadedUrls[0];
+                        return { ...prev, images: [...currentImages, ...uploadedUrls.slice(1)].join(', ') };
+                    } else {
+                        return { ...prev, images: [...currentImages, ...uploadedUrls].join(', ') };
+                    }
+                });
+            }
+        }
+        
+        setIsUploading(false);
+        setUploadProgress(null);
+        e.target.value = '';
     };
 
     const removeGalleryImage = (index: number) => {
@@ -262,8 +273,8 @@ export default function ProductsTab() {
         setFormData({
             name: product.name,
             description: product.description,
-            price: product.price.toString().replace("â‚¹", ""),
-            mrp: product.mrp ? product.mrp.toString().replace("â‚¹", "") : "",
+            price: product.price.toString().replace("₹", ""),
+            mrp: product.mrp ? product.mrp.toString().replace("₹", "") : "",
             image: product.image,
             images: product.images.join(", "),
             category: product.category,
@@ -321,8 +332,8 @@ export default function ProductsTab() {
 
             const productData = {
                 ...formData,
-                price: formData.price.startsWith("â‚¹") ? formData.price : `â‚¹${formData.price}`,
-                mrp: formData.mrp ? (formData.mrp.startsWith("â‚¹") ? formData.mrp : `â‚¹${formData.mrp}`) : "",
+                price: formData.price.startsWith("₹") ? formData.price : `₹${formData.price}`,
+                mrp: formData.mrp ? (formData.mrp.startsWith("₹") ? formData.mrp : `₹${formData.mrp}`) : "",
                 image: mainImage,
                 images: finalImages,
                 stockCount: parseInt(formData.stockCount.toString()) || 0,
@@ -425,7 +436,7 @@ export default function ProductsTab() {
 
     const downloadCsvTemplate = () => {
         const headers = "name,description,price,mrp,category,image,images,stockCount,availabilityStatus,inStock";
-        const example = "Example Product,Great product description,â‚¹2499.00,â‚¹3999.00,Electronics,https://img.com/main.png,https://img.com/1.png;https://img.com/2.png,50,In Stock,true";
+        const example = "Example Product,Great product description,₹2499.00,₹3999.00,Electronics,https://img.com/main.png,https://img.com/1.png;https://img.com/2.png,50,In Stock,true";
         const csvContent = "data:text/csv;charset=utf-8," + headers + "\n" + example;
         const encodedUri = encodeURI(csvContent);
         const link = document.createElement("a");
@@ -492,8 +503,8 @@ export default function ProductsTab() {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 gap-8 w-full">
-                    <div className="space-y-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-[calc(100vh-300px)]">
+                    <div className="space-y-6 overflow-y-auto pr-2 custom-scrollbar pb-10">
                         <div className="space-y-4">
                             <div>
                                 <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">Product Name <span className="text-red-500">*</span></label>
@@ -588,9 +599,10 @@ export default function ProductsTab() {
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div className="space-y-6">
+
+
+
                         <div className="p-4 bg-white dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-800">
                             <div className="flex items-center justify-between mb-4">
                                 <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Product Gallery & Primary Image <span className="text-red-500">*</span></label>
@@ -614,11 +626,23 @@ export default function ProductsTab() {
                                                     }`}
                                                         onClick={() => setFormData(prev => ({ ...prev, image: img }))}
                                                     >
-                                                        <Image src={getImageUrl(img)} alt={`Gallery ${idx}`} fill className="object-cover group-hover:scale-105 transition-transform duration-300" unoptimized={img.includes("mega.nz")} />
+                                                        {/* Image Rendering */}
+                                                        {isPrimary ? (
+                                                            <>
+                                                                {/* Blurred background for primary */}
+                                                                <div className="absolute inset-0 z-0 overflow-hidden">
+                                                                    <Image src={getImageUrl(img)} alt={`Gallery bg ${idx}`} fill className="object-cover blur-md opacity-40 scale-125" unoptimized={img.includes("mega.nz")} />
+                                                                </div>
+                                                                {/* Full foreground image for primary */}
+                                                                <Image src={getImageUrl(img)} alt={`Gallery ${idx}`} fill className="object-contain z-10 relative group-hover:scale-105 transition-transform duration-300 drop-shadow-lg" unoptimized={img.includes("mega.nz")} />
+                                                            </>
+                                                        ) : (
+                                                            <Image src={getImageUrl(img)} alt={`Gallery ${idx}`} fill className="object-cover group-hover:scale-105 transition-transform duration-300" unoptimized={img.includes("mega.nz")} />
+                                                        )}
 
                                                         {/* Primary badge */}
                                                         {isPrimary && (
-                                                            <div className="absolute inset-0 bg-cyan-500/10 flex items-end justify-center pb-2">
+                                                            <div className="absolute inset-0 bg-cyan-500/10 flex items-end justify-center pb-2 z-20 pointer-events-none">
                                                                 <span className="bg-cyan-500 text-white text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full flex items-center gap-1">
                                                                     <Star size={8} className="fill-white" /> Primary
                                                                 </span>
@@ -627,7 +651,7 @@ export default function ProductsTab() {
 
                                                         {/* Hover select hint */}
                                                         {!isPrimary && (
-                                                            <div className="absolute inset-0 bg-slate-900/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                                            <div className="absolute inset-0 bg-slate-900/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-20 pointer-events-none">
                                                                 <span className="text-white text-[9px] font-black uppercase tracking-widest flex items-center gap-1">
                                                                     <Star size={10} className="fill-white" /> Set Primary
                                                                 </span>
@@ -667,14 +691,14 @@ export default function ProductsTab() {
                                             {imgs.length < 5 && (
                                                 <label className="aspect-square bg-slate-50 dark:bg-slate-800/50 border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-cyan-500/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all group">
                                                     {isUploading && uploadProgress !== null ? (
-                                                        <div className="flex flex-col items-center justify-center gap-1"><div className="w-5 h-5 rounded-full border-2 border-cyan-500 border-t-transparent animate-spin" /><span className="text-cyan-500 font-bold text-[10px] text-center">{uploadProgress === 100 ? "Saving to Mega..." : `Fetching... ${uploadProgress}%`}</span></div>
+                                                        <div className="flex flex-col items-center justify-center gap-1"><div className="w-5 h-5 rounded-full border-2 border-cyan-500 border-t-transparent animate-spin" /><span className="text-cyan-500 font-bold text-[10px] text-center">{uploadProgress === 100 ? "Loading..." : `Uploading ${uploadProgress}%`}</span></div>
                                                     ) : (
                                                         <>
                                                             <Plus size={22} className="text-slate-400 group-hover:text-cyan-400 mb-1" />
                                                             <span className="text-[9px] font-bold text-slate-400 group-hover:text-cyan-400 uppercase tracking-widest">Add Snap</span>
                                                         </>
                                                     )}
-                                                    <input type="file" className="hidden" onChange={(e) => handleFileUpload(e, "gallery")} disabled={isUploading} />
+                                                    <input type="file" multiple className="hidden" onChange={(e) => handleFileUpload(e, "gallery")} disabled={isUploading} />
                                                 </label>
                                             )}
                                         </>
@@ -715,7 +739,7 @@ export default function ProductsTab() {
                                     />
                                     <label className="flex cursor-pointer items-center justify-center rounded-xl bg-slate-200 dark:bg-slate-800 px-5 py-2.5 transition-all hover:bg-slate-300 dark:hover:bg-slate-700 font-bold text-sm text-slate-700 dark:text-slate-300 gap-2">
                                         {isUploading && uploadProgress !== null ? (
-                                            <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full border-2 border-cyan-500 border-t-transparent animate-spin" /><span className="text-cyan-500 whitespace-nowrap text-xs">{uploadProgress === 100 ? "Saving to Mega..." : `Fetching... ${uploadProgress}%`}</span></div>
+                                            <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full border-2 border-cyan-500 border-t-transparent animate-spin" /><span className="text-cyan-500 whitespace-nowrap text-xs">{uploadProgress === 100 ? "Loading..." : `Uploading ${uploadProgress}%`}</span></div>
                                         ) : (
                                             <><Upload size={16} /> Upload</>
                                         )}
@@ -787,8 +811,65 @@ export default function ProductsTab() {
                             <RichTextEditor
                                 value={formData.description}
                                 onChange={(val) => setFormData({ ...formData, description: val })}
-                                placeholder="Detailed product description..."
-                            />
+                                placeholder="Detailed product description..."                            />
+                        </div>
+                    </div>
+
+                    {/* Preview Pane */}
+                    <div className="bg-white dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 p-8 overflow-y-auto custom-scrollbar hidden lg:block">
+                        <div className="prose dark:prose-invert max-w-none">
+                            <h1 className="text-3xl font-bold mb-4">{formData.name || "Product Name"}</h1>
+                            
+                            {formData.image && (
+                                <div className="relative h-64 w-full mb-6 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50">
+                                    <Image src={getImageUrl(formData.image)} alt="Cover" fill className="object-contain p-4" unoptimized={formData.image.includes("mega.nz")} />
+                                </div>
+                            )}
+                            
+                            <div className="flex items-center gap-4 mb-6">
+                                <div className="flex flex-col">
+                                    <span className="text-3xl font-black text-cyan-500">{formData.price ? formatINR(formData.price) : "₹0"}</span>
+                                    {formData.mrp && <span className="text-sm font-bold text-slate-400 line-through">MRP {formatINR(formData.mrp)}</span>}
+                                </div>
+                                <div className="px-3 py-1 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs font-black uppercase tracking-widest border border-slate-200 dark:border-slate-700">
+                                    {formData.category || "Hardware"}
+                                </div>
+                                <div className={`px-3 py-1 rounded-lg text-xs font-black uppercase tracking-widest border ${formData.availabilityStatus === 'In Stock' ? 'bg-green-500/10 text-green-500 border-green-500/20' : formData.availabilityStatus === 'Pre-order' ? 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20' : 'bg-red-500/10 text-red-500 border-red-500/20'}`}>
+                                    {formData.availabilityStatus || 'Draft'}
+                                </div>
+                            </div>
+                            
+                            <div className="mb-6 grid grid-cols-4 gap-4 p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800">
+                                <div className="flex flex-col items-center justify-center">
+                                    <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Weight</span>
+                                    <span className="text-sm font-bold text-slate-900 dark:text-white">{formData.weight || 0}g</span>
+                                </div>
+                                <div className="flex flex-col items-center justify-center">
+                                    <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Length</span>
+                                    <span className="text-sm font-bold text-slate-900 dark:text-white">{formData.length || 0}cm</span>
+                                </div>
+                                <div className="flex flex-col items-center justify-center">
+                                    <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Width</span>
+                                    <span className="text-sm font-bold text-slate-900 dark:text-white">{formData.width || 0}cm</span>
+                                </div>
+                                <div className="flex flex-col items-center justify-center">
+                                    <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Height</span>
+                                    <span className="text-sm font-bold text-slate-900 dark:text-white">{formData.height || 0}cm</span>
+                                </div>
+                            </div>
+
+                            {formData.colors && formData.colors.length > 0 && (
+                                <div className="mb-6">
+                                    <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-2">Available Colors</span>
+                                    <div className="flex gap-2">
+                                        {formData.colors.map(c => (
+                                            <div key={c} className="w-6 h-6 rounded-full border border-slate-200 dark:border-slate-700 shadow-sm" style={{ backgroundColor: c }} />
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            <div className="mt-8 border-t border-slate-200 dark:border-slate-800 pt-8" dangerouslySetInnerHTML={{ __html: formData.description || "<p class='text-slate-400 italic'>Product description will appear here...</p>" }} />
                         </div>
                     </div>
                 </div>
@@ -834,8 +915,13 @@ export default function ProductsTab() {
                     }).map(p => (
                         <div key={p.id} className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden group hover:border-cyan-500/30 transition-all">
                             <div className="relative h-48 bg-slate-100 dark:bg-slate-800">
-                                <Image src={getImageUrl(p.image) || "/placeholder.png"} alt={p.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" unoptimized={p.image.includes("mega.nz")} />
-                                <div className="absolute top-3 right-3 flex flex-col gap-2">
+                                {/* Blurred background */}
+                                <div className="absolute inset-0 z-0 overflow-hidden">
+                                    <Image src={getImageUrl(p.image) || "/placeholder.png"} alt={`${p.name} bg`} fill className="object-cover blur-md opacity-40 scale-125" unoptimized={p.image?.includes("mega.nz")} />
+                                </div>
+                                {/* Full foreground image */}
+                                <Image src={getImageUrl(p.image) || "/placeholder.png"} alt={p.name} fill className="object-contain z-10 relative group-hover:scale-105 transition-transform duration-500 drop-shadow-md" unoptimized={p.image?.includes("mega.nz")} />
+                                <div className="absolute top-3 right-3 flex flex-col gap-2 z-20">
                                     <span className={`px-2 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest ${p.availabilityStatus === "Draft" ? "bg-yellow-500/20 text-yellow-500" : (p.availabilityStatus === "Out of Stock" || (!p.availabilityStatus && !p.inStock)) ? "bg-red-500/20 text-red-400" : "bg-green-500/20 text-green-400"}`}>
                                         {p.availabilityStatus || (p.inStock ? "In Stock" : "Out of Stock")}
                                     </span>
@@ -854,7 +940,7 @@ export default function ProductsTab() {
                             <div className="p-5">
                                 <h3 className="text-slate-900 dark:text-white font-bold text-lg mb-1 truncate">{p.name}</h3>
                                 <p className="text-[9px] text-cyan-500/80 font-black uppercase tracking-widest mb-3 border-b border-slate-200 dark:border-slate-800 pb-2">ID: {p.id}</p>
-                                <p className="text-slate-600 dark:text-slate-400 text-xs line-clamp-2 h-8 mb-4">{p.description}</p>
+                                <p className="text-slate-600 dark:text-slate-400 text-xs line-clamp-2 h-8 mb-4">{p.description ? p.description.replace(/<[^>]+>/g, '') : ''}</p>
                                 <div className="flex justify-between items-center mb-6">
                                     <div className="flex flex-col">
                                         <span className="text-cyan-400 font-black text-xl">
@@ -932,6 +1018,7 @@ export default function ProductsTab() {
         </div>
     );
 }
+
 
 
 

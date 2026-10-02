@@ -25,6 +25,7 @@ import SettingsTab from "@/components/admin-dashboard-tabs/SettingsTab";
 import CouponsTab from "@/components/admin-dashboard-tabs/CouponsTab";
 import OrdersManagement from "@/components/admin-dashboard-tabs/OrdersManagement";
 import CategoriesTab from "@/components/admin-dashboard-tabs/CategoriesTab";
+import CataloguesTab from "@/components/admin-dashboard-tabs/CataloguesTab";
 import QuoteSettingsTab from "@/components/admin-dashboard-tabs/QuoteSettingsTab";
 import NavigationManager from "@/components/admin/NavigationManager";
 import UsersTab from "@/components/admin-dashboard-tabs/UsersTab";
@@ -128,6 +129,7 @@ function AdminContent({ activeTab }: { activeTab: string }) {
                 {activeTab === "coupons" && <CouponsTab />}
                 {activeTab === "orders" && <OrdersManagement />}
                 {activeTab === "categories" && <CategoriesTab />}
+                {activeTab === "catalogues" && <CataloguesTab />}
                 {activeTab === "quote-settings" && <QuoteSettingsTab />}
                 {activeTab === "navigation" && <NavigationManager />}
                 {activeTab === "users" && <UsersTab />}

@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowRight, Heart, HeartOff, Share2, ShoppingCart, Info, Eye } from 'lucide-react';
 import { Skeleton } from './Skeleton';
-import { cn } from '@/lib/utils';
+import { cn, formatINR } from '@/lib/utils';
 import { toast } from 'sonner';
 
 interface Product {
@@ -14,6 +14,7 @@ interface Product {
     name: string;
     description: string;
     price: string | number;
+    mrp?: string | number;
     image: string;
     category: string;
     isPopular?: boolean;
@@ -168,27 +169,30 @@ export default function PopularParts({ header, parts }: PopularPartsProps) {
                                 </div>
 
                                 <div className="p-6">
-                                    <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2 group-hover:text-cyan-400 transition-colors">
-                                        {part?.name || "Engineering Specialized Part"}
-                                    </h3>
+                                    <div className="flex items-start justify-between gap-2 mb-2">
+                                        <h3 className="text-xl font-bold text-slate-900 dark:text-white group-hover:text-cyan-400 transition-colors flex-1 line-clamp-1">
+                                            {part?.name || "Engineering Specialized Part"}
+                                        </h3>
+                                        <div className="flex items-center gap-1.5 text-red-400 bg-red-400/10 px-2 py-1 rounded-lg text-[10px] font-black border border-red-400/20 backdrop-blur-sm whitespace-nowrap">
+                                            <Heart size={12} fill={liked[part?.id?.toString() || ""] ? "currentColor" : "none"} />
+                                            {likes[part?.id?.toString() || ""] || 0}
+                                        </div>
+                                    </div>
                                     <p className="text-slate-600 dark:text-slate-400 text-sm mb-6 line-clamp-2">
                                         {part?.description || "High precision component designed for advanced industrial applications."}
                                     </p>
                                     <div className="flex items-center justify-between">
-                                        <div className="flex flex-col">
-                                            <div className="flex items-center gap-2 mb-1">
-                                                <div className="flex items-center gap-1.5 text-red-400 bg-red-400/10 px-2 py-1 rounded-lg text-[10px] font-black border border-red-400/20 backdrop-blur-sm">
-                                                    <Heart size={12} fill={liked[part?.id?.toString() || ""] ? "currentColor" : "none"} />
-                                                    {likes[part?.id?.toString() || ""] || 0}
-                                                </div>
+                                        <div className="flex flex-col justify-center">
+                                            <div className="flex items-baseline gap-2">
+                                                <span className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                                                    {part?.price ? formatINR(part.price) : formatINR(0)}
+                                                </span>
+                                                {part?.mrp && (
+                                                    <span className="text-sm text-slate-500 dark:text-slate-400 line-through font-bold">
+                                                        {formatINR(part.mrp)}
+                                                    </span>
+                                                )}
                                             </div>
-                                            <span className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
-                                                {part?.price
-                                                    ? (typeof part.price === 'number'
-                                                        ? `₹${part.price.toLocaleString('en-IN')}`
-                                                        : part.price.startsWith('₹') ? part.price : `₹${part.price}`)
-                                                    : "₹0"}
-                                            </span>
                                         </div>
                                         <Link href={`/products/${part?.id}`}>
                                             <button className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-950 font-black text-xs uppercase tracking-widest transition-all duration-300 hover:bg-cyan-500 dark:hover:bg-cyan-400 hover:text-slate-950 shadow-lg hover:shadow-cyan-500/25 active:scale-95">

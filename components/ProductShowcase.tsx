@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, ShoppingCart, Info, Printer, Cpu, PenLine, Settings } from 'lucide-react';
 import { Skeleton } from './Skeleton';
 import ProductQuickView from './ProductQuickView';
+import { formatINR } from '@/lib/utils';
 
 
 const ICON_MAP: Record<string, any> = {
@@ -155,13 +156,16 @@ export default function ProductShowcase({ header, categories, products: initialP
                                                     <span className="px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-cyan-400 text-[10px] font-bold uppercase tracking-widest border border-slate-300 dark:border-slate-700">
                                                         {product?.inStock ? "Ready to Ship" : "Backorder"}
                                                     </span>
-                                                    <span className="text-xl font-bold text-slate-900 dark:text-white">
-                                                        {product?.price
-                                                            ? (typeof product.price === 'number'
-                                                                ? `₹${product.price.toLocaleString('en-IN')}`
-                                                                : product.price.startsWith('₹') ? product.price : `₹${product.price}`)
-                                                            : "₹0"}
-                                                    </span>
+                                                    <div className="flex items-baseline gap-2">
+                                                        <span className="text-xl font-bold text-slate-900 dark:text-white">
+                                                            {product?.price ? formatINR(product.price) : formatINR(0)}
+                                                        </span>
+                                                        {product?.mrp && (
+                                                            <span className="text-sm text-slate-500 dark:text-slate-400 line-through font-bold">
+                                                                {formatINR(product.mrp)}
+                                                            </span>
+                                                        )}
+                                                    </div>
                                                 </div>
                                                 <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-3 group-hover:text-cyan-400 transition-colors">
                                                     {product?.name || "Engineering Component"}

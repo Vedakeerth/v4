@@ -76,14 +76,25 @@ export default async function BlogDetailPage({ params }: PageProps) {
             />
 
             {/* Hero Section */}
-            <header className="relative h-[70vh] min-h-[500px] w-full overflow-hidden">
+            <header className="relative h-[70vh] min-h-[500px] w-full overflow-hidden bg-slate-950">
+                {/* Blurred Background */}
                 <Image
                     src={blog.image}
-                    alt={blog.title}
+                    alt={`${blog.title} background`}
                     fill
-                    className="object-cover scale-105"
+                    className="object-cover opacity-30 blur-2xl scale-110"
                     priority
                 />
+                {/* Contained Foreground */}
+                <div className="absolute inset-0">
+                    <Image
+                        src={blog.image}
+                        alt={blog.title}
+                        fill
+                        className="object-contain"
+                        priority
+                    />
+                </div>
                 <div className="absolute inset-0 bg-gradient-to-b from-slate-950/20 via-slate-950/60 to-slate-950" />
 
                 <div className="absolute inset-0 flex items-end">
@@ -126,8 +137,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
                 </div>
             </header>
 
-            <div className="container mx-auto px-4 py-24">
-                <div className="max-w-6xl mx-auto">
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 py-24">
                     {/* Interaction Bar Top */}
                     <div className="flex items-center justify-between mb-16 pb-8 border-b border-slate-900">
                         <LikeButton blogId={blog.id} initialLikes={blog.likes || 0} />
@@ -166,7 +176,6 @@ export default async function BlogDetailPage({ params }: PageProps) {
 
                     {/* Comments Section */}
                     <CommentSection blogId={blog.id} initialComments={blog.comments || []} />
-                </div>
             </div>
 
             <Footer />

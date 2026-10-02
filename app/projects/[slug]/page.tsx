@@ -65,18 +65,29 @@ export default async function ProjectDetailPage({ params }: PageProps) {
             />
             
             {/* Hero Section */}
-            <header className="relative h-[60vh] min-h-[400px] w-full overflow-hidden pt-20">
+            <header className="relative h-[60vh] min-h-[400px] w-full overflow-hidden pt-20 bg-slate-950">
+                {/* Blurred Background */}
                 <Image
                     src={project.image}
-                    alt={project.title}
+                    alt={`${project.title} background`}
                     fill
-                    className="object-cover opacity-60"
+                    className="object-cover opacity-30 blur-2xl scale-110"
                     priority
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
+                {/* Contained Foreground */}
+                <div className="absolute inset-0">
+                    <Image
+                        src={project.image}
+                        alt={project.title}
+                        fill
+                        className="object-contain"
+                        priority
+                    />
+                </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent" />
                 
                 <div className="absolute inset-0 flex items-end">
-                    <div className="dynamic-container pb-12">
+                    <div className="max-w-5xl mx-auto px-4 sm:px-6 pb-12">
                         <Link href="/projects" className="inline-flex items-center gap-2 text-cyan-400 font-extrabold mb-6 hover:text-cyan-300 transition-colors group uppercase tracking-widest text-xs">
                             <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
                             Back to Projects
@@ -111,7 +122,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                 </div>
             </header>
 
-            <div className="dynamic-container py-20">
+            <div className="max-w-5xl mx-auto px-4 sm:px-6 py-20">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
                     {/* Main Content */}
                     <div className="lg:col-span-2">
@@ -119,9 +130,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                             <Layout className="text-cyan-500" size={24} />
                             Project Overview
                         </h2>
-                        <div className="prose prose-invert max-w-none text-slate-700 dark:text-slate-300 leading-relaxed text-lg">
-                            {project.description}
-                        </div>
+                        <div className="prose prose-invert max-w-none text-slate-700 dark:text-slate-300 leading-relaxed text-base" dangerouslySetInnerHTML={{ __html: project.description }} />
                         
                         {project.images && project.images.length > 0 && (
                             <div className="mt-12">

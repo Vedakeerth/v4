@@ -98,17 +98,28 @@ export default function ProductDetailClient({ product, similarProducts, pageData
                                 </button>
                             </>
                         )}
+                        {/* Blurred Background */}
                         <Image
                             src={images[currentImageIndex]}
-                            alt={product.name}
+                            alt={`${product.name} background`}
                             fill
-                            className="object-cover"
+                            className="object-cover opacity-30 blur-2xl scale-110"
                             priority
                         />
+                        {/* Contained Foreground */}
+                        <div className="absolute inset-0">
+                            <Image
+                                src={images[currentImageIndex]}
+                                alt={product.name}
+                                fill
+                                className="object-contain"
+                                priority
+                            />
+                        </div>
 
                         {/* Tags */}
                         <div className="absolute top-6 left-6 flex gap-2">
-                            <span className="px-4 py-1.5 rounded-full text-sm font-semibold bg-white dark:bg-slate-950/80 text-cyan-400 border border-cyan-500/30 backdrop-blur-md">
+                            <span className="px-4 py-1.5 rounded-full text-sm font-semibold bg-cyan-500 text-white shadow-md shadow-cyan-500/20 backdrop-blur-md">
                                 {product.category}
                             </span>
                         </div>

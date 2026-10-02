@@ -31,36 +31,45 @@ export default async function ProjectsPage() {
                         <Link
                             key={project.id}
                             href={`/projects/${createSeoSlug(project.title, project.id)}`}
-                            className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden hover:border-cyan-500/30 transition-all group"
+                            className="group relative bg-slate-50 dark:bg-slate-900/40 backdrop-blur-sm rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800/50 hover:border-cyan-500/30 transition-all duration-500 hover:translate-y-[-4px] flex flex-col h-full"
                         >
-                            <div className="relative h-72 w-full overflow-hidden">
+                            <div className="relative h-64 md:h-72 overflow-hidden">
                                 <Image
-                                    src={project.image || "/placeholder.png"}
-                                    alt={project.title}
+                                    src={project?.image || "/placeholder.png"}
+                                    alt={project?.title || "Project"}
                                     fill
-                                    className="object-cover group-hover:scale-105 transition-transform duration-700"
+                                    className="object-cover transform group-hover:scale-110 transition-transform duration-1000"
                                 />
-                                <div className="absolute top-4 left-4">
-                                    <span className="bg-white dark:bg-slate-950/80 backdrop-blur border border-white/10 text-white text-xs font-bold px-3 py-1.5 rounded-lg uppercase tracking-wider">
-                                        {project.category}
+                                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent opacity-60" />
+                                <div className="absolute top-4 right-4 z-20">
+                                    <span className="bg-slate-100 dark:bg-slate-950/80 backdrop-blur-md border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-[10px] font-extrabold px-4 py-2 rounded-xl uppercase tracking-widest">
+                                        {project?.category || "Industrial"}
                                     </span>
                                 </div>
                             </div>
-                            <div className="p-6">
-                                <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-cyan-400 transition-colors">
-                                    {project.title}
+
+                            <div className="p-6 md:p-8 flex flex-col flex-grow">
+                                <h3 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white mb-3 group-hover:text-cyan-400 transition-colors leading-tight tracking-tight">
+                                    {project?.title || "Engineering Solution"}
                                 </h3>
-                                <p className="text-slate-600 dark:text-slate-400 mb-6 line-clamp-3 text-sm">
-                                    {project.description}
-                                </p>
-                                <div className="flex justify-between items-center text-sm">
-                                    <span className="text-slate-500">
-                                        Client: {project.client || "Confidential"}
-                                    </span>
-                                    <span className={`font-bold ${project.status === "Completed" ? "text-green-400" : "text-yellow-400"
+                                <div className="text-slate-600 dark:text-slate-400 line-clamp-3 mb-8 text-sm/relaxed overflow-hidden prose-sm dark:prose-invert" dangerouslySetInnerHTML={{ __html: project.description }} />
+                                
+                                <div className="mt-auto flex items-center justify-between border-t border-slate-200 dark:border-slate-800/50 pt-6">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-cyan-500 font-extrabold text-[10px] border border-slate-300 dark:border-slate-700/50">
+                                            {project?.client?.charAt(0) || "V"}
+                                        </div>
+                                        <span className={`text-[10px] font-extrabold uppercase tracking-[0.2em] ${
+                                            project?.status === "Completed" ? "text-green-400" : "text-yellow-400"
                                         }`}>
-                                        {project.status}
-                                    </span>
+                                            {project?.status || "Ongoing"}
+                                        </span>
+                                    </div>
+                                    <div className="flex items-center gap-4">
+                                        <span className="text-slate-600 text-[11px] font-bold tracking-tighter">
+                                            Client: {project?.client || "Confidential"}
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                         </Link>

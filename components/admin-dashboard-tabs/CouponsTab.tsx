@@ -304,7 +304,7 @@ export default function CouponsTab() {
                                     <div className="flex items-center justify-between p-3 bg-white dark:bg-slate-950/50 rounded-xl border border-slate-200 dark:border-slate-800">
                                         <span className="text-xs font-bold text-slate-500 uppercase">Discount</span>
                                         <span className="text-lg font-black text-slate-900 dark:text-white">
-                                            {coupon.type === 'percentage' ? `${coupon.value}%` : `â‚¹${coupon.value}`}
+                                            {coupon.type === 'percentage' ? `${coupon.value}%` : `₹${coupon.value}`}
                                         </span>
                                     </div>
 
@@ -369,7 +369,7 @@ export default function CouponsTab() {
                                             className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500 transition-all"
                                         >
                                             <option value="percentage">Percentage (%)</option>
-                                            <option value="fixed">Fixed (â‚¹)</option>
+                                            <option value="fixed">Fixed (₹)</option>
                                         </select>
                                     </div>
                                     <div>

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState } from "react";
 import { Search, Save, User, Mail, Phone, MapPin, IndianRupee, FileText } from "lucide-react";
@@ -238,7 +238,7 @@ export default function EditQuoteTab() {
                                                 </div>
                                                 <div className="flex gap-3">
                                                     <div className="flex-1">
-                                                        <label className="text-[9px] font-bold uppercase text-slate-500 mb-1 block">Unit Price (â‚¹)</label>
+                                                        <label className="text-[9px] font-bold uppercase text-slate-500 mb-1 block">Unit Price (₹)</label>
                                                         <input
                                                             type="text"
                                                             value={item.price || ""}
@@ -269,7 +269,7 @@ export default function EditQuoteTab() {
                                 <div className="space-y-4">
                                     <div>
                                         <label className="text-[10px] font-bold uppercase text-slate-500 flex items-center gap-2 mb-1">
-                                            <IndianRupee size={12} /> Total Amount (â‚¹)
+                                            <IndianRupee size={12} /> Total Amount (₹)
                                         </label>
                                         <input
                                             type="text"

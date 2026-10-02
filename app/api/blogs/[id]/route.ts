@@ -73,6 +73,35 @@ export async function DELETE(req: Request, { params }: any) {
             return NextResponse.json({ success: false, message: 'Blog not found' }, { status: 404 });
         }
 
+        const blogData = doc.data();
+
+        // Extract and delete images from R2
+        try {
+            const { deleteFileFromR2 } = await import('@/lib/r2');
+            
+            const extractR2Key = (url: string) => {
+                if (!url || !url.includes('/api/r2-file?key=')) return null;
+                try {
+                    const keyParam = url.split('key=')[1]?.split('&')[0];
+                    return keyParam ? decodeURIComponent(keyParam) : null;
+                } catch { return null; }
+            };
+
+            const keysToDelete: string[] = [];
+            
+            if (blogData.image) {
+                const key = extractR2Key(blogData.image);
+                if (key) keysToDelete.push(key);
+            }
+            
+            // Delete all collected keys
+            for (const key of keysToDelete) {
+                await deleteFileFromR2(key).catch(e => console.error("Failed to delete R2 file:", key, e));
+            }
+        } catch (e) {
+            console.error("Error cleaning up R2 files:", e);
+        }
+
         await docRef.delete();
         return NextResponse.json({ success: true, message: 'Blog deleted successfully' });
     } catch (error) {

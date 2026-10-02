@@ -38,6 +38,7 @@ const navItems: NavItem[] = [
   { label: "Orders", href: "/secure-management-portal/admin?tab=orders", icon: ShoppingBag, group: "Content", tab: "orders" },
   { label: "Products", href: "/secure-management-portal/admin?tab=products", icon: Package, group: "Content", tab: "products" },
   { label: "Categories", href: "/secure-management-portal/admin?tab=categories", icon: LayoutGrid, group: "Content", tab: "categories" },
+  { label: "Blog's Catalogues", href: "/secure-management-portal/admin?tab=catalogues", icon: FileText, group: "Content", tab: "catalogues" },
   { label: "Projects", href: "/secure-management-portal/admin?tab=projects", icon: Briefcase, group: "Content", tab: "projects" },
   { label: "Gallery", href: "/secure-management-portal/admin?tab=features", icon: Share2, group: "Content", tab: "features" },
   { label: "Blog", href: "/secure-management-portal/admin?tab=blogs", icon: FileText, group: "Content", tab: "blogs" },
