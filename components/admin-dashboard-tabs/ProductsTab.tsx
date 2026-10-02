@@ -127,7 +127,7 @@ export default function ProductsTab() {
                 formDataPayload.append('quotationID', editingProduct ? editingProduct.id : uploadSessionId);
                 formDataPayload.append('rootFolder', 'products');
 
-                const responseData = await new Promise((resolve, reject) => {
+                const responseData: any = await new Promise((resolve, reject) => {
                     const xhr = new XMLHttpRequest();
                     xhr.open('POST', '/api/upload-to-mega', true);
 
