@@ -273,8 +273,8 @@ export default function ProductsTab() {
         setFormData({
             name: product.name,
             description: product.description,
-            price: product.price.toString().replace("₹", ""),
-            mrp: product.mrp ? product.mrp.toString().replace("₹", "") : "",
+            price: product.price.toString().replace(/[^\d.]/g, ""),
+            mrp: product.mrp ? product.mrp.toString().replace(/[^\d.]/g, "") : "",
             image: product.image,
             images: product.images.join(", "),
             category: product.category,
@@ -513,17 +513,11 @@ export default function ProductsTab() {
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 <div>
                                     <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">Selling Price <span className="text-red-500">*</span></label>
-                                    <div className="relative">
-                                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-bold">₹</span>
-                                        <input type="number" value={formData.price ? String(formData.price).replace(/[^0-9.]/g, '') : ''} onChange={e => setFormData({ ...formData, price: e.target.value })} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl pl-8 pr-4 py-3 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500 transition-all" placeholder="2499" />
-                                    </div>
+                                    <input value={formData.price} onChange={e => setFormData({ ...formData, price: e.target.value })} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500 transition-all" placeholder="2499" />
                                 </div>
                                 <div>
                                     <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">MRP <span className="text-red-500">*</span></label>
-                                    <div className="relative">
-                                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-bold">₹</span>
-                                        <input type="number" value={formData.mrp ? String(formData.mrp).replace(/[^0-9.]/g, '') : ''} onChange={e => setFormData({ ...formData, mrp: e.target.value })} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl pl-8 pr-4 py-3 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500 transition-all" placeholder="3999" />
-                                    </div>
+                                    <input value={formData.mrp} onChange={e => setFormData({ ...formData, mrp: e.target.value })} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-cyan-500 transition-all" placeholder="3999" />
                                 </div>
                                 <div>
                                     <label className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-widest block mb-2 ml-1">Initial Likes <span className="text-red-500">*</span></label>

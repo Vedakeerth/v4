@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
@@ -8,6 +8,7 @@ import { ArrowRight, Heart, HeartOff, Share2, ShoppingCart, Info, Eye } from 'lu
 import { Skeleton } from './Skeleton';
 import { cn, formatINR } from '@/lib/utils';
 import { toast } from 'sonner';
+import Marquee from 'react-fast-marquee';
 
 interface Product {
     id: string | number;
@@ -35,28 +36,6 @@ export default function PopularParts({ header, parts }: PopularPartsProps) {
     const [isLoading, setIsLoading] = useState(false);
     const [liked, setLiked] = useState<Record<string, boolean>>({});
     const [likes, setLikes] = useState<Record<string, number>>({});
-    const scrollContainerRef = useRef<HTMLDivElement>(null);
-
-    // Auto-scroll logic
-    useEffect(() => {
-        if (!isLoading && parts && parts.length > 0) {
-            const container = scrollContainerRef.current;
-            if (!container) return;
-
-            const scrollInterval = setInterval(() => {
-                if (container) {
-                    const maxScrollLeft = container.scrollWidth - container.clientWidth;
-                    if (container.scrollLeft >= maxScrollLeft - 5) {
-                        container.scrollTo({ left: 0, behavior: 'smooth' });
-                    } else {
-                        container.scrollBy({ left: 350, behavior: 'smooth' });
-                    }
-                }
-            }, 3000);
-
-            return () => clearInterval(scrollInterval);
-        }
-    }, [isLoading, parts]);
 
     useEffect(() => {
         // Initialize likes if not present
@@ -121,25 +100,28 @@ export default function PopularParts({ header, parts }: PopularPartsProps) {
                     </motion.div>
                 </div>
 
-                <div ref={scrollContainerRef} className="flex overflow-x-auto gap-6 pb-8 snap-x snap-mandatory custom-scrollbar w-full">
+                <div className="-mx-4 md:-mx-8">
                     {isLoading ? (
-                        Array.from({ length: 3 }).map((_, i) => (
-                            <div key={i} className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4">
-                                <Skeleton variant="rounded" height={240} className="mb-4" />
-                                <Skeleton variant="text" width="60%" height={24} className="mb-2" />
-                                <Skeleton variant="text" width="100%" height={16} />
-                            </div>
-                        ))
+                        <div className="flex gap-8 overflow-hidden px-4 md:px-8">
+                            {Array.from({ length: 4 }).map((_, i) => (
+                                <div key={i} className="w-[350px] shrink-0 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4">
+                                    <Skeleton variant="rounded" height={240} className="mb-4" />
+                                    <Skeleton variant="text" width="60%" height={24} className="mb-2" />
+                                    <Skeleton variant="text" width="100%" height={16} />
+                                </div>
+                            ))}
+                        </div>
                     ) : (
-                        (parts || []).map((part, index) => (
-                            <motion.div
-                                key={part?.id || index}
-                                initial={{ opacity: 0, y: 30 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: index * 0.1 }}
-                                className="group relative bg-slate-50 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden hover:border-cyan-500/50 transition-all duration-500 min-w-[280px] md:min-w-[350px] shrink-0 snap-center"
-                            >
+                        <Marquee pauseOnHover={true} speed={40} className="py-4">
+                            {(parts || []).map((part, index) => (
+                                <motion.div
+                                    key={part?.id || index}
+                                    initial={{ opacity: 0, y: 30 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ delay: 0.1 }}
+                                    className="group w-[350px] shrink-0 mx-4 relative bg-slate-50 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden hover:border-cyan-500/50 transition-all duration-500"
+                                >
                                 <div className="relative h-64 w-full overflow-hidden">
                                     <Image
                                         src={part?.image?.includes("mega.nz") ? `/api/mega-image?url=${encodeURIComponent(part.image)}` : (part?.image || "/images/placeholder.png")}
@@ -224,8 +206,9 @@ export default function PopularParts({ header, parts }: PopularPartsProps) {
                                         </Link>
                                     </div>
                                 </div>
-                            </motion.div>
-                        ))
+                                </motion.div>
+                            ))}
+                        </Marquee>
                     )}
                 </div>
             </div>
