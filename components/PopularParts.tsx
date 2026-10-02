@@ -19,6 +19,7 @@ interface Product {
     image: string;
     category: string;
     isPopular?: boolean;
+    likes?: number;
 }
 
 interface PopularPartsProps {
