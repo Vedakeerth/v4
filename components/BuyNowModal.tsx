@@ -10,7 +10,7 @@ import { redirectToCashfree } from "@/lib/cashfree";
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import QuotationDocument from "./QuotationDocument";
-import Recaptcha from "./Recaptcha";
+
 import { toast } from 'sonner';
 
 interface BuyNowModalProps {
@@ -26,7 +26,7 @@ export default function BuyNowModal({ product, quantity = 1, selectedColor, onCl
     const [status, setStatus] = useState("");
     const [error, setError] = useState<string | null>(null);
     const [quoteData, setQuoteData] = useState({ id: '', date: '', dueDate: '' });
-    const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
+
     const templateRef = React.useRef<HTMLDivElement>(null);
 
     const price = parsePrice(product.price);
@@ -131,7 +131,7 @@ export default function BuyNowModal({ product, quantity = 1, selectedColor, onCl
                     trackingId: trackingId, // Pass the generated ID
                     pdfUrl,
                     megaFolderUrl,
-                    recaptchaToken,
+
                     items: [{
                         id: product.id,
                         name: product.name,
@@ -325,14 +325,12 @@ export default function BuyNowModal({ product, quantity = 1, selectedColor, onCl
 
                                 <button
                                     type="submit"
-                                    disabled={!recaptchaToken}
+                                    disabled={false}
                                     className="w-full py-4 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black rounded-2xl transition-all shadow-xl shadow-cyan-500/25 hover:shadow-cyan-500/40 uppercase tracking-widest text-sm flex items-center justify-center gap-2 mt-2 group disabled:opacity-50"
                                 >
                                     <Lock size={16} className="group-hover:scale-110 transition-transform" />
                                     Pay {formatINR(totalAmount)} Now
                                 </button>
-                                
-                                <Recaptcha onChange={setRecaptchaToken} action="SUBMIT" className="mt-2" />
                             </form>
 
                             <div className="flex items-center gap-2 mt-5 justify-center">

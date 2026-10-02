@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { adminDb } from "@/lib/firebaseAdmin";
 import { FieldValue, Transaction } from "firebase-admin/firestore";
-import { verifyRecaptchaEnterprise } from "@/lib/recaptcha";
+
 import { decrypt } from "@/lib/crypto";
 import { generateSequentialId } from "@/lib/order-id";
 
@@ -38,10 +38,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: "Missing required fields or reCAPTCHA token" }, { status: 400 });
     }
 
-    const isValidRecaptcha = await verifyRecaptchaEnterprise(recaptchaToken, 'SUBMIT');
-    if (!isValidRecaptcha) {
-      return NextResponse.json({ success: false, error: "reCAPTCHA verification failed. Please try again." }, { status: 400 });
-    }
+    // Recaptcha removed
 
     const trackingId = providedTrackingId || await generateSequentialId("IN");
 

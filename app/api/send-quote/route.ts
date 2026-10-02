@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 import { addOrder } from '@/lib/orders';
-import { verifyRecaptchaEnterprise } from '@/lib/recaptcha';
+
 
 export async function POST(req: Request) {
     try {
@@ -12,10 +12,7 @@ export async function POST(req: Request) {
             return NextResponse.json({ success: false, error: 'reCAPTCHA token is required' }, { status: 400 });
         }
 
-        const isValidRecaptcha = await verifyRecaptchaEnterprise(recaptchaToken, 'SUBMIT');
-        if (!isValidRecaptcha) {
-            return NextResponse.json({ success: false, error: "reCAPTCHA verification failed. Please try again." }, { status: 400 });
-        }
+        // ReCaptcha validation removed
 
         // In a real app, use environment variables for credentials
         // const transporter = nodemailer.createTransport({

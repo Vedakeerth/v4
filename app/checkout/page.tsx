@@ -11,7 +11,7 @@ import { cn, validatePhone, getColorName } from "@/lib/utils";
 import { redirectToCashfree } from "@/lib/cashfree";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, Suspense } from "react";
-import Recaptcha from "@/components/Recaptcha";
+
 import QuotationDocument from "@/components/QuotationDocument";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
@@ -38,7 +38,7 @@ function CheckoutContent() {
     const [verificationStatus, setVerificationStatus] = useState<'verifying' | 'success' | 'failed' | 'idle'>('idle');
     const [isOrderPlaced, setIsOrderPlaced] = useState(false);
     const [activeTrackingId, setActiveTrackingId] = useState<string | null>(null);
-    const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
+
     const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
     const templateRef = useRef<HTMLDivElement>(null);
     const [quoteData, setQuoteData] = useState({ id: '', date: '', dueDate: '' });
@@ -352,18 +352,7 @@ function CheckoutContent() {
     const [paymentSessionId, setPaymentSessionId] = useState<string | null>(null);
 
     const handlePaymentSubmit = async () => {
-        if (!recaptchaToken && process.env.NODE_ENV === 'production') {
-            toast.error('Please complete the reCAPTCHA verification to proceed.');
-            return;
-        }
-        
-        // In development, if token is missing, use a dummy one to satisfy the API
-        const finalToken = recaptchaToken || (process.env.NODE_ENV === 'development' ? 'dev-dummy-token' : null);
-        
-        if (!finalToken) {
-            toast.error('Please complete the reCAPTCHA verification to proceed.');
-            return;
-        }
+
         
         setCheckoutStep('processing');
 
@@ -393,7 +382,7 @@ function CheckoutContent() {
                     message: formData.message,
                     items,
                     totalAmount: grandTotal,
-                    recaptchaToken: finalToken,
+
                     pdfUrl,
                     megaFolderUrl,
                     shipping: shippingDetails?.totalShipping || 0,
@@ -700,9 +689,7 @@ function CheckoutContent() {
                                         </div>
                                     </div>
                                     
-                                    <div className="mb-6 flex justify-center">
-                                        <Recaptcha onChange={setRecaptchaToken} />
-                                    </div>
+
 
                                     <div className="flex flex-col md:flex-row gap-4 mt-8">
                                         <button

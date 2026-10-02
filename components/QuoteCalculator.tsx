@@ -30,7 +30,7 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { Skeleton } from '@/components/Skeleton';
 import CustomDropdown from '@/components/CustomDropdown';
-import Recaptcha from "@/components/Recaptcha";
+
 
 // Icon mapping for Infill Patterns
 const PATTERN_ICONS = {
@@ -113,7 +113,7 @@ export default function QuoteCalculator({ sessionId, isAdminMode = false }: Quot
     const [showPaymentInfo, setShowPaymentInfo] = useState(false);
     const [showTermsInfo, setShowTermsInfo] = useState(false);
     const [showContactForm, setShowContactForm] = useState(false);
-    const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
+
 
     const [isCalculating, setIsCalculating] = useState(false);
     const [useCoupon, setUseCoupon] = useState(false);
@@ -316,11 +316,7 @@ export default function QuoteCalculator({ sessionId, isAdminMode = false }: Quot
             return;
         }
 
-        if (!recaptchaToken && process.env.NODE_ENV === 'production') {
-            setFieldErrors(prev => ({ ...prev, recaptcha: true }));
-            showToast('Please complete the reCAPTCHA verification', 'error');
-            return;
-        }
+
 
         // Clear errors on successful validation
         setFieldErrors({});
@@ -1621,7 +1617,7 @@ export default function QuoteCalculator({ sessionId, isAdminMode = false }: Quot
                                                         headers: { 'Content-Type': 'application/json' },
                                                         body: JSON.stringify({
                                                             user: { ...userDetails, address: fullAddress },
-                                                            recaptchaToken: recaptchaToken || 'offline_bypass',
+
                                                             order: {
                                                                 id: quoteDetails.id,
                                                                 pdfUrl,
@@ -1651,7 +1647,7 @@ export default function QuoteCalculator({ sessionId, isAdminMode = false }: Quot
                                                              trackingId: quoteDetails.id,
                                                              address: fullAddress,
                                                              message: userDetails.message,
-                                                             recaptchaToken: recaptchaToken || 'offline_bypass',
+
                                                              pdfUrl,
                                                              megaFolderUrl: uploadedFolderUrl,
                                                              items: detailedItems.map((item, i) => ({
@@ -2064,7 +2060,7 @@ export default function QuoteCalculator({ sessionId, isAdminMode = false }: Quot
                             </div>
                             
                             <div className="flex justify-center mt-6">
-                                {!isAdminMode && <Recaptcha onChange={setRecaptchaToken} />}
+
                             </div>
 
                             <div className="flex gap-3 mt-6">
@@ -2077,10 +2073,10 @@ export default function QuoteCalculator({ sessionId, isAdminMode = false }: Quot
                                 </button>
                                 <button
                                     type="submit"
-                                    disabled={!recaptchaToken && process.env.NODE_ENV === 'production'}
+                                    disabled={false}
                                     className="flex-[2] bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black py-3 rounded-xl transition-all shadow-lg hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed"
                                 >
-                                    {recaptchaToken ? 'Generate Quotation' : 'Loading Verification...'}
+                                    Generate Quotation
                                 </button>
                             </div>
                         </form>

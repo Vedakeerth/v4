@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebaseAdmin';
-import { verifyRecaptchaEnterprise } from '@/lib/recaptcha';
+
 
 export async function GET(req: Request) {
     try {
@@ -13,10 +13,7 @@ export async function GET(req: Request) {
             return NextResponse.json({ error: 'Tracking ID, phone number, and reCAPTCHA token are required' }, { status: 400 });
         }
 
-        const isValidRecaptcha = await verifyRecaptchaEnterprise(token, 'SUBMIT');
-        if (!isValidRecaptcha) {
-            return NextResponse.json({ error: "reCAPTCHA verification failed. Please try again." }, { status: 400 });
-        }
+        // ReCaptcha validation removed
 
         // Search for order by trackingId
         const querySnapshot = await adminDb.collection("orders")
