@@ -490,7 +490,7 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                                                         </div>
                                                     </div>
                                                     <p className="text-slate-600 dark:text-slate-400 text-xs mb-4 line-clamp-2 leading-relaxed">
-                                                        {part.description}
+                                                        {part.description?.replace(/<[^>]+>/g, '')}
                                                     </p>
                                                 </div>
 

@@ -42,7 +42,7 @@ export default function PopularParts({ header, parts }: PopularPartsProps) {
         const initialLikes: Record<string, number> = {};
         (parts || []).forEach(p => {
             if (p?.id) {
-                initialLikes[p.id.toString()] = Math.floor(Math.random() * 20) + 5;
+                initialLikes[p.id.toString()] = p.likes || Math.floor(Math.random() * 20) + 5;
             }
         });
         setLikes(initialLikes);
@@ -183,7 +183,7 @@ export default function PopularParts({ header, parts }: PopularPartsProps) {
                                         </div>
                                     </div>
                                     <p className="text-slate-600 dark:text-slate-400 text-sm mb-6 line-clamp-2">
-                                        {part?.description || "High precision component designed for advanced industrial applications."}
+                                        {part?.description?.replace(/<[^>]+>/g, '') || "High precision component designed for advanced industrial applications."}
                                     </p>
                                     <div className="flex items-center justify-between">
                                         <div className="flex flex-col justify-center">
