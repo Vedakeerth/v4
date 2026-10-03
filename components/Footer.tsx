@@ -45,7 +45,10 @@ export default function Footer() {
         { name: "Blog & Updates", href: "/blog" },
         { name: "Contact Us", href: "/contact" },
         { name: "Privacy Policy", href: "/privacy" },
+        { name: "Terms & Conditions", href: "/terms" },
         { name: "Return & Refund Policy", href: "/refunds" },
+        { name: "Shipping Policy", href: "/shipping-policy" },
+        { name: "Payment Policy", href: "/payment-policy" },
     ];
 
     if (databaseFooterLinks && !databaseFooterLinks.some(l => l.href === "/about")) {
@@ -166,10 +169,12 @@ export default function Footer() {
                             );
                         })}
                     </div>
-                    <div className="flex gap-4">
+                    <div className="flex flex-wrap gap-4">
                         <Link href="/privacy" className="hover:text-slate-700 dark:text-slate-300 transition-colors">Privacy Policy</Link>
                         <Link href="/terms" className="hover:text-slate-700 dark:text-slate-300 transition-colors">Terms of Service</Link>
-                        <Link href="/refunds" className="hover:text-slate-700 dark:text-slate-300 transition-colors">Return & Refund Policy</Link>
+                        <Link href="/refunds" className="hover:text-slate-700 dark:text-slate-300 transition-colors">Return &amp; Refund Policy</Link>
+                        <Link href="/shipping-policy" className="hover:text-slate-700 dark:text-slate-300 transition-colors">Shipping Policy</Link>
+                        <Link href="/payment-policy" className="hover:text-slate-700 dark:text-slate-300 transition-colors">Payment Policy</Link>
                     </div>
                 </div>
             </div>
