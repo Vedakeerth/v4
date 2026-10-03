@@ -293,6 +293,9 @@ export default function QuoteCalculator({ sessionId, isAdminMode = false }: Quot
             { key: 'doorNo',  label: 'Door No / Building' },
             { key: 'street',  label: 'Street' },
             { key: 'area',    label: 'Area / Landmark' },
+            { key: 'city',    label: 'City' },
+            { key: 'district',label: 'District' },
+            { key: 'state',   label: 'State' },
         ];
 
         const errors: Record<string, boolean> = {};
@@ -2019,32 +2022,38 @@ export default function QuoteCalculator({ sessionId, isAdminMode = false }: Quot
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-xs font-medium text-slate-700 dark:text-slate-400">City</label>
+                                    <label className={cn("text-xs font-medium", fieldErrors.city ? "text-red-500" : "text-slate-700 dark:text-slate-400")}>City *</label>
                                     <input
+                                        required
                                         type="text"
-                                        className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg px-4 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500"
+                                        className={cn("w-full bg-white dark:bg-slate-950 border rounded-lg px-4 py-2.5 text-slate-900 dark:text-white focus:outline-none transition-all", fieldErrors.city ? "border-red-500 focus:border-red-500 animate-shake" : "border-slate-200 dark:border-slate-800 focus:border-cyan-500")}
                                         value={userDetails.city}
-                                        onChange={e => setUserDetails({ ...userDetails, city: e.target.value })}
+                                        onChange={e => { setUserDetails({ ...userDetails, city: e.target.value }); setFieldErrors(p => ({ ...p, city: false })); }}
                                     />
+                                    {fieldErrors.city && <p className="text-xs text-red-500 mt-1">City is required</p>}
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-xs font-medium text-slate-700 dark:text-slate-400">District</label>
+                                    <label className={cn("text-xs font-medium", fieldErrors.district ? "text-red-500" : "text-slate-700 dark:text-slate-400")}>District *</label>
                                     <input
+                                        required
                                         type="text"
-                                        className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg px-4 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500"
+                                        className={cn("w-full bg-white dark:bg-slate-950 border rounded-lg px-4 py-2.5 text-slate-900 dark:text-white focus:outline-none transition-all", fieldErrors.district ? "border-red-500 focus:border-red-500 animate-shake" : "border-slate-200 dark:border-slate-800 focus:border-cyan-500")}
                                         value={userDetails.district}
-                                        onChange={e => setUserDetails({ ...userDetails, district: e.target.value })}
+                                        onChange={e => { setUserDetails({ ...userDetails, district: e.target.value }); setFieldErrors(p => ({ ...p, district: false })); }}
                                     />
+                                    {fieldErrors.district && <p className="text-xs text-red-500 mt-1">District is required</p>}
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-xs font-medium text-slate-700 dark:text-slate-400">State</label>
+                                    <label className={cn("text-xs font-medium", fieldErrors.state ? "text-red-500" : "text-slate-700 dark:text-slate-400")}>State *</label>
                                     <input
+                                        required
                                         type="text"
-                                        className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg px-4 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500"
+                                        className={cn("w-full bg-white dark:bg-slate-950 border rounded-lg px-4 py-2.5 text-slate-900 dark:text-white focus:outline-none transition-all", fieldErrors.state ? "border-red-500 focus:border-red-500 animate-shake" : "border-slate-200 dark:border-slate-800 focus:border-cyan-500")}
                                         value={userDetails.state}
-                                        onChange={e => setUserDetails({ ...userDetails, state: e.target.value })}
+                                        onChange={e => { setUserDetails({ ...userDetails, state: e.target.value }); setFieldErrors(p => ({ ...p, state: false })); }}
                                     />
+                                    {fieldErrors.state && <p className="text-xs text-red-500 mt-1">State is required</p>}
                                 </div>
 
                                 <div className="space-y-2 md:col-span-2">

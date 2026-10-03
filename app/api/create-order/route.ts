@@ -85,7 +85,8 @@ export async function POST(req: Request) {
           customer_phone: phone.replace(/\D/g, '').slice(-10),
         },
         order_meta: {
-          return_url: `${req.headers.get("origin")}/payment-status?order_id={order_id}`,
+          return_url: `${process.env.NEXT_PUBLIC_BASE_URL || "https://vaelinsa.com"}/payment-status?order_id={order_id}`,
+          notify_url: `${process.env.NEXT_PUBLIC_BASE_URL || "https://vaelinsa.com"}/api/cashfree/webhook`,
         },
       }),
     });

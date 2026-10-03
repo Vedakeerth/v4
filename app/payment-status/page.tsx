@@ -18,7 +18,7 @@ function PaymentStatusContent() {
     const { clearCart } = useCart();
     
     const orderId = searchParams.get("order_id");
-    const [status, setStatus] = useState<"verifying" | "paid" | "failed" | "pending">("verifying");
+    const [status, setStatus] = useState<"verifying" | "paid" | "failed" | "pending" | "user_dropped">("verifying");
     const [orderDetails, setOrderDetails] = useState<any>(null);
     const [error, setError] = useState<string | null>(null);
     const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
@@ -116,6 +116,9 @@ function PaymentStatusContent() {
                     }
                 } else if (data.status === "PENDING" || data.status === "ACTIVE") {
                     setStatus("pending");
+                } else if (data.status === "USER_DROPPED") {
+                    setStatus("user_dropped");
+                    setError("You cancelled the payment before it could complete.");
                 } else {
                     setStatus("failed");
                     setError(data.message || "Payment verification failed.");
@@ -294,6 +297,45 @@ function PaymentStatusContent() {
                                 Track Status
                                 <ArrowRight size={16} />
                             </Link>
+                        </motion.div>
+                    )}
+
+                    {status === "user_dropped" && (
+                        <motion.div
+                            key="user_dropped"
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] p-10 shadow-2xl relative overflow-hidden text-center"
+                        >
+                            <div className="absolute top-0 left-0 w-full h-1.5 bg-orange-500" />
+                            
+                            <div className="w-20 h-20 bg-orange-500/10 rounded-3xl flex items-center justify-center mx-auto mb-8 border border-orange-500/20">
+                                <XCircle className="w-10 h-10 text-orange-500" />
+                            </div>
+
+                            <h1 className="text-3xl font-black text-slate-900 dark:text-white mb-2 uppercase italic tracking-tight">Payment Cancelled</h1>
+                            <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.3em] mb-8 italic">User Dropped Checkout</p>
+
+                            <div className="bg-orange-500/5 border border-orange-500/10 rounded-2xl p-6 mb-8">
+                                <p className="text-orange-400 text-xs font-bold uppercase tracking-tight leading-relaxed">
+                                    {error || "The payment session was abandoned. Your order is still saved."}
+                                </p>
+                            </div>
+
+                            <div className="space-y-4">
+                                <Link
+                                    href="/checkout"
+                                    className="w-full py-4 bg-slate-900 dark:bg-white text-white dark:text-slate-950 font-black rounded-2xl transition-all uppercase tracking-widest text-xs flex items-center justify-center gap-2"
+                                >
+                                    Retry Checkout
+                                </Link>
+                                <Link
+                                    href="/"
+                                    className="w-full py-4 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white font-black rounded-2xl transition-all uppercase tracking-widest text-xs flex items-center justify-center gap-2"
+                                >
+                                    Return Home
+                                </Link>
+                            </div>
                         </motion.div>
                     )}
                 </AnimatePresence>

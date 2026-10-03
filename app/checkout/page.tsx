@@ -749,7 +749,7 @@ function CheckoutContent() {
                                     </h2>
                                     <form id="shipping-form" onSubmit={handleShippingSubmit} className="space-y-6">
                                         <div className="space-y-2">
-                                            <label className="text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">Full Name</label>
+                                            <label className="text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">Full Name <span className="text-red-500">*</span></label>
                                             <input
                                                 required
                                                 type="text"
@@ -761,7 +761,7 @@ function CheckoutContent() {
                                             />
                                         </div>
                                         <div className="space-y-2">
-                                            <label className="text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">Phone Number</label>
+                                            <label className="text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">Phone Number <span className="text-red-500">*</span></label>
                                             <div className="flex gap-2">
                                                 <input
                                                     required
@@ -825,7 +825,7 @@ function CheckoutContent() {
                                             </div>
                                         </div>
                                         <div className="space-y-2">
-                                            <label className="text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">Email Address</label>
+                                            <label className="text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">Email Address <span className="text-red-500">*</span></label>
                                             <input
                                                 required
                                                 type="email"
@@ -838,7 +838,7 @@ function CheckoutContent() {
                                         </div>
                                         <div className="grid grid-cols-2 gap-4">
                                             <div className="space-y-2">
-                                                <label className="text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">Door No / Flat</label>
+                                                <label className="text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">Door No / Flat <span className="text-red-500">*</span></label>
                                                 <input
                                                     required
                                                     type="text"
@@ -850,7 +850,7 @@ function CheckoutContent() {
                                                 />
                                             </div>
                                             <div className="space-y-2">
-                                                <label className="text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">Street / Area</label>
+                                                <label className="text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">Street / Area <span className="text-red-500">*</span></label>
                                                 <input
                                                     required
                                                     type="text"
@@ -864,7 +864,7 @@ function CheckoutContent() {
                                         </div>
                                         <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
                                             <div className="space-y-2 lg:col-span-1">
-                                                <label className="text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">Pincode</label>
+                                                <label className="text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">Pincode <span className="text-red-500">*</span></label>
                                                 <div className="relative">
                                                     <input
                                                         required
@@ -884,7 +884,7 @@ function CheckoutContent() {
                                                 </div>
                                             </div>
                                             <div className="space-y-2 lg:col-span-1">
-                                                <label className="text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">City</label>
+                                                <label className="text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">City <span className="text-red-500">*</span></label>
                                                 <input
                                                     required
                                                     type="text"
@@ -896,7 +896,7 @@ function CheckoutContent() {
                                                 />
                                             </div>
                                             <div className="space-y-2 lg:col-span-1">
-                                                <label className="text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">State</label>
+                                                <label className="text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">State <span className="text-red-500">*</span></label>
                                                 <input
                                                     required
                                                     type="text"
