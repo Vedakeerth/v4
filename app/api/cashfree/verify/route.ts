@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { adminDb } from "@/lib/firebaseAdmin";
+import { Transaction } from "firebase-admin/firestore";
 import { decrypt } from "@/lib/crypto";
 
 const CASHFREE_APP_ID = process.env.CASHFREE_APP_ID;
@@ -43,7 +44,7 @@ export async function POST(req: Request) {
     // --- UPDATE FIRESTORE SAFELY ---
     const orderRef = adminDb.collection("orders").doc(orderId);
     
-    await adminDb.runTransaction(async (transaction) => {
+    await adminDb.runTransaction(async (transaction: Transaction) => {
         const orderDoc = await transaction.get(orderRef);
         if (!orderDoc.exists) return;
 

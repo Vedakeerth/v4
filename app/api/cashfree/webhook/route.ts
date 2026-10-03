@@ -1,16 +1,10 @@
 import { NextResponse } from "next/server";
-import { Cashfree } from "cashfree-pg";
 import { adminDb } from "@/lib/firebaseAdmin";
-import { FieldValue } from "firebase-admin/firestore";
+import { FieldValue, Transaction } from "firebase-admin/firestore";
 import crypto from "crypto";
 import { decrypt } from "@/lib/crypto";
 
-// Initialize Cashfree
-Cashfree.XClientId = process.env.CASHFREE_APP_ID || '';
-Cashfree.XClientSecret = decrypt(process.env.CASHFREE_SECRET_KEY || '');
-Cashfree.XEnvironment = process.env.CASHFREE_ENV === 'production' || process.env.NEXT_PUBLIC_ENVIRONMENT === 'production'
-    ? Cashfree.Environment.PRODUCTION
-    : Cashfree.Environment.SANDBOX;
+const CASHFREE_SECRET_KEY = decrypt(process.env.CASHFREE_SECRET_KEY || "");
 
 export async function POST(req: Request) {
     try {
@@ -28,11 +22,14 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "Missing signature headers" }, { status: 400 });
         }
 
-        // Verify Signature
-        try {
-            Cashfree.PGVerifyWebhookSignature(signature, bodyText, timestamp);
-        } catch (err: any) {
-            console.error("Signature verification failed", err);
+        // Verify Signature Manually using HMAC SHA256
+        const generatedSignature = crypto
+            .createHmac("sha256", CASHFREE_SECRET_KEY)
+            .update(timestamp + bodyText)
+            .digest("base64");
+
+        if (generatedSignature !== signature) {
+            console.error("Signature verification failed");
             return NextResponse.json({ error: "Invalid Signature" }, { status: 400 });
         }
 
@@ -51,7 +48,7 @@ export async function POST(req: Request) {
         const orderRef = adminDb.collection("orders").doc(orderId);
 
         // Run transaction for idempotency
-        await adminDb.runTransaction(async (transaction) => {
+        await adminDb.runTransaction(async (transaction: Transaction) => {
             const orderDoc = await transaction.get(orderRef);
             if (!orderDoc.exists) {
                 console.log(`Order not found: ${orderId}`);
