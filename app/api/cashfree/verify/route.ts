@@ -45,7 +45,7 @@ export async function POST(req: Request) {
     const orderRef = adminDb.collection("orders").doc(orderId);
     
     await adminDb.runTransaction(async (transaction: Transaction) => {
-        const orderDoc = await transaction.get(orderRef);
+        const orderDoc = (await transaction.get(orderRef)) as any;
         if (!orderDoc.exists) return;
 
         const currentData = orderDoc.data();

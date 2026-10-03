@@ -49,7 +49,7 @@ export async function POST(req: Request) {
 
         // Run transaction for idempotency
         await adminDb.runTransaction(async (transaction: Transaction) => {
-            const orderDoc = await transaction.get(orderRef);
+            const orderDoc = (await transaction.get(orderRef)) as any;
             if (!orderDoc.exists) {
                 console.log(`Order not found: ${orderId}`);
                 return;
