@@ -1,3 +1,4 @@
+import { headers } from "next/headers";
 import { getServerSession } from "next-auth";
 import { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
@@ -198,6 +199,23 @@ export const authOptions: NextAuthOptions = {
 };
 
 export async function isAuthenticated() {
+    try {
+        const headerList = await headers();
+        const authHeader = headerList.get("authorization") || headerList.get("Authorization");
+        if (authHeader && authHeader.startsWith("Bearer ")) {
+            const token = authHeader.substring(7).trim();
+            const adminAuth = await getAdminAuth();
+            const decoded = await adminAuth.verifyIdToken(token);
+            if (decoded && decoded.email) {
+                const adminEmails = getAdminEmails();
+                if (adminEmails.includes(decoded.email.toLowerCase())) {
+                    return true;
+                }
+            }
+        }
+    } catch (e) {
+        // Fallback to NextAuth session
+    }
     const session = await getServerSession(authOptions);
     return !!session;
 }

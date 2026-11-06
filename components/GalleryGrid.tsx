@@ -427,13 +427,13 @@ export default function GalleryGrid({ parts }: GalleryGridProps) {
                                                 viewMode === "grid" ? "h-60 w-full" : "h-full w-64"
                                             )}>
                                                 <div className="absolute inset-0 z-0 overflow-hidden">
-                                                    <Image src={part.image?.includes("mega.nz") ? `/api/mega-image?url=${encodeURIComponent(part.image)}` : part.image || "/placeholder.png"} alt={`${part.name} bg`} fill className="object-cover blur-md opacity-40 scale-125" unoptimized={!!(part.image?.includes("mega.nz"))} />
+                                                    <Image src={part.image?.includes("mega.nz") ? `/api/mega-image?url=${encodeURIComponent(part.image)}` : part.image || "/placeholder.png"} alt={`${part.name} bg`} fill className="object-cover blur-md opacity-40 scale-125" unoptimized={!!(part.image?.includes("mega.nz") || part.image?.includes("/api/"))} />
                                                 </div>
                                                 <Image
                                                     src={part.image?.includes("mega.nz") ? `/api/mega-image?url=${encodeURIComponent(part.image)}` : part.image || "/placeholder.png"}
                                                     alt={part.name}
                                                     fill
-                                                    unoptimized={!!(part.image?.includes("mega.nz"))}
+                                                    unoptimized={!!(part.image?.includes("mega.nz") || part.image?.includes("/api/"))}
                                                     className="object-contain z-10 relative group-hover:scale-105 transition-transform duration-700 drop-shadow-md"
                                                 />
                                                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent opacity-60 group-hover:opacity-100 transition-opacity z-10 pointer-events-none" />

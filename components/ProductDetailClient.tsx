@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { ArrowLeft, ChevronLeft, ChevronRight, Heart, ShoppingCart, Share2, Zap, Check } from "lucide-react";
+import { ArrowLeft, ChevronLeft, ChevronRight, Heart, ShoppingCart, Share2, Zap, Check, ChevronDown, ChevronUp } from "lucide-react";
 import Link from "next/link";
 import { cn, parsePrice, formatINR } from "@/lib/utils";
 import { useCart } from "@/context/CartContext";
@@ -43,15 +43,41 @@ export default function ProductDetailClient({ product, similarProducts, pageData
     const { addToCart } = useCart();
     const [likedSimilarIds, setLikedSimilarIds] = useState<Record<string, boolean>>({});
     const [localSimilarLikes, setLocalSimilarLikes] = useState<Record<string, number>>({});
+    const [showFullDetails, setShowFullDetails] = useState(false);
 
-    const images = product.images && product.images.length > 0 ? product.images : [product.image];
+    const rawImages = [
+        product.image,
+        ...(Array.isArray(product.images) ? product.images : [])
+    ].filter((img): img is string => typeof img === 'string' && img.trim().length > 0);
+    const images = Array.from(new Set(rawImages));
+    const displayImages = images.length > 0 ? images : ['/placeholder.png'];
+    const safeImageIndex = currentImageIndex < displayImages.length ? currentImageIndex : 0;
+
+    // Auto-slideshow: advance every 4 seconds; resets on manual navigation
+    const slideTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+    const startSlideTimer = () => {
+        if (slideTimerRef.current) clearInterval(slideTimerRef.current);
+        if (displayImages.length <= 1) return;
+        slideTimerRef.current = setInterval(() => {
+            setCurrentImageIndex(prev => (prev + 1) % displayImages.length);
+        }, 4000);
+    };
+
+    useEffect(() => {
+        startSlideTimer();
+        return () => { if (slideTimerRef.current) clearInterval(slideTimerRef.current); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [displayImages.length]);
 
     const nextImage = () => {
-        setCurrentImageIndex((prev) => (prev + 1) % images.length);
+        setCurrentImageIndex((prev) => (prev + 1) % displayImages.length);
+        startSlideTimer(); // reset timer on manual nav
     };
 
     const prevImage = () => {
-        setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
+        setCurrentImageIndex((prev) => (prev - 1 + displayImages.length) % displayImages.length);
+        startSlideTimer(); // reset timer on manual nav
     };
 
     const handleAddToCart = () => {
@@ -59,7 +85,7 @@ export default function ProductDetailClient({ product, similarProducts, pageData
     };
 
     return (
-        <div className="dynamic-container py-8 md:py-12">
+        <div className="dynamic-container py-8 md:py-12 px-6 sm:px-12 md:px-16 lg:px-24 xl:px-32">
             <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -82,38 +108,50 @@ export default function ProductDetailClient({ product, similarProducts, pageData
                     className="space-y-6"
                 >
                     <div className="relative aspect-square rounded-2xl overflow-hidden bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl group">
-                        {images.length > 1 && (
+                        {displayImages.length > 1 && (
                             <>
                                 <button
                                     onClick={prevImage}
-                                    className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 flex items-center justify-center rounded-full bg-black/50 hover:bg-black/70 text-white transition-all opacity-0 group-hover:opacity-100 backdrop-blur-sm"
+                                    className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 flex items-center justify-center rounded-full bg-black/50 hover:bg-black/70 text-white transition-all opacity-70 group-hover:opacity-100 backdrop-blur-sm"
                                 >
                                     <ChevronLeft size={24} />
                                 </button>
                                 <button
                                     onClick={nextImage}
-                                    className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 flex items-center justify-center rounded-full bg-black/50 hover:bg-black/70 text-white transition-all opacity-0 group-hover:opacity-100 backdrop-blur-sm"
+                                    className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 flex items-center justify-center rounded-full bg-black/50 hover:bg-black/70 text-white transition-all opacity-70 group-hover:opacity-100 backdrop-blur-sm"
                                 >
                                     <ChevronRight size={24} />
                                 </button>
+                                {/* Dot indicators */}
+                                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex gap-1.5">
+                                    {displayImages.map((_, idx) => (
+                                        <button
+                                            key={idx}
+                                            onClick={() => { setCurrentImageIndex(idx); startSlideTimer(); }}
+                                            className={`w-2 h-2 rounded-full transition-all ${idx === safeImageIndex ? 'bg-cyan-400 w-5' : 'bg-white/50 hover:bg-white/80'}`}
+                                        />
+                                    ))}
+                                </div>
                             </>
                         )}
                         {/* Blurred Background */}
                         <Image
-                            src={images[currentImageIndex]}
+                            src={displayImages[safeImageIndex]}
                             alt={`${product.name} background`}
                             fill
                             className="object-cover opacity-30 blur-2xl scale-110"
                             priority
+                            unoptimized={displayImages[safeImageIndex]?.includes('/api/') || displayImages[safeImageIndex]?.includes('mega.nz')}
                         />
                         {/* Contained Foreground */}
                         <div className="absolute inset-0">
                             <Image
-                                src={images[currentImageIndex]}
+                                src={displayImages[safeImageIndex]}
                                 alt={product.name}
                                 fill
                                 className="object-contain"
                                 priority
+                                unoptimized={displayImages[safeImageIndex]?.includes('/api/') || displayImages[safeImageIndex]?.includes('mega.nz')}
                             />
                         </div>
 
@@ -126,20 +164,26 @@ export default function ProductDetailClient({ product, similarProducts, pageData
                     </div>
 
                     {/* Thumbnails */}
-                    {images.length > 1 && (
+                    {displayImages.length > 1 && (
                         <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
-                            {images.map((img, idx) => (
+                            {displayImages.map((img, idx) => (
                                 <button
                                     key={idx}
                                     onClick={() => setCurrentImageIndex(idx)}
                                     className={cn(
                                         "relative flex-shrink-0 w-24 h-24 rounded-lg overflow-hidden border-2 transition-all",
-                                        idx === currentImageIndex
+                                        idx === safeImageIndex
                                             ? "border-cyan-500 shadow-[0_0_15px_rgba(6,182,212,0.4)] ring-2 ring-cyan-500/20"
                                             : "border-slate-200 dark:border-slate-800 opacity-60 hover:opacity-100 hover:border-slate-400 dark:border-slate-600"
                                     )}
                                 >
-                                    <Image src={img} alt="" fill className="object-cover" />
+                                    <Image
+                                        src={img}
+                                        alt=""
+                                        fill
+                                        className="object-cover"
+                                        unoptimized={img?.includes('/api/') || img?.includes('mega.nz')}
+                                    />
                                 </button>
                             ))}
                         </div>
@@ -207,13 +251,9 @@ export default function ProductDetailClient({ product, similarProducts, pageData
                                 )}
                             </div>
                         </div>
-                        <p className="text-slate-700 dark:text-slate-300 text-lg leading-relaxed">
-                            {product.description}
-                        </p>
-
                     </div>
 
-                    {/* Configuration */}
+                    {/* Configuration & Purchase Options */}
                     <div className="bg-slate-50 dark:bg-slate-900/50 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-6">
                         {/* Color */}
                         <div>
@@ -277,47 +317,126 @@ export default function ProductDetailClient({ product, similarProducts, pageData
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    {/* Actions */}
-                    <div className="flex flex-col gap-4">
-                        <button
-                            onClick={() => {
-                                // Clear cart and add only this item for "Buy Now"
-                                localStorage.removeItem('veda_cart'); // Direct clear to be safe
-                                addToCart(product, selectedColor, quantity, false);
-                                router.push('/checkout');
-                            }}
-                            disabled={!product.inStock}
-                            className={cn(
-                                "w-full py-5 px-8 rounded-2xl font-black text-xl flex items-center justify-center gap-3 transition-all shadow-2xl group",
-                                product.inStock
-                                    ? "bg-cyan-400 hover:bg-cyan-500 text-slate-950 shadow-cyan-400/20 hover:scale-[1.02]"
-                                    : "bg-slate-100 dark:bg-slate-800 text-slate-500 cursor-not-allowed"
-                            )}
-                        >
-                            <Zap className={cn("w-6 h-6", product.inStock && "group-hover:scale-110 transition-transform")} fill="currentColor" />
-                            {product.inStock ? "Buy Now" : "Out of Stock"}
-                        </button>
-
-                        <div className="flex gap-4">
+                        {/* Action Buttons: Buy Now & Add to Cart */}
+                        <div className="pt-2 flex flex-col gap-4">
                             <button
-                                onClick={handleAddToCart}
+                                onClick={() => {
+                                    // Clear cart and add only this item for "Buy Now"
+                                    localStorage.removeItem('veda_cart'); // Direct clear to be safe
+                                    addToCart(product, selectedColor, quantity, false);
+                                    router.push('/checkout');
+                                }}
                                 disabled={!product.inStock}
                                 className={cn(
-                                    "flex-1 py-4 px-8 rounded-xl font-bold text-lg flex items-center justify-center gap-3 transition-all border",
+                                    "w-full py-5 px-8 rounded-2xl font-black text-xl flex items-center justify-center gap-3 transition-all shadow-2xl group",
                                     product.inStock
-                                        ? "bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-900 dark:text-white border-slate-300 dark:border-slate-700 shadow-lg"
+                                        ? "bg-cyan-400 hover:bg-cyan-500 text-slate-950 shadow-cyan-400/20 hover:scale-[1.02]"
                                         : "bg-slate-100 dark:bg-slate-800 text-slate-500 cursor-not-allowed"
                                 )}
                             >
-                                <ShoppingCart className="w-6 h-6" />
-                                {product.inStock ? (pageData?.addToCartButton || "Add to Cart") : (pageData?.outOfStockButton || "Out of Stock")}
+                                <Zap className={cn("w-6 h-6", product.inStock && "group-hover:scale-110 transition-transform")} fill="currentColor" />
+                                {product.inStock ? "Buy Now" : "Out of Stock"}
                             </button>
-                            <button className="w-14 h-14 shrink-0 flex items-center justify-center rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800/50 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:bg-slate-800 hover:text-white transition-colors">
-                                <Share2 className="w-6 h-6" />
-                            </button>
+
+                            <div className="flex gap-4">
+                                <button
+                                    onClick={handleAddToCart}
+                                    disabled={!product.inStock}
+                                    className={cn(
+                                        "flex-1 py-4 px-8 rounded-xl font-bold text-lg flex items-center justify-center gap-3 transition-all border",
+                                        product.inStock
+                                            ? "bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-900 dark:text-white border-slate-300 dark:border-slate-700 shadow-lg"
+                                            : "bg-slate-100 dark:bg-slate-800 text-slate-500 cursor-not-allowed"
+                                    )}
+                                >
+                                    <ShoppingCart className="w-6 h-6" />
+                                    {product.inStock ? (pageData?.addToCartButton || "Add to Cart") : (pageData?.outOfStockButton || "Out of Stock")}
+                                </button>
+                                <button className="w-14 h-14 shrink-0 flex items-center justify-center rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800/50 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:bg-slate-800 hover:text-white transition-colors">
+                                    <Share2 className="w-6 h-6" />
+                                </button>
+                            </div>
                         </div>
+                    </div>
+
+                    {/* Expandable Details Container with partial preview + fade out */}
+                    <div className="pt-2">
+                        {/* Specifications / Product Details */}
+                        {(product.weight || product.length || product.width || product.height || product.category) && (
+                            <div className="mb-6 p-6 bg-slate-50 dark:bg-slate-900/40 rounded-2xl border border-slate-200 dark:border-slate-800/80">
+                                <h3 className="text-xs font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-4">
+                                    Product Specifications
+                                </h3>
+                                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                    <div className="p-3 bg-white dark:bg-slate-950/60 rounded-xl border border-slate-200/80 dark:border-slate-800/80 flex flex-col items-center justify-center text-center">
+                                        <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Weight</span>
+                                        <span className="text-base font-bold text-slate-900 dark:text-white">{product.weight || 0}g</span>
+                                    </div>
+                                    <div className="p-3 bg-white dark:bg-slate-950/60 rounded-xl border border-slate-200/80 dark:border-slate-800/80 flex flex-col items-center justify-center text-center">
+                                        <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Length</span>
+                                        <span className="text-base font-bold text-slate-900 dark:text-white">{product.length || 0}cm</span>
+                                    </div>
+                                    <div className="p-3 bg-white dark:bg-slate-950/60 rounded-xl border border-slate-200/80 dark:border-slate-800/80 flex flex-col items-center justify-center text-center">
+                                        <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Width</span>
+                                        <span className="text-base font-bold text-slate-900 dark:text-white">{product.width || 0}cm</span>
+                                    </div>
+                                    <div className="p-3 bg-white dark:bg-slate-950/60 rounded-xl border border-slate-200/80 dark:border-slate-800/80 flex flex-col items-center justify-center text-center">
+                                        <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Height</span>
+                                        <span className="text-base font-bold text-slate-900 dark:text-white">{product.height || 0}cm</span>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Description Section with Partial Fade-Out */}
+                        {(() => {
+                            if (!product.description) return null;
+                            const hasHtml = /<[a-z][\s\S]*>/i.test(product.description);
+                            return (
+                                <div className="border-t border-slate-200 dark:border-slate-800 pt-4">
+                                    <h3 className="text-xs font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-3">
+                                        About This Product
+                                    </h3>
+                                    <div className="relative">
+                                        <div
+                                            className={cn(
+                                                "overflow-hidden transition-all duration-500",
+                                                showFullDetails ? "max-h-[3000px]" : "max-h-36"
+                                            )}
+                                        >
+                                            {hasHtml ? (
+                                                <div
+                                                    className="prose dark:prose-invert max-w-none text-slate-700 dark:text-slate-300 text-base md:text-lg leading-relaxed prose-headings:font-bold prose-headings:text-slate-900 dark:prose-headings:text-white prose-h1:text-2xl prose-h1:mb-3 prose-h2:text-xl prose-h2:mb-2 prose-h3:text-lg prose-h3:mb-2 prose-h3:mt-4 prose-p:my-2 prose-ul:my-2 prose-ul:list-disc prose-ul:pl-5 prose-ol:list-decimal prose-ol:pl-5 prose-li:my-1 prose-strong:text-slate-900 dark:prose-strong:text-white prose-a:text-cyan-500 hover:prose-a:underline"
+                                                    dangerouslySetInnerHTML={{ __html: product.description }}
+                                                />
+                                            ) : (
+                                                <p className="text-slate-700 dark:text-slate-300 text-lg leading-relaxed whitespace-pre-line">
+                                                    {product.description}
+                                                </p>
+                                            )}
+                                        </div>
+
+                                        {/* Fade Out Gradient Overlay when collapsed */}
+                                        {!showFullDetails && (
+                                            <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-white dark:from-slate-950 to-transparent pointer-events-none" />
+                                        )}
+                                    </div>
+
+                                    {/* Show Details / Show Less Button */}
+                                    <div className="pt-3">
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowFullDetails(prev => !prev)}
+                                            className="w-full py-3 px-6 rounded-xl font-bold text-sm flex items-center justify-center gap-2 border border-slate-200 dark:border-slate-800 bg-slate-50 hover:bg-slate-100 dark:bg-slate-900/60 dark:hover:bg-slate-800 text-cyan-600 dark:text-cyan-400 hover:text-cyan-500 transition-all shadow-sm"
+                                        >
+                                            <span>{showFullDetails ? "Show Less" : "Show Full Details"}</span>
+                                            {showFullDetails ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                                        </button>
+                                    </div>
+                                </div>
+                            );
+                        })()}
                     </div>
                 </motion.div>
             </div>
@@ -335,7 +454,7 @@ export default function ProductDetailClient({ product, similarProducts, pageData
 
             {/* Similar Products Section */}
             {similarProducts && similarProducts.length > 0 && (
-                <section className="max-w-[95vw] mx-auto px-4 md:px-8 py-24 border-t border-slate-100 dark:border-slate-900">
+                <section className="mt-12 pt-16 border-t border-slate-100 dark:border-slate-900">
                     <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
                         <div className="flex items-center gap-3">
                             <div className="w-1.5 h-8 bg-cyan-500 rounded-full" />
@@ -359,7 +478,8 @@ export default function ProductDetailClient({ product, similarProducts, pageData
                                         src={p.image} 
                                         alt={p.name} 
                                         fill 
-                                        className="object-cover group-hover:scale-105 transition-transform duration-700" 
+                                        className="object-cover group-hover:scale-105 transition-transform duration-700"
+                                        unoptimized={p.image?.includes('/api/') || p.image?.includes('mega.nz')}
                                     />
                                     
                                     {/* Stock Badge - Left Side */}

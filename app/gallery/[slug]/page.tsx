@@ -22,6 +22,9 @@ export async function generateStaticParams() {
     }));
 }
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
     const { slug } = await params;
     const product = await getProductBySeoSlug(slug);
@@ -29,16 +32,17 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
     const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://vaelinsa.com';
     const canonicalUrl = `${baseUrl}/gallery/${slug}`;
+    const cleanDesc = product.description ? product.description.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 160) : '';
 
     return {
         title: `${product.name} | VAELINSA Gallery`,
-        description: product.description,
+        description: cleanDesc,
         alternates: {
             canonical: canonicalUrl,
         },
         openGraph: {
             title: product.name,
-            description: product.description,
+            description: cleanDesc,
             images: [product.image],
             type: "website",
         }

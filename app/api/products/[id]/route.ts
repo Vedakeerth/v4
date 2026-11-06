@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebaseAdmin';
 import { isAuthenticated } from '@/lib/auth';
+import { revalidatePath, revalidateTag } from 'next/cache';
 
 // GET single product
 export async function GET(
@@ -67,6 +68,15 @@ export async function PUT(
         delete updateData.id;
 
         await docRef.set(updateData, { merge: true });
+
+        try {
+            revalidatePath('/gallery');
+            revalidatePath('/products');
+            revalidatePath('/');
+            (revalidateTag as any)('products');
+        } catch (e) {
+            console.warn("Revalidation warning in PUT:", e);
+        }
 
         return NextResponse.json({
             success: true,
@@ -144,6 +154,15 @@ export async function DELETE(
         }
 
         await docRef.delete();
+
+        try {
+            revalidatePath('/gallery');
+            revalidatePath('/products');
+            revalidatePath('/');
+            (revalidateTag as any)('products');
+        } catch (e) {
+            console.warn("Revalidation warning in DELETE:", e);
+        }
 
         return NextResponse.json({
             success: true,

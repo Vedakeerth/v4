@@ -58,16 +58,28 @@ const nextConfig: NextConfig = {
         destination: '/blog/intro-to-industrial-3d-printing',
         permanent: true,
       },
+      // Gallery slug redirects (direct to canonical SEO slug with ID)
       {
         source: '/toothless-dragen-keychain-KE7726',
-        destination: '/gallery/toothless-dragon-keychain',
+        destination: '/gallery/toothless-dragen-keychain-KE7726',
         permanent: true,
       },
       {
-        source: '/gallery/toothless-dragen-keychain-KE7726',
-        destination: '/gallery/toothless-dragon-keychain',
+        source: '/gallery/toothless-dragon-keychain',
+        destination: '/gallery/toothless-dragen-keychain-KE7726',
         permanent: true,
       },
+      {
+        source: '/ece-stencile-ET3875',
+        destination: '/gallery/ece-stencile-ET3875',
+        permanent: true,
+      },
+      {
+        source: '/gallery/ece-stencil',
+        destination: '/gallery/ece-stencile-ET3875',
+        permanent: true,
+      },
+      // Project slug redirects
       {
         source: '/3d-pen-with-morden-feature-52967925',
         destination: '/projects/advanced-3d-printing-pen',
@@ -81,16 +93,6 @@ const nextConfig: NextConfig = {
       {
         source: '/projects/3d-pen-with-morden-feature-1770352967925',
         destination: '/projects/advanced-3d-printing-pen',
-        permanent: true,
-      },
-      {
-        source: '/ece-stencile-ET3875',
-        destination: '/gallery/ece-stencil',
-        permanent: true,
-      },
-      {
-        source: '/gallery/ece-stencile-ET3875',
-        destination: '/gallery/ece-stencil',
         permanent: true,
       },
       // Old HTML Page Redirects (301 Permanent)

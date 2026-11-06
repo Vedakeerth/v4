@@ -11,9 +11,15 @@ export async function POST(req: Request) {
     }
 
     if (tag) {
-      // If we can't use revalidateTag easily, we'll use revalidatePath as a robust alternative
-      revalidatePath("/", "layout"); 
-      return NextResponse.json({ success: true, message: `Global cache revalidated via tag ${tag}` });
+      try {
+        (revalidateTag as any)(tag);
+      } catch (err) {
+        console.warn("revalidateTag error:", err);
+      }
+      revalidatePath("/", "layout");
+      revalidatePath("/gallery");
+      revalidatePath("/products");
+      return NextResponse.json({ success: true, message: `Cache revalidated via tag ${tag}` });
     }
 
     return NextResponse.json({ success: false, error: "Tag or path is required" }, { status: 400 });

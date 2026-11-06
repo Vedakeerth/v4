@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebaseAdmin';
 import { isAuthenticated } from '@/lib/auth';
+import { revalidatePath, revalidateTag } from 'next/cache';
 
 import { QueryDocumentSnapshot, DocumentData } from 'firebase-admin/firestore';
 import { generateProductCode } from '@/lib/products';
@@ -45,21 +46,40 @@ export async function POST(req: Request) {
         const productId = generateProductCode(body.category || 'Uncategorized');
 
         const newProduct = {
+            ...body,
             name: body.name,
             description: body.description,
             price: body.price,
+            mrp: body.mrp || "",
             image: body.image,
-            images: body.images || [body.image],
-            category: body.category,
+            images: Array.isArray(body.images) && body.images.length > 0 ? body.images : [body.image],
+            category: body.category || 'Uncategorized',
             inStock: body.inStock !== undefined ? body.inStock : true,
             isPopular: body.isPopular || false,
-            stockCount: body.stockCount || 0,
+            stockCount: body.stockCount !== undefined && body.stockCount !== "" ? Number(body.stockCount) : 0,
             availabilityStatus: body.availabilityStatus || (body.inStock !== false ? 'In Stock' : 'Out of Stock'),
+            colors: body.colors || [],
+            defaultColor: body.defaultColor || "",
+            weight: body.weight !== undefined && body.weight !== "" ? Number(body.weight) : 0,
+            length: body.length !== undefined && body.length !== "" ? Number(body.length) : 0,
+            width: body.width !== undefined && body.width !== "" ? Number(body.width) : 0,
+            height: body.height !== undefined && body.height !== "" ? Number(body.height) : 0,
+            likes: body.likes !== undefined && body.likes !== "" ? Number(body.likes) : 0,
+            views: body.views !== undefined && body.views !== "" ? Number(body.views) : 0,
             createdAt: new Date().toISOString(),
         };
 
         // Use the generated short ID as the document ID
         await adminDb.collection('products').doc(productId).set(newProduct);
+
+        try {
+            revalidatePath('/gallery');
+            revalidatePath('/products');
+            revalidatePath('/');
+            (revalidateTag as any)('products');
+        } catch (e) {
+            console.warn("Revalidation warning in POST:", e);
+        }
 
         return NextResponse.json({
             success: true,

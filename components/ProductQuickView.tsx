@@ -99,6 +99,7 @@ export default function ProductQuickView({ product, onClose }: ProductQuickViewP
                                         fill
                                         className="object-contain p-4"
                                         priority
+                                        unoptimized={(product.images?.[activeImageIndex] || product.image)?.includes('/api/') || (product.images?.[activeImageIndex] || product.image)?.includes('mega.nz')}
                                     />
                                 </motion.div>
                             </AnimatePresence>
@@ -172,9 +173,23 @@ export default function ProductQuickView({ product, onClose }: ProductQuickViewP
 
                             <div className="bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-2xl p-3 mb-3">
                                 <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1.5 block">Engineering description</label>
-                                <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed italic">
-                                    "{product.description}"
-                                </p>
+                                {(() => {
+                                    if (!product.description) return null;
+                                    const hasHtml = /<[a-z][\s\S]*>/i.test(product.description);
+                                    if (hasHtml) {
+                                        return (
+                                            <div 
+                                                className="prose prose-sm dark:prose-invert max-w-none text-slate-600 dark:text-slate-400 text-xs leading-relaxed max-h-36 overflow-y-auto"
+                                                dangerouslySetInnerHTML={{ __html: product.description }} 
+                                            />
+                                        );
+                                    }
+                                    return (
+                                        <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed italic">
+                                            "{product.description}"
+                                        </p>
+                                    );
+                                })()}
                             </div>
 
                             <div className="grid grid-cols-2 gap-3 mb-4">

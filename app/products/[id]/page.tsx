@@ -11,6 +11,9 @@ interface PageProps {
     params: Promise<{ id: string }>;
 }
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function ProductDetailPage({ params }: PageProps) {
     const { id } = await params;
     const pageData = await getPageContent('product-detail');
